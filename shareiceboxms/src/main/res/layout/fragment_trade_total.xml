@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:orientation="vertical">
+
+        <include layout="@layout/time_select" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_marginTop="10dp"
+            android:orientation="vertical">
+
+            <RadioGroup
+                android:id="@+id/dateGroup"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+
+                <RadioButton
+                    android:id="@+id/todayDate"
+                    android:layout_width="60dp"
+                    android:layout_height="match_parent"
+                    android:background="@drawable/selector_trade_date"
+                    android:button="@null"
+                    android:gravity="center"
+                    android:text="今日"
+                    android:textColor="@drawable/selector_trade_text_color" />
+
+                <RadioButton
+                    android:id="@+id/weekDate"
+                    android:layout_width="60dp"
+                    android:layout_height="match_parent"
+                    android:background="@drawable/selector_trade_date"
+                    android:button="@null"
+                    android:gravity="center"
+                    android:text="本周"
+                    android:textColor="@drawable/selector_trade_text_color" />
+
+                <RadioButton
+                    android:id="@+id/monthDate"
+                    android:layout_width="60dp"
+                    android:layout_height="match_parent"
+                    android:background="@drawable/selector_trade_date"
+                    android:button="@null"
+                    android:gravity="center"
+                    android:text="本月"
+                    android:textColor="@drawable/selector_trade_text_color" />
+
+                <RadioButton
+                    android:id="@+id/yearDate"
+                    android:layout_width="60dp"
+                    android:layout_height="match_parent"
+                    android:background="@drawable/selector_trade_date"
+                    android:button="@null"
+                    android:gravity="center"
+                    android:text="本年"
+                    android:textColor="@drawable/selector_trade_text_color" />
+            </RadioGroup>
+        </LinearLayout>
+
+        <android.support.v4.widget.SwipeRefreshLayout
+            android:id="@+id/refresh"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <ListView
+                android:id="@+id/tradeTotalList"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+        </android.support.v4.widget.SwipeRefreshLayout>
+
+    </LinearLayout>
+</LinearLayout>

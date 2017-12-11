@@ -23,6 +23,7 @@ import com.example.shareiceboxms.models.helpers.NotifySnackbar;
 import com.example.shareiceboxms.views.fragments.BaseFragment;
 import com.example.shareiceboxms.views.fragments.exception.ExceptionFragment;
 import com.example.shareiceboxms.views.fragments.machine.MachineFragment;
+import com.example.shareiceboxms.views.fragments.product.ProductFragment;
 import com.example.shareiceboxms.views.fragments.trade.TradeFragment;
 
 import org.zackratos.ultimatebar.UltimateBar;
