@@ -6,6 +6,7 @@ import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ListView;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -23,6 +24,7 @@ public class TradeTotalFragment extends BaseFragment {
     private View containerView;
     private TextView timeSelector;
     private RadioGroup dateGroup;
+    private ListView tradeTotalList;
 
     @Nullable
     @Override
@@ -37,6 +39,7 @@ public class TradeTotalFragment extends BaseFragment {
 
     private void initViews() {
         timeSelector = (TextView) containerView.findViewById(R.id.timeSelector);
+        tradeTotalList = (ListView) containerView.findViewById(R.id.tradeTotalList);
         dateGroup = (RadioGroup) containerView.findViewById(R.id.dateGroup);
         dateGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
