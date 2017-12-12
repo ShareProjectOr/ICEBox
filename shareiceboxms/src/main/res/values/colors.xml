@@ -16,7 +16,10 @@
     <color name="login_RFID_black">#262627</color>
     <color name="login_black_gray">#cecfd2</color>
     <color name="changhong_tag">#858688</color>
-    <color name="edit_box_gray">#dfdfdf</color>
-
-
+    <color name="edit_box_gray">#E0E0E0</color>
+    <color name="gray_light_deep">#BBBBBB</color>
+    <color name="test_init_color">#C8C8C8</color>
+    <color name="sucessgreen">#1afa29</color>
+    <!--灰色  未选中下划线 -->
+    <color name="colorLineDefault">#FFAAAAAA</color>
 </resources>
