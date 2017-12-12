@@ -86,7 +86,7 @@ public class TradeRecordsFragment extends BaseFragment implements LoadMoreHelper
 
 
         RecyclerView tradeRecordList = (android.support.v7.widget.RecyclerView) containerView.findViewById(R.id.tradeRecordList);
-        TradeRecordListAdapter adapter = new TradeRecordListAdapter(getContext(), itemTradeRecords);
+        TradeRecordListAdapter adapter = new TradeRecordListAdapter(getContext(), itemTradeRecords, this);
         new MyViewFactory(getContext()).BuildRecyclerViewRule(tradeRecordList,
                 new LinearLayoutManager(getContext()), null, true).setAdapter(adapter);
         loadMoreHelper = new LoadMoreHelper().setContext(getContext()).setAdapter(adapter)
@@ -129,6 +129,11 @@ public class TradeRecordsFragment extends BaseFragment implements LoadMoreHelper
 
         loadMoreHelper.getAdapter().notifyDataSetChanged();
         recordRefresh.setRefreshing(false);
+    }
+
+    public void addFrameFragment() {
+        TradeFragment tradeFragment = (TradeFragment) getParentFragment();
+        tradeFragment.addFrameLayout(new TradeRecordDetailFragment());
     }
 
     @Override

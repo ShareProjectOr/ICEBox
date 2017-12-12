@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.example.shareiceboxms.R;
 import com.example.shareiceboxms.models.adapters.ViewPagerAdapter;
@@ -65,6 +66,7 @@ public class TradeFragment extends BaseFragment implements HomeActivity.OnBackPr
     }
 
     public void addFrameLayout(BaseFragment fragment) {
+        Toast.makeText(getContext(), "fdsafdsafdsafds", Toast.LENGTH_SHORT).show();
         curFrameFragment = fragment;
         super.addFrameLayout(fragment, R.id.detailFrameLayout);
         tradeDetailLayout.setVisibility(View.VISIBLE);

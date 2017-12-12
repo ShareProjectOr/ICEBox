@@ -12,6 +12,7 @@ import android.widget.Toast;
 import com.example.shareiceboxms.R;
 import com.example.shareiceboxms.models.beans.ItemTradeRecord;
 import com.example.shareiceboxms.models.factories.FragmentFactory;
+import com.example.shareiceboxms.views.fragments.trade.TradeRecordsFragment;
 
 import java.util.List;
 
@@ -25,10 +26,12 @@ public class TradeRecordListAdapter extends RecyclerView.Adapter<RecyclerView.Vi
     private static final int VIEW_LOADING = 1;
     Context context;
     List<ItemTradeRecord> itemTradeRecords;
+    TradeRecordsFragment tradeRecordsFragment;
 
-    public TradeRecordListAdapter(Context context, List<ItemTradeRecord> itemTradeRecords) {
+    public TradeRecordListAdapter(Context context, List<ItemTradeRecord> itemTradeRecords, TradeRecordsFragment tradeRecordsFragment) {
         this.context = context;
         this.itemTradeRecords = itemTradeRecords;
+        this.tradeRecordsFragment = tradeRecordsFragment;
     }
 
     @Override
@@ -48,8 +51,11 @@ public class TradeRecordListAdapter extends RecyclerView.Adapter<RecyclerView.Vi
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-//                    FragmentFactory.getInstance().getSavedBundle().putString("");
-                    Toast.makeText(context, itemTradeRecords.get(position).getStr(), Toast.LENGTH_SHORT).show();
+                    if (tradeRecordsFragment != null) {
+                        FragmentFactory.getInstance().getSavedBundle().putString("machineCode","1212121");
+                        tradeRecordsFragment.addFrameFragment();
+                        Toast.makeText(context, itemTradeRecords.get(position).getStr(), Toast.LENGTH_SHORT).show();
+                    }
                 }
             });
         } else if (holder instanceof LoadingHolder) {
