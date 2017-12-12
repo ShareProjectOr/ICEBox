@@ -10,4 +10,11 @@
 
     <string name="RFID_share_icebox">RFID共享冰箱</string>
     <string name="manager_system">后台管理系统</string>
+
+    <string-array name="spinnerText">
+        <item name="all">全部</item>
+        <item name="paied">已支付</item>
+        <item name="payNot">未支付</item>
+        <item name="refund">已退款</item>
+    </string-array>
 </resources>

@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,7 +16,7 @@ import com.example.shareiceboxms.R;
  * Created by WH on 2017/11/27.
  */
 
-public class BaseFragment extends Fragment implements View.OnClickListener {
+public class BaseFragment extends Fragment implements View.OnClickListener,SwipeRefreshLayout.OnRefreshListener {
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -53,6 +54,11 @@ public class BaseFragment extends Fragment implements View.OnClickListener {
             FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
             transaction.remove(fragment);
         }
+
+    }
+
+    @Override
+    public void onRefresh() {
 
     }
 }

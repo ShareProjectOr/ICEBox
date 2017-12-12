@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:orientation="vertical">
@@ -17,51 +18,33 @@
             android:layout_marginTop="20dp"
             android:orientation="horizontal">
 
-            <RelativeLayout
+            <Button
+                android:id="@+id/createAccount"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="1.5"
-                android:background="@drawable/shape_trade_time">
-
-                <ImageView
-                    android:id="@+id/tradeSearch"
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
-                    android:layout_alignParentRight="true"
-                    android:layout_marginRight="10dp"
-                    android:padding="5dp"
-                    android:src="@mipmap/head" />
-
-                <TextView
-                    android:id="@+id/tradeNo"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_alignBottom="@id/tradeSearch"
-                    android:layout_alignParentStart="true"
-                    android:layout_alignParentTop="true"
-                    android:layout_alignTop="@id/tradeSearch"
-                    android:gravity="center_vertical"
-                    android:padding="5dp"
-                    android:paddingStart="20dp"
-                    android:text="请选择时间" />
-            </RelativeLayout>
+                android:layout_weight="1"
+                android:background="@drawable/shape_trade_create_account"
+                android:padding="5dp"
+                android:text="创建结算工单"
+                android:textColor="@color/white" />
 
             <RelativeLayout
-                android:id="@+id/tradeType"
+                android:id="@+id/accountType"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_marginLeft="10dp"
-                android:layout_weight="1"
-                android:background="@drawable/shape_trade_time"
-                android:padding="5dp">
+                android:layout_weight="1.5"
+                android:background="@drawable/shape_trade_time">
 
                 <TextView
-                    android:id="@+id/tradeTypeText"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent" />
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:hint="选择结算工单"
+                    android:paddingStart="10dp" />
 
                 <ImageView
-                    android:id="@+id/tradeTypeIcon"
+                    android:id="@+id/chooseAccountIcon"
                     android:layout_width="20dp"
                     android:layout_height="match_parent"
                     android:layout_alignParentRight="true"
@@ -69,16 +52,16 @@
                     android:src="@drawable/selector_trade_downicon" />
             </RelativeLayout>
 
+
         </LinearLayout>
 
-        <include layout="@layout/time_select" />
         <android.support.v4.widget.SwipeRefreshLayout
-            android:id="@+id/recordRefresh"
+            android:id="@+id/accountRefresh"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
             <android.support.v7.widget.RecyclerView
-                android:id="@+id/tradeRecordList"
+                android:id="@+id/tradeaccountList"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent" />
         </android.support.v4.widget.SwipeRefreshLayout>

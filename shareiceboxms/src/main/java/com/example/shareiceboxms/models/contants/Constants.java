@@ -17,4 +17,5 @@ public interface Constants {
     String[] TradeTotalTitles = {"订单总金额", "冲抵后实际结算金额", "支付宝消费", "微信消费"};
     String[] TradeTotalTitlesItem = {"已扣款", "代扣款", "已支付", "待支付"};
     String[] EXCEPTION_LV_TITLE = {"全部", "一般严重", "特别严重"};
+    int[] TradeRecordPayICON = {R.mipmap.icon_person, R.mipmap.icon_person, R.mipmap.icon_person};
 }
