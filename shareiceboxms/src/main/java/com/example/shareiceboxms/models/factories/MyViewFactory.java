@@ -1,6 +1,7 @@
 package com.example.shareiceboxms.models.factories;
 
 import android.content.Context;
+import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.RecyclerView;
 
 /**
@@ -18,7 +19,7 @@ public class MyViewFactory {
         if (recyclerView != null) {
             //layoutManager.set
             recyclerView.setLayoutManager(layoutManager);
-            recyclerView.setItemAnimator(itemAnimator);
+            recyclerView.setItemAnimator(itemAnimator == null ? new DefaultItemAnimator() : itemAnimator);
             recyclerView.setHasFixedSize(isHasFixedSize);
         }
 

@@ -7,11 +7,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.shareiceboxms.R;
+import com.example.shareiceboxms.models.beans.ItemTradeAccount;
 import com.example.shareiceboxms.models.beans.ItemTradeRecord;
-import com.example.shareiceboxms.models.factories.FragmentFactory;
 
 import java.util.List;
 
@@ -19,23 +18,23 @@ import java.util.List;
  * Created by WH on 2017/12/11.
  */
 
-public class TradeRecordListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+public class TradeAccountListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private static final int VIEW_ITEM = 0;
     private static final int VIEW_LOADING = 1;
     Context context;
-    List<ItemTradeRecord> itemTradeRecords;
+    List<ItemTradeAccount> itemTradeAccounts;
 
-    public TradeRecordListAdapter(Context context, List<ItemTradeRecord> itemTradeRecords) {
+    public TradeAccountListAdapter(Context context, List<ItemTradeAccount> itemTradeAccounts) {
         this.context = context;
-        this.itemTradeRecords = itemTradeRecords;
+        this.itemTradeAccounts = itemTradeAccounts;
     }
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         RecyclerView.ViewHolder viewHolder = null;
         if (viewType == VIEW_ITEM) {
-            viewHolder = new ViewHolder(LayoutInflater.from(context).inflate(R.layout.trade_record_list_item, null));
+            viewHolder = new ViewHolder(LayoutInflater.from(context).inflate(R.layout.trade_account_list_item, null));
         } else if (viewType == VIEW_LOADING) {
             viewHolder = new ViewHolder(LayoutInflater.from(context).inflate(R.layout.loading_more, null));
         }
@@ -43,15 +42,9 @@ public class TradeRecordListAdapter extends RecyclerView.Adapter<RecyclerView.Vi
     }
 
     @Override
-    public void onBindViewHolder(RecyclerView.ViewHolder holder, final int position) {
+    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         if (holder instanceof ViewHolder) {
-            holder.itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-//                    FragmentFactory.getInstance().getSavedBundle().putString("");
-                    Toast.makeText(context, itemTradeRecords.get(position).getStr(), Toast.LENGTH_SHORT).show();
-                }
-            });
+
         } else if (holder instanceof LoadingHolder) {
             if (holder != null) {
             }
@@ -60,26 +53,23 @@ public class TradeRecordListAdapter extends RecyclerView.Adapter<RecyclerView.Vi
 
     @Override
     public int getItemCount() {
-        return itemTradeRecords.size();
+        return itemTradeAccounts.size();
     }
 
     @Override
     public int getItemViewType(int position) {
-        return itemTradeRecords.get(position) != null ? VIEW_ITEM : VIEW_LOADING;
+        return itemTradeAccounts.get(position) != null ? VIEW_ITEM : VIEW_LOADING;
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {
-        public TextView totalRecordTime, totalMoneyNum, payState, machineNameAddr, tradeNo;
-        public ImageView payIcon;
+        private TextView totalAccountTime, accountMoney, accountState, timePeriod;
 
         public ViewHolder(View itemView) {
             super(itemView);
-            totalRecordTime = (TextView) itemView.findViewById(R.id.totalRecordTime);
-            totalMoneyNum = (TextView) itemView.findViewById(R.id.totalMoneyNum);
-            payIcon = (ImageView) itemView.findViewById(R.id.payIcon);
-            payState = (TextView) itemView.findViewById(R.id.payState);
-            machineNameAddr = (TextView) itemView.findViewById(R.id.machineNameAddr);
-            tradeNo = (TextView) itemView.findViewById(R.id.tradeNo);
+            totalAccountTime = (TextView) itemView.findViewById(R.id.totalAccountTime);
+            accountMoney = (TextView) itemView.findViewById(R.id.accountMoney);
+            accountState = (TextView) itemView.findViewById(R.id.accountState);
+            timePeriod = (TextView) itemView.findViewById(R.id.timePeriod);
         }
     }
 

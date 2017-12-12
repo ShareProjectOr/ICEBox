@@ -37,6 +37,7 @@
                 android:background="@drawable/shape_trade_time">
 
                 <TextView
+                    android:id="@+id/accountTypeText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_centerInParent="true"

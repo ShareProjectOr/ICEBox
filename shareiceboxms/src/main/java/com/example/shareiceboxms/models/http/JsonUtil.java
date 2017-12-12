@@ -1,6 +1,7 @@
 package com.example.shareiceboxms.models.http;
 
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 import java.util.List;
 import java.util.Map;
@@ -19,6 +20,13 @@ public class JsonUtil {
         Gson gson = new Gson();
         itemObject = (T) gson.fromJson(json, itemObject.getClass());
         return itemObject;
+    }
+
+    public static <T> List<T> jsonToJaveBeanList(String json, T itemObject) {
+        Gson gson = new Gson();
+        List<T> itemObjects = gson.fromJson(json, new TypeToken<List<T>>() {
+        }.getType());
+        return itemObjects;
     }
 
     /*

@@ -18,4 +18,5 @@ public interface Constants {
     String[] TradeTotalTitlesItem = {"已扣款", "代扣款", "已支付", "待支付"};
     String[] EXCEPTION_LV_TITLE = {"全部", "一般严重", "特别严重"};
     int[] TradeRecordPayICON = {R.mipmap.icon_person, R.mipmap.icon_person, R.mipmap.icon_person};
+    String[] TradeRecordDetailTitle = {"售出商品(0)", "已退款商品(0)"};
 }

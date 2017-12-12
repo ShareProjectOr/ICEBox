@@ -17,6 +17,9 @@ import com.example.shareiceboxms.R;
 import com.example.shareiceboxms.models.adapters.TradeRecordListAdapter;
 import com.example.shareiceboxms.models.beans.ItemTradeRecord;
 import com.example.shareiceboxms.models.factories.FragmentFactory;
+import com.example.shareiceboxms.models.factories.MyViewFactory;
+import com.example.shareiceboxms.models.helpers.LoadMoreHelper;
+import com.example.shareiceboxms.models.http.JsonUtil;
 import com.example.shareiceboxms.views.fragments.BaseFragment;
 
 import java.util.ArrayList;
@@ -27,7 +30,7 @@ import java.util.List;
  * 交易记录
  */
 
-public class TradeRecordsFragment extends BaseFragment {
+public class TradeRecordsFragment extends BaseFragment implements LoadMoreHelper.LoadMoreListener {
     private View containerView;
     private ImageView tradeSearch, tradeTypeIcon;
     private TextView tradeNo, tradeTypeText;
@@ -35,14 +38,9 @@ public class TradeRecordsFragment extends BaseFragment {
     private android.support.v4.widget.SwipeRefreshLayout recordRefresh;
     private android.support.v7.widget.RecyclerView tradeRecordList;
     private boolean isTypeClicked = false;
-    private boolean isLoading = false;
-    private int totalItemCount;
-    private int lastVisibleItemPosition;
-    //当前滚动的position下面最小的items的临界值 
-    private int visibleThreshold = 5;
     private TradeRecordListAdapter adapter;
     private List<ItemTradeRecord> itemTradeRecords;
-    private LoadMoreListener loadMoreListener;
+    private LoadMoreHelper loadMoreHelper;
 
     @Nullable
     @Override
@@ -64,7 +62,7 @@ public class TradeRecordsFragment extends BaseFragment {
         tradeTypeText = (TextView) containerView.findViewById(R.id.tradeTypeText);
         tradeTypeIcon = (ImageView) containerView.findViewById(R.id.tradeTypeIcon);
         recordRefresh = (android.support.v4.widget.SwipeRefreshLayout) containerView.findViewById(R.id.recordRefresh);
-        tradeRecordList = (android.support.v7.widget.RecyclerView) containerView.findViewById(R.id.tradeRecordList);
+//        tradeRecordList = (android.support.v7.widget.RecyclerView) containerView.findViewById(R.id.tradeRecordList);
         tradeType.setOnClickListener(this);
         recordRefresh.setOnRefreshListener(this);
         recordRefresh.setColorSchemeColors(ContextCompat.getColor(getContext(), R.color.blue));
@@ -87,39 +85,14 @@ public class TradeRecordsFragment extends BaseFragment {
         itemTradeRecords.add(null);
 
 
-        loadMoreListener = new LoadMoreListener() {
-            @Override
-            public void loadMore() {
-                //拉取数据
-//                itemTradeRecords.remove(itemTradeRecords.size() - 1);
-                Toast.makeText(getContext(), "111'", Toast.LENGTH_SHORT).show();
-                isLoading = false;
-                adapter.notifyDataSetChanged();
-            }
-        };
-        tradeRecordList.setHasFixedSize(true);
-        LinearLayoutManager mLayoutManager = new LinearLayoutManager(getContext());
-        tradeRecordList.setLayoutManager(mLayoutManager);
-        adapter = new TradeRecordListAdapter(getContext(), itemTradeRecords);
-        tradeRecordList.setAdapter(adapter);
-        tradeRecordList.addOnScrollListener(new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
-                super.onScrollStateChanged(recyclerView, newState);
-            }
-
-            @Override
-            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                super.onScrolled(recyclerView, dx, dy);
-                LinearLayoutManager linearLayoutManager = (LinearLayoutManager) recyclerView.getLayoutManager();
-                totalItemCount = linearLayoutManager.getItemCount();
-                lastVisibleItemPosition = linearLayoutManager.findLastVisibleItemPosition();
-                if (!isLoading && totalItemCount <= lastVisibleItemPosition + visibleThreshold) {
-                    loadMoreListener.loadMore();
-                    isLoading = true;
-                }
-            }
-        });
+        RecyclerView tradeRecordList = (android.support.v7.widget.RecyclerView) containerView.findViewById(R.id.tradeRecordList);
+        TradeRecordListAdapter adapter = new TradeRecordListAdapter(getContext(), itemTradeRecords);
+        new MyViewFactory(getContext()).BuildRecyclerViewRule(tradeRecordList,
+                new LinearLayoutManager(getContext()), null, true).setAdapter(adapter);
+        loadMoreHelper = new LoadMoreHelper().setContext(getContext()).setAdapter(adapter)
+                .setLoadMoreListenner(this)
+                .bindScrollListener(tradeRecordList)
+                .setVisibleThreshold(1);
 
         //联网刷新数据
 //        String dataJson = OkHttpUtil.post(url, params);
@@ -147,11 +120,35 @@ public class TradeRecordsFragment extends BaseFragment {
 
     @Override
     public void onRefresh() {
-        adapter.notifyDataSetChanged();
+        //拉取数据
+        //联网刷新数据
+//        String dataJson = OkHttpUtil.post(url, params);
+//        itemTradeTotal = JsonUtil.jsonToJavaBean(dataJson, itemTradeTotal);
+//        adapter.notifyDataSetChanged();
+        itemTradeRecords.clear();
+
+        loadMoreHelper.getAdapter().notifyDataSetChanged();
         recordRefresh.setRefreshing(false);
     }
 
-    public interface LoadMoreListener {
-        void loadMore();
+    @Override
+    public void loadMore(RecyclerView.Adapter<RecyclerView.ViewHolder> adapter, RecyclerView recyclerView) {
+        //拉取数据
+        if (itemTradeRecords.size() > 0) {
+            itemTradeRecords.remove(itemTradeRecords.size() - 1);
+        }
+        itemTradeRecords.add(new ItemTradeRecord());
+        itemTradeRecords.add(new ItemTradeRecord());
+        itemTradeRecords.add(new ItemTradeRecord());
+        itemTradeRecords.add(new ItemTradeRecord());
+        itemTradeRecords.add(new ItemTradeRecord());
+        itemTradeRecords.add(new ItemTradeRecord());
+        itemTradeRecords.add(new ItemTradeRecord());
+        itemTradeRecords.add(new ItemTradeRecord());
+        Toast.makeText(getContext(), "111'", Toast.LENGTH_SHORT).show();
+        if (loadMoreHelper != null) {
+            loadMoreHelper.setLoading(false);
+        }
+        adapter.notifyDataSetChanged();
     }
 }

@@ -16,7 +16,7 @@ import com.example.shareiceboxms.R;
  * Created by WH on 2017/11/27.
  */
 
-public class BaseFragment extends Fragment implements View.OnClickListener,SwipeRefreshLayout.OnRefreshListener {
+public class BaseFragment extends Fragment implements View.OnClickListener, SwipeRefreshLayout.OnRefreshListener{
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
