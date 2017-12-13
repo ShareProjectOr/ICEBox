@@ -10,6 +10,7 @@
 
     <string name="RFID_share_icebox">RFID共享冰箱</string>
     <string name="manager_system">后台管理系统</string>
+    <string name="sell_price_rule">活动价大于"0"按活动价进行售卖，如\n活动价为"0"按商品的默认单价售卖</string>
 
     <string-array name="spinnerText">
         <item name="all">全部</item>

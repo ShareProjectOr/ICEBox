@@ -8,10 +8,16 @@
     <include layout="@layout/fragment_exception_barlayout" />
 
     <!--  <include layout="@layout/time_select"/>-->
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/exception_list"
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/refreshLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior"></android.support.v7.widget.RecyclerView>
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/exception_list"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"></android.support.v7.widget.RecyclerView>
+    </android.support.v4.widget.SwipeRefreshLayout>
 </android.support.design.widget.CoordinatorLayout>

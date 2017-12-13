@@ -9,6 +9,8 @@ import com.example.shareiceboxms.views.fragments.BaseFragment;
 import com.example.shareiceboxms.views.fragments.machine.MachineFragment;
 import com.example.shareiceboxms.views.fragments.exception.ExceptionFragment;
 import com.example.shareiceboxms.views.fragments.product.ProductFragment;
+import com.example.shareiceboxms.views.fragments.product.ProductTypeListFragment;
+import com.example.shareiceboxms.views.fragments.product.UpLoadGoodsRecordFragment;
 import com.example.shareiceboxms.views.fragments.trade.TradeAccountFragment;
 import com.example.shareiceboxms.views.fragments.trade.TradeFragment;
 import com.example.shareiceboxms.views.fragments.trade.TradeRecordsFragment;
@@ -46,6 +48,12 @@ public class FragmentFactory {
         mFragments.add(new TradeTotalFragment());
         mFragments.add(new TradeRecordsFragment());
         mFragments.add(new TradeAccountFragment());
+        return mFragments;
+    }
+    public List<BaseFragment> getProductChildFragments() {
+        List<BaseFragment> mFragments = new ArrayList<>();
+        mFragments.add(new ProductTypeListFragment());
+        mFragments.add(new UpLoadGoodsRecordFragment());
         return mFragments;
     }
 

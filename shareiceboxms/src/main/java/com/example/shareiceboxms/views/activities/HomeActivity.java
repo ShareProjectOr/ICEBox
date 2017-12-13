@@ -1,6 +1,8 @@
 package com.example.shareiceboxms.views.activities;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.FragmentManager;
@@ -14,13 +16,17 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.TextView;
 
 import com.example.shareiceboxms.R;
 import com.example.shareiceboxms.models.contants.Constants;
 import com.example.shareiceboxms.models.helpers.MyDialog;
 import com.example.shareiceboxms.models.helpers.NotifySnackbar;
+import com.example.shareiceboxms.views.fragments.AboutFragment;
 import com.example.shareiceboxms.views.fragments.BaseFragment;
+import com.example.shareiceboxms.views.fragments.ChangePasswordFragment;
+import com.example.shareiceboxms.views.fragments.PerSonFragment;
 import com.example.shareiceboxms.views.fragments.exception.ExceptionFragment;
 import com.example.shareiceboxms.views.fragments.machine.MachineFragment;
 import com.example.shareiceboxms.views.fragments.product.ProductFragment;
@@ -28,8 +34,8 @@ import com.example.shareiceboxms.views.fragments.trade.TradeFragment;
 
 import org.zackratos.ultimatebar.UltimateBar;
 
-public class HomeActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+public class HomeActivity extends BaseActivity
+        implements NavigationView.OnNavigationItemSelectedListener, TabLayout.OnTabSelectedListener {
     DrawerLayout drawer;
     NavigationView navigationView;
     private TabLayout tabLayout;
@@ -37,6 +43,8 @@ public class HomeActivity extends AppCompatActivity
     BaseFragment curFragment = null;
     String curFragmentTag;
     private OnBackPressListener mOnBackPressListener;
+    private int currentHomePageNum = 0;
+    private boolean showHomepage = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,6 +54,11 @@ public class HomeActivity extends AppCompatActivity
         initViews();
 
         initData();
+        initListener();
+    }
+
+    private void initListener() {
+        tabLayout.addOnTabSelectedListener(this);
     }
 
     private void initData() {
@@ -60,46 +73,7 @@ public class HomeActivity extends AppCompatActivity
         switchFragment();
         showNotify();
 
-        tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
-            @Override
-            public void onTabSelected(TabLayout.Tab tab) {
-                switch (tab.getPosition()) {
-                    case 0:
-                        if (!(curFragment instanceof TradeFragment)) {
-                            curFragment = new TradeFragment();
-                        }
 
-                        break;
-                    case 1:
-                        if (!(curFragment instanceof MachineFragment)) {
-                            curFragment = new MachineFragment();
-                        }
-                        break;
-                    case 2:
-                        if (!(curFragment instanceof ExceptionFragment)) {
-                            curFragment = new ExceptionFragment();
-                        }
-                        break;
-                    case 3:
-                        if (!(curFragment instanceof ProductFragment)) {
-                            curFragment = new ProductFragment();
-                        }
-                        break;
-                    default:
-                        break;
-                }
-                switchFragment();
-            }
-
-            @Override
-            public void onTabUnselected(TabLayout.Tab tab) {
-
-            }
-
-            @Override
-            public void onTabReselected(TabLayout.Tab tab) {
-            }
-        });
     }
 
     private void initViews() {
@@ -148,7 +122,14 @@ public class HomeActivity extends AppCompatActivity
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
-            mOnBackPressListener.OnBackDown();
+            if (showHomepage) {
+                mOnBackPressListener.OnBackDown();
+            } else {
+                getCurFragment();
+                switchFragment();
+                tabLayout.setVisibility(View.VISIBLE);
+            }
+
 //            super.onBackPressed();
         }
     }
@@ -173,20 +154,53 @@ public class HomeActivity extends AppCompatActivity
 
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
-    public boolean onNavigationItemSelected(MenuItem item) {
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         int id = item.getItemId();
+        switch (item.getItemId()) {
+            case R.id.icon_home:
+                if (!showHomepage) {
+                    getCurFragment();
+                    showHomepage = true;
+                    tabLayout.setVisibility(View.VISIBLE);
+                    switchFragment();
+                }
 
-        if (id == R.id.icon_home) {
-        } else if (id == R.id.icon_person) {
+                break;
+            case R.id.icon_person:
+                if (!(curFragment instanceof PerSonFragment)) {
+                    curFragment = new PerSonFragment();
+                    showHomepage = false;
+                    tabLayout.setVisibility(View.GONE);
+                    switchFragment();
+                }
 
-        } else if (id == R.id.icon_change_pass) {
-
-        } else if (id == R.id.icon_about) {
-
-        } else if (id == R.id.icon_update) {
-
-        } else if (id == R.id.icon_logout) {
-            MyDialog.getLogoutDialog(this).show();
+                break;
+            case R.id.icon_change_pass:
+                if (!(curFragment instanceof ChangePasswordFragment)) {
+                    curFragment = new ChangePasswordFragment();
+                    showHomepage = false;
+                    tabLayout.setVisibility(View.GONE);
+                    switchFragment();
+                }
+                break;
+            case R.id.icon_about:
+                if (!(curFragment instanceof AboutFragment)) {
+                    curFragment = new AboutFragment();
+                    showHomepage = false;
+                    tabLayout.setVisibility(View.GONE);
+                    switchFragment();
+                }
+                break;
+            case R.id.icon_update:
+             /*   curFragment = new TradeFragment();
+                tabLayout.setVisibility(View.GONE);
+                showHomepage = false;*/
+                break;
+            case R.id.icon_logout:
+              /*  curFragment = new TradeFragment();
+                tabLayout.setVisibility(View.GONE);
+                showHomepage = false;*/
+                break;
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -194,6 +208,23 @@ public class HomeActivity extends AppCompatActivity
         return true;
     }
 
+    private void getCurFragment() {
+        switch (currentHomePageNum) {
+            case 0:
+                curFragment = new TradeFragment();
+                break;
+            case 1:
+                curFragment = new MachineFragment();
+                break;
+            case 2:
+                curFragment = new ExceptionFragment();
+                break;
+            case 3:
+                curFragment = new ProductFragment();
+                break;
+
+        }
+    }
 
     /*
 * 设置全透明状态栏
@@ -228,6 +259,19 @@ public class HomeActivity extends AppCompatActivity
         drawer.openDrawer(Gravity.START);
     }
 
+    public void jumpActivity(Class<?> activitycalss, Bundle intentData) {
+        Log.e("HomeActivity", "扫码");
+        Intent intent = new Intent();
+        if (activitycalss != null) {
+            intent.setClass(getApplication(), activitycalss);
+            if (intentData != null) {
+                intent.putExtra("intentdata", intentData);
+            }
+            startActivity(intent);
+        }
+
+    }
+
     /*
     * 添加通知
     * */
@@ -241,6 +285,49 @@ public class HomeActivity extends AppCompatActivity
 
     public void showNotify() {
         NotifySnackbar.showNotify();
+    }
+
+    @Override
+    public void onTabSelected(TabLayout.Tab tab) {
+        currentHomePageNum = tab.getPosition();
+        switch (tab.getPosition()) {
+            case 0:
+                if (!(curFragment instanceof TradeFragment)) {
+                    curFragment = new TradeFragment();
+
+                }
+
+                break;
+            case 1:
+                if (!(curFragment instanceof MachineFragment)) {
+                    curFragment = new MachineFragment();
+                }
+                break;
+            case 2:
+                if (!(curFragment instanceof ExceptionFragment)) {
+                    curFragment = new ExceptionFragment();
+                }
+                break;
+            case 3:
+                if (!(curFragment instanceof ProductFragment)) {
+                    curFragment = new ProductFragment();
+                }
+                break;
+            default:
+                break;
+        }
+        switchFragment();
+
+    }
+
+    @Override
+    public void onTabUnselected(TabLayout.Tab tab) {
+
+    }
+
+    @Override
+    public void onTabReselected(TabLayout.Tab tab) {
+
     }
 
     public interface OnBackPressListener {

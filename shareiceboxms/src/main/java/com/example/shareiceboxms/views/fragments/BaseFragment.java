@@ -9,14 +9,17 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.DatePicker;
 
 import com.example.shareiceboxms.R;
+import com.example.shareiceboxms.models.helpers.DoubleDatePickerDialog;
+import com.example.shareiceboxms.views.activities.HomeActivity;
 
 /**
  * Created by WH on 2017/11/27.
  */
 
-public class BaseFragment extends Fragment implements View.OnClickListener, SwipeRefreshLayout.OnRefreshListener{
+public class BaseFragment extends Fragment implements View.OnClickListener, SwipeRefreshLayout.OnRefreshListener, DoubleDatePickerDialog.OnDateSetListener, HomeActivity.OnBackPressListener{
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -59,6 +62,16 @@ public class BaseFragment extends Fragment implements View.OnClickListener, Swip
 
     @Override
     public void onRefresh() {
+
+    }
+
+    @Override
+    public void onDateSet(DatePicker startDatePicker, int startYear, int startMonthOfYear, int startDayOfMonth, DatePicker endDatePicker, int endYear, int endMonthOfYear, int endDayOfMonth) {
+
+    }
+
+    @Override
+    public void OnBackDown() {
 
     }
 }

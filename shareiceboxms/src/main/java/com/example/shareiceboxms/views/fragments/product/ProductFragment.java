@@ -2,6 +2,7 @@ package com.example.shareiceboxms.views.fragments.product;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
@@ -30,6 +31,8 @@ public class ProductFragment extends BaseFragment implements HomeActivity.OnBack
     private FrameLayout tradeDetailLayout;
     ViewPagerAdapter adapter;
     BaseFragment curFrameFragment;
+    //    private CurrentPageListener mCurrentPageListener;
+    private AppBarLayout titleBar;
 
     @Nullable
     @Override
@@ -43,12 +46,12 @@ public class ProductFragment extends BaseFragment implements HomeActivity.OnBack
     }
 
     private void initViews() {
-
+        titleBar = (AppBarLayout) containerView.findViewById(R.id.appBarLayout);
         tabLayout = (TabLayout) containerView.findViewById(R.id.tablayout);
         viewPager = (ViewPager) containerView.findViewById(R.id.viewpager);
         drawerIcon = (ImageView) containerView.findViewById(R.id.drawerIcon);
         tradeDetailLayout = (FrameLayout) containerView.findViewById(R.id.detailFrameLayout);
-        adapter = new ViewPagerAdapter(getChildFragmentManager(), FragmentFactory.getInstance().getTradeChildFragments(), Constants.TradeTabTitles);
+        adapter = new ViewPagerAdapter(getChildFragmentManager(), FragmentFactory.getInstance().getProductChildFragments(), Constants.PRODUCT_VIEWPAGER_TITLE);
         viewPager.setAdapter(adapter);
         tabLayout.setupWithViewPager(viewPager);
     }
@@ -56,17 +59,22 @@ public class ProductFragment extends BaseFragment implements HomeActivity.OnBack
     private void initDatas() {
         homeActivity = (HomeActivity) getActivity();
         homeActivity.setOnBackPressListener(this);
-        drawerIcon.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        drawerIcon.setOnClickListener(this);
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.drawerIcon:
                 homeActivity.clickIconToOpenDrawer();
-            }
-        });
+                break;
+        }
     }
 
     public void addFrameLayout(BaseFragment fragment) {
         curFrameFragment = fragment;
         super.addFrameLayout(fragment, R.id.detailFrameLayout);
+        titleBar.setVisibility(View.GONE);
         tradeDetailLayout.setVisibility(View.VISIBLE);
     }
 
@@ -75,10 +83,24 @@ public class ProductFragment extends BaseFragment implements HomeActivity.OnBack
         if (curFrameFragment != null && curFrameFragment.isAdded()) {
             removeFrame(curFrameFragment);
             tradeDetailLayout.setVisibility(View.GONE);
+            titleBar.setVisibility(View.VISIBLE);
             curFrameFragment = null;
         } else {
             homeActivity.finishActivity();
+            //  mCurrentPageListener.ListPage();
         }
 
     }
+
+ /*   public void setCurrentPageListener(CurrentPageListener mCurrentPageListener) {
+        if (mCurrentPageListener != null) {
+            this.mCurrentPageListener = mCurrentPageListener;
+        }
+    }
+
+    public interface CurrentPageListener {
+        void ListPage();
+
+        void DetailsPage();
+    }*/
 }
