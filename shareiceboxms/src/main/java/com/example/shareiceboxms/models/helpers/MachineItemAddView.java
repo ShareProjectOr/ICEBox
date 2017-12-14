@@ -92,7 +92,7 @@ public class MachineItemAddView {
     }
 
     class StateControlHolder {
-        public TextView runState, netState, doorState, lockState, lightState, fanState, refrigeratorState, tempState, appVersion, driverVersion;
+        public TextView runState, netState, doorState, lockState, lightState, fanState, refrigeratorState, tempState, appVersion, driverVersion,updateTime;
 
         public StateControlHolder(View itemView) {
             runState = (TextView) itemView.findViewById(R.id.runState);
@@ -105,6 +105,7 @@ public class MachineItemAddView {
             tempState = (TextView) itemView.findViewById(R.id.tempState);
             appVersion = (TextView) itemView.findViewById(R.id.AppVersion);
             driverVersion = (TextView) itemView.findViewById(R.id.driverVersion);
+            updateTime = (TextView) itemView.findViewById(R.id.updateTime);
 
         }
     }

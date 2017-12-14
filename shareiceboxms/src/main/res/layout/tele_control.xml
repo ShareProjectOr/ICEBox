@@ -67,7 +67,8 @@
                             android:layout_width="match_parent"
                             android:layout_height="0dp"
                             android:layout_weight="1"
-                            android:src="@mipmap/close" />
+                            android:padding="5dp"
+                            android:src="@mipmap/up_icon" />
 
                         <View
                             android:layout_width="match_parent"
@@ -79,7 +80,8 @@
                             android:layout_width="match_parent"
                             android:layout_height="0dp"
                             android:layout_weight="1"
-                            android:src="@mipmap/close" />
+                            android:padding="5dp"
+                            android:src="@mipmap/down_iocn" />
                     </LinearLayout>
 
                     <View
@@ -157,7 +159,8 @@
                             android:layout_width="match_parent"
                             android:layout_height="0dp"
                             android:layout_weight="1"
-                            android:src="@mipmap/close" />
+                            android:padding="5dp"
+                            android:src="@mipmap/up_icon" />
 
                         <View
                             android:layout_width="match_parent"
@@ -169,7 +172,8 @@
                             android:layout_width="match_parent"
                             android:layout_height="0dp"
                             android:layout_weight="1"
-                            android:src="@mipmap/close" />
+                            android:padding="5dp"
+                            android:src="@mipmap/down_iocn" />
                     </LinearLayout>
 
                     <View
@@ -228,7 +232,8 @@
                 android:layout_alignParentRight="true"
                 android:layout_marginRight="10dp"
                 android:gravity="center_vertical"
-                android:src="@mipmap/head" />
+                android:padding="3dp"
+                android:src="@mipmap/restart" />
         </RelativeLayout>
 
         <View
@@ -257,7 +262,8 @@
                 android:layout_alignParentRight="true"
                 android:layout_marginRight="10dp"
                 android:gravity="center_vertical"
-                android:src="@mipmap/head" />
+                android:padding="3dp"
+                android:src="@mipmap/off" />
         </RelativeLayout>
     </LinearLayout>
 
@@ -282,7 +288,8 @@
             android:layout_alignParentRight="true"
             android:layout_marginRight="10dp"
             android:gravity="center_vertical"
-            android:src="@mipmap/head" />
+            android:padding="3dp"
+            android:src="@mipmap/right" />
     </RelativeLayout>
 
     <RelativeLayout
@@ -329,7 +336,9 @@
                 android:textColor="@color/black" />
         </LinearLayout>
 
-
     </RelativeLayout>
 
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="30dp" />
 </LinearLayout>
