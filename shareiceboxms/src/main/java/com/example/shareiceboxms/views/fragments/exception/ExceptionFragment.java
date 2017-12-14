@@ -9,6 +9,7 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -133,7 +134,7 @@ public class ExceptionFragment extends BaseFragment implements CompoundButton.On
 
     @Override
     public void OnBackDown() {
-
+        Log.e("ExceptionFragment", "Onback");
         homeActivity.finishActivity();
 
 

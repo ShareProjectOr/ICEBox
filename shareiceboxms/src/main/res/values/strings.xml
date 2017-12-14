@@ -11,11 +11,15 @@
     <string name="RFID_share_icebox">RFID共享冰箱</string>
     <string name="manager_system">后台管理系统</string>
     <string name="sell_price_rule">活动价大于"0"按活动价进行售卖，如\n活动价为"0"按商品的默认单价售卖</string>
-
+    <string name="opencameraerror">打开相机异常</string>
+    <string name="aplaycamerapermission_msg">请检查应用是否具有开启相机的权限。 如果应用提示申请相机权限，请设置允许！然后重试。</string>
     <string-array name="spinnerText">
         <item name="all">全部</item>
         <item name="paied">已支付</item>
         <item name="payNot">未支付</item>
         <item name="refund">已退款</item>
     </string-array>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

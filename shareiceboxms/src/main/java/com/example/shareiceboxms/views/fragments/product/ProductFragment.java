@@ -27,6 +27,7 @@ public class ProductFragment extends BaseFragment implements HomeActivity.OnBack
     HomeActivity homeActivity;
     private TabLayout tabLayout;
     private ImageView drawerIcon;
+    private ImageView mSaoma;
     private ViewPager viewPager;
     private FrameLayout tradeDetailLayout;
     ViewPagerAdapter adapter;
@@ -50,6 +51,7 @@ public class ProductFragment extends BaseFragment implements HomeActivity.OnBack
         tabLayout = (TabLayout) containerView.findViewById(R.id.tablayout);
         viewPager = (ViewPager) containerView.findViewById(R.id.viewpager);
         drawerIcon = (ImageView) containerView.findViewById(R.id.drawerIcon);
+        mSaoma = (ImageView) containerView.findViewById(R.id.saoma);
         tradeDetailLayout = (FrameLayout) containerView.findViewById(R.id.detailFrameLayout);
         adapter = new ViewPagerAdapter(getChildFragmentManager(), FragmentFactory.getInstance().getProductChildFragments(), Constants.PRODUCT_VIEWPAGER_TITLE);
         viewPager.setAdapter(adapter);
@@ -60,6 +62,7 @@ public class ProductFragment extends BaseFragment implements HomeActivity.OnBack
         homeActivity = (HomeActivity) getActivity();
         homeActivity.setOnBackPressListener(this);
         drawerIcon.setOnClickListener(this);
+        mSaoma.setOnClickListener(this);
     }
 
     @Override
@@ -68,10 +71,14 @@ public class ProductFragment extends BaseFragment implements HomeActivity.OnBack
             case R.id.drawerIcon:
                 homeActivity.clickIconToOpenDrawer();
                 break;
+            case R.id.saoma:
+                homeActivity.openSaoma();
+                break;
         }
     }
 
     public void addFrameLayout(BaseFragment fragment) {
+
         curFrameFragment = fragment;
         super.addFrameLayout(fragment, R.id.detailFrameLayout);
         titleBar.setVisibility(View.GONE);

@@ -22,7 +22,18 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_weight="1"
+                android:gravity="left"
+                android:text="品类详情"
+                android:textColor="@color/white"
+                android:textSize="15sp" />
 
             <TextView
                 android:layout_width="0dp"
@@ -33,6 +44,7 @@
                 android:text="扫码上货"
                 android:textColor="@color/white"
                 android:textSize="15sp" />
+
 
             <ImageView
                 android:id="@+id/saoma"

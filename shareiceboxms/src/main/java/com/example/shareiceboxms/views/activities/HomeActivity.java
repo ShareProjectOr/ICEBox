@@ -1,10 +1,13 @@
 package com.example.shareiceboxms.views.activities;
 
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
@@ -18,6 +21,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.shareiceboxms.R;
 import com.example.shareiceboxms.models.contants.Constants;
@@ -40,11 +44,13 @@ public class HomeActivity extends BaseActivity
     NavigationView navigationView;
     private TabLayout tabLayout;
     private TextView notifyLayout;
-    BaseFragment curFragment = null;
+    public BaseFragment curFragment = null;
     String curFragmentTag;
     private OnBackPressListener mOnBackPressListener;
     private int currentHomePageNum = 0;
     private boolean showHomepage = true;
+    private final int SCANNIN_GREQUEST_CODE = 1;
+    private static final int CAMERA_OK = 517;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -99,7 +105,6 @@ public class HomeActivity extends BaseActivity
         navigationView.setCheckedItem(R.id.icon_home);
         tabLayout = (TabLayout) findViewById(R.id.tablayout);
         tabLayout.setTabMode(TabLayout.MODE_FIXED);
-
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
 
@@ -161,7 +166,6 @@ public class HomeActivity extends BaseActivity
                 if (!showHomepage) {
                     getCurFragment();
                     showHomepage = true;
-                    tabLayout.setVisibility(View.VISIBLE);
                     switchFragment();
                 }
 
@@ -170,7 +174,6 @@ public class HomeActivity extends BaseActivity
                 if (!(curFragment instanceof PerSonFragment)) {
                     curFragment = new PerSonFragment();
                     showHomepage = false;
-                    tabLayout.setVisibility(View.GONE);
                     switchFragment();
                 }
 
@@ -179,7 +182,6 @@ public class HomeActivity extends BaseActivity
                 if (!(curFragment instanceof ChangePasswordFragment)) {
                     curFragment = new ChangePasswordFragment();
                     showHomepage = false;
-                    tabLayout.setVisibility(View.GONE);
                     switchFragment();
                 }
                 break;
@@ -187,7 +189,6 @@ public class HomeActivity extends BaseActivity
                 if (!(curFragment instanceof AboutFragment)) {
                     curFragment = new AboutFragment();
                     showHomepage = false;
-                    tabLayout.setVisibility(View.GONE);
                     switchFragment();
                 }
                 break;
@@ -208,7 +209,7 @@ public class HomeActivity extends BaseActivity
         return true;
     }
 
-    private void getCurFragment() {
+    public void getCurFragment() {
         switch (currentHomePageNum) {
             case 0:
                 curFragment = new TradeFragment();
@@ -237,7 +238,12 @@ public class HomeActivity extends BaseActivity
     /*
     * 切换fragment
     * */
-    private void switchFragment() {
+    public void switchFragment() {
+        if (showHomepage) {
+            tabLayout.setVisibility(View.VISIBLE);
+        } else {
+            tabLayout.setVisibility(View.GONE);
+        }
         FragmentManager fm = getSupportFragmentManager();
         FragmentTransaction ft = fm.beginTransaction();
         ft.replace(R.id.home_tab_frame, curFragment);
@@ -257,6 +263,70 @@ public class HomeActivity extends BaseActivity
 
     public void clickIconToOpenDrawer() {
         drawer.openDrawer(Gravity.START);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        switch (requestCode) {
+            case SCANNIN_GREQUEST_CODE:
+                if (resultCode == RESULT_OK) {
+                    String result = data.getStringExtra("QR_CODE");
+                    // TODO 获取结果，做逻辑操作
+                    Toast.makeText(getApplication(), result, Toast.LENGTH_LONG).show();
+                    //  mMachineCode.setText(result);
+                    //    tvResult.setText(result);
+                } else {
+                    Toast.makeText(getApplication(), "无法获取扫描结果", Toast.LENGTH_LONG).show();
+                    //  new AlertView("提示", "无法获取扫描结果", null, new String[]{"确定"}, null, getActivity(), AlertView.Style.Alert, null).show();
+                }
+                break;
+
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        switch (requestCode) {
+            case CAMERA_OK:
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    //这里已经获取到了摄像头的权限，想干嘛干嘛了可以
+                    Intent intent = new Intent();
+                    intent.setClass(getApplication(), CaptureActivity.class);
+                    startActivityForResult(intent, SCANNIN_GREQUEST_CODE);
+
+                } else {
+                    //这里是拒绝给APP摄像头权限，给个提示什么的说明一下都可以。
+                    Toast.makeText(getApplication(), "您拒绝了系统调用摄像头权限,请手动打开相机权限", Toast.LENGTH_SHORT).show();
+                }
+                break;
+            default:
+                break;
+        }
+    }
+
+    public void openSaoma() {
+        if (Build.VERSION.SDK_INT > 22) {
+            if (ContextCompat.checkSelfPermission(this,
+                    android.Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+                //先判断有没有权限 ，没有就在这里进行权限的申请
+                ActivityCompat.requestPermissions(this,
+                        new String[]{android.Manifest.permission.CAMERA}, CAMERA_OK);
+                //当fragment申请权限是fragment本身申请权限,不需要ActivityCompat.requestPermissions.不然无法执行授权回调
+                //当Activity申请权限是Activity本身申请权限,需要ActivityCompat.requestPermissions.来执行授权回调
+            } else {
+                //说明已经获取到摄像头权限了 想干嘛干嘛
+                Intent intent = new Intent();
+                intent.setClass(getApplication(), CaptureActivity.class);
+                startActivityForResult(intent, SCANNIN_GREQUEST_CODE);
+            }
+        } else {
+//这个说明系统版本在6.0之下，不需要动态获取权限。
+            Intent intent = new Intent();
+            intent.setClass(getApplication(), CaptureActivity.class);
+            startActivityForResult(intent, SCANNIN_GREQUEST_CODE);
+
+        }
     }
 
     public void jumpActivity(Class<?> activitycalss, Bundle intentData) {
