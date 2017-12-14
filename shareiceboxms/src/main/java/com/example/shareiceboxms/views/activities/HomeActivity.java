@@ -51,6 +51,7 @@ public class HomeActivity extends BaseActivity
     private boolean showHomepage = true;
     private final int SCANNIN_GREQUEST_CODE = 1;
     private static final int CAMERA_OK = 517;
+    private long lastBackClicked;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -253,7 +254,13 @@ public class HomeActivity extends BaseActivity
 
     public void finishActivity() {
         Log.d("---finishActivity---", "----");
-        super.onBackPressed();
+        if (System.currentTimeMillis() - lastBackClicked < 2000) {
+            super.onBackPressed();
+//            System.exit(0);
+        } else {
+            lastBackClicked = System.currentTimeMillis();
+            Toast.makeText(this, "在按一次退出程序", Toast.LENGTH_SHORT).show();
+        }
     }
 
     public void setOnBackPressListener(OnBackPressListener onBackPressListener) {
