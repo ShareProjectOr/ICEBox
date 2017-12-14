@@ -248,6 +248,7 @@ public class HomeActivity extends BaseActivity
         FragmentTransaction ft = fm.beginTransaction();
         ft.replace(R.id.home_tab_frame, curFragment);
         ft.commit();
+        BaseFragment.curFragment = curFragment;
     }
 
     public void finishActivity() {

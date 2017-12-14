@@ -54,7 +54,6 @@ public class TradeRecordListAdapter extends RecyclerView.Adapter<RecyclerView.Vi
                     if (tradeRecordsFragment != null) {
                         FragmentFactory.getInstance().getSavedBundle().putString("machineCode","1212121");
                         tradeRecordsFragment.addFrameFragment();
-                        Toast.makeText(context, itemTradeRecords.get(position).getStr(), Toast.LENGTH_SHORT).show();
                     }
                 }
             });

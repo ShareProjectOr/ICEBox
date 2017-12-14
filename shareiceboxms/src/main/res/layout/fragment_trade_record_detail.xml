@@ -1,69 +1,106 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white">
+    android:background="@color/white"
+    android:orientation="vertical">
+
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
+        android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <include layout="@layout/trade_record_detail_list_item" />
+        <include layout="@layout/tablayout_no" />
 
-        <include layout="@layout/trade_record_detail_list_item2" />
-
-        <android.support.design.widget.TabLayout
-            android:id="@+id/productTabLayout"
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:tabGravity="fill"
-            app:tabIndicatorColor="@color/blue"
-            app:tabIndicatorHeight="1dp"
-            app:tabSelectedTextColor="@color/blue"
-            app:tabTextColor="@color/gray" />
+            android:layout_height="match_parent">
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/edit_box_gray"
-            android:orientation="horizontal"
-            android:padding="10dp">
-
-            <CheckBox
-                android:id="@+id/allProductCB"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginRight="20dp"
-                android:buttonTint="@color/blue"
-                android:padding="5dp"
-                android:scaleX="0.8"
-                android:scaleY="0.8" />
-
-            <TextView
+            <LinearLayout
+                android:id="@+id/coorLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="品类名称"
-                android:textColor="@color/black"
-                android:textStyle="bold" />
+                android:layout_alignParentBottom="true"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:paddingBottom="20dp">
 
-            <TextView
+                <include layout="@layout/product_choose_coor" />
+            </LinearLayout>
+
+
+            <ScrollView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="售价"
-                android:textColor="@color/black"
-                android:textStyle="bold" />
-        </LinearLayout>
+                android:layout_above="@id/coorLayout"
+                android:orientation="vertical">
 
-        <com.example.shareiceboxms.models.widget.ListViewForScrollView
-            android:id="@+id/productList"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
+                    android:orientation="vertical">
 
+
+                    <include layout="@layout/trade_record_detail_list_item" />
+
+                    <include layout="@layout/trade_record_detail_list_item2" />
+
+                    <android.support.design.widget.TabLayout
+                        android:id="@+id/productTabLayout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:tabGravity="fill"
+                        app:tabIndicatorColor="@color/blue"
+                        app:tabIndicatorHeight="1dp"
+                        app:tabSelectedTextColor="@color/blue"
+                        app:tabTextColor="@color/gray" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="20dp"
+                        android:background="@color/edit_box_gray"
+                        android:orientation="horizontal"
+                        android:padding="10dp">
+
+                        <CheckBox
+                            android:id="@+id/allProductCB"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginRight="20dp"
+                            android:buttonTint="@color/blue"
+                            android:padding="5dp"
+                            android:scaleX="0.8"
+                            android:scaleY="0.8" />
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="品类名称"
+                            android:textColor="@color/black"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="售价"
+                            android:textColor="@color/black"
+                            android:textStyle="bold" />
+                    </LinearLayout>
+
+                    <com.example.shareiceboxms.models.widget.ListViewForScrollView
+                        android:id="@+id/productList"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" />
+
+                </LinearLayout>
+            </ScrollView>
+        </RelativeLayout>
     </LinearLayout>
-</ScrollView>
+</RelativeLayout>

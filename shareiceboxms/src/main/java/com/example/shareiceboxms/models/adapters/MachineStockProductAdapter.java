@@ -5,12 +5,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.CheckBox;
-import android.widget.ProgressBar;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.example.shareiceboxms.R;
 import com.example.shareiceboxms.models.beans.ItemProduct;
+import com.example.shareiceboxms.models.beans.ItemTradeRecord;
+import com.example.shareiceboxms.views.fragments.trade.TradeAccountDetailFragment;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,24 +20,23 @@ import java.util.List;
  * Created by WH on 2017/12/12.
  */
 
-public class ProductDetailAdapter extends BaseAdapter {
+public class MachineStockProductAdapter extends BaseAdapter {
     private Context context;
-    private List<ItemProduct> itemProductList;
+    private List<ItemProduct> itemProducts;
 
-    public ProductDetailAdapter(Context context) {
+    public MachineStockProductAdapter(Context context, List<ItemProduct> itemProducts) {
         this.context = context;
-        itemProductList = new ArrayList<>();
+        this.itemProducts = itemProducts;
     }
 
     @Override
     public int getCount() {
-//        return itemProductList == null ? 0 : itemProductList.size();
-        return 10;
+        return itemProducts.size();
     }
 
     @Override
     public Object getItem(int position) {
-        return itemProductList == null ? null : itemProductList.get(position);
+        return itemProducts == null ? null : itemProducts.get(position);
     }
 
     @Override
@@ -45,30 +45,24 @@ public class ProductDetailAdapter extends BaseAdapter {
     }
 
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
+    public View getView(final int position, View convertView, ViewGroup parent) {
         ViewHolder viewHolder;
         if (convertView == null) {
-            convertView = LayoutInflater.from(context).inflate(R.layout.trade_record_detail_item, null, false);
+            convertView = LayoutInflater.from(context).inflate(R.layout.machine_detail_prod_list_item, null, false);
             viewHolder = new ViewHolder();
-            viewHolder.checkbox = (CheckBox) convertView.findViewById(R.id.checkbox);
             viewHolder.productName = (TextView) convertView.findViewById(R.id.productName);
             viewHolder.productPrice = (TextView) convertView.findViewById(R.id.productPrice);
+            viewHolder.productSpecPrice = (TextView) convertView.findViewById(R.id.productSpecPrice);
+            viewHolder.timeLimit = (TextView) convertView.findViewById(R.id.timeLimit);
             convertView.setTag(viewHolder);
         } else {
             viewHolder = (ViewHolder) convertView.getTag();
         }
-
+        //添加值
         return convertView;
     }
 
-    public void setItemProductList(List<ItemProduct> itemProductList) {
-        this.itemProductList = itemProductList;
-        this.notifyDataSetChanged();
-    }
-
     class ViewHolder {
-        public CheckBox checkbox;
-        public TextView productName;
-        public TextView productPrice;
+        private TextView productName, productPrice, productSpecPrice, timeLimit;
     }
 }

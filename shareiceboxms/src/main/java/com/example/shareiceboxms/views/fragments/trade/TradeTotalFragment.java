@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 import android.widget.RadioGroup;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -19,10 +20,13 @@ import com.example.shareiceboxms.R;
 import com.example.shareiceboxms.models.adapters.TradeTotalListAdapter;
 import com.example.shareiceboxms.models.beans.ItemTradeTotal;
 import com.example.shareiceboxms.models.factories.FragmentFactory;
+import com.example.shareiceboxms.models.helpers.DoubleDatePickerDialog;
 import com.example.shareiceboxms.models.http.JsonUtil;
 import com.example.shareiceboxms.models.http.OkHttpUtil;
 import com.example.shareiceboxms.views.fragments.BaseFragment;
 import com.squareup.okhttp.OkHttpClient;
+
+import java.util.Calendar;
 
 /**
  * Created by WH on 2017/11/27.
@@ -34,9 +38,13 @@ public class TradeTotalFragment extends BaseFragment {
     private TextView timeSelector;
     private RadioGroup dateGroup;
     private RecyclerView tradeTotalList;
+    private RelativeLayout selectTime;
     private TradeTotalListAdapter adapter;
     private SwipeRefreshLayout refreshLayout;
     private ItemTradeTotal itemTradeTotal;
+
+
+    private DoubleDatePickerDialog datePickerDialog;
 
     @Nullable
     @Override
@@ -50,10 +58,13 @@ public class TradeTotalFragment extends BaseFragment {
     }
 
     private void initViews() {
+        selectTime = (RelativeLayout) containerView.findViewById(R.id.selectTime);
         timeSelector = (TextView) containerView.findViewById(R.id.timeSelector);
         tradeTotalList = (RecyclerView) containerView.findViewById(R.id.tradeTotalList);
         refreshLayout = (SwipeRefreshLayout) containerView.findViewById(R.id.refresh);
         dateGroup = (RadioGroup) containerView.findViewById(R.id.dateGroup);
+
+        selectTime.setOnClickListener(this);
 
         dateGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
@@ -75,17 +86,21 @@ public class TradeTotalFragment extends BaseFragment {
             }
         });
         dateGroup.check(R.id.todayDate);
+        refreshLayout.setOnRefreshListener(this);
         refreshLayout.setColorSchemeColors(ContextCompat.getColor(getContext(), R.color.blue));
     }
 
     private void initDatas() {
-        refreshLayout.setOnRefreshListener(this);
+
         tradeTotalList.setHasFixedSize(true);
         LinearLayoutManager mLayoutManager = new LinearLayoutManager(getContext());
         tradeTotalList.setLayoutManager(mLayoutManager);
         itemTradeTotal = new ItemTradeTotal();
         adapter = new TradeTotalListAdapter(getContext(), itemTradeTotal);
         tradeTotalList.setAdapter(adapter);
+        datePickerDialog = new DoubleDatePickerDialog(getContext(), 0, this
+                , Calendar.getInstance().get(Calendar.YEAR), Calendar.getInstance().get(Calendar.MONTH)
+                , Calendar.getInstance().get(Calendar.DATE), true);
         //联网刷新数据
 //        String dataJson = OkHttpUtil.post(url, params);
 //        itemTradeTotal = JsonUtil.jsonToJavaBean(dataJson, itemTradeTotal);
@@ -96,5 +111,14 @@ public class TradeTotalFragment extends BaseFragment {
     public void onRefresh() {
         adapter.notifyDataSetChanged();
         refreshLayout.setRefreshing(false);//关闭刷新
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.selectTime:
+                datePickerDialog.show();
+                break;
+        }
     }
 }

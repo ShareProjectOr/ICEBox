@@ -7,11 +7,16 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.shareiceboxms.R;
 import com.example.shareiceboxms.models.beans.ItemTradeAccount;
 import com.example.shareiceboxms.models.beans.ItemTradeRecord;
+import com.example.shareiceboxms.models.factories.FragmentFactory;
+import com.example.shareiceboxms.views.fragments.trade.TradeAccountDetailFragment;
+import com.example.shareiceboxms.views.fragments.trade.TradeAccountFragment;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -23,10 +28,12 @@ public class TradeAccountListAdapter extends RecyclerView.Adapter<RecyclerView.V
     private static final int VIEW_ITEM = 0;
     private static final int VIEW_LOADING = 1;
     Context context;
+    TradeAccountFragment tradeAccountFragment;
     List<ItemTradeAccount> itemTradeAccounts;
 
-    public TradeAccountListAdapter(Context context, List<ItemTradeAccount> itemTradeAccounts) {
+    public TradeAccountListAdapter(Context context, List<ItemTradeAccount> itemTradeAccounts, TradeAccountFragment tradeAccountFragment) {
         this.context = context;
+        this.tradeAccountFragment = tradeAccountFragment;
         this.itemTradeAccounts = itemTradeAccounts;
     }
 
@@ -44,7 +51,16 @@ public class TradeAccountListAdapter extends RecyclerView.Adapter<RecyclerView.V
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         if (holder instanceof ViewHolder) {
-
+            holder.itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (tradeAccountFragment != null) {
+                        FragmentFactory.getInstance().getSavedBundle().putString("machineCode", "1212121");
+                        tradeAccountFragment.addFrameFragment(new TradeAccountDetailFragment());
+//                        Toast.makeText(context, itemTradeAccounts.get(position).getStr(), Toast.LENGTH_SHORT).show();
+                    }
+                }
+            });
         } else if (holder instanceof LoadingHolder) {
             if (holder != null) {
             }

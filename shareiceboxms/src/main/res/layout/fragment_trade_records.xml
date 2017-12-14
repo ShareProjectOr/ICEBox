@@ -2,6 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
+    android:background="@color/white"
     android:orientation="vertical">
 
     <LinearLayout
@@ -23,6 +24,20 @@
                 android:layout_weight="1.5"
                 android:background="@drawable/shape_trade_time">
 
+
+                <EditText
+                    android:id="@+id/tradeNo"
+                    android:layout_width="match_parent"
+                    android:layout_height="30dp"
+                    android:layout_alignParentStart="true"
+                    android:layout_alignParentTop="true"
+                    android:background="@drawable/selector_edit"
+                    android:gravity="center_vertical"
+                    android:hint="请输入编号模糊查询"
+                    android:padding="5dp"
+                    android:paddingStart="10dp"
+                    android:textSize="12sp" />
+
                 <ImageView
                     android:id="@+id/tradeSearch"
                     android:layout_width="30dp"
@@ -30,35 +45,29 @@
                     android:layout_alignParentRight="true"
                     android:layout_marginRight="10dp"
                     android:padding="5dp"
-                    android:src="@mipmap/head" />
+                    android:src="@mipmap/searchicon" />
 
-                <TextView
-                    android:id="@+id/tradeNo"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_alignBottom="@id/tradeSearch"
-                    android:layout_alignParentStart="true"
-                    android:layout_alignParentTop="true"
-                    android:layout_alignTop="@id/tradeSearch"
-                    android:gravity="center_vertical"
-                    android:padding="5dp"
-                    android:paddingStart="20dp"
-                    android:text="请选择时间" />
+
             </RelativeLayout>
 
             <RelativeLayout
                 android:id="@+id/tradeType"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
+                android:layout_gravity="center_vertical"
                 android:layout_marginLeft="10dp"
                 android:layout_weight="1"
-                android:background="@drawable/shape_trade_time"
-                android:padding="5dp">
+                android:background="@drawable/shape_trade_time">
 
                 <TextView
                     android:id="@+id/tradeTypeText"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent" />
+                    android:layout_height="match_parent"
+                    android:layout_centerInParent="true"
+                    android:gravity="center_vertical"
+                    android:paddingStart="5dp"
+                    android:text="选择交易状态"
+                    android:textSize="12sp" />
 
                 <ImageView
                     android:id="@+id/tradeTypeIcon"
@@ -66,12 +75,16 @@
                     android:layout_height="match_parent"
                     android:layout_alignParentRight="true"
                     android:layout_marginRight="10dp"
-                    android:src="@drawable/selector_trade_downicon" />
+                    android:padding="5dp"
+                    android:src="@mipmap/down_iocn" />
+
+
             </RelativeLayout>
 
         </LinearLayout>
 
         <include layout="@layout/time_select" />
+
         <android.support.v4.widget.SwipeRefreshLayout
             android:id="@+id/recordRefresh"
             android:layout_width="match_parent"

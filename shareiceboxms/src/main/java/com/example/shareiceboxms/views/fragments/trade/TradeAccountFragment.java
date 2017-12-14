@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ListPopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -19,9 +20,12 @@ import com.example.shareiceboxms.models.adapters.TradeAccountListAdapter;
 import com.example.shareiceboxms.models.adapters.TradeRecordListAdapter;
 import com.example.shareiceboxms.models.beans.ItemTradeAccount;
 import com.example.shareiceboxms.models.beans.ItemTradeRecord;
+import com.example.shareiceboxms.models.contants.Constants;
 import com.example.shareiceboxms.models.factories.FragmentFactory;
 import com.example.shareiceboxms.models.factories.MyViewFactory;
 import com.example.shareiceboxms.models.helpers.LoadMoreHelper;
+import com.example.shareiceboxms.models.helpers.MenuPop;
+import com.example.shareiceboxms.views.activities.HomeActivity;
 import com.example.shareiceboxms.views.fragments.BaseFragment;
 
 import java.util.ArrayList;
@@ -43,6 +47,8 @@ public class TradeAccountFragment extends BaseFragment implements LoadMoreHelper
     private boolean isTypeClicked = false;
     List<ItemTradeAccount> itemTradeAccounts;
     private LoadMoreHelper loadMoreHelper;
+    private ListPopupWindow mTilePopup;
+    HomeActivity homeActivity;
 
 
     @Nullable
@@ -63,12 +69,16 @@ public class TradeAccountFragment extends BaseFragment implements LoadMoreHelper
         chooseAccountIcon = (ImageView) containerView.findViewById(R.id.chooseAccountIcon);
         accountRefresh = (android.support.v4.widget.SwipeRefreshLayout) containerView.findViewById(R.id.accountRefresh);
 
+        createAccount.setOnClickListener(this);
         accountType.setOnClickListener(this);
         accountRefresh.setOnRefreshListener(this);
         accountRefresh.setColorSchemeColors(ContextCompat.getColor(getContext(), R.color.blue));
+
+
     }
 
     private void initDatas() {
+        homeActivity = (HomeActivity) getActivity();
         itemTradeAccounts = new ArrayList<>();
 
         itemTradeAccounts.add(new ItemTradeAccount());
@@ -77,9 +87,10 @@ public class TradeAccountFragment extends BaseFragment implements LoadMoreHelper
         itemTradeAccounts.add(new ItemTradeAccount());
         itemTradeAccounts.add(null);
 
+        mTilePopup = MenuPop.CreateMenuPop(getContext(), accountType, Constants.TradeAccountStateTitle);
 
         RecyclerView tradeaccountList = (android.support.v7.widget.RecyclerView) containerView.findViewById(R.id.tradeaccountList);
-        TradeAccountListAdapter adapter = new TradeAccountListAdapter(getContext(), itemTradeAccounts);
+        TradeAccountListAdapter adapter = new TradeAccountListAdapter(getContext(), itemTradeAccounts, this);
         new MyViewFactory(getContext()).BuildRecyclerViewRule(tradeaccountList,
                 new LinearLayoutManager(getContext()), null, true).setAdapter(adapter);
         loadMoreHelper = new LoadMoreHelper().setContext(getContext()).setAdapter(adapter)
@@ -93,16 +104,23 @@ public class TradeAccountFragment extends BaseFragment implements LoadMoreHelper
 //        adapter.notifyDataSetChanged();
     }
 
+    public void addFrameFragment(BaseFragment fragment) {
+        TradeFragment tradeFragment = (TradeFragment) getParentFragment();
+        tradeFragment.addFrameLayout(fragment);
+    }
+
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.accountType:
                 isTypeClicked = !isTypeClicked;
                 //弹出POPUPlistwindow
+                mTilePopup.show();
                 Toast.makeText(getContext(), "111'", Toast.LENGTH_SHORT).show();
                 chooseAccountIcon.setSelected(isTypeClicked);
                 break;
             case R.id.createAccount:
+                addFrameFragment(new CreateAccountFragment());
                 break;
             default:
                 break;

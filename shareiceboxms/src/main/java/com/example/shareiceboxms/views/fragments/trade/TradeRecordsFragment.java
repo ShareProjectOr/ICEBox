@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.ListPopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -16,13 +17,17 @@ import android.widget.Toast;
 import com.example.shareiceboxms.R;
 import com.example.shareiceboxms.models.adapters.TradeRecordListAdapter;
 import com.example.shareiceboxms.models.beans.ItemTradeRecord;
+import com.example.shareiceboxms.models.contants.Constants;
 import com.example.shareiceboxms.models.factories.FragmentFactory;
 import com.example.shareiceboxms.models.factories.MyViewFactory;
+import com.example.shareiceboxms.models.helpers.DoubleDatePickerDialog;
 import com.example.shareiceboxms.models.helpers.LoadMoreHelper;
+import com.example.shareiceboxms.models.helpers.MenuPop;
 import com.example.shareiceboxms.models.http.JsonUtil;
 import com.example.shareiceboxms.views.fragments.BaseFragment;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 /**
@@ -41,6 +46,8 @@ public class TradeRecordsFragment extends BaseFragment implements LoadMoreHelper
     private TradeRecordListAdapter adapter;
     private List<ItemTradeRecord> itemTradeRecords;
     private LoadMoreHelper loadMoreHelper;
+    private DoubleDatePickerDialog datePickerDialog;
+    private ListPopupWindow mTilePopup;
 
     @Nullable
     @Override
@@ -65,6 +72,8 @@ public class TradeRecordsFragment extends BaseFragment implements LoadMoreHelper
 //        tradeRecordList = (android.support.v7.widget.RecyclerView) containerView.findViewById(R.id.tradeRecordList);
         tradeType.setOnClickListener(this);
         recordRefresh.setOnRefreshListener(this);
+        tradeSearch.setOnClickListener(this);
+        selectTime.setOnClickListener(this);
         recordRefresh.setColorSchemeColors(ContextCompat.getColor(getContext(), R.color.blue));
 
     }
@@ -84,6 +93,10 @@ public class TradeRecordsFragment extends BaseFragment implements LoadMoreHelper
         itemTradeRecords.add(new ItemTradeRecord());
         itemTradeRecords.add(null);
 
+        datePickerDialog = new DoubleDatePickerDialog(getContext(), 0, this
+                , Calendar.getInstance().get(Calendar.YEAR), Calendar.getInstance().get(Calendar.MONTH)
+                , Calendar.getInstance().get(Calendar.DATE), true);
+        mTilePopup = MenuPop.CreateMenuPop(getContext(), tradeType, Constants.TradeStateTitle);
 
         RecyclerView tradeRecordList = (android.support.v7.widget.RecyclerView) containerView.findViewById(R.id.tradeRecordList);
         TradeRecordListAdapter adapter = new TradeRecordListAdapter(getContext(), itemTradeRecords, this);
@@ -109,11 +122,12 @@ public class TradeRecordsFragment extends BaseFragment implements LoadMoreHelper
             case R.id.tradeType:
                 isTypeClicked = !isTypeClicked;
                 //弹出POPUPlistwindow
-                Toast.makeText(getContext(), "111'", Toast.LENGTH_SHORT).show();
+                mTilePopup.show();
                 tradeTypeIcon.setSelected(isTypeClicked);
                 break;
             case R.id.selectTime:
                 //弹出日期选择
+                datePickerDialog.show();
                 break;
         }
     }

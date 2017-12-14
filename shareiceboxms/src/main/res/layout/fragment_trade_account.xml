@@ -3,6 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
+    android:background="@color/white"
     android:orientation="vertical">
 
     <LinearLayout
@@ -21,7 +22,7 @@
             <Button
                 android:id="@+id/createAccount"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="40dp"
                 android:layout_weight="1"
                 android:background="@drawable/shape_trade_create_account"
                 android:padding="5dp"
@@ -50,7 +51,8 @@
                     android:layout_height="match_parent"
                     android:layout_alignParentRight="true"
                     android:layout_marginRight="10dp"
-                    android:src="@drawable/selector_trade_downicon" />
+                    android:padding="5dp"
+                    android:src="@mipmap/down_iocn" />
             </RelativeLayout>
 
 

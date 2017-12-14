@@ -5,7 +5,4 @@ package com.example.shareiceboxms.models.beans;
  */
 
 public class ItemTradeRecord {
-    public String getStr() {
-        return "wo ting wen";
-    }
 }

@@ -26,7 +26,7 @@ public class TradeFragment extends BaseFragment implements HomeActivity.OnBackPr
     private View containerView = null;
     HomeActivity homeActivity;
     private TabLayout tabLayout;
-    private ImageView drawerIcon;
+    private ImageView drawerIcon, saoma;
     private ViewPager viewPager;
     private FrameLayout tradeDetailLayout;
     ViewPagerAdapter adapter;
@@ -48,21 +48,18 @@ public class TradeFragment extends BaseFragment implements HomeActivity.OnBackPr
         tabLayout = (TabLayout) containerView.findViewById(R.id.tablayout);
         viewPager = (ViewPager) containerView.findViewById(R.id.viewpager);
         drawerIcon = (ImageView) containerView.findViewById(R.id.drawerIcon);
+        saoma = (ImageView) containerView.findViewById(R.id.saoma);
         tradeDetailLayout = (FrameLayout) containerView.findViewById(R.id.detailFrameLayout);
         adapter = new ViewPagerAdapter(getChildFragmentManager(), FragmentFactory.getInstance().getTradeChildFragments(), Constants.TradeTabTitles);
         viewPager.setAdapter(adapter);
         tabLayout.setupWithViewPager(viewPager);
+        drawerIcon.setOnClickListener(this);
+        saoma.setOnClickListener(this);
     }
 
     private void initDatas() {
         homeActivity = (HomeActivity) getActivity();
         homeActivity.setOnBackPressListener(this);
-        drawerIcon.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                homeActivity.clickIconToOpenDrawer();
-            }
-        });
     }
 
     public void addFrameLayout(BaseFragment fragment) {
@@ -73,11 +70,32 @@ public class TradeFragment extends BaseFragment implements HomeActivity.OnBackPr
     }
 
     @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.drawerIcon:
+                homeActivity.clickIconToOpenDrawer();
+                break;
+            case R.id.saoma:
+                homeActivity.openSaoma();
+                break;
+
+        }
+    }
+
+    @Override
     public void OnBackDown() {
+        if (BaseFragment.tradeAccountDetailFragment != null) {
+            removeFrame(BaseFragment.tradeAccountDetailFragment);
+            //绑定查询ID；
+            addFrameLayout(new TradeAccountDetailFragment());
+            BaseFragment.tradeAccountDetailFragment = null;
+            return;
+        }
         if (curFrameFragment != null && curFrameFragment.isAdded()) {
             removeFrame(curFrameFragment);
             tradeDetailLayout.setVisibility(View.GONE);
             curFrameFragment = null;
+
         } else {
             homeActivity.finishActivity();
         }

@@ -19,9 +19,17 @@ public interface Constants {
     String[] EXCEPTION_LV_TITLE = {"全部", "一般严重", "特别严重"};
     String[] TradeRecordDetailTitle = {"售出商品(0)", "已退款商品(0)"};
     long REFREASH_DELAYED_TIME = 1500; //刷新时间
-    int[] TradeRecordPayICON = {R.mipmap.icon_person, R.mipmap.icon_person, R.mipmap.icon_person};
+    int[] TradeRecordPayICON = {R.mipmap.machine_normal, R.mipmap.nopay};
+    String[] TradeAccountDetailTitle = {"结算的交易记录", "冲抵的应退记录"};
+    String[] TradeStateTitle = {"全部", "已支付", "未支付"};
+    String[] TradeAccountStateTitle = {"全部", "待审核", "待确认", "即将到帐", "已到账", "已复审", "已撤销"};
     /*
       商品管理
      */
-    String[] PRODUCT_VIEWPAGER_TITLE = {"品类列表","上下货记录"};
+    String[] PRODUCT_VIEWPAGER_TITLE = {"品类列表", "上下货记录"};
+
+    /*
+    * 机器管理
+    * */
+    String[] MachineItemOperator = {"状态监控", "远程控制", "库存商品"};
 }

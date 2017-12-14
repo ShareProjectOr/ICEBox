@@ -14,12 +14,15 @@ import android.widget.DatePicker;
 import com.example.shareiceboxms.R;
 import com.example.shareiceboxms.models.helpers.DoubleDatePickerDialog;
 import com.example.shareiceboxms.views.activities.HomeActivity;
+import com.example.shareiceboxms.views.fragments.trade.TradeAccountDetailFragment;
 
 /**
  * Created by WH on 2017/11/27.
  */
 
-public class BaseFragment extends Fragment implements View.OnClickListener, SwipeRefreshLayout.OnRefreshListener, DoubleDatePickerDialog.OnDateSetListener, HomeActivity.OnBackPressListener{
+public class BaseFragment extends Fragment implements View.OnClickListener, SwipeRefreshLayout.OnRefreshListener, DoubleDatePickerDialog.OnDateSetListener, HomeActivity.OnBackPressListener {
+    public static BaseFragment curFragment;
+    public static TradeAccountDetailFragment tradeAccountDetailFragment;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {

@@ -8,13 +8,18 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.shareiceboxms.R;
+import com.example.shareiceboxms.models.adapters.TradeRecordDetailAdapter;
 import com.example.shareiceboxms.models.beans.ItemProduct;
 import com.example.shareiceboxms.models.contants.Constants;
 import com.example.shareiceboxms.models.factories.FragmentFactory;
+import com.example.shareiceboxms.views.activities.HomeActivity;
 import com.example.shareiceboxms.views.fragments.BaseFragment;
 
 import java.util.ArrayList;
@@ -30,11 +35,20 @@ public class TradeRecordDetailFragment extends BaseFragment {
     private CheckBox allProductCB;
     private com.example.shareiceboxms.models.widget.ListViewForScrollView productList;
 
-    private TextView tradeTime, totalMoney, payState, machineNameAddr, tradeNo, customerId;
+    private TextView tradeTime, totalMoney, payState, machineNameAddr, customerId, tradeNo;
     private ImageView payIcon;
     private TextView jiesuanMoney, jiesuanReal, jiesuanRefund;
 
+    private TextView title;
+    private ImageView drawerIcon, saoma;
+
+    private TextView chooseItemCount, chooseItemMoney, moreRefund;
+
+
     private List<ItemProduct> itemBuyProducts, itemRefundProducts;
+    TradeRecordDetailAdapter adapter;
+    HomeActivity homeActivity;
+
 
     @Nullable
     @Override
@@ -65,23 +79,70 @@ public class TradeRecordDetailFragment extends BaseFragment {
         jiesuanReal = (TextView) containerView.findViewById(R.id.jiesuanReal);
         jiesuanRefund = (TextView) containerView.findViewById(R.id.jiesuanRefund);
 
+        drawerIcon = (ImageView) containerView.findViewById(R.id.drawerIcon);
+        saoma = (ImageView) containerView.findViewById(R.id.saoma);
+        title = (TextView) containerView.findViewById(R.id.title);
+
+        chooseItemCount = (TextView) containerView.findViewById(R.id.chooseItemCount);
+        chooseItemMoney = (TextView) containerView.findViewById(R.id.chooseItemMoney);
+        moreRefund = (TextView) containerView.findViewById(R.id.moreRefund);
+
+
+        drawerIcon.setOnClickListener(this);
+        saoma.setOnClickListener(this);
+        moreRefund.setOnClickListener(this);
+
+        allProductCB.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (!isChecked && adapter.getTotalCheckedCount() != adapter.getCount()) {
+                    return;
+                }
+                adapter.checkAllItem(isChecked);
+                changeCheckedCount();
+            }
+        });
+        title.setText("交易详情");
+
     }
 
     private void initDatas() {
+        homeActivity = (HomeActivity) getActivity();
         itemBuyProducts = new ArrayList<>();
         itemRefundProducts = new ArrayList<>();
+
+        itemRefundProducts.add(new ItemProduct());
+        itemRefundProducts.add(new ItemProduct());
+        itemRefundProducts.add(new ItemProduct());
+        itemRefundProducts.add(new ItemProduct());
+        itemRefundProducts.add(new ItemProduct());
+        itemRefundProducts.add(new ItemProduct());
+        itemRefundProducts.add(new ItemProduct());
+
+
+        itemBuyProducts.add(new ItemProduct());
+        itemBuyProducts.add(new ItemProduct());
+        itemBuyProducts.add(new ItemProduct());
+        itemBuyProducts.add(new ItemProduct());
+
+
+        productTabLayout.setTabMode(TabLayout.MODE_FIXED);
         for (int i = 0; i < Constants.TradeRecordDetailTitle.length; i++) {
             TabLayout.Tab tab = productTabLayout.newTab();
-            tab.setText(Constants.TabTitles[i]);
+            //设置拉取到的数据在标题中
+            tab.setText(Constants.TradeRecordDetailTitle[i]);
             productTabLayout.addTab(tab);
         }
+        adapter = new TradeRecordDetailAdapter(getContext(), this);
+        adapter.setItemProductList(itemBuyProducts);
+        productList.setAdapter(adapter);
         productTabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
                 if (tab.getPosition() == 0) {
-
+                    adapter.setItemProductList(itemBuyProducts);
                 } else {
-
+                    adapter.setItemProductList(itemRefundProducts);
                 }
             }
 
@@ -98,4 +159,29 @@ public class TradeRecordDetailFragment extends BaseFragment {
 
     }
 
+    /*
+* 修改选中数量和价格
+* */
+    public void changeCheckedCount() {
+        allProductCB.setChecked(adapter.isAllChecked());
+        chooseItemCount.setText(adapter.getTotalCheckedCount() + "");
+        chooseItemMoney.setText(adapter.getTotalCheckedMoney() + "");
+    }
+
+    @Override
+
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.drawerIcon:
+                homeActivity.clickIconToOpenDrawer();
+                break;
+            case R.id.saoma:
+                homeActivity.openSaoma();
+                break;
+            case R.id.moreRefund:
+                Toast.makeText(getContext(), "11111111", Toast.LENGTH_SHORT).show();
+                //请求网络退款操作
+                break;
+        }
+    }
 }
