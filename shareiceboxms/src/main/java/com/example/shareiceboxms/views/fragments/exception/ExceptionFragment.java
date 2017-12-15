@@ -48,7 +48,7 @@ public class ExceptionFragment extends BaseFragment implements CompoundButton.On
     private View containerView;
     private BaseFragment curFrameFragment;
     private HomeActivity homeActivity;
-    private ImageView drawerIcon, showPop;
+    private ImageView drawerIcon, showPop, saoma;
     private ExceptionListAdapter mRecycleAdapter;
     private RecyclerView exceptionList;
     private Context mContext;
@@ -81,7 +81,7 @@ public class ExceptionFragment extends BaseFragment implements CompoundButton.On
         if (!mRefreshLayout.isRefreshing()) {
             mRefreshLayout.setOnRefreshListener(this);
         }
-
+        saoma.setOnClickListener(this);
     }
 
     private void initDatas() {
@@ -95,6 +95,7 @@ public class ExceptionFragment extends BaseFragment implements CompoundButton.On
         Calendar c = Calendar.getInstance();
         drawerIcon = (ImageView) containerView.findViewById(R.id.drawerIcon);
         exceptionList = (RecyclerView) containerView.findViewById(R.id.exception_list);
+        saoma = (ImageView) containerView.findViewById(R.id.saoma);
         selectTimeLayout = (RelativeLayout) containerView.findViewById(R.id.selectTime);
         exceptionTypeLayout = (LinearLayout) containerView.findViewById(R.id.exception_type_layout);
         datePickerDialog = new DoubleDatePickerDialog(mContext, 0, this, c.get(Calendar.YEAR), c.get(Calendar.MONTH), c.get(Calendar.DATE), true);
@@ -118,6 +119,9 @@ public class ExceptionFragment extends BaseFragment implements CompoundButton.On
                 break;
             case R.id.selectTime:
                 datePickerDialog.show();
+                break;
+            case R.id.saoma:
+                homeActivity.openSaoma();
                 break;
         }
     }

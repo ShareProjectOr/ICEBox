@@ -24,10 +24,9 @@
             </intent-filter>
         </activity>
         <activity android:name=".views.activities.HomeActivity" />
-        <activity android:name=".views.activities.ModifyPriceActivity"></activity>
-        <activity android:name=".views.activities.CaptureActivity">
-
-        </activity>
+        <activity android:name=".views.activities.ModifyPriceActivity" />
+        <activity android:name=".views.activities.CaptureActivity"></activity>
+        <activity android:name=".views.activities.OpenDoorSuccessActivity"></activity>
     </application>
 
 </manifest>

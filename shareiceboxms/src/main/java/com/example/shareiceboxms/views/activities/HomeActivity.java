@@ -131,8 +131,10 @@ public class HomeActivity extends BaseActivity
             if (showHomepage) {
                 mOnBackPressListener.OnBackDown();
             } else {
+                showHomepage = true;
                 getCurFragment();
                 switchFragment();
+                navigationView.setCheckedItem(R.id.icon_home);
                 tabLayout.setVisibility(View.VISIBLE);
             }
 

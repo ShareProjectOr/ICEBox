@@ -88,7 +88,7 @@ public class ProductDetailsFragment extends BaseFragment {
                 homeActivity.clickIconToOpenDrawer();
                 break;
             case R.id.saoma:
-                homeActivity.jumpActivity(null, null);
+                homeActivity.openSaoma();
                 break;
         }
     }

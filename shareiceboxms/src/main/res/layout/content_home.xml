@@ -24,7 +24,7 @@
         app:tabIndicatorHeight="0dp"
         app:tabMode="scrollable"
         app:tabSelectedTextColor="@color/blue"
-        app:tabTextColor="@color/edit_box_gray"></android.support.design.widget.TabLayout>
+        app:tabTextColor="@color/gray_light_deep"></android.support.design.widget.TabLayout>
 
     <FrameLayout
         android:id="@+id/home_tab_frame"

@@ -23,4 +23,5 @@
     <color name="deepgreen">#019249</color>
     <!--灰色  未选中下划线 -->
     <color name="colorLineDefault">#FFAAAAAA</color>
+    <color name="layoutgraybackground">#F2F2F2</color>
 </resources>

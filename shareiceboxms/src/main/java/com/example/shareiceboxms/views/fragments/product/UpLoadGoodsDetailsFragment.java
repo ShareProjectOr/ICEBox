@@ -67,7 +67,7 @@ public class UpLoadGoodsDetailsFragment extends BaseFragment {
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.saoma:
-                homeActivity.jumpActivity(null, null);
+                homeActivity.openSaoma();
                 break;
             case R.id.drawerIcon:
                 homeActivity.clickIconToOpenDrawer();

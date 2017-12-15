@@ -1,11 +1,10 @@
 package com.example.shareiceboxms.views.activities;
 
 import android.Manifest;
-import android.animation.ObjectAnimator;
-import android.animation.ValueAnimator;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
@@ -16,15 +15,13 @@ import android.hardware.Camera.PreviewCallback;
 import android.hardware.Camera.Size;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.HandlerThread;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat.OnRequestPermissionsResultCallback;
 import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.animation.Animation;
-import android.view.animation.DecelerateInterpolator;
-import android.view.animation.TranslateAnimation;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -58,23 +55,26 @@ public class CaptureActivity extends Activity implements
     private CameraPreview mPreview;
     private Handler autoFocusHandler;
     private CameraManager mCameraManager;
-
     private TextView scanResult;
     private FrameLayout scanPreview;
     private Button scanRestart;
     private RelativeLayout scanContainer;
     private RelativeLayout scanCropView;
     private ImageView scanLine;
-
     private Rect mCropRect = null;
     private boolean barcodeScanned = false;
     private boolean previewing = true;
+    private static int SHOWLOAD = 0;//显示加载框
+    private static int HIDELOAD = 1;//隐藏加载框
     private ImageScanner mImageScanner = null;
     public static int CAMERA_REQUEST_CODE = 1;
+
 
     static {
         System.loadLibrary("iconv");
     }
+
+    private Handler mHandler;
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -85,7 +85,7 @@ public class CaptureActivity extends Activity implements
 
         // 判断是否有相机权限（主要用于兼容Android 6.0+）
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {// 有相机权限
-          initViews();
+            initViews();
         } else {
             //这里是拒绝给APP摄像头权限，给个提示什么的说明一下都可以。
             Toast.makeText(this, "您拒绝了系统调用摄像头权限,请手动打开相机权限", Toast.LENGTH_SHORT).show();
@@ -130,17 +130,13 @@ public class CaptureActivity extends Activity implements
         } catch (IOException e) {
             e.printStackTrace();
         }
-
+        HandlerThread thread = new HandlerThread("Ceamera3");
+        thread.start();
+        mHandler = new Handler(thread.getLooper());
         mCamera = mCameraManager.getCamera();
         mPreview = new CameraPreview(this, mCamera, previewCb, autoFocusCB);
         scanPreview.addView(mPreview);
 
-     /*   TranslateAnimation animation = new TranslateAnimation(0,0,0,300);
-        animation.setDuration(2000);
-        animation.setRepeatCount(-1);
-        animation.setInterpolator(new DecelerateInterpolator());
-        animation.setRepeatMode(Animation.RESTART);
-        scanLine.startAnimation(animation);*/
     }
 
     @SuppressLint("Override")
@@ -152,7 +148,7 @@ public class CaptureActivity extends Activity implements
             // grantResults授权结果
             if (grantResults.length > 0
                     && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-            //    initViews();
+                //    initViews();
             } else {
                 // 授权失败
                 showTip();
@@ -192,7 +188,9 @@ public class CaptureActivity extends Activity implements
 
     private int SCANNIN_GREQUEST_CODE;
     PreviewCallback previewCb = new PreviewCallback() {
+
         public void onPreviewFrame(byte[] data, Camera camera) {
+
             Size size = camera.getParameters().getPreviewSize();
 
             // 这里需要将获取的data翻转一下，因为相机默认拿的的横屏的数据
@@ -207,7 +205,6 @@ public class CaptureActivity extends Activity implements
             int tmp = size.width;
             size.width = size.height;
             size.height = tmp;
-
             initCrop();
 
             Image barcode = new Image(size.width, size.height, "Y800");
@@ -224,12 +221,11 @@ public class CaptureActivity extends Activity implements
                     resultStr = sym.getData();
                 }
             }
-
+            //  mHandler.sendEmptyMessage(HIDELOAD);
             if (!TextUtils.isEmpty(resultStr)) {
                 previewing = false;
                 mCamera.setPreviewCallback(null);
                 mCamera.stopPreview();
-
                 scanResult.setText("barcode result " + resultStr);
                 barcodeScanned = true;
                 Intent intent = new Intent();
@@ -238,6 +234,8 @@ public class CaptureActivity extends Activity implements
                 finish();
                 // onBackPressed();
                 //     startActivityForResult(getIntent().putExtra("QR_CODE",resultStr),1);
+            } else {
+
             }
         }
     };

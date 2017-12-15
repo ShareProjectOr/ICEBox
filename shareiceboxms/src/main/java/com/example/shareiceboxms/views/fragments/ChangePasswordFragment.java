@@ -41,9 +41,12 @@ public class ChangePasswordFragment extends BaseFragment {
     private void initListener() {
         drawerIcon.setOnClickListener(this);
         saoma.setOnClickListener(this);
+        mCommit.setOnClickListener(this);
+        mCancel.setOnClickListener(this);
     }
 
     private void bindViews() {
+        homeActivity = (HomeActivity) getActivity();
         mNowPassword = (EditText) contentView.findViewById(R.id.nowPassword);
         mNewPassword = (EditText) contentView.findViewById(R.id.newPassword);
         mConfirmPassword = (EditText) contentView.findViewById(R.id.confirmPassword);
@@ -61,6 +64,11 @@ public class ChangePasswordFragment extends BaseFragment {
                 break;
             case R.id.saoma:
                 homeActivity.openSaoma();
+                break;
+            case R.id.cancel:
+                homeActivity.onBackPressed();
+                break;
+            case R.id.commit:
                 break;
         }
     }
