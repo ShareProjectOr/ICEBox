@@ -13,18 +13,21 @@
         <EditText
             android:id="@+id/machineSearchInput"
             android:layout_width="0dp"
-            android:layout_height="40dp"
+            android:layout_height="25dp"
             android:layout_margin="5dp"
             android:layout_weight="1"
-            android:background="@drawable/shape_trade_time"
+            android:background="@drawable/selector_edit"
+            android:gravity="center_vertical"
             android:hint="输入机器名称模糊查询"
             android:paddingLeft="10dp"
-            android:textColorHint="@color/test_init_color" />
+
+            android:textColorHint="@color/test_init_color"
+            android:textSize="14sp" />
 
         <Button
             android:id="@+id/doSearch"
             android:layout_width="wrap_content"
-            android:layout_height="40dp"
+            android:layout_height="25dp"
             android:layout_margin="5dp"
             android:background="@drawable/shape_botton"
             android:text="搜索"

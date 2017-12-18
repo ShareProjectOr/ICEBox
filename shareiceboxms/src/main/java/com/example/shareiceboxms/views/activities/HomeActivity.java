@@ -59,7 +59,6 @@ public class HomeActivity extends BaseActivity
         setContentView(R.layout.activity_home);
 //        setImmersiveStateBar();
         initViews();
-
         initData();
         initListener();
     }
@@ -111,7 +110,7 @@ public class HomeActivity extends BaseActivity
 
         toggle.setDrawerIndicatorEnabled(false);//修改toolbar默认图标，必须添加
 
-        drawer.setDrawerListener(toggle);
+        drawer.addDrawerListener(toggle);
         toggle.syncState();
 
 
@@ -153,17 +152,13 @@ public class HomeActivity extends BaseActivity
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
 
-        if (id == R.id.action_settings) {
-            return true;
-        }
+        return id == R.id.action_settings || super.onOptionsItemSelected(item);
 
-        return super.onOptionsItemSelected(item);
     }
 
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-        int id = item.getItemId();
         switch (item.getItemId()) {
             case R.id.icon_home:
                 if (!showHomepage) {
@@ -339,8 +334,22 @@ public class HomeActivity extends BaseActivity
         }
     }
 
-    public void jumpActivity(Class<?> activitycalss, Bundle intentData) {
+/*    public void jumpActivity(Class<?> activitycalss, Bundle intentData) {
         Log.e("HomeActivity", "扫码");
+        Intent intent = new Intent();
+        if (activitycalss != null) {
+            intent.setClass(getApplication(), activitycalss);
+            if (intentData != null) {
+                intent.putExtra("intentdata", intentData);
+            }
+            startActivity(intent);
+        }
+
+    }*/
+
+    @Override
+    public void jumpActivity(Class<?> activitycalss, Bundle intentData) {
+        super.jumpActivity(activitycalss, intentData);
         Intent intent = new Intent();
         if (activitycalss != null) {
             intent.setClass(getApplication(), activitycalss);
@@ -353,8 +362,8 @@ public class HomeActivity extends BaseActivity
     }
 
     /*
-    * 添加通知
-    * */
+        * 添加通知
+        * */
     private void setNotifySnackbar() {
         NotifySnackbar.addNotifySnackbar(this, notifyLayout);
     }

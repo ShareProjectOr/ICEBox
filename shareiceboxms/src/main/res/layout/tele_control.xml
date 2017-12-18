@@ -155,7 +155,8 @@
                         android:orientation="vertical">
 
                         <ImageView
-                            android:id="@+id/subOffsetTemp"
+
+                            android:id="@+id/addOffsetTemp"
                             android:layout_width="match_parent"
                             android:layout_height="0dp"
                             android:layout_weight="1"
@@ -168,7 +169,7 @@
                             android:background="@color/edit_box_gray" />
 
                         <ImageView
-                            android:id="@+id/addOffsetTemp"
+                            android:id="@+id/subOffsetTemp"
                             android:layout_width="match_parent"
                             android:layout_height="0dp"
                             android:layout_weight="1"

@@ -9,7 +9,7 @@ import com.example.shareiceboxms.R;
 
 import com.example.shareiceboxms.views.fragments.LoginFragment;
 
-public class LoginActivity extends AppCompatActivity {
+public class LoginActivity extends BaseActivity {
 
 
     @Override
@@ -31,4 +31,8 @@ public class LoginActivity extends AppCompatActivity {
 
     }
 
+    @Override
+    public void jumpActivity(Class<?> activitycalss, Bundle intentData) {
+        super.jumpActivity(activitycalss, intentData);
+    }
 }

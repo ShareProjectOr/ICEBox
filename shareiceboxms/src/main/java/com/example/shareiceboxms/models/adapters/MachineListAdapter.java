@@ -42,7 +42,7 @@ public class MachineListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         RecyclerView.ViewHolder viewHolder = null;
         if (viewType == VIEW_ITEM) {
-            viewHolder = new ItemViewHolder(LayoutInflater.from(context).inflate(R.layout.machine_list_item, null));
+            viewHolder = new ItemViewHolder(LayoutInflater.from(context).inflate(R.layout.machine_list_item_layout, null));
         } else if (viewType == VIEW_LOADING) {
             viewHolder = new LoadingHolder(LayoutInflater.from(context).inflate(R.layout.loading_more, null));
         }
@@ -75,7 +75,7 @@ public class MachineListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         return itemMachines.size();
     }
 
-    class ItemViewHolder extends RecyclerView.ViewHolder {
+    class ItemViewHolder extends RecyclerView.ViewHolder  {
         private TextView machineAddr, machineName, isOnLine, isException, managerName, machienCode;
 
         public ItemViewHolder(View itemView) {

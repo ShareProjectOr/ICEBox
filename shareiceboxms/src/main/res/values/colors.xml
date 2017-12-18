@@ -4,6 +4,7 @@
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
     <color name="red">#FF0000</color>
+    <color name="exception">#FF0000</color>
     <color name="titleBule">#88aeec</color>
     <color name="black">#000000</color>
     <color name="white">#ffffff</color>
@@ -21,6 +22,7 @@
     <color name="test_init_color">#C8C8C8</color>
     <color name="sucessgreen">#1afa29</color>
     <color name="deepgreen">#019249</color>
+    <color name="normalgreen">#019249</color>
     <!--灰色  未选中下划线 -->
     <color name="colorLineDefault">#FFAAAAAA</color>
     <color name="layoutgraybackground">#F2F2F2</color>

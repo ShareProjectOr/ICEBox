@@ -58,7 +58,6 @@
         android:layout_marginRight="10dp"
         android:gravity="center"
         android:orientation="vertical">
-
         <include layout="@layout/time_select" />
 
         <LinearLayout
@@ -112,6 +111,7 @@
                 android:layout_marginLeft="5dp"
                 android:layout_marginRight="5dp"
                 android:background="@drawable/shape_switch"
+
                 android:gravity="center_vertical"
                 android:paddingLeft="3dp"
                 android:paddingRight="3dp"

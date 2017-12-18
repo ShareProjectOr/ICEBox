@@ -3,6 +3,7 @@ package com.example.shareiceboxms.views.fragments.trade;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -68,7 +69,7 @@ public class TradeRecordsFragment extends BaseFragment implements LoadMoreHelper
         selectTime = (RelativeLayout) containerView.findViewById(R.id.selectTime);
         tradeTypeText = (TextView) containerView.findViewById(R.id.tradeTypeText);
         tradeTypeIcon = (ImageView) containerView.findViewById(R.id.tradeTypeIcon);
-        recordRefresh = (android.support.v4.widget.SwipeRefreshLayout) containerView.findViewById(R.id.recordRefresh);
+        recordRefresh = (SwipeRefreshLayout) containerView.findViewById(R.id.recordRefresh);
 //        tradeRecordList = (android.support.v7.widget.RecyclerView) containerView.findViewById(R.id.tradeRecordList);
         tradeType.setOnClickListener(this);
         recordRefresh.setOnRefreshListener(this);
