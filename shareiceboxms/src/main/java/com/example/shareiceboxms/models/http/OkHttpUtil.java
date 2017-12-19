@@ -118,14 +118,16 @@ public class OkHttpUtil {
     * @param url
     * @param json
     * */
-    public static final MediaType JSON = MediaType.parse("application/json; charset=utf-8");
+    public static final MediaType JSON = MediaType.parse("application/json; charset=utf-8");
 
     public static String post(String url, String json) throws IOException {
+
         RequestBody requestBody = RequestBody.create(JSON, json);
-        Request request = new Request.Builder().url(url).post(requestBody).build();
-        Response response = execute(request);
+
+        Request request = new Request.Builder().url(url).addHeader("content-type", "application/json;charset:utf-8").post(requestBody).build();
+        Response response = mOkHttpClient.newCall(request).execute();
         if (response.isSuccessful()) {
-            return response.body().toString();
+            return response.body().string();
         } else {
             throw new IOException("Unexpected code :" + response);
         }

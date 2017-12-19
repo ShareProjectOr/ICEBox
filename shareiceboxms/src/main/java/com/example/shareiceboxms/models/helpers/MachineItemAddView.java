@@ -1,9 +1,10 @@
 package com.example.shareiceboxms.models.helpers;
 
 import android.content.Context;
-import android.support.v4.content.ContextCompat;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.AbsListView;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -16,10 +17,14 @@ import android.widget.Toast;
 
 import com.example.shareiceboxms.R;
 import com.example.shareiceboxms.models.adapters.MachineStockProductAdapter;
+import com.example.shareiceboxms.models.beans.ItemMachine;
 import com.example.shareiceboxms.models.beans.ItemProduct;
 import com.example.shareiceboxms.models.contants.Constants;
+import com.example.shareiceboxms.models.contants.RequestParamsContants;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by WH on 2017/12/13.
@@ -35,6 +40,7 @@ public class MachineItemAddView {
     private StateControlHolder stateControlHolder;
     private TeleControlHolder teleControlHolder;
     private StockProductsHolder stockProductsHolder;
+    private MachineItemAddViewHelper machineItemAddViewHelper;
 
     public MachineItemAddView(Context context) {
         this.context = context;
@@ -50,10 +56,24 @@ public class MachineItemAddView {
         if (parentView.getChildAt(0) != stateControlView) {
             parentView.removeAllViews();
             parentView.addView(stateControlView);
-
         }
-        //向View添加值
-        stateControlHolder.netState.setText("80");
+    }
+
+    /*
+    *更新状态控制的值
+    * */
+    public void updateStateControlUi(ItemMachine itemMachine) {
+        stateControlHolder.runState.setText(Constants.MachineRunState[itemMachine.faultState]);
+        stateControlHolder.netState.setText(Constants.MachineOnLineState[itemMachine.networkState]);
+        stateControlHolder.doorState.setText(Constants.MachineDoorSate[itemMachine.doorState]);
+        stateControlHolder.lockState.setText(Constants.MachineLockState[itemMachine.lockState]);
+        stateControlHolder.lightState.setText(Constants.MachineLightState[itemMachine.lightState]);
+        stateControlHolder.fanState.setText(Constants.MachineFanState[itemMachine.blowerState]);
+        stateControlHolder.refrigeratorState.setText(Constants.MachineRefrigeratorState[itemMachine.refrigeratorState]);
+        stateControlHolder.tempState.setText(itemMachine.machineTemperature);
+        stateControlHolder.appVersion.setText(itemMachine.clientVersion);
+        stateControlHolder.driverVersion.setText(itemMachine.driverVersion);
+        stateControlHolder.updateTime.setText(itemMachine.updateTime);
     }
 
     public void addTeleControlView(LinearLayout parentView) {
@@ -70,10 +90,26 @@ public class MachineItemAddView {
         //   teleControlHolder.targetTemp.setText("80");
     }
 
-    public void addStockProductView(LinearLayout parentView, List<ItemProduct> itemProducts) {
+    /*
+    *更新状态远程控制的值
+    * */
+    public void updateTeleControlUi(ItemMachine itemMachine) {
+        teleControlHolder.targetTemp.setText(itemMachine.targetTemperature);
+        teleControlHolder.offsetTemp.setText(itemMachine.deviationTemperature);
+        itemMachine.targetTemperature = "10℃";
+        itemMachine.deviationTemperature = "12℃";
+        int tartgetTemp = Integer.valueOf(itemMachine.targetTemperature.replace("℃", "").trim());
+        int offsetTemp = Integer.valueOf(itemMachine.deviationTemperature.replace("℃", "").trim());
+        Log.d("--updateTeleControlUi--", "tartgetTemp===" + tartgetTemp);
+        teleControlHolder.tempSeekbar.setProgress(tartgetTemp);
+        teleControlHolder.offSetTempSeekbar.setProgress(offsetTemp);
+    }
+
+
+    public void addStockProductView(LinearLayout parentView) {
         if (stockProductView == null || teleControlHolder == null) {
             stockProductView = LayoutInflater.from(context).inflate(R.layout.machine_detail_prod_list, null, false);
-            stockProductsHolder = new StockProductsHolder(stockProductView, itemProducts);
+            stockProductsHolder = new StockProductsHolder(stockProductView);
         }
         //先添加View
         if (parentView.getChildAt(0) != stockProductView) {
@@ -81,6 +117,13 @@ public class MachineItemAddView {
             parentView.addView(stockProductView);
         }
         //向View添加值
+    }
+
+    /*
+      *更新库存商品的值
+      * */
+    public void updateStockProductUi() {
+
     }
 
     public View getStateControlView() {
@@ -144,6 +187,8 @@ public class MachineItemAddView {
             subOffsetTemp.setOnClickListener(this);
             offSetTempSeekbar.setOnSeekBarChangeListener(this);
             tempSeekbar.setOnSeekBarChangeListener(this);
+            tempSeekbar.setMax(Constants.MAX_TARGET_TEMP);
+            offSetTempSeekbar.setMax(Constants.MAX_OFFSET_TEMP);
             lockSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -163,8 +208,6 @@ public class MachineItemAddView {
             int OffSetTemp = Integer.parseInt(offsetTemp.getText().toString());
             switch (v.getId()) {
                 case R.id.addTargetTemp:
-
-
                     if (TargetTemp >= Constants.MAX_TARGET_TEMP) {
                         Toast.makeText(context, "当前已达到最大目标温度,无法再增加", Toast.LENGTH_SHORT).show();
                     } else {
@@ -199,6 +242,12 @@ public class MachineItemAddView {
                         offsetTemp.setText(String.valueOf(OffSetTemp));
                     }
 
+                    break;
+                case R.id.restart:
+                    break;
+                case R.id.shutDown:
+                    break;
+                case R.id.check:
                     break;
             }
             tempSeekbar.setProgress(Integer.parseInt(targetTemp.getText().toString()));
@@ -253,11 +302,55 @@ public class MachineItemAddView {
     class StockProductsHolder {
         public ListView stockProductList;
         public MachineStockProductAdapter adapter;
+        public List<ItemProduct> itemProducts;
+        public boolean scrollFlag = false;
 
-        public StockProductsHolder(View itemView, List<ItemProduct> itemProducts) {
+        public StockProductsHolder(View itemView) {
+            itemProducts = new ArrayList<ItemProduct>();
             stockProductList = (ListView) itemView.findViewById(R.id.productList);
-            adapter = new MachineStockProductAdapter(context, itemProducts);
+            adapter = new MachineStockProductAdapter(context, this.itemProducts);
+            machineItemAddViewHelper = new MachineItemAddViewHelper(this.itemProducts, adapter);
             stockProductList.setAdapter(adapter);
+            stockProductList.setOnScrollListener(new AbsListView.OnScrollListener() {
+                @Override
+                public void onScrollStateChanged(AbsListView view, int scrollState) {
+                    switch (scrollState) {
+                        // 当不滚动时
+                        case AbsListView.OnScrollListener.SCROLL_STATE_IDLE:// 是当屏幕停止滚动时
+                            scrollFlag = false;
+                            // 判断滚动到底部
+                            Log.i("最后一项", String.valueOf(stockProductList.getLastVisiblePosition()));
+                            Log.i("总项数", String.valueOf(stockProductList.getCount()));
+                            if (stockProductList.getLastVisiblePosition() == (stockProductList.getCount() - 1)) {
+
+                                if (machineItemAddViewHelper.getCurPage() < machineItemAddViewHelper.getTotalPage()) {
+                                    Map<String, Object> params = RequestParamsContants.getInstance().getMachineStockProductParams();
+                                    params.put("p", machineItemAddViewHelper.getCurPage() + 1);
+                                    machineItemAddViewHelper.getDatas(params);
+
+                                } else {
+                                    Toast.makeText(context, "偷偷告诉你,数据已经全部加载...", Toast.LENGTH_SHORT).show();
+                                }
+
+                            }
+                            // 判断滚动到顶部
+                            if (view.getFirstVisiblePosition() == 0) {
+                            }
+                            break;
+                        case AbsListView.OnScrollListener.SCROLL_STATE_TOUCH_SCROLL:// 滚动时
+                            scrollFlag = true;
+                            break;
+                        case AbsListView.OnScrollListener.SCROLL_STATE_FLING:// 是当用户由于之前划动屏幕并抬起手指，屏幕产生惯性滑动时
+                            scrollFlag = true;
+                            break;
+                    }
+                }
+
+                @Override
+                public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+                }
+            });
+
         }
     }
 }

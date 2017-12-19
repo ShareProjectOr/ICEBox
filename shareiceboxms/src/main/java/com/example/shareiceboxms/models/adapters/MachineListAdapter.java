@@ -1,6 +1,7 @@
 package com.example.shareiceboxms.models.adapters;
 
 import android.content.Context;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,6 +13,7 @@ import android.widget.Toast;
 import com.example.shareiceboxms.R;
 import com.example.shareiceboxms.models.beans.ItemMachine;
 import com.example.shareiceboxms.models.beans.ItemTradeTotal;
+import com.example.shareiceboxms.models.contants.Constants;
 import com.example.shareiceboxms.models.factories.FragmentFactory;
 import com.example.shareiceboxms.views.fragments.machine.MachineDetailFragment;
 import com.example.shareiceboxms.views.fragments.machine.MachineFragment;
@@ -42,7 +44,7 @@ public class MachineListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         RecyclerView.ViewHolder viewHolder = null;
         if (viewType == VIEW_ITEM) {
-            viewHolder = new ItemViewHolder(LayoutInflater.from(context).inflate(R.layout.machine_list_item_layout, null));
+            viewHolder = new ItemViewHolder(LayoutInflater.from(context).inflate(R.layout.machine_list_item, null));//machine_list_item_layout
         } else if (viewType == VIEW_LOADING) {
             viewHolder = new LoadingHolder(LayoutInflater.from(context).inflate(R.layout.loading_more, null));
         }
@@ -51,23 +53,38 @@ public class MachineListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+        final int index = position;
         if (holder instanceof ItemViewHolder) {
-            holder.itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (machineFragment != null) {
-                        FragmentFactory.getInstance().getSavedBundle().putString("machineCode", "1212121");
-                        machineFragment.addFrameLayout(new MachineDetailFragment());
-                    }
+            if (holder != null) {
+                if (itemMachines.get(position) != null) {
+                    ((ItemViewHolder) holder).machienCode.setText(itemMachines.get(position).machineCode);
+                    ((ItemViewHolder) holder).machineName.setText(itemMachines.get(position).machineName);
+                    ((ItemViewHolder) holder).isOnLine.setText(Constants.MachineOnLineState[itemMachines.get(position).networkState]);
+                    ((ItemViewHolder) holder).isOnLine.setTextColor(ContextCompat.getColor(context, Constants.MachineStateColor[itemMachines.get(position).networkState]));
+                    ((ItemViewHolder) holder).isException.setText(itemMachines.get(position).faultState == 0 ? Constants.MachineFaultState[0] : Constants.MachineFaultState[1]);
+                    ((ItemViewHolder) holder).isException.setTextColor(ContextCompat.getColor(context, itemMachines.get(position).faultState == 0 ? Constants.MachineStateColor[1] : Constants.MachineStateColor[0]));
+                    ((ItemViewHolder) holder).managerName.setText(itemMachines.get(position).itemManager.name);
+                    ((ItemViewHolder) holder).machineAddr.setText(itemMachines.get(position).machineAddress);
+                    holder.itemView.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            if (machineFragment != null) {
+                                FragmentFactory.getInstance().getSavedBundle().putInt("machineID", itemMachines.get(index).machineID);
+                                machineFragment.addFrameLayout(new MachineDetailFragment());
+                            }
+                        }
+                    });
                 }
-            });
+            }
         } else if (holder instanceof LoadingHolder) {
             if (holder != null) {
             }
         }
-//        viewHolder.totalMoneyNum.setText(itemTradeTotal);
-//        viewHolder.hasPayNum.setText(itemTradeTotal);
-//        viewHolder.notPayNum.setText(itemTradeTotal);
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        return itemMachines.get(position) == null ? VIEW_LOADING : VIEW_ITEM;
     }
 
     @Override
@@ -75,7 +92,7 @@ public class MachineListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         return itemMachines.size();
     }
 
-    class ItemViewHolder extends RecyclerView.ViewHolder  {
+    class ItemViewHolder extends RecyclerView.ViewHolder {
         private TextView machineAddr, machineName, isOnLine, isException, managerName, machienCode;
 
         public ItemViewHolder(View itemView) {

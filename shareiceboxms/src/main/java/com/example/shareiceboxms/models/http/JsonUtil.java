@@ -33,7 +33,7 @@ public class JsonUtil {
     * map to json
     * @params map
     * */
-    public static String mapToJson(Map<String, String> map) {
+    public static String mapToJson(Map<String, Object> map) {
         Gson gson = new Gson();
         String json = gson.toJson(map);
         return json;

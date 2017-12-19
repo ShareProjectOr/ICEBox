@@ -3,6 +3,7 @@ package com.example.shareiceboxms.models.helpers;
 import android.content.Context;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 
 /**
  * Created by WH on 2017/12/12.
@@ -10,7 +11,8 @@ import android.support.v7.widget.RecyclerView;
 
 public class LoadMoreHelper {
     private Context context;
-    private boolean isLoading = false;
+    private boolean isLoading = false;//是否正在滑动
+//    private boolean allowLoad = false;//是否允许加载更多
     private RecyclerView.Adapter<RecyclerView.ViewHolder> adapter;
     private LoadMoreListener loadMoreListener;
     private RecyclerView recyclerView;
@@ -58,7 +60,9 @@ public class LoadMoreHelper {
                     LinearLayoutManager linearLayoutManager = (LinearLayoutManager) recyclerView.getLayoutManager();
                     totalItemCount = linearLayoutManager.getItemCount();
                     lastVisibleItemPosition = linearLayoutManager.findLastVisibleItemPosition();
-                    if (!isLoading && totalItemCount <= lastVisibleItemPosition + visibleThreshold) {
+                    Log.e("--lastVisiblePosition--", " ------" + lastVisibleItemPosition);
+                    Log.e("--totalItemCount--", " ------" + totalItemCount);
+                    if (!isLoading && totalItemCount <= lastVisibleItemPosition + 1 + visibleThreshold) {
                         loadMoreListener.loadMore(adapter, recyclerView);
                         isLoading = true;
                     }
@@ -67,6 +71,7 @@ public class LoadMoreHelper {
         });
         return this;
     }
+
 
     public void setLoading(boolean loading) {
         isLoading = loading;

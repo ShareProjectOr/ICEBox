@@ -106,15 +106,15 @@ public class LoginFragment extends BaseFragment {
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.login:
-                mAuthTask = new UserLoginTask(accountEdit.getText().toString(), passEdit.getText().toString());
-                mAuthTask.execute();
+//                mAuthTask = new UserLoginTask(accountEdit.getText().toString(), passEdit.getText().toString());
+//                mAuthTask.execute();
 //                LoginAnimPresentor.loginAnim(editLayout, barLayout);
 //                loginBnt.setVisibility(View.GONE);
 //                passLayout.setVisibility(View.GONE);
-           /*     Intent intent = new Intent();
+                Intent intent = new Intent();
                 intent.setClass(getActivity(), HomeActivity.class);
                 startActivity(intent);
-                getActivity().finish();*/
+                getActivity().finish();
                 break;
             case R.id.isClose:
                 accountEdit.setText("");
@@ -171,12 +171,14 @@ public class LoginFragment extends BaseFragment {
         @Override
         protected Boolean doInBackground(Void... params) {
 
-            Map<String, String> body = new HashMap<>();
-            body.put("loginAccount", mEmail);
-            body.put("loginPassword", mPassword);
+            Map<String, Object> body = new HashMap<>();
+//            body.put("loginAccount", mEmail);
+//            body.put("loginPassword", mPassword);
+            body.put("loginAccount", " 刘江东");
+            body.put("loginPassword", "123456");
+
+
             try {
-                Log.e("login_map", body.toString());
-                Log.e("login_body", JsonUtil.mapToJson(body));
                 response = OkHttpUtil.post(HttpRequstUrl.LOGIN_URL, JsonUtil.mapToJson(body));
                 Log.e("login_response", response.toString());
             } catch (IOException e) {

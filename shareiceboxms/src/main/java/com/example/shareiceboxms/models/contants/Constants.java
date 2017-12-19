@@ -37,5 +37,16 @@ public interface Constants {
     * 机器管理
     * */
     String[] MachineItemOperator = {"状态监控", "远程控制", "库存商品"};
+    String[] MachineFaultState = {"正常", "异常"};
+    int[] MachineStateColor = {R.color.red, R.color.sucessgreen,};
+    String[] MachineRunState = {"无异常 待机中", "", "", ""};//机器运行状态
+    String[] MachineDoorSate = {"关闭", "开启"};//机器门状态
+    String[] MachineLockState = {"关闭", "开启"};//机器锁状态
+    String[] MachineLightState = {"断电", "通电"};//机器灯状态
+    String[] MachineFanState = {"关闭", "开启"};//机器风扇状态
+    String[] MachineRefrigeratorState = {"异常", "正常"};//机器制冷状态
+    String[] MachineSensorState = {"关闭", "开启"};//机器传感器
+
+    String[] MachineOnLineState = {"离线", "在线"};
 
 }
