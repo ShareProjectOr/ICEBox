@@ -2,6 +2,7 @@ package com.example.shareiceboxms.views.fragments;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,6 +10,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.shareiceboxms.R;
+import com.example.shareiceboxms.models.contants.Constants;
+import com.example.shareiceboxms.models.beans.PerSonMessage;
 import com.example.shareiceboxms.models.factories.FragmentFactory;
 import com.example.shareiceboxms.views.activities.HomeActivity;
 
@@ -40,9 +43,36 @@ public class PerSonFragment extends BaseFragment {
         if (contentView == null) {
             contentView = super.onCreateView(inflater, container, FragmentFactory.getInstance().putLayoutId(R.layout.personfragment));
             bindViews();
+            bindDatas();
             initListener();
         }
         return contentView;
+    }
+
+    private void bindDatas() {
+        mPhoneNum.setText("电话:\t" + PerSonMessage.tel);
+        mEmail.setText("邮箱:\t" + PerSonMessage.email);
+        mAddress.setText("所在地址:\t" + PerSonMessage.address);
+        mIdCard.setText("身份证号:\t" + PerSonMessage.idCard);
+        mLastLoginTime.setText("最后登录时间:\t" + PerSonMessage.lastLoginTime);
+        mLastLoginIp.setText("最后登录Ip:\t" + PerSonMessage.loginIP);
+        if (PerSonMessage.role.equals("2")) {
+            mPayType.setText("结算方式:\t" + Constants.settleWay[PerSonMessage.settleWay]);
+            mServerPrecent.setText("服务费比例:\t" + PerSonMessage.settlementProportion);
+            mMinSettlement.setText("最低结算金额:\t" + PerSonMessage.minBalance);
+        } else {
+            mPayType.setVisibility(View.GONE);
+            mServerPrecent.setVisibility(View.GONE);
+            mMinSettlement.setVisibility(View.GONE);
+        }
+        Log.e("minBalance",PerSonMessage.minBalance);
+        mCompanyName.setText("企业名称:\t" + PerSonMessage.companyName);
+        mCompanyCode.setText("信用代码:\t" + PerSonMessage.companyCreditCode);
+        if (PerSonMessage.role.equals("2") || PerSonMessage.role.equals("1")) {
+            mPublicAccount.setText("对公账号:\t" + PerSonMessage.bankAccount);
+        } else {
+            mPublicAccount.setVisibility(View.GONE);
+        }
     }
 
     private void initListener() {

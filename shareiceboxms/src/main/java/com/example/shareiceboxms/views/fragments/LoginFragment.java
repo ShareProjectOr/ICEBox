@@ -1,13 +1,11 @@
 package com.example.shareiceboxms.views.fragments;
 
-import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.text.Editable;
 import android.text.InputType;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,11 +19,12 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 
-import com.example.shareiceboxms.models.contants.Constants;
+import com.bumptech.glide.Glide;
 import com.example.shareiceboxms.models.contants.HttpRequstUrl;
+import com.example.shareiceboxms.models.beans.PerSonMessage;
+import com.example.shareiceboxms.models.contants.RequstTips;
 import com.example.shareiceboxms.models.http.JsonUtil;
 import com.example.shareiceboxms.models.http.OkHttpUtil;
-import com.example.shareiceboxms.presentors.LoginAnimPresentor;
 import com.example.shareiceboxms.views.activities.HomeActivity;
 import com.example.shareiceboxms.R;
 
@@ -34,6 +33,7 @@ import com.example.shareiceboxms.views.activities.LoginActivity;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.zackratos.ultimatebar.UltimateBar;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -68,7 +68,7 @@ public class LoginFragment extends BaseFragment {
     }
 
     private void initDatas() {
-
+     //   Glide.with(this).load(R.drawable.opening).into(imageView);
     }
 
     private void initViews() {
@@ -106,15 +106,25 @@ public class LoginFragment extends BaseFragment {
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.login:
-//                mAuthTask = new UserLoginTask(accountEdit.getText().toString(), passEdit.getText().toString());
-//                mAuthTask.execute();
+                if (accountEdit.getText().toString().isEmpty()) {
+                    accountEdit.setError("用户名不能为空");
+                    accountEdit.requestFocus();
+                    return;
+                }
+                if (passEdit.getText().toString().isEmpty()) {
+                    passEdit.setError("密码不能为空");
+                    passEdit.requestFocus();
+                    return;
+                }
+                mAuthTask = new UserLoginTask(accountEdit.getText().toString(), passEdit.getText().toString());
+                mAuthTask.execute();
 //                LoginAnimPresentor.loginAnim(editLayout, barLayout);
 //                loginBnt.setVisibility(View.GONE);
 //                passLayout.setVisibility(View.GONE);
-                Intent intent = new Intent();
+           /*     Intent intent = new Intent();
                 intent.setClass(getActivity(), HomeActivity.class);
                 startActivity(intent);
-                getActivity().finish();
+                getActivity().finish();*/
                 break;
             case R.id.isClose:
                 accountEdit.setText("");
@@ -156,10 +166,8 @@ public class LoginFragment extends BaseFragment {
         private final String mEmail;
         private final String mPassword;
         private String response;
-        private String err = "net_work_err";
-        private String tsy;
-        //        private Map<String, String> msgMap;
-        private String userJson;
+        private String err = RequstTips.NetWork_ERROR;
+        private JSONObject userJson;
 
         UserLoginTask(String email, String password) {
             mEmail = email;
@@ -172,31 +180,35 @@ public class LoginFragment extends BaseFragment {
         protected Boolean doInBackground(Void... params) {
 
             Map<String, Object> body = new HashMap<>();
-//            body.put("loginAccount", mEmail);
-//            body.put("loginPassword", mPassword);
-            body.put("loginAccount", " 刘江东");
-            body.put("loginPassword", "123456");
-
+            body.put("loginAccount", mEmail);
+            body.put("loginPassword", mPassword);
 
             try {
+
                 response = OkHttpUtil.post(HttpRequstUrl.LOGIN_URL, JsonUtil.mapToJson(body));
-                Log.e("login_response", response.toString());
+                Log.e("login_response", response);
+                userJson = new JSONObject(response);
+                err = userJson.getString("err");
+                if (err.equals("")) {
+                    return true;
+                }
             } catch (IOException e) {
-                Log.e("erro", e.toString());
+                err = RequstTips.NetWork_ERROR;
+            } catch (JSONException e) {
+                err = RequstTips.JSONException_Tip;
             }
             return false;
         }
 
         @Override
         protected void onPostExecute(final Boolean success) {
-            mAuthTask = null;
-
-            //loginAnim.destoryDialog();
             if (success) {
                 loginActivity.jumpActivity(HomeActivity.class, null);
-
+                PerSonMessage.loginPassword = mPassword;
+                PerSonMessage.bindMessage(response);
             } else {
-//                Log.e("login_response", response);
+                passEdit.setError(err);
+                passEdit.requestFocus();
             }
         }
 
@@ -209,8 +221,5 @@ public class LoginFragment extends BaseFragment {
 
     }
 
-    @Override
-    public void OnBackDown() {
-        super.OnBackDown();
-    }
+
 }
