@@ -106,10 +106,10 @@ public class MachineItemAddView {
     }
 
 
-    public void addStockProductView(LinearLayout parentView) {
+    public void addStockProductView(LinearLayout parentView,ItemMachine itemMachine) {
         if (stockProductView == null || teleControlHolder == null) {
             stockProductView = LayoutInflater.from(context).inflate(R.layout.machine_detail_prod_list, null, false);
-            stockProductsHolder = new StockProductsHolder(stockProductView);
+            stockProductsHolder = new StockProductsHolder(stockProductView,itemMachine);
             machineItemAddViewHelper.getDatas(RequestParamsContants.getInstance().getMachineStockProductParams());
         }
         //先添加View
@@ -306,11 +306,11 @@ public class MachineItemAddView {
         public List<ItemProduct> itemProducts;
         public boolean scrollFlag = false;
 
-        public StockProductsHolder(View itemView) {
+        public StockProductsHolder(View itemView, ItemMachine itemMachine) {
             itemProducts = new ArrayList<ItemProduct>();
             stockProductList = (ListView) itemView.findViewById(R.id.productList);
             adapter = new MachineStockProductAdapter(context, this.itemProducts);
-            machineItemAddViewHelper = new MachineItemAddViewHelper(this.itemProducts, adapter);
+            machineItemAddViewHelper = new MachineItemAddViewHelper(this.itemProducts, adapter,itemMachine );
             stockProductList.setAdapter(adapter);
             stockProductList.setOnScrollListener(new AbsListView.OnScrollListener() {
                 @Override

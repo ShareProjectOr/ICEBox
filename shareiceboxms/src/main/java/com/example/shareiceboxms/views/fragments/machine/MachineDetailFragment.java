@@ -108,7 +108,7 @@ public class MachineDetailFragment extends BaseFragment {
                         }
                         break;
                     case 2:
-                        machineItemAddView.addStockProductView(itemLayout);
+                        machineItemAddView.addStockProductView(itemLayout, itemMachine);
                         break;
                 }
             }

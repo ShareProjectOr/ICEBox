@@ -11,8 +11,10 @@ import android.widget.TextView;
 import com.example.shareiceboxms.R;
 import com.example.shareiceboxms.models.beans.ItemProduct;
 import com.example.shareiceboxms.models.beans.ItemTradeRecord;
+import com.example.shareiceboxms.models.helpers.TimeUtil;
 import com.example.shareiceboxms.views.fragments.trade.TradeAccountDetailFragment;
 
+import java.sql.Time;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -59,6 +61,10 @@ public class MachineStockProductAdapter extends BaseAdapter {
             viewHolder = (ViewHolder) convertView.getTag();
         }
         //添加值
+        viewHolder.productName.setText(itemProducts.get(position).goodsName);
+        viewHolder.productPrice.setText(itemProducts.get(position).price + "");
+        viewHolder.productSpecPrice.setText(itemProducts.get(position).activityPrice + "");
+        viewHolder.timeLimit.setText(TimeUtil.getDateFromSeconds(String.valueOf(itemProducts.get(position).residueStorageTime)) + "");
         return convertView;
     }
 

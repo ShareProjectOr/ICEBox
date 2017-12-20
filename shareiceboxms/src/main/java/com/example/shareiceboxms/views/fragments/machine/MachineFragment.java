@@ -31,6 +31,7 @@ import com.example.shareiceboxms.models.beans.ItemMachine;
 import com.example.shareiceboxms.models.beans.ItemTradeRecord;
 import com.example.shareiceboxms.models.contants.Constants;
 import com.example.shareiceboxms.models.contants.HttpRequstUrl;
+import com.example.shareiceboxms.models.contants.JsonDataParse;
 import com.example.shareiceboxms.models.contants.RequestParamsContants;
 import com.example.shareiceboxms.models.factories.FragmentFactory;
 import com.example.shareiceboxms.models.factories.MyViewFactory;
@@ -187,7 +188,6 @@ public class MachineFragment extends BaseFragment implements HomeActivity.OnBack
             params.put("p", curPage + 1);
             getDatas(params);
         }
-        //      setCanLoad();
     }
 
     /*
@@ -234,14 +234,17 @@ public class MachineFragment extends BaseFragment implements HomeActivity.OnBack
             try {
                 Log.e("request params: ", JsonUtil.mapToJson(this.params));
                 response = OkHttpUtil.post(HttpRequstUrl.MACHINE_LIST_URL, JsonUtil.mapToJson(this.params));
+             /*    被移动至JsonDataParse的getArrayList 方法中
                 JSONObject jsonObject = new JSONObject(response.toString());
-//                ItemMachine.userType = jsonObject.getInt("userType");
                 JSONObject jsonD = jsonObject.getJSONObject("d");
                 totalNum = jsonD.getInt("t");
                 curPage = jsonD.getInt("p");
                 requestNum = jsonD.getInt("n");
-                JSONArray jsonList = jsonD.getJSONArray("list");
-                machines = ItemMachine.bindMachineList(jsonList);
+                JSONArray jsonList = jsonD.getJSONArray("list");*/
+                machines = ItemMachine.bindMachineList(JsonDataParse.getInstance().getArrayList(response.toString()));
+                totalNum=JsonDataParse.getInstance().getTotalNum();
+                curPage=JsonDataParse.getInstance().getCurPage();
+                requestNum=JsonDataParse.getInstance().getRequestNum();
                 Log.e("machines.size==", machines.size() + "");
                 Log.e("response", response.toString());
                 return true;

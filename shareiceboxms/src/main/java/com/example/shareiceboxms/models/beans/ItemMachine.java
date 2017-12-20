@@ -153,4 +153,8 @@ public class ItemMachine {
         }
         return itemMachine;
     }
+    /*
+    * 绑定库存商品中保存的部分信息，也可以不保存
+    * */
+
 }
