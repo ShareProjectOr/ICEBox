@@ -11,9 +11,9 @@ public interface HttpRequstUrl {
     /*
     * 机器模块
     * */
-    String MACHINE_LIST_URL = "http://192.168.4.224:8081/" + "machine/search";
-    String MACHINE_DETAIL_URL = "http://192.168.4.224:8081/" + "machine/get";
-    String MACHINE_StockGoods_URL = "http://192.168.4.224:8081/" + "machine/stockGoods";
+    String MACHINE_LIST_URL = "http://192.168.4.224:8082/" + "machine/search";
+    String MACHINE_DETAIL_URL = "http://192.168.4.224:8082/" + "machine/get";
+    String MACHINE_StockGoods_URL = "http://192.168.4.224:8082/" + "machine/stockGoods";
 
 
     String TEST_UERL = "http://192.168.4.211:8081/category/addLable";

@@ -34,7 +34,7 @@ public class ItemMachine {
     public int networkState;
     public String machineAddress;
     public int refrigeratorState;
-    public String qRCode;//QRCode
+    public String qrCode;//QRCode
     public String breakTime;
     public int lightState;
     public String activatedTime;
@@ -89,7 +89,7 @@ public class ItemMachine {
                 itemMachine.networkState = item.getInt("networkState");
                 itemMachine.machineAddress = item.getString("machineAddress");
                 itemMachine.refrigeratorState = item.getInt("refrigeratorState");
-                itemMachine.qRCode = item.getString("qRCode");//qRCode
+                itemMachine.qrCode = item.getString("qrCode");//qRCode
                 itemMachine.breakTime = item.getString("breakTime");
                 itemMachine.lightState = item.getInt("lightState");
                 itemMachine.activatedTime = item.getString("activatedTime");
@@ -135,7 +135,7 @@ public class ItemMachine {
             itemMachine.networkState = item.getInt("networkState");
             itemMachine.machineAddress = item.getString("machineAddress");
             itemMachine.refrigeratorState = item.getInt("refrigeratorState");
-            itemMachine.qRCode = item.getString("qRCode");
+            itemMachine.qrCode = item.getString("qrCode");
             itemMachine.breakTime = item.getString("breakTime");
             itemMachine.lightState = item.getInt("lightState");
             itemMachine.activatedTime = item.getString("activatedTime");

@@ -1,5 +1,6 @@
 package com.example.shareiceboxms.views.fragments.trade;
 
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.IdRes;
 import android.support.annotation.Nullable;
@@ -7,6 +8,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,7 +20,10 @@ import android.widget.Toast;
 
 import com.example.shareiceboxms.R;
 import com.example.shareiceboxms.models.adapters.TradeTotalListAdapter;
+import com.example.shareiceboxms.models.beans.ItemMachine;
 import com.example.shareiceboxms.models.beans.ItemTradeTotal;
+import com.example.shareiceboxms.models.contants.HttpRequstUrl;
+import com.example.shareiceboxms.models.contants.JsonDataParse;
 import com.example.shareiceboxms.models.factories.FragmentFactory;
 import com.example.shareiceboxms.models.helpers.DoubleDatePickerDialog;
 import com.example.shareiceboxms.models.http.JsonUtil;
@@ -26,7 +31,12 @@ import com.example.shareiceboxms.models.http.OkHttpUtil;
 import com.example.shareiceboxms.views.fragments.BaseFragment;
 import com.squareup.okhttp.OkHttpClient;
 
+import org.json.JSONException;
+
+import java.io.IOException;
 import java.util.Calendar;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created by WH on 2017/11/27.
@@ -109,7 +119,10 @@ public class TradeTotalFragment extends BaseFragment {
 
     @Override
     public void onRefresh() {
-        adapter.notifyDataSetChanged();
+        if (itemTradeTotal != null) {
+            adapter.notifyDataSetChanged();
+        }
+//        getDatas(getParams());
         refreshLayout.setRefreshing(false);//关闭刷新
     }
 
@@ -120,5 +133,62 @@ public class TradeTotalFragment extends BaseFragment {
                 datePickerDialog.show();
                 break;
         }
+    }
+
+    //获取机器列表异步任务
+    private class TradeTotalTask extends AsyncTask<Void, Void, Boolean> {
+
+        private String response;
+        private String err = "net_work_err";
+        private List<ItemMachine> machines;
+        private Map<String, Object> params;
+
+        TradeTotalTask(Map<String, Object> params) {
+            this.params = params;
+        }
+
+        @Override
+        protected Boolean doInBackground(Void... params) {
+            try {
+                Log.e("request params: ", JsonUtil.mapToJson(this.params));
+                response = OkHttpUtil.post(HttpRequstUrl.MACHINE_LIST_URL, JsonUtil.mapToJson(this.params));
+             /*    被移动至JsonDataParse的getArrayList 方法中
+                JSONObject jsonObject = new JSONObject(response.toString());
+                JSONObject jsonD = jsonObject.getJSONObject("d");
+                totalNum = jsonD.getInt("t");
+                curPage = jsonD.getInt("p");
+                requestNum = jsonD.getInt("n");
+                JSONArray jsonList = jsonD.getJSONArray("list");*/
+                machines = ItemMachine.bindMachineList(JsonDataParse.getInstance().getArrayList(response.toString()));
+                Log.e("machines.size==", machines.size() + "");
+                Log.e("response", response.toString());
+                return true;
+            } catch (IOException e) {
+                Log.e("erro", e.toString());
+            } catch (JSONException e) {
+                Log.e("erro", e.toString());
+            }
+            return false;
+        }
+
+        @Override
+        protected void onPostExecute(final Boolean success) {
+            if (success) {
+                adapter.notifyDataSetChanged();
+            } else {
+                Log.e("request error :", response + "");
+                if (response == null) {
+//                    Toast.makeText(getContext(), "网络请求超时", Toast.LENGTH_SHORT).show();
+                }
+
+            }
+        }
+
+        @Override
+        protected void onCancelled() {
+
+        }
+
+
     }
 }

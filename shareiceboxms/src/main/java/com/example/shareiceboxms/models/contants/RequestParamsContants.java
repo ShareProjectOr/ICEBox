@@ -33,7 +33,7 @@ public class RequestParamsContants {
         params.put("userID", 1);
         params.put("appUserID", 1);
         params.put("keyword", "");
-        params.put("p", "");
+        params.put("p", 1);
         params.put("n", 4);
         params.put("machineAddress", "");
         params.put("activationState", "");
@@ -66,7 +66,7 @@ public class RequestParamsContants {
         params.put("appUserID", 1);
         params.put("checkCode", 1);
         params.put("p", 1);
-        params.put("n", 2);
+        params.put("n", 5);
         params.put("machineID", FragmentFactory.getInstance().getSavedBundle().getInt("machineID"));
         return params;
     }

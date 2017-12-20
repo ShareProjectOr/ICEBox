@@ -20,7 +20,7 @@ public class ItemProduct {
     public String goodsName;
     public float price;
     public float activityPrice;
-    public String rFID;
+    public String rfid;
     public String inputTime;
     public String bindingTime;
     public String exhibitTime;
@@ -67,7 +67,7 @@ public class ItemProduct {
                 itemProduct.goodsName = item.getString("goodsName");
                 itemProduct.price = (float) item.getDouble("price");
                 itemProduct.activityPrice = (float) item.getDouble("activityPrice");
-                itemProduct.rFID = item.getString("rFID");
+                itemProduct.rfid = item.getString("rfid");
                 itemProduct.inputTime = item.getString("inputTime");
                 itemProduct.bindingTime = item.getString("bindingTime");
                 itemProduct.exhibitTime = item.getString("exhibitTime");

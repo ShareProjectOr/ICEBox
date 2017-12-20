@@ -222,7 +222,7 @@ public class MachineItemAddView {
             /*
             * 设置进度条颜色
             **/
-            int[] colors = new int[]{R.color.white, R.color.blue};
+            int[] colors = new int[]{R.color.blue, R.color.colorAccent};
             GradientDrawable gradientDrawable = new GradientDrawable(GradientDrawable.Orientation.LEFT_RIGHT, colors);
             gradientDrawable.setGradientType(GradientDrawable.LINEAR_GRADIENT);
             gradientDrawable.setCornerRadius(15);
@@ -349,12 +349,17 @@ public class MachineItemAddView {
             scrollView.setOnTouchListener(new View.OnTouchListener() {
                 @Override
                 public boolean onTouch(View v, MotionEvent event) {
-                    if (scrollView.getChildAt(0).getMeasuredHeight() == scrollView.getHeight() +
+                    Log.e("----", "scrollView.getChildAt(0).getHeight()==" + scrollView.getChildAt(0).getHeight());
+                    Log.e("----", ").getHeight()==" + (scrollView.getHeight() +
+                            scrollView.getScrollY() - scrollView.getPaddingTop() - scrollView.getPaddingBottom()));
+                    if (scrollView.getChildAt(0).getHeight() == scrollView.getHeight() +
                             scrollView.getScrollY() - scrollView.getPaddingTop() - scrollView.getPaddingBottom()) {
                         if (machineItemAddViewHelper.getCurPage() < machineItemAddViewHelper.getTotalPage()) {
                             Map<String, Object> params = RequestParamsContants.getInstance().getMachineStockProductParams();
                             params.put("p", machineItemAddViewHelper.getCurPage() + 1);
                             machineItemAddViewHelper.getDatas(params);
+                            itemProducts = machineItemAddViewHelper.getItemProducts();
+                            adapter.notifyDataSetChanged();
 
                         } else {
                             Toast.makeText(context, "偷偷告诉你,数据已经全部加载...", Toast.LENGTH_SHORT).show();
