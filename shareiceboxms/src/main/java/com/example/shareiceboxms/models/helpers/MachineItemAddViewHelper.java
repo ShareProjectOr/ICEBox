@@ -75,11 +75,14 @@ public class MachineItemAddViewHelper {
     public void setAdapter(MachineStockProductAdapter adapter) {
         this.adapter = adapter;
     }
+    /*
+    *
+    * 机器远程控制异步任务
+    * */
 
     /**
      * //获取机器库存商品异步任务
      */
-
     public class MachineStockProductTask extends AsyncTask<Void, Void, Boolean> {
         private String response;
         private String err = "net_work_err";
@@ -95,7 +98,7 @@ public class MachineItemAddViewHelper {
         protected Boolean doInBackground(Void... params) {
             try {
                 Log.e("request params: ", JsonUtil.mapToJson(this.params));
-                response = OkHttpUtil.post(HttpRequstUrl.MACHINE_LIST_URL, JsonUtil.mapToJson(this.params));
+                response = OkHttpUtil.post(HttpRequstUrl.MACHINE_StockGoods_URL, JsonUtil.mapToJson(this.params));
                 JSONObject jsonObject = new JSONObject(response.toString());
                 JSONObject jsonD = jsonObject.getJSONObject("d");
                 totalNum = jsonD.getInt("t");
@@ -104,7 +107,7 @@ public class MachineItemAddViewHelper {
                 totalPage = totalNum / requestNum + (totalNum % requestNum > 0 ? 1 : 0);
                 JSONArray jsonList = jsonD.getJSONArray("list");
                 products = ItemProduct.bindProductList(jsonList);
-                Log.e("machines.size==", products.size() + "");
+                Log.e("products.size==", products.size() + "");
                 Log.e("response", response.toString());
                 return true;
             } catch (IOException e) {
