@@ -1,8 +1,12 @@
 package com.example.shareiceboxms.models.helpers;
 
 import android.content.Context;
+import android.graphics.drawable.GradientDrawable;
+import android.support.v4.content.ContextCompat;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.AbsListView;
 import android.widget.CompoundButton;
@@ -10,6 +14,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
+import android.widget.ScrollView;
 import android.widget.SeekBar;
 import android.widget.Switch;
 import android.widget.TextView;
@@ -21,6 +26,7 @@ import com.example.shareiceboxms.models.beans.ItemMachine;
 import com.example.shareiceboxms.models.beans.ItemProduct;
 import com.example.shareiceboxms.models.contants.Constants;
 import com.example.shareiceboxms.models.contants.RequestParamsContants;
+import com.example.shareiceboxms.views.activities.HomeActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -106,10 +112,10 @@ public class MachineItemAddView {
     }
 
 
-    public void addStockProductView(LinearLayout parentView,ItemMachine itemMachine) {
+    public void addStockProductView(LinearLayout parentView, ItemMachine itemMachine, ScrollView scrollView) {
         if (stockProductView == null || teleControlHolder == null) {
             stockProductView = LayoutInflater.from(context).inflate(R.layout.machine_detail_prod_list, null, false);
-            stockProductsHolder = new StockProductsHolder(stockProductView,itemMachine);
+            stockProductsHolder = new StockProductsHolder(stockProductView, itemMachine, scrollView);
             machineItemAddViewHelper.getDatas(RequestParamsContants.getInstance().getMachineStockProductParams());
         }
         //先添加View
@@ -118,6 +124,16 @@ public class MachineItemAddView {
             parentView.addView(stockProductView);
         }
         //向View添加值
+    }
+
+    public void refreshStockProduct(boolean isRefresh) {
+        if (isRefresh) {
+            if (stockProductsHolder != null && stockProductsHolder.itemProducts != null) {
+                stockProductsHolder.itemProducts.clear();
+            }
+            machineItemAddViewHelper.getDatas(RequestParamsContants.getInstance().getMachineStockProductParams());
+        }
+
     }
 
     /*
@@ -186,6 +202,9 @@ public class MachineItemAddView {
             subTargetTemp.setOnClickListener(this);
             addOffsetTemp.setOnClickListener(this);
             subOffsetTemp.setOnClickListener(this);
+            restart.setOnClickListener(this);
+            shutDown.setOnClickListener(this);
+            check.setOnClickListener(this);
             offSetTempSeekbar.setOnSeekBarChangeListener(this);
             tempSeekbar.setOnSeekBarChangeListener(this);
             tempSeekbar.setMax(Constants.MAX_TARGET_TEMP);
@@ -200,6 +219,15 @@ public class MachineItemAddView {
                     }
                 }
             });
+            /*
+            * 设置进度条颜色
+            **/
+            int[] colors = new int[]{R.color.white, R.color.blue};
+            GradientDrawable gradientDrawable = new GradientDrawable(GradientDrawable.Orientation.LEFT_RIGHT, colors);
+            gradientDrawable.setGradientType(GradientDrawable.LINEAR_GRADIENT);
+            gradientDrawable.setCornerRadius(15);
+            gradientDrawable.setStroke(10, -1);
+            tempSeekbar.setProgressDrawable(gradientDrawable);
 
         }
 
@@ -245,8 +273,12 @@ public class MachineItemAddView {
 
                     break;
                 case R.id.restart:
+                    MyDialog restartDialog = new MyDialog(context);
+                    restartDialog.showDialog(restartDialog.getMachineTeleControlDialog("确定要重启机器吗？"));
                     break;
                 case R.id.shutDown:
+                    MyDialog shutDownDialog = new MyDialog(context);
+                    shutDownDialog.showDialog(shutDownDialog.getMachineTeleControlDialog("确定要将机器关机吗？"));
                     break;
                 case R.id.check:
                     break;
@@ -301,57 +333,36 @@ public class MachineItemAddView {
     }
 
     class StockProductsHolder {
+        public ScrollView scrollView;
         public ListView stockProductList;
         public MachineStockProductAdapter adapter;
         public List<ItemProduct> itemProducts;
         public boolean scrollFlag = false;
 
-        public StockProductsHolder(View itemView, ItemMachine itemMachine) {
+        public StockProductsHolder(View itemView, ItemMachine itemMachine, final ScrollView scrollView) {
             itemProducts = new ArrayList<ItemProduct>();
+            this.scrollView = scrollView;
             stockProductList = (ListView) itemView.findViewById(R.id.productList);
             adapter = new MachineStockProductAdapter(context, this.itemProducts);
-            machineItemAddViewHelper = new MachineItemAddViewHelper(this.itemProducts, adapter,itemMachine );
+            machineItemAddViewHelper = new MachineItemAddViewHelper(this.itemProducts, adapter, itemMachine);
             stockProductList.setAdapter(adapter);
-            stockProductList.setOnScrollListener(new AbsListView.OnScrollListener() {
+            scrollView.setOnTouchListener(new View.OnTouchListener() {
                 @Override
-                public void onScrollStateChanged(AbsListView view, int scrollState) {
-                    switch (scrollState) {
-                        // 当不滚动时
-                        case AbsListView.OnScrollListener.SCROLL_STATE_IDLE:// 是当屏幕停止滚动时
-                            scrollFlag = false;
-                            // 判断滚动到底部
-                            Log.i("最后一项", String.valueOf(stockProductList.getLastVisiblePosition()));
-                            Log.i("总项数", String.valueOf(stockProductList.getCount()));
-                            if (stockProductList.getLastVisiblePosition() == (stockProductList.getCount() - 1)) {
+                public boolean onTouch(View v, MotionEvent event) {
+                    if (scrollView.getChildAt(0).getMeasuredHeight() == scrollView.getHeight() +
+                            scrollView.getScrollY() - scrollView.getPaddingTop() - scrollView.getPaddingBottom()) {
+                        if (machineItemAddViewHelper.getCurPage() < machineItemAddViewHelper.getTotalPage()) {
+                            Map<String, Object> params = RequestParamsContants.getInstance().getMachineStockProductParams();
+                            params.put("p", machineItemAddViewHelper.getCurPage() + 1);
+                            machineItemAddViewHelper.getDatas(params);
 
-                                if (machineItemAddViewHelper.getCurPage() < machineItemAddViewHelper.getTotalPage()) {
-                                    Map<String, Object> params = RequestParamsContants.getInstance().getMachineStockProductParams();
-                                    params.put("p", machineItemAddViewHelper.getCurPage() + 1);
-                                    machineItemAddViewHelper.getDatas(params);
-
-                                } else {
-                                    Toast.makeText(context, "偷偷告诉你,数据已经全部加载...", Toast.LENGTH_SHORT).show();
-                                }
-
-                            }
-                            // 判断滚动到顶部
-                            if (view.getFirstVisiblePosition() == 0) {
-                            }
-                            break;
-                        case AbsListView.OnScrollListener.SCROLL_STATE_TOUCH_SCROLL:// 滚动时
-                            scrollFlag = true;
-                            break;
-                        case AbsListView.OnScrollListener.SCROLL_STATE_FLING:// 是当用户由于之前划动屏幕并抬起手指，屏幕产生惯性滑动时
-                            scrollFlag = true;
-                            break;
+                        } else {
+                            Toast.makeText(context, "偷偷告诉你,数据已经全部加载...", Toast.LENGTH_SHORT).show();
+                        }
                     }
-                }
-
-                @Override
-                public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+                    return false;
                 }
             });
-
         }
     }
 }

@@ -108,6 +108,7 @@
                 android:layout_marginRight="10dp"
                 android:max="20"
                 android:maxHeight="3dp"
+                android:progressTint="@color/blue"
                 android:progress="5"
                 android:progressDrawable="@color/gray_light_deep"
                 android:thumbTint="@color/blue" />

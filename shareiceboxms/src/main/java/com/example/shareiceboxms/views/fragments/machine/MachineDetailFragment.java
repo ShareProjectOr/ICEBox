@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -44,9 +45,10 @@ import java.util.Map;
  * Created by WH on 2017/11/27.
  */
 
-public class MachineDetailFragment extends BaseFragment {
+public class MachineDetailFragment extends BaseFragment implements SwipeRefreshLayout.OnRefreshListener {
     private View containerView;
     private ScrollView scrollLayout;
+    private SwipeRefreshLayout refresh;
     private android.support.design.widget.TabLayout machineTabLayout;
     private LinearLayout itemLayout;
 
@@ -57,6 +59,7 @@ public class MachineDetailFragment extends BaseFragment {
     HomeActivity homeActivity;
     MachineItemAddView machineItemAddView;
     ItemMachine itemMachine;
+    SwipeRefreshLayout.OnRefreshListener onRefreshListener;
     int curTabPosition = 0;
 
 
@@ -72,6 +75,7 @@ public class MachineDetailFragment extends BaseFragment {
     }
 
     private void initViews() {
+        refresh = (SwipeRefreshLayout) containerView.findViewById(R.id.refresh);
         scrollLayout = (ScrollView) containerView.findViewById(R.id.scrollLayout);
         machineTabLayout = (android.support.design.widget.TabLayout) containerView.findViewById(R.id.machineTabLayout);
         itemLayout = (LinearLayout) containerView.findViewById(R.id.itemLayout);
@@ -87,6 +91,8 @@ public class MachineDetailFragment extends BaseFragment {
         managerName = (TextView) containerView.findViewById(R.id.managerName);
         machienCode = (TextView) containerView.findViewById(R.id.machienCode);
 
+        onRefreshListener = this;
+        refresh.setEnabled(false);
         title.setText("机器详情");
         drawerIcon.setOnClickListener(this);
         saoma.setOnClickListener(this);
@@ -108,7 +114,10 @@ public class MachineDetailFragment extends BaseFragment {
                         }
                         break;
                     case 2:
-                        machineItemAddView.addStockProductView(itemLayout, itemMachine);
+                        refresh.setEnabled(true);
+                        refresh.setColorSchemeColors(ContextCompat.getColor(getContext(), R.color.blue));
+                        refresh.setOnRefreshListener(onRefreshListener);
+                        machineItemAddView.addStockProductView(itemLayout, itemMachine,scrollLayout);
                         break;
                 }
             }
@@ -174,6 +183,14 @@ public class MachineDetailFragment extends BaseFragment {
                 homeActivity.clickIconToOpenDrawer();
                 break;
         }
+    }
+
+    @Override
+    public void onRefresh() {
+        if (curTabPosition == 2) {
+            machineItemAddView.refreshStockProduct(true);
+        }
+        refresh.setRefreshing(false);
     }
 
     //获取机器详情异步任务

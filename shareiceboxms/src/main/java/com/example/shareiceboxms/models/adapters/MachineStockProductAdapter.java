@@ -1,21 +1,17 @@
 package com.example.shareiceboxms.models.adapters;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.Button;
 import android.widget.TextView;
 
 import com.example.shareiceboxms.R;
 import com.example.shareiceboxms.models.beans.ItemProduct;
-import com.example.shareiceboxms.models.beans.ItemTradeRecord;
-import com.example.shareiceboxms.models.helpers.TimeUtil;
-import com.example.shareiceboxms.views.fragments.trade.TradeAccountDetailFragment;
+import com.example.shareiceboxms.models.helpers.SecondToDate;
 
-import java.sql.Time;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -64,7 +60,8 @@ public class MachineStockProductAdapter extends BaseAdapter {
         viewHolder.productName.setText(itemProducts.get(position).goodsName);
         viewHolder.productPrice.setText(itemProducts.get(position).price + "");
         viewHolder.productSpecPrice.setText(itemProducts.get(position).activityPrice + "");
-        viewHolder.timeLimit.setText(TimeUtil.getDateFromSeconds(String.valueOf(itemProducts.get(position).residueStorageTime)) + "");
+        String[] secondToDate = SecondToDate.formatLongToTimeStr(Long.valueOf(itemProducts.get(position).residueStorageTime));
+        viewHolder.timeLimit.setText(secondToDate[0] + "天" + secondToDate[1] + "时" + secondToDate[2] + "分" + secondToDate[3] + "秒");
         return convertView;
     }
 

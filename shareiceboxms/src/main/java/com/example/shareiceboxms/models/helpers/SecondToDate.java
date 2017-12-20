@@ -5,7 +5,8 @@ package com.example.shareiceboxms.models.helpers;
  */
 
 public class SecondToDate {
-    public static String formatLongToTimeStr(Long seconds) {
+    public static String[] formatLongToTimeStr(Long seconds) {
+        String[] time = new String[4];
         int day = 0;
         int hour = 0;
         int minute = 0;
@@ -24,7 +25,11 @@ public class SecondToDate {
             day = hour / 24;
             hour = hour % 24;
         }
-        return day + "-" + hour + "-" + minute + "-" + second;
+        time[0] = String.valueOf(day);
+        time[1] = String.valueOf(hour);
+        time[2] = String.valueOf(minute);
+        time[3] = String.valueOf(second);
+        return time;
 
     }
 }

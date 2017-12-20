@@ -81,6 +81,7 @@ public class MachineFragment extends BaseFragment implements HomeActivity.OnBack
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         if (containerView == null) {
+            Log.e("------","-----------onCreateView_---------");
             containerView = super.onCreateView(inflater, container, FragmentFactory.getInstance().putLayoutId(R.layout.fragment_machine));
             initViews();
             initDatas();
