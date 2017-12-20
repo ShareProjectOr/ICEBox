@@ -16,12 +16,18 @@ import android.widget.EditText;
 
 import com.example.shareiceboxms.R;
 import com.example.shareiceboxms.models.adapters.ProductListAdapter;
+import com.example.shareiceboxms.models.beans.PerSonMessage;
 import com.example.shareiceboxms.models.contants.Constants;
+import com.example.shareiceboxms.models.contants.HttpRequstUrl;
+import com.example.shareiceboxms.models.contentprovider.ProductListData;
 import com.example.shareiceboxms.models.factories.FragmentFactory;
 import com.example.shareiceboxms.models.factories.MyViewFactory;
 import com.example.shareiceboxms.views.fragments.BaseFragment;
 import com.example.shareiceboxms.views.fragments.trade.TradeFragment;
 import com.example.shareiceboxms.views.fragments.trade.TradeRecordDetailFragment;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by LYU on 2017/12/12.
@@ -34,6 +40,10 @@ public class ProductTypeListFragment extends BaseFragment {
     private Button mDoSearch;
     private RecyclerView mProductList;
     private SwipeRefreshLayout mRefreashLayout;
+    private ProductListData contentprovider;
+    private ProductListAdapter productAdapter;
+    private Map<String, Object> initPostBody = new HashMap<>();
+    private int currentPage = 1;
 
     @Nullable
     @Override
@@ -55,6 +65,7 @@ public class ProductTypeListFragment extends BaseFragment {
     }
 
     private void inidata() {
+
     }
 
     public void addFrameFragment() {
@@ -63,12 +74,17 @@ public class ProductTypeListFragment extends BaseFragment {
     }
 
     private void initview() {
+        initPostBody.put("n", 10);
+        initPostBody.put("p", currentPage);
+        initPostBody.put("appUserID", PerSonMessage.userId);
         mMachineSearchInput = (EditText) contentView.findViewById(R.id.machineSearchInput);
         mDoSearch = (Button) contentView.findViewById(R.id.doSearch);
         mProductList = (RecyclerView) contentView.findViewById(R.id.productList);
         mRefreashLayout = (SwipeRefreshLayout) contentView.findViewById(R.id.refreshLayout);
         mRefreashLayout.setColorSchemeColors(ContextCompat.getColor(getContext(), R.color.blue));
-        ProductListAdapter productAdapter = new ProductListAdapter(getActivity(), this);
+        productAdapter = new ProductListAdapter(getActivity(), this);
+        contentprovider = productAdapter.getContentProvider();
+        contentprovider.getData(HttpRequstUrl.PRODUCT_TYPE_LIST_URL, initPostBody, true);
         new MyViewFactory(getContext()).BuildRecyclerViewRule(mProductList, new LinearLayoutManager(getActivity()), null, true).setAdapter(productAdapter);
 
     }
@@ -86,6 +102,7 @@ public class ProductTypeListFragment extends BaseFragment {
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
+                contentprovider.getData(HttpRequstUrl.PRODUCT_TYPE_LIST_URL, initPostBody, true);
                 mRefreashLayout.setRefreshing(false);
             }
         }, Constants.REFREASH_DELAYED_TIME);

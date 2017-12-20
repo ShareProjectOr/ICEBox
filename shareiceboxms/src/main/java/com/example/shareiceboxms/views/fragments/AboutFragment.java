@@ -57,6 +57,7 @@ public class AboutFragment extends BaseFragment {
     }
 
     private void bindViews() {
+        homeActivity = (HomeActivity) getActivity();
         version = (TextView) contentView.findViewById(R.id.version);
         drawerIcon = (ImageView) contentView.findViewById(R.id.drawerIcon);
         saoma = (ImageView) contentView.findViewById(R.id.saoma);

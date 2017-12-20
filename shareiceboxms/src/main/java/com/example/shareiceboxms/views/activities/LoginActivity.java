@@ -7,7 +7,11 @@ import android.os.Bundle;
 
 import com.example.shareiceboxms.R;
 
+import com.example.shareiceboxms.models.beans.PerSonMessage;
 import com.example.shareiceboxms.views.fragments.LoginFragment;
+import com.example.shareiceboxms.views.fragments.WelcomeFragment;
+
+import org.zackratos.ultimatebar.UltimateBar;
 
 public class LoginActivity extends BaseActivity {
 
@@ -17,10 +21,22 @@ public class LoginActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         initViews();
-        initDatas();
+        if (PerSonMessage.isexcit){
+            login();
+        }else {
+            welcome();
+        }
+
     }
 
-    private void initDatas() {
+    private void welcome() {
+        FragmentManager fm = getSupportFragmentManager();
+        FragmentTransaction ft = fm.beginTransaction();
+        ft.add(R.id.login_frame, new WelcomeFragment(), "WelcomeFragment");
+        ft.commit();
+    }
+
+    public void login() {
         FragmentManager fm = getSupportFragmentManager();
         FragmentTransaction ft = fm.beginTransaction();
         ft.add(R.id.login_frame, new LoginFragment(), "LoginFragment");
@@ -34,5 +50,6 @@ public class LoginActivity extends BaseActivity {
     @Override
     public void jumpActivity(Class<?> activitycalss, Bundle intentData) {
         super.jumpActivity(activitycalss, intentData);
+        finish();
     }
 }

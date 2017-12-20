@@ -14,7 +14,6 @@ import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
@@ -24,7 +23,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.shareiceboxms.R;
+import com.example.shareiceboxms.models.beans.PerSonMessage;
+import com.example.shareiceboxms.models.contants.ConstanceMethod;
 import com.example.shareiceboxms.models.contants.Constants;
+import com.example.shareiceboxms.models.contants.Sql;
+import com.example.shareiceboxms.models.factories.FragmentFactory;
 import com.example.shareiceboxms.models.helpers.MyDialog;
 import com.example.shareiceboxms.models.helpers.NotifySnackbar;
 import com.example.shareiceboxms.views.fragments.AboutFragment;
@@ -34,6 +37,7 @@ import com.example.shareiceboxms.views.fragments.PerSonFragment;
 import com.example.shareiceboxms.views.fragments.exception.ExceptionFragment;
 import com.example.shareiceboxms.views.fragments.machine.MachineFragment;
 import com.example.shareiceboxms.views.fragments.product.ProductFragment;
+import com.example.shareiceboxms.views.fragments.OpeningDoorFragment;
 import com.example.shareiceboxms.views.fragments.trade.TradeFragment;
 
 import org.zackratos.ultimatebar.UltimateBar;
@@ -58,6 +62,7 @@ public class HomeActivity extends BaseActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 //        setImmersiveStateBar();
+        SaveUserMessager();
         initViews();
         initData();
         initListener();
@@ -83,20 +88,8 @@ public class HomeActivity extends BaseActivity
     }
 
     private void initViews() {
-
-//        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-//        fab.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-//                        .setAction("Action", null).show();
-//            }
-//        });
-
         notifyLayout = (TextView) findViewById(R.id.notify);
-
         setNotifySnackbar();
-
         drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
@@ -109,11 +102,8 @@ public class HomeActivity extends BaseActivity
                 this, drawer, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
 
         toggle.setDrawerIndicatorEnabled(false);//修改toolbar默认图标，必须添加
-
         drawer.addDrawerListener(toggle);
         toggle.syncState();
-
-
     }
 
 
@@ -196,9 +186,7 @@ public class HomeActivity extends BaseActivity
                 showHomepage = false;*/
                 break;
             case R.id.icon_logout:
-              /*  curFragment = new TradeFragment();
-                tabLayout.setVisibility(View.GONE);
-                showHomepage = false;*/
+                new MyDialog().getLogoutDialog(HomeActivity.this).show();
                 break;
         }
 
@@ -225,9 +213,14 @@ public class HomeActivity extends BaseActivity
         }
     }
 
+    @Override
+    public void finish() {
+        super.finish();
+    }
+
     /*
-* 设置全透明状态栏
-* /*/
+    * 设置全透明状态栏
+    * /*/
     private void setImmersiveStateBar() {
         UltimateBar ultimateBar = new UltimateBar(this);
         ultimateBar.setImmersionBar();
@@ -247,6 +240,29 @@ public class HomeActivity extends BaseActivity
         ft.replace(R.id.home_tab_frame, curFragment);
         ft.commit();
         BaseFragment.curFragment = curFragment;
+    }
+
+    public void DoSql() {
+        Sql sql = new Sql(this);
+        boolean isupdated = false;
+        for (String saves : sql.getAllUserID()) {
+            if (String.valueOf(PerSonMessage.userId).equals(saves)) {
+                Log.d("debug", "userId" + PerSonMessage.userId);
+                sql.updateContact(String.valueOf(PerSonMessage.userId), PerSonMessage.loginAccount, PerSonMessage.loginPassword);
+                isupdated = true;
+                break;
+            }
+        }
+        if (!isupdated) {
+            sql.insertContact(String.valueOf(PerSonMessage.userId), PerSonMessage.loginAccount, PerSonMessage.loginPassword);
+        }
+
+    }
+
+    //记录登录状态
+    private void SaveUserMessager() {
+        ConstanceMethod.isFirstLogin(this, false);
+        DoSql();
     }
 
     public void finishActivity() {
@@ -281,6 +297,12 @@ public class HomeActivity extends BaseActivity
                     Toast.makeText(getApplication(), result, Toast.LENGTH_LONG).show();
                     //  mMachineCode.setText(result);
                     //    tvResult.setText(result);
+                    if (!(curFragment instanceof OpeningDoorFragment)) {
+                        FragmentFactory.getInstance().getSavedBundle().putString("eQcode", result);
+                        curFragment = new OpeningDoorFragment();
+                        showHomepage = false;
+                        switchFragment();
+                    }
                 } else {
                     Toast.makeText(getApplication(), "无法获取扫描结果", Toast.LENGTH_LONG).show();
                     //  new AlertView("提示", "无法获取扫描结果", null, new String[]{"确定"}, null, getActivity(), AlertView.Style.Alert, null).show();
@@ -349,7 +371,6 @@ public class HomeActivity extends BaseActivity
 
     @Override
     public void jumpActivity(Class<?> activitycalss, Bundle intentData) {
-        super.jumpActivity(activitycalss, intentData);
         Intent intent = new Intent();
         if (activitycalss != null) {
             intent.setClass(getApplication(), activitycalss);
