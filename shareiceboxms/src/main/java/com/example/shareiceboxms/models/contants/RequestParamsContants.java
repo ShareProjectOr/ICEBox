@@ -1,7 +1,5 @@
 package com.example.shareiceboxms.models.contants;
 
-import android.app.Fragment;
-
 import com.example.shareiceboxms.models.factories.FragmentFactory;
 
 import java.util.HashMap;
@@ -70,5 +68,4 @@ public class RequestParamsContants {
         params.put("machineID", FragmentFactory.getInstance().getSavedBundle().getInt("machineID"));
         return params;
     }
-
 }

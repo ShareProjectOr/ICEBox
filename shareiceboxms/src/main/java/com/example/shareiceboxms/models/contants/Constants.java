@@ -16,7 +16,7 @@ public interface Constants {
     * */
     String[] TradeTotalTitles = {"订单总金额", "冲抵后实际结算金额", "支付宝消费", "微信消费"};
     String[] TradeTotalTitlesItem = {"已扣款", "代扣款", "已支付", "待支付"};
-    String[] EXCEPTION_LV_TITLE = {"全部", "一般严重", "特别严重"};
+    String[] EXCEPTION_LV_TITLE = { "一般", "严重","全部"};
     String[] TradeRecordDetailTitle = {"售出商品(0)", "已退款商品(0)"};
     long REFREASH_DELAYED_TIME = 1500; //刷新时间
     int[] TradeRecordPayICON = {R.mipmap.nopay, R.mipmap.paied};
@@ -36,6 +36,11 @@ public interface Constants {
     /*
     * 机器管理
     * */
+  //  String[] MachineItemOperator = {"状态监控", "远程控制", "库存商品"};
+    String[] settleWay = {"自动结算", "人工结算"};
+    /*
+   * 机器管理
+   * */
     String[] MachineItemOperator = {"状态监控", "远程控制", "库存商品"};
     String[] MachineFaultState = {"正常", "异常"};
     int[] MachineStateColor = {R.color.red, R.color.sucessgreen,};

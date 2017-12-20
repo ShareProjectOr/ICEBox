@@ -5,9 +5,15 @@ package com.example.shareiceboxms.models.contants;
  */
 
 public interface HttpRequstUrl {
-    String HOST_URL = "http://192.168.4.197:8080/";
+   String HOST_URL = "http://192.168.4.197:8082/";
+  //  String HOST_URL = "http://202.98.157.25/fridgesManage_server/";
     String LOGIN_URL = HOST_URL + "base/login";
     String MACHINE_LIST_URL = "http://192.168.4.15:8082/" + "machine/search";
     String MACHINE_DETAIL_URL = "http://192.168.4.15:8082/" + "machine/get";
     String MACHINE_StockGoods_URL = "http://192.168.4.15:8082/" + "machine/stockGoods";
+
+
+    String TEST_UERL = "http://192.168.4.211:8081/category/addLable";
+    String REPAIR_PASSWORD_URL = HOST_URL + "user/editPassword";
+    String PRODUCT_TYPE_LIST_URL ="http://192.168.4.211:8082/category/search";
 }

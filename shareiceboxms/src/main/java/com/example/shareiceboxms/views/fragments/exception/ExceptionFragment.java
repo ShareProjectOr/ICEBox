@@ -13,6 +13,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.CompoundButton;
 import android.widget.DatePicker;
 import android.widget.FrameLayout;
@@ -44,7 +45,7 @@ import java.util.Calendar;
  * Edit by LYU on 2017/12/11.
  */
 
-public class ExceptionFragment extends BaseFragment implements CompoundButton.OnCheckedChangeListener {
+public class ExceptionFragment extends BaseFragment implements CompoundButton.OnCheckedChangeListener, AdapterView.OnItemClickListener {
     private View containerView;
     private BaseFragment curFrameFragment;
     private HomeActivity homeActivity;
@@ -60,6 +61,7 @@ public class ExceptionFragment extends BaseFragment implements CompoundButton.On
     private SwipeRefreshLayout mRefreshLayout;
     private RelativeLayout selectTimeLayout;
     private DoubleDatePickerDialog datePickerDialog;
+    private int exceptionLeve;
 
     @Nullable
     @Override
@@ -104,6 +106,7 @@ public class ExceptionFragment extends BaseFragment implements CompoundButton.On
         mRecycleAdapter = new ExceptionListAdapter(mContext);
         exceptionType = (TextView) containerView.findViewById(R.id.exception_type);
         mTilePopup = MenuPop.CreateMenuPop(mContext, exceptionTypeLayout, Constants.EXCEPTION_LV_TITLE);
+        mTilePopup.setOnItemClickListener(this);
         mRefreshLayout = (SwipeRefreshLayout) containerView.findViewById(R.id.refreshLayout);
         mRefreshLayout.setColorSchemeColors(ContextCompat.getColor(mContext, R.color.blue));
     }
@@ -160,5 +163,12 @@ public class ExceptionFragment extends BaseFragment implements CompoundButton.On
             chooseIsDetails.setTrackDrawable(ContextCompat.getDrawable(mContext, R.drawable.shape_switch));
 
         }
+    }
+
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        mTilePopup.dismiss();
+        exceptionType.setText(Constants.EXCEPTION_LV_TITLE[position]);
+        exceptionLeve = position;
     }
 }
