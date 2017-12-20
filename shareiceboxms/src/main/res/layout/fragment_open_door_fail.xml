@@ -1,0 +1,52 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/layoutgraybackground"
+    android:gravity="center_horizontal"
+    android:orientation="vertical"
+    tools:context="com.example.shareiceboxms.views.fragments.OpenDoorSuccessFragment">
+
+    <ImageView
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_marginTop="100dp"
+        android:src="@mipmap/nopay"
+        />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:text="开锁失败"
+        android:textColor="@color/black"
+        android:textSize="20sp" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="50dp"
+        android:gravity="center"
+        android:text="扫码开门失败请确保网络环境正常"
+        android:textColor="@color/test_init_color"
+        android:textSize="16sp" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="多次开门失败请联系开发人员"
+        android:textColor="@color/test_init_color"
+        android:textSize="16sp" />
+
+    <Button
+        android:id="@+id/backhome"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="30dp"
+        android:layout_marginRight="30dp"
+        android:layout_marginTop="30dp"
+        android:background="@drawable/shape_white_button"
+        android:text="返回首页"
+        android:textSize="18sp" />
+</LinearLayout>
