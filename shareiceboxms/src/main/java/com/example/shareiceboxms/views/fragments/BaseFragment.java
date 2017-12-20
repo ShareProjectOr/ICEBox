@@ -5,6 +5,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,6 +14,7 @@ import android.widget.DatePicker;
 
 import com.example.shareiceboxms.R;
 import com.example.shareiceboxms.models.helpers.DoubleDatePickerDialog;
+import com.example.shareiceboxms.models.helpers.LoadMoreHelper;
 import com.example.shareiceboxms.views.activities.HomeActivity;
 import com.example.shareiceboxms.views.fragments.trade.TradeAccountDetailFragment;
 
@@ -20,7 +22,9 @@ import com.example.shareiceboxms.views.fragments.trade.TradeAccountDetailFragmen
  * Created by WH on 2017/11/27.
  */
 
-public class BaseFragment extends Fragment implements View.OnClickListener, SwipeRefreshLayout.OnRefreshListener, DoubleDatePickerDialog.OnDateSetListener, HomeActivity.OnBackPressListener {
+public class BaseFragment extends Fragment implements View.OnClickListener,
+        SwipeRefreshLayout.OnRefreshListener, DoubleDatePickerDialog.OnDateSetListener,
+        HomeActivity.OnBackPressListener,LoadMoreHelper.LoadMoreListener {
     public static BaseFragment curFragment;
     public static TradeAccountDetailFragment tradeAccountDetailFragment;
 
@@ -75,6 +79,11 @@ public class BaseFragment extends Fragment implements View.OnClickListener, Swip
 
     @Override
     public void OnBackDown() {
+
+    }
+
+    @Override
+    public void loadMore(RecyclerView.Adapter<RecyclerView.ViewHolder> adapter, RecyclerView recyclerView) {
 
     }
 }

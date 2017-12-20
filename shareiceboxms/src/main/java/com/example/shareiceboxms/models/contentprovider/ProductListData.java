@@ -9,6 +9,7 @@ import android.widget.Toast;
 
 import com.example.shareiceboxms.models.beans.ItemProductType;
 import com.example.shareiceboxms.models.contants.RequstTips;
+import com.example.shareiceboxms.models.helpers.LoadMoreHelper;
 import com.example.shareiceboxms.models.helpers.MyDialog;
 import com.example.shareiceboxms.models.http.JsonUtil;
 import com.example.shareiceboxms.models.http.OkHttpUtil;
@@ -33,10 +34,18 @@ public class ProductListData {
     private List<ItemProductType> DataSet = new ArrayList<>();
     private int total = 0;
     private int initAccountPage = 0;
+    private LoadMoreHelper mloadMoreHelper;
+    private int realProductAccount;
+
+
 
     public ProductListData(RecyclerView.Adapter mAdapter, Activity mActivty) {
         this.mAdapter = mAdapter;
         this.mActivty = mActivty;
+    }
+
+    public void setCanLoad(LoadMoreHelper mloadMoreHelper) {
+        this.mloadMoreHelper = mloadMoreHelper;
     }
 
     public void getData(final String url, final Map<String, Object> body, final boolean refresh) {
@@ -54,8 +63,13 @@ public class ProductListData {
                         DataSet.clear();
                     }
                     error = object.getString("err");
-                    if (!error.equals("")) {//请求出错
+                    if (!error.equals("") && !error.equals("null")) {//请求出错
                         return false;
+                    }
+                    //清空上一次的末尾占位符
+                    if (GetDataSetSize() != 0 && DataSet.get(GetDataSetSize() - 1) == null) {
+                        Log.e("清空末位", "" + (GetDataSetSize() - 1));
+                        DataSet.remove(GetDataSetSize() - 1);
                     }
                     JSONObject d = object.getJSONObject("d");
                     total = d.getInt("t");
@@ -67,8 +81,15 @@ public class ProductListData {
                         item.bindData(itemobject);
                         DataSet.add(item);
                     }
+                    if (GetDataSetSize() != 0 && GetDataSetSize() < total) {
+                        DataSet.add(null);
+                        Log.e("添加占位后长度", GetDataSetSize() + "");
+                        mloadMoreHelper.setLoading(false);
+                    }
+
                 } catch (IOException e1) {
                     error = "网络错误\n";
+                    Log.e("response", e1 + "");
                     return false;
 
                 } catch (JSONException e1) {
@@ -84,12 +105,12 @@ public class ProductListData {
                 dialog.dismiss();
                 if (DataSet.size() == 0 && error.equals("")) {
                     //没有数据的情况
+                    Toast.makeText(mActivty, "暂无任何商品品类信息", Toast.LENGTH_LONG).show();
                 }
                 if (!aBoolean) {
                     Toast.makeText(mActivty, error, Toast.LENGTH_LONG).show();
                 }
                 mAdapter.notifyDataSetChanged();
-
             }
         }.execute();
     }
@@ -99,13 +120,14 @@ public class ProductListData {
     }
 
     public int GetMaxPageAccount() {
-        if (total != 0) {
 
-            if (initAccountPage != 0 && GetDataSetSize() != 0) {
+        if (total != 0) {
+            realProductAccount = GetDataSetSize() - 1;//真正的物品数等于list长度减去最后一位的占位符;
+            if (initAccountPage != 0 && realProductAccount != 0) {
                 return initAccountPage;
-            } else if (GetDataSetSize() != 0) {
-                initAccountPage = total % GetDataSetSize() > 0 ? total
-                        / GetDataSetSize() + 1 : total / GetDataSetSize();
+            } else if (realProductAccount != 0) {
+                initAccountPage = total % realProductAccount > 0 ? total
+                        / realProductAccount + 1 : total / realProductAccount;
                 return initAccountPage;
             } else {
                 return 1;

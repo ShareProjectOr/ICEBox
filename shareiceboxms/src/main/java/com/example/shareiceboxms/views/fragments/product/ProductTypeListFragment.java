@@ -8,11 +8,13 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.example.shareiceboxms.R;
 import com.example.shareiceboxms.models.adapters.ProductListAdapter;
@@ -22,6 +24,7 @@ import com.example.shareiceboxms.models.contants.HttpRequstUrl;
 import com.example.shareiceboxms.models.contentprovider.ProductListData;
 import com.example.shareiceboxms.models.factories.FragmentFactory;
 import com.example.shareiceboxms.models.factories.MyViewFactory;
+import com.example.shareiceboxms.models.helpers.LoadMoreHelper;
 import com.example.shareiceboxms.views.fragments.BaseFragment;
 import com.example.shareiceboxms.views.fragments.trade.TradeFragment;
 import com.example.shareiceboxms.views.fragments.trade.TradeRecordDetailFragment;
@@ -44,6 +47,8 @@ public class ProductTypeListFragment extends BaseFragment {
     private ProductListAdapter productAdapter;
     private Map<String, Object> initPostBody = new HashMap<>();
     private int currentPage = 1;
+    private LoadMoreHelper loadMoreHelper;
+    private int pageNum = 5;
 
     @Nullable
     @Override
@@ -74,7 +79,7 @@ public class ProductTypeListFragment extends BaseFragment {
     }
 
     private void initview() {
-        initPostBody.put("n", 10);
+        initPostBody.put("n", pageNum);
         initPostBody.put("p", currentPage);
         initPostBody.put("appUserID", PerSonMessage.userId);
         mMachineSearchInput = (EditText) contentView.findViewById(R.id.machineSearchInput);
@@ -83,9 +88,15 @@ public class ProductTypeListFragment extends BaseFragment {
         mRefreashLayout = (SwipeRefreshLayout) contentView.findViewById(R.id.refreshLayout);
         mRefreashLayout.setColorSchemeColors(ContextCompat.getColor(getContext(), R.color.blue));
         productAdapter = new ProductListAdapter(getActivity(), this);
+        loadMoreHelper = new LoadMoreHelper().setContext(getContext()).setAdapter(productAdapter)
+                .setLoadMoreListenner(this)
+                .bindScrollListener(mProductList)
+                .setVisibleThreshold(0);
         contentprovider = productAdapter.getContentProvider();
+        contentprovider.setCanLoad(loadMoreHelper);
         new MyViewFactory(getContext()).BuildRecyclerViewRule(mProductList, new LinearLayoutManager(getActivity()), null, true).setAdapter(productAdapter);
         contentprovider.getData(HttpRequstUrl.PRODUCT_TYPE_LIST_URL, initPostBody, true);
+
 
     }
 
@@ -97,12 +108,31 @@ public class ProductTypeListFragment extends BaseFragment {
         }
     }
 
+    //加载更多的回调
+    @Override
+    public void loadMore(RecyclerView.Adapter<RecyclerView.ViewHolder> adapter, RecyclerView recyclerView) {
+        Log.e("loadmore", "doing");
+        if (currentPage < contentprovider.GetMaxPageAccount()) {
+            currentPage++;
+        } else {
+            Toast.makeText(getActivity(), "偷偷告诉你,数据已全部加载完毕...", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        Map<String, Object> postbody = new HashMap<>();
+        postbody.put("n", pageNum);
+        postbody.put("p", currentPage);
+        postbody.put("appUserID", PerSonMessage.userId);
+        contentprovider.getData(HttpRequstUrl.PRODUCT_TYPE_LIST_URL, postbody, false);
+    }
+
     @Override
     public void onRefresh() {
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
                 contentprovider.getData(HttpRequstUrl.PRODUCT_TYPE_LIST_URL, initPostBody, true);
+                currentPage = 1;
                 mRefreashLayout.setRefreshing(false);
             }
         }, Constants.REFREASH_DELAYED_TIME);

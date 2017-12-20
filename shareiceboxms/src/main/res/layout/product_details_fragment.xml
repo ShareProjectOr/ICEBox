@@ -76,7 +76,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="20dp"
                 android:layout_marginTop="20dp"
-                android:text="农夫山泉矿泉机场特卖"
+                android:text="..."
                 android:textSize="18sp" />
 
             <LinearLayout
@@ -99,7 +99,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="10dp"
-                    android:text="￥2.50"
+                    android:text="..."
                     android:textColor="@color/black"
                     android:textSize="24sp" />
 
@@ -116,7 +116,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="10dp"
-                    android:text="￥2.00"
+                    android:text="..."
                     android:textColor="@color/red"
                     android:textSize="24sp" />
             </LinearLayout>
@@ -148,7 +148,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="10dp"
-                    android:text="4543212" />
+                    android:text="..." />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -161,7 +161,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="10dp"
-                    android:text="31" />
+                    android:text="..." />
 
             </LinearLayout>
         </LinearLayout>
@@ -196,7 +196,7 @@
                     android:layout_marginBottom="20dp"
                     android:layout_marginTop="10dp"
                     android:gravity="center"
-                    android:text="30/304"
+                    android:text="..."
                     android:textColor="@color/black"
                     android:textSize="22sp" />
             </LinearLayout>
@@ -225,7 +225,7 @@
                     android:layout_marginBottom="20dp"
                     android:layout_marginTop="10dp"
                     android:gravity="center"
-                    android:text="30(折损率10%)"
+                    android:text="..."
                     android:textColor="@color/black"
                     android:textSize="22sp" />
             </LinearLayout>
@@ -263,7 +263,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="126,560"
+                    android:text="..."
                     android:textColor="@color/black"
                     android:textSize="24sp" />
 
@@ -278,7 +278,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="2dp"
                     android:layout_marginRight="2dp"
-                    android:text="8864"
+                    android:text="..."
                     android:textColor="@color/black"
                     android:textSize="16sp" />
 

@@ -6,9 +6,11 @@ import android.support.design.widget.AppBarLayout;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.ScrollView;
 
 import com.example.shareiceboxms.R;
 import com.example.shareiceboxms.models.adapters.UpLoadDetailsGoodListAdapter;
@@ -20,7 +22,7 @@ import com.example.shareiceboxms.views.fragments.BaseFragment;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class UpLoadGoodsDetailsFragment extends BaseFragment {
+public class UpLoadGoodsDetailsFragment extends BaseFragment implements View.OnTouchListener {
     private View contentView;
     private String upLoadGoodsId;
     private AppBarLayout mAppBarLayout;
@@ -30,6 +32,7 @@ public class UpLoadGoodsDetailsFragment extends BaseFragment {
     private ListViewForScrollView mUpLoadDetailsGoodsList;
     private UpLoadDetailsGoodListAdapter mAdapter;
     private HomeActivity homeActivity;
+    private ScrollView contentScroll;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -47,6 +50,7 @@ public class UpLoadGoodsDetailsFragment extends BaseFragment {
     private void iniListener() {
         mDrawerIcon.setOnClickListener(this);
         mSaoma.setOnClickListener(this);
+        contentScroll.setOnTouchListener(this);
     }
 
     private void initdata() {
@@ -58,6 +62,7 @@ public class UpLoadGoodsDetailsFragment extends BaseFragment {
         mDrawerIcon = (ImageView) contentView.findViewById(R.id.drawerIcon);
         mSaoma = (ImageView) contentView.findViewById(R.id.saoma);
         mAdapter = new UpLoadDetailsGoodListAdapter(getActivity());
+        contentScroll = (ScrollView) contentView.findViewById(R.id.contentScroll);
         homeActivity = (HomeActivity) getActivity();
         mUpLoadDetailsGoodsList = (ListViewForScrollView) contentView.findViewById(R.id.upLoadDetailsGoodsList);
         mUpLoadDetailsGoodsList.setAdapter(mAdapter);
@@ -73,5 +78,21 @@ public class UpLoadGoodsDetailsFragment extends BaseFragment {
                 homeActivity.clickIconToOpenDrawer();
                 break;
         }
+    }
+
+    @Override
+    public boolean onTouch(View v, MotionEvent event) {
+        if (contentScroll.getScrollY() == 0) {
+            //顶部
+        }
+
+        // 判断scrollview 滑动到底部
+        // scrollY 的值和子view的高度一样，这认为滑动到了底部
+        //getMeasuredHeight()实际高度
+        if (contentScroll.getChildAt(0).getMeasuredHeight() - contentScroll.getHeight()
+                == contentScroll.getScrollY()) {
+            //底部
+        }
+        return false;
     }
 }

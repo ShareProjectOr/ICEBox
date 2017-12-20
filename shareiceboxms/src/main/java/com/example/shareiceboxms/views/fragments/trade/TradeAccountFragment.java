@@ -96,7 +96,7 @@ public class TradeAccountFragment extends BaseFragment implements LoadMoreHelper
         loadMoreHelper = new LoadMoreHelper().setContext(getContext()).setAdapter(adapter)
                 .setLoadMoreListenner(this)
                 .bindScrollListener(tradeaccountList)
-                .setVisibleThreshold(1);
+                .setVisibleThreshold(0);
 
         //联网刷新数据
 //        String dataJson = OkHttpUtil.post(url, params);

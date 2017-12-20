@@ -19,13 +19,13 @@ import com.example.shareiceboxms.views.fragments.product.ProductTypeListFragment
  * Created by Lyu on 2017/12/12.
  */
 
-public class ProductListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> implements View.OnClickListener {
+public class ProductListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private Activity mContext;
     private final static int TYPE_LOAD_ITEM = 0;
     private final static int TYPE_NORMAL_ITEM = 1;
-    private int Total = 20;
     private ProductTypeListFragment productTypeListFragment;
     private ProductListData contentProvider;
+    private int position;
 
     public ProductListAdapter(Activity mContext, ProductTypeListFragment productTypeListFragment) {
         this.mContext = mContext;
@@ -55,14 +55,23 @@ public class ProductListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     }
 
     @Override
-    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+    public void onBindViewHolder(RecyclerView.ViewHolder holder, final int position) {
         switch (getItemViewType(position)) {
             case TYPE_LOAD_ITEM:
                 HeadViewHolder head = (HeadViewHolder) holder;
                 break;
             case TYPE_NORMAL_ITEM:
                 BodyViewHolder body = (BodyViewHolder) holder;
-                body.mItemLayout.setOnClickListener(this);
+                body.itemView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if (productTypeListFragment != null) {
+                            Log.e("点击位", position + "");
+                            FragmentFactory.getInstance().getSavedBundle().putInt("categoryID", contentProvider.getItem(position).categoryID);
+                            productTypeListFragment.addFrameFragment();
+                        }
+                    }
+                });
                 body.mProductName.setText(contentProvider.getItem(position).categoryName);
                 body.mPrice.setText("￥" + contentProvider.getItem(position).categoryPrice);
                 body.mSpecialPrice.setText("￥" + contentProvider.getItem(position).activityPrice);
@@ -75,23 +84,15 @@ public class ProductListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 
     @Override
     public int getItemCount() {
-        return contentProvider.GetDataSetSize() + 1;
+        return contentProvider.GetDataSetSize();
     }
 
     @Override
     public int getItemViewType(int position) {
-
-        return position < contentProvider.GetDataSetSize() ? TYPE_NORMAL_ITEM : TYPE_LOAD_ITEM;
+        return contentProvider.getItem(position) == null ? TYPE_LOAD_ITEM : TYPE_NORMAL_ITEM;
+        // return position < contentProvider.GetDataSetSize() ? TYPE_NORMAL_ITEM : TYPE_LOAD_ITEM;
     }
 
-    @Override
-    public void onClick(View v) {
-        if (productTypeListFragment != null) {
-            Log.e("xxx", "item点击");
-            FragmentFactory.getInstance().getSavedBundle().putString("productId", "1212121");
-            productTypeListFragment.addFrameFragment();
-        }
-    }
 
     class HeadViewHolder extends RecyclerView.ViewHolder {
 

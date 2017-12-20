@@ -63,6 +63,7 @@ public class LoadMoreHelper {
                     Log.e("--lastVisiblePosition--", " ------" + lastVisibleItemPosition);
                     Log.e("--totalItemCount--", " ------" + totalItemCount);
                     if (!isLoading && totalItemCount <= lastVisibleItemPosition + 1 + visibleThreshold) {
+                        Log.d("--------","-----isLoading-------");
                         loadMoreListener.loadMore(adapter, recyclerView);
                         isLoading = true;
                     }

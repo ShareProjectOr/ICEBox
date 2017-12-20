@@ -1,5 +1,7 @@
 package com.example.shareiceboxms.models.http;
 
+import android.util.Log;
+
 import com.squareup.okhttp.Callback;
 import com.squareup.okhttp.FormEncodingBuilder;
 import com.squareup.okhttp.MediaType;
@@ -129,6 +131,7 @@ public class OkHttpUtil {
         if (response.isSuccessful()) {
             return response.body().string();
         } else {
+            Log.e("Unexpected code:", response + "");
             throw new IOException("Unexpected code :" + response);
         }
     }

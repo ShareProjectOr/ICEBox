@@ -64,6 +64,7 @@
     </android.support.design.widget.AppBarLayout>
 
     <ScrollView
+        android:id="@+id/contentScroll"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
@@ -150,8 +151,8 @@
             <com.example.shareiceboxms.models.widget.ListViewForScrollView
                 android:id="@+id/upLoadDetailsGoodsList"
                 android:layout_width="match_parent"
-                android:divider="@drawable/shadow_line"
-                android:layout_height="wrap_content"></com.example.shareiceboxms.models.widget.ListViewForScrollView>
+                android:layout_height="wrap_content"
+                android:divider="@drawable/shadow_line"></com.example.shareiceboxms.models.widget.ListViewForScrollView>
         </LinearLayout>
     </ScrollView>
 
