@@ -270,7 +270,7 @@ public class MachineFragment extends BaseFragment implements HomeActivity.OnBack
             } else {
                 Log.e("request error :", response + "");
                 if (response == null) {
-                    Toast.makeText(getContext(), "网络请求超时", Toast.LENGTH_SHORT).show();
+//                    Toast.makeText(getContext(), "网络请求超时", Toast.LENGTH_SHORT).show();
                 }
 
             }

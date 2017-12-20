@@ -110,6 +110,7 @@ public class MachineItemAddView {
         if (stockProductView == null || teleControlHolder == null) {
             stockProductView = LayoutInflater.from(context).inflate(R.layout.machine_detail_prod_list, null, false);
             stockProductsHolder = new StockProductsHolder(stockProductView);
+            machineItemAddViewHelper.getDatas(RequestParamsContants.getInstance().getMachineStockProductParams());
         }
         //先添加View
         if (parentView.getChildAt(0) != stockProductView) {
