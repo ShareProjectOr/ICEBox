@@ -115,17 +115,27 @@ public class ProductDetailsFragment extends BaseFragment {
                     mProductName.setText(itemProductType.categoryName);
                     mPrice.setText("￥" + itemProductType.categoryPrice);
                     mSpecialPrice.setText("￥" + itemProductType.activityPrice);
-                    mProductCode.setText("" + itemProductType.categoryID);
+                    mProductCode.setText(String.valueOf(itemProductType.categoryID));
                     String[] time = SecondToDate.formatLongToTimeStr(Long.parseLong(String.valueOf(itemProductType.storageTimeLimit)));
-                    mStorageTimeLimit.setText(time[0] + "天" + time[1] + "时" + time[2] + "分" + time[3] + "秒");
+                    if (!time[0].equals("0")) {
+                        mStorageTimeLimit.setText(time[0] + "天" + time[1] + "时" + time[2] + "分" + time[3] + "秒");
+                    } else {
+                        if (!time[1].equals("0")) {
+                            mStorageTimeLimit.setText(time[1] + "时" + time[2] + "分" + time[3] + "秒");
+                        } else {
+                            mStorageTimeLimit.setText(time[2] + "分" + time[3] + "秒");
+                        }
+                    }
+
                     mSellAndUpload.setText(String.valueOf(itemProductType.salingNum) + "/" + String.valueOf(itemProductType.noExhibitNum));
                     //折损率  折损数除以 折损数加上售卖中数量
-                    float breakfloat = itemProductType.breakNum / (itemProductType.breakNum + itemProductType.salingNum);
+//                    float breakfloat = itemProductType.breakNum / (itemProductType.breakNum + itemProductType.salingNum);
 
-                    mSpoilageUpload.setText(itemProductType.breakNum +
-                            "(" + String.valueOf(breakfloat * 100) + "%)");
+                /*   mSpoilageUpload.setText(itemProductType.breakNum +
+                            "(" + String.valueOf(breakfloat * 100) + "%)");*/
                     mSelledPriceTotal.setText(String.valueOf(itemProductType.soldOutPrice));
                     mSelledNum.setText(String.valueOf(itemProductType.soldOutNum));
+
                 } else {
                     mModifyPrice.setVisibility(View.GONE);
                     Toast.makeText(getContext(), err, Toast.LENGTH_SHORT).show();
@@ -156,6 +166,8 @@ public class ProductDetailsFragment extends BaseFragment {
             case R.id.modifyPrice:
                 Bundle bundle = new Bundle();
                 bundle.putInt("categoryID", categoryID);
+                bundle.putString("categoryPrice", itemProductType.categoryPrice);
+                bundle.putString("activityPrice", itemProductType.activityPrice);
                 homeActivity.jumpActivity(ModifyPriceActivity.class, bundle);
                 break;
             case R.id.drawerIcon:

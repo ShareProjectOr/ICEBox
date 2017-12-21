@@ -93,7 +93,7 @@ public class ProductTypeListFragment extends BaseFragment {
                 .bindScrollListener(mProductList)
                 .setVisibleThreshold(0);
         contentprovider = productAdapter.getContentProvider();
-        contentprovider.setCanLoad(loadMoreHelper);
+        contentprovider.setCanLoad(loadMoreHelper, currentPage);
         new MyViewFactory(getContext()).BuildRecyclerViewRule(mProductList, new LinearLayoutManager(getActivity()), null, true).setAdapter(productAdapter);
         contentprovider.getData(HttpRequstUrl.PRODUCT_TYPE_LIST_URL, initPostBody, true);
 
@@ -113,17 +113,18 @@ public class ProductTypeListFragment extends BaseFragment {
     public void loadMore(RecyclerView.Adapter<RecyclerView.ViewHolder> adapter, RecyclerView recyclerView) {
         Log.e("loadmore", "doing");
         if (currentPage < contentprovider.GetMaxPageAccount()) {
-            currentPage++;
+            Map<String, Object> postbody = new HashMap<>();
+            postbody.put("n", pageNum);
+            postbody.put("p", currentPage + 1);
+            postbody.put("appUserID", PerSonMessage.userId);
+            contentprovider.getData(HttpRequstUrl.PRODUCT_TYPE_LIST_URL, postbody, false);
+
         } else {
             Toast.makeText(getActivity(), "偷偷告诉你,数据已全部加载完毕...", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        Map<String, Object> postbody = new HashMap<>();
-        postbody.put("n", pageNum);
-        postbody.put("p", currentPage);
-        postbody.put("appUserID", PerSonMessage.userId);
-        contentprovider.getData(HttpRequstUrl.PRODUCT_TYPE_LIST_URL, postbody, false);
+
     }
 
     @Override
@@ -131,8 +132,9 @@ public class ProductTypeListFragment extends BaseFragment {
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
+                //currentPage = 1;
                 contentprovider.getData(HttpRequstUrl.PRODUCT_TYPE_LIST_URL, initPostBody, true);
-                currentPage = 1;
+
                 mRefreashLayout.setRefreshing(false);
             }
         }, Constants.REFREASH_DELAYED_TIME);

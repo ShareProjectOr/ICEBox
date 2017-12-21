@@ -1,10 +1,12 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white"
     android:orientation="vertical"
     tools:context="com.example.shareiceboxms.views.fragments.product.UpLoadGoodsDetailsFragment">
+
 
     <android.support.design.widget.AppBarLayout
         android:id="@+id/appBarLayout"
@@ -16,7 +18,8 @@
         <android.support.v7.widget.Toolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize">
+            android:layout_height="?attr/actionBarSize"
+            app:layout_scrollFlags="scroll|enterAlways">
 
             <ImageView
                 android:id="@+id/drawerIcon"
@@ -63,97 +66,23 @@
         </android.support.v7.widget.Toolbar>
     </android.support.design.widget.AppBarLayout>
 
-    <ScrollView
-        android:id="@+id/contentScroll"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
 
-        <LinearLayout
+        <android.support.v4.widget.SwipeRefreshLayout
+            android:id="@+id/refreshLayout"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical">
+            android:layout_height="wrap_content">
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
-                android:layout_marginTop="10dp"
-                android:text="操作耗时:"
-                android:textColor="@color/black"
-                android:textStyle="bold" />
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
-                android:layout_marginTop="10dp"
-                android:text="记录编号:"
-                android:textColor="@color/black" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
-                android:layout_marginTop="10dp"
-                android:text="机器名称:"
-                android:textColor="@color/black" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
-                android:layout_marginTop="10dp"
-                android:text="机器编号:"
-                android:textColor="@color/black" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
-                android:layout_marginTop="10dp"
-                android:text="安装地址:"
-                android:textColor="@color/black" />
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:background="#fafafa"
-                android:orientation="horizontal"
-                android:paddingBottom="10dp"
-                android:paddingTop="10dp">
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:gravity="center"
-                    android:text="品类名称"
-                    android:textColor="@color/black" />
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:gravity="center"
-                    android:text="品类单价"
-                    android:textColor="@color/black" />
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:gravity="center"
-                    android:text="操作"
-                    android:textColor="@color/black" />
-            </LinearLayout>
-
-            <com.example.shareiceboxms.models.widget.ListViewForScrollView
+            <ListView
                 android:id="@+id/upLoadDetailsGoodsList"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:divider="@drawable/shadow_line"></com.example.shareiceboxms.models.widget.ListViewForScrollView>
-        </LinearLayout>
-    </ScrollView>
+                android:divider="@drawable/shadow_line"
+                />
+
+
+        </android.support.v4.widget.SwipeRefreshLayout>
+
+
 
 </LinearLayout>

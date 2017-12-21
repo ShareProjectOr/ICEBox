@@ -20,14 +20,14 @@
         <activity
             android:name=".views.activities.LoginActivity"
             android:theme="@style/AppTheme.NoActionBar">
-
-        </activity>
-        <activity android:name=".views.activities.HomeActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+        </activity>
+        <activity android:name=".views.activities.HomeActivity">
+
         </activity>
         <activity android:name=".views.activities.ModifyPriceActivity" />
         <activity android:name=".views.activities.CaptureActivity"></activity>

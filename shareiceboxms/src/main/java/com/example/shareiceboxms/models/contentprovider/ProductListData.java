@@ -36,16 +36,17 @@ public class ProductListData {
     private int initAccountPage = 0;
     private LoadMoreHelper mloadMoreHelper;
     private int realProductAccount;
-
-
+    public int currentPage;
+    public int pagerNum = 1;
 
     public ProductListData(RecyclerView.Adapter mAdapter, Activity mActivty) {
         this.mAdapter = mAdapter;
         this.mActivty = mActivty;
     }
 
-    public void setCanLoad(LoadMoreHelper mloadMoreHelper) {
+    public void setCanLoad(LoadMoreHelper mloadMoreHelper, int currentPage) {
         this.mloadMoreHelper = mloadMoreHelper;
+        this.currentPage = currentPage;
     }
 
     public void getData(final String url, final Map<String, Object> body, final boolean refresh) {
@@ -73,6 +74,8 @@ public class ProductListData {
                     }
                     JSONObject d = object.getJSONObject("d");
                     total = d.getInt("t");
+                    currentPage = d.getInt("p");//请求成功则将页数加1
+                    pagerNum = d.getInt("n");
                     JSONArray array = d.getJSONArray("list");
                     Log.e("订单列表", "list" + d.toString());
                     for (int i = 0; i < array.length(); i++) {
@@ -88,7 +91,7 @@ public class ProductListData {
                     }
 
                 } catch (IOException e1) {
-                    error = "网络错误\n";
+                    error = "网络错误";
                     Log.e("response", e1 + "");
                     return false;
 
@@ -120,21 +123,7 @@ public class ProductListData {
     }
 
     public int GetMaxPageAccount() {
-
-        if (total != 0) {
-            realProductAccount = GetDataSetSize() - 1;//真正的物品数等于list长度减去最后一位的占位符;
-            if (initAccountPage != 0 && realProductAccount != 0) {
-                return initAccountPage;
-            } else if (realProductAccount != 0) {
-                initAccountPage = total % realProductAccount > 0 ? total
-                        / realProductAccount + 1 : total / realProductAccount;
-                return initAccountPage;
-            } else {
-                return 1;
-            }
-        } else {
-            return 1;
-        }
+        return total % pagerNum > 0 ? total / pagerNum + 1 : total / pagerNum;
 
     }
 

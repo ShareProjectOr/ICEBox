@@ -21,7 +21,7 @@ public interface HttpRequstUrl {
     String MACHINE_Check_URL = "http://192.168.4.224:8082/" + "machine/check";//盘点
 
 
-    String TEST_UERL = "http://192.168.4.211:8081/category/addLable";
+    String EDIT_PRICE_UERL = "http://192.168.4.211:8082/category/edit";
     String REPAIR_PASSWORD_URL = HOST_URL + "user/editPassword";
     String PRODUCT_TYPE_LIST_URL = "http://192.168.4.211:8082/category/search";
     String PRODUCT_TYPE_DETAIL_URL = "http://192.168.4.211:8082/category/get";

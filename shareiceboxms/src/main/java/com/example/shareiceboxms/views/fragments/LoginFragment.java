@@ -189,7 +189,7 @@ public class LoginFragment extends BaseFragment {
                 Log.e("login_response", response);
                 userJson = new JSONObject(response);
                 err = userJson.getString("err");
-                if (err.equals("")) {
+                if (err.equals("") || err.equals("null")) {
                     return true;
                 }
             } catch (IOException e) {

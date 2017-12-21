@@ -4,13 +4,16 @@ package com.example.shareiceboxms.views.fragments.product;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.NestedScrollView;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.ScrollView;
+import android.widget.TextView;
 
 import com.example.shareiceboxms.R;
 import com.example.shareiceboxms.models.adapters.UpLoadDetailsGoodListAdapter;
@@ -32,8 +35,8 @@ public class UpLoadGoodsDetailsFragment extends BaseFragment implements View.OnT
     private ListViewForScrollView mUpLoadDetailsGoodsList;
     private UpLoadDetailsGoodListAdapter mAdapter;
     private HomeActivity homeActivity;
-    private ScrollView contentScroll;
-
+   // private NestedScrollView contentScroll;
+  //  private TextView
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -50,7 +53,7 @@ public class UpLoadGoodsDetailsFragment extends BaseFragment implements View.OnT
     private void iniListener() {
         mDrawerIcon.setOnClickListener(this);
         mSaoma.setOnClickListener(this);
-        contentScroll.setOnTouchListener(this);
+      //  contentScroll.setOnTouchListener(this);
     }
 
     private void initdata() {
@@ -62,7 +65,7 @@ public class UpLoadGoodsDetailsFragment extends BaseFragment implements View.OnT
         mDrawerIcon = (ImageView) contentView.findViewById(R.id.drawerIcon);
         mSaoma = (ImageView) contentView.findViewById(R.id.saoma);
         mAdapter = new UpLoadDetailsGoodListAdapter(getActivity());
-        contentScroll = (ScrollView) contentView.findViewById(R.id.contentScroll);
+      //  contentScroll = (NestedScrollView) contentView.findViewById(R.id.contentScroll);
         homeActivity = (HomeActivity) getActivity();
         mUpLoadDetailsGoodsList = (ListViewForScrollView) contentView.findViewById(R.id.upLoadDetailsGoodsList);
         mUpLoadDetailsGoodsList.setAdapter(mAdapter);
@@ -82,7 +85,7 @@ public class UpLoadGoodsDetailsFragment extends BaseFragment implements View.OnT
 
     @Override
     public boolean onTouch(View v, MotionEvent event) {
-        if (contentScroll.getScrollY() == 0) {
+      /*  if (contentScroll.getScrollY() == 0) {
             //顶部
         }
 
@@ -92,7 +95,7 @@ public class UpLoadGoodsDetailsFragment extends BaseFragment implements View.OnT
         if (contentScroll.getChildAt(0).getMeasuredHeight() - contentScroll.getHeight()
                 == contentScroll.getScrollY()) {
             //底部
-        }
+        }*/
         return false;
     }
 }

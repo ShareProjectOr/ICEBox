@@ -65,7 +65,7 @@ public class PerSonFragment extends BaseFragment {
             mServerPrecent.setVisibility(View.GONE);
             mMinSettlement.setVisibility(View.GONE);
         }
-        Log.e("minBalance",PerSonMessage.minBalance);
+//        Log.e("minBalance",PerSonMessage.minBalance);
         mCompanyName.setText("企业名称:\t" + PerSonMessage.companyName);
         mCompanyCode.setText("信用代码:\t" + PerSonMessage.companyCreditCode);
         if (PerSonMessage.role.equals("2") || PerSonMessage.role.equals("1")) {

@@ -421,7 +421,7 @@ public class HomeActivity extends BaseActivity
                 if (!(curFragment instanceof ExceptionFragment)) {
                     curFragment = new ExceptionFragment();
                 }
-                break;
+              break;
             case 3:
                 if (!(curFragment instanceof ProductFragment)) {
                     curFragment = new ProductFragment();
