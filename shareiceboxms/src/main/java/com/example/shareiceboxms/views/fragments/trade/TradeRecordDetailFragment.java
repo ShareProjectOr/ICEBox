@@ -179,7 +179,6 @@ public class TradeRecordDetailFragment extends BaseFragment {
                 homeActivity.openSaoma();
                 break;
             case R.id.moreRefund:
-                Toast.makeText(getContext(), "11111111", Toast.LENGTH_SHORT).show();
                 //请求网络退款操作
                 break;
         }

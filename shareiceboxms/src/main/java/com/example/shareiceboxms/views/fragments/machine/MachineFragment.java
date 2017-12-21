@@ -1,5 +1,6 @@
 package com.example.shareiceboxms.views.fragments.machine;
 
+import android.app.Dialog;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -33,9 +34,11 @@ import com.example.shareiceboxms.models.contants.Constants;
 import com.example.shareiceboxms.models.contants.HttpRequstUrl;
 import com.example.shareiceboxms.models.contants.JsonDataParse;
 import com.example.shareiceboxms.models.contants.RequestParamsContants;
+import com.example.shareiceboxms.models.contants.RequstTips;
 import com.example.shareiceboxms.models.factories.FragmentFactory;
 import com.example.shareiceboxms.models.factories.MyViewFactory;
 import com.example.shareiceboxms.models.helpers.LoadMoreHelper;
+import com.example.shareiceboxms.models.helpers.MyDialog;
 import com.example.shareiceboxms.models.http.JsonUtil;
 import com.example.shareiceboxms.models.http.OkHttpUtil;
 import com.example.shareiceboxms.views.activities.HomeActivity;
@@ -73,6 +76,7 @@ public class MachineFragment extends BaseFragment implements HomeActivity.OnBack
     private TextView title;
     MachineListAdapter adapter;
     LoadMoreHelper loadMoreHelper;
+    Dialog dialog;
     private List<ItemMachine> itemMachines;
     private int curPage, requestNum, totalNum, totalPage;
 
@@ -81,7 +85,7 @@ public class MachineFragment extends BaseFragment implements HomeActivity.OnBack
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         if (containerView == null) {
-            Log.e("------","-----------onCreateView_---------");
+            Log.e("------", "-----------onCreateView_---------");
             containerView = super.onCreateView(inflater, container, FragmentFactory.getInstance().putLayoutId(R.layout.fragment_machine));
             initViews();
             initDatas();
@@ -102,6 +106,7 @@ public class MachineFragment extends BaseFragment implements HomeActivity.OnBack
                 .bindScrollListener(machineRecycler)
                 .setVisibleThreshold(0);
         initPage();
+        dialog = MyDialog.loadDialog(getActivity());
         getDatas(getParams());
     }
 
@@ -231,6 +236,13 @@ public class MachineFragment extends BaseFragment implements HomeActivity.OnBack
         }
 
         @Override
+        protected void onPreExecute() {
+            if (dialog != null) {
+                dialog.show();
+            }
+        }
+
+        @Override
         protected Boolean doInBackground(Void... params) {
             try {
                 Log.e("request params: ", JsonUtil.mapToJson(this.params));
@@ -243,15 +255,17 @@ public class MachineFragment extends BaseFragment implements HomeActivity.OnBack
                 requestNum = jsonD.getInt("n");
                 JSONArray jsonList = jsonD.getJSONArray("list");*/
                 machines = ItemMachine.bindMachineList(JsonDataParse.getInstance().getArrayList(response.toString()));
-                totalNum=JsonDataParse.getInstance().getTotalNum();
-                curPage=JsonDataParse.getInstance().getCurPage();
-                requestNum=JsonDataParse.getInstance().getRequestNum();
+                totalNum = JsonDataParse.getInstance().getTotalNum();
+                curPage = JsonDataParse.getInstance().getCurPage();
+                requestNum = JsonDataParse.getInstance().getRequestNum();
                 Log.e("machines.size==", machines.size() + "");
                 Log.e("response", response.toString());
                 return true;
             } catch (IOException e) {
-                Log.e("erro", e.toString());
+                Log.e("erro", e.getMessage());
+                err = RequstTips.getErrorMsg(e.getMessage());
             } catch (JSONException e) {
+                err = RequstTips.JSONException_Tip;
                 Log.e("erro", e.toString());
             }
             return false;
@@ -260,6 +274,10 @@ public class MachineFragment extends BaseFragment implements HomeActivity.OnBack
         @Override
         protected void onPostExecute(final Boolean success) {
             if (success) {
+                if (dialog!=null){
+                    dialog.dismiss();
+                    dialog = null;//第一次弹出dialog后，后续加载不在弹出
+                }
                 if (itemMachines.size() > 0) {
                     if (itemMachines.get(itemMachines.size() - 1) == null) {
                         itemMachines.remove(itemMachines.size() - 1);
@@ -273,10 +291,7 @@ public class MachineFragment extends BaseFragment implements HomeActivity.OnBack
                 adapter.notifyDataSetChanged();
             } else {
                 Log.e("request error :", response + "");
-                if (response == null) {
-//                    Toast.makeText(getContext(), "网络请求超时", Toast.LENGTH_SHORT).show();
-                }
-
+                Toast.makeText(homeActivity, err, Toast.LENGTH_SHORT).show();
             }
         }
 

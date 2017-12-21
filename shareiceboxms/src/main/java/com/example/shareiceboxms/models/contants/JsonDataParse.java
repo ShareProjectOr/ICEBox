@@ -37,6 +37,15 @@ public class JsonDataParse {
         return jsonList;
     }
 
+    /*
+*
+* 解析机器远程控制
+* */
+    public boolean getTeleControlIsArrow(String response) throws JSONException {
+        JSONObject jsonObject = new JSONObject(response.toString());
+        return jsonObject.getBoolean("d");
+    }
+
     public int getTotalNum() {
         return totalNum;
     }

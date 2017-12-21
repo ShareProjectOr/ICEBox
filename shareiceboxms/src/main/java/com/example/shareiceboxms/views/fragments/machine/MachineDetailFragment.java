@@ -1,5 +1,6 @@
 package com.example.shareiceboxms.views.fragments.machine;
 
+import android.app.Dialog;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -25,8 +26,10 @@ import com.example.shareiceboxms.models.beans.ItemProduct;
 import com.example.shareiceboxms.models.contants.Constants;
 import com.example.shareiceboxms.models.contants.HttpRequstUrl;
 import com.example.shareiceboxms.models.contants.RequestParamsContants;
+import com.example.shareiceboxms.models.contants.RequstTips;
 import com.example.shareiceboxms.models.factories.FragmentFactory;
 import com.example.shareiceboxms.models.helpers.MachineItemAddView;
+import com.example.shareiceboxms.models.helpers.MyDialog;
 import com.example.shareiceboxms.models.http.JsonUtil;
 import com.example.shareiceboxms.models.http.OkHttpUtil;
 import com.example.shareiceboxms.views.activities.HomeActivity;
@@ -61,6 +64,7 @@ public class MachineDetailFragment extends BaseFragment implements SwipeRefreshL
     ItemMachine itemMachine;
     SwipeRefreshLayout.OnRefreshListener onRefreshListener;
     int curTabPosition = 0;
+    Dialog dialog;
 
 
     @Nullable
@@ -117,7 +121,7 @@ public class MachineDetailFragment extends BaseFragment implements SwipeRefreshL
                         refresh.setEnabled(true);
                         refresh.setColorSchemeColors(ContextCompat.getColor(getContext(), R.color.blue));
                         refresh.setOnRefreshListener(onRefreshListener);
-                        machineItemAddView.addStockProductView(itemLayout, itemMachine,scrollLayout);
+                        machineItemAddView.addStockProductView(itemLayout, itemMachine, scrollLayout);
                         break;
                 }
             }
@@ -140,6 +144,7 @@ public class MachineDetailFragment extends BaseFragment implements SwipeRefreshL
         for (int i = 0; i < Constants.MachineItemOperator.length; i++) {
             machineTabLayout.addTab(machineTabLayout.newTab().setText(Constants.MachineItemOperator[i]));
         }
+        dialog = MyDialog.loadDialog(getActivity());
         getDatas();
     }
 
@@ -155,9 +160,9 @@ public class MachineDetailFragment extends BaseFragment implements SwipeRefreshL
         machineAddr.setText(itemMachine.machineAddress);
         machineName.setText(itemMachine.machineName);
         isOnLine.setText(Constants.MachineOnLineState[itemMachine.networkState]);
-        isOnLine.setTextColor(ContextCompat.getColor(getContext(), Constants.MachineStateColor[itemMachine.networkState]));
+        isOnLine.setTextColor(ContextCompat.getColor(homeActivity, Constants.MachineStateColor[itemMachine.networkState]));
         isException.setText(itemMachine.faultState == 0 ? Constants.MachineFaultState[0] : Constants.MachineFaultState[1]);
-        isException.setTextColor(ContextCompat.getColor(getContext(), itemMachine.faultState == 0 ? Constants.MachineStateColor[1] : Constants.MachineStateColor[0]));
+        isException.setTextColor(ContextCompat.getColor(homeActivity, itemMachine.faultState == 0 ? Constants.MachineStateColor[1] : Constants.MachineStateColor[0]));
         managerName.setText(itemMachine.itemManager.name);
         machienCode.setText(itemMachine.machineCode);
         switch (curTabPosition) {
@@ -206,6 +211,13 @@ public class MachineDetailFragment extends BaseFragment implements SwipeRefreshL
         }
 
         @Override
+        protected void onPreExecute() {
+            if (dialog != null) {
+                dialog.show();
+            }
+        }
+
+        @Override
         protected Boolean doInBackground(Void... params) {
             try {
                 Log.e("request params: ", JsonUtil.mapToJson(this.params));
@@ -217,8 +229,10 @@ public class MachineDetailFragment extends BaseFragment implements SwipeRefreshL
                 return true;
             } catch (IOException e) {
                 Log.e("erro", e.toString());
+                err = RequstTips.getErrorMsg(e.getMessage());
             } catch (JSONException e) {
                 Log.e("erro", e.toString());
+                err = RequstTips.JSONException_Tip;
             }
             return false;
         }
@@ -226,14 +240,15 @@ public class MachineDetailFragment extends BaseFragment implements SwipeRefreshL
         @Override
         protected void onPostExecute(final Boolean success) {
             if (success) {
+                if (dialog!=null){
+                    dialog.dismiss();
+                    dialog = null;//第一次弹出dialog后，后续加载不在弹出
+                }
                 itemMachine = machine;
                 updateUi();
             } else {
                 Log.e("request error :", response + "");
-                if (response == null) {
-                    Toast.makeText(getContext(), "网络请求超时", Toast.LENGTH_SHORT).show();
-                }
-
+                Toast.makeText(homeActivity, err, Toast.LENGTH_SHORT).show();
             }
         }
 

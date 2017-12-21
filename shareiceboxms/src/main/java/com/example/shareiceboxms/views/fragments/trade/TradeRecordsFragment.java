@@ -165,7 +165,6 @@ public class TradeRecordsFragment extends BaseFragment implements LoadMoreHelper
         itemTradeRecords.add(new ItemTradeRecord());
         itemTradeRecords.add(new ItemTradeRecord());
         itemTradeRecords.add(new ItemTradeRecord());
-        Toast.makeText(getContext(), "111'", Toast.LENGTH_SHORT).show();
         if (loadMoreHelper != null) {
             loadMoreHelper.setLoading(false);
         }

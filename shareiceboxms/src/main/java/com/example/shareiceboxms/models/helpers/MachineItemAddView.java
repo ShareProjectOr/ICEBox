@@ -1,14 +1,13 @@
 package com.example.shareiceboxms.models.helpers;
 
+import android.app.Dialog;
 import android.content.Context;
 import android.graphics.drawable.GradientDrawable;
-import android.support.v4.content.ContextCompat;
-import android.support.v4.widget.SwipeRefreshLayout;
+import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.AbsListView;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -25,10 +24,12 @@ import com.example.shareiceboxms.models.adapters.MachineStockProductAdapter;
 import com.example.shareiceboxms.models.beans.ItemMachine;
 import com.example.shareiceboxms.models.beans.ItemProduct;
 import com.example.shareiceboxms.models.contants.Constants;
+import com.example.shareiceboxms.models.contants.HttpRequstUrl;
 import com.example.shareiceboxms.models.contants.RequestParamsContants;
-import com.example.shareiceboxms.views.activities.HomeActivity;
+import com.example.shareiceboxms.models.widget.ListViewForScrollView;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -41,8 +42,6 @@ public class MachineItemAddView {
     private View stateControlView;
     private View teleCOntrolView;
     private View stockProductView;
-    private ListView stockProductList;
-    private View listItemView;
     private StateControlHolder stateControlHolder;
     private TeleControlHolder teleControlHolder;
     private StockProductsHolder stockProductsHolder;
@@ -130,8 +129,9 @@ public class MachineItemAddView {
         if (isRefresh) {
             if (stockProductsHolder != null && stockProductsHolder.itemProducts != null) {
                 stockProductsHolder.itemProducts.clear();
+                stockProductsHolder.isLoading = false;
+                machineItemAddViewHelper.getDatas(RequestParamsContants.getInstance().getMachineStockProductParams());
             }
-            machineItemAddViewHelper.getDatas(RequestParamsContants.getInstance().getMachineStockProductParams());
         }
 
     }
@@ -212,23 +212,12 @@ public class MachineItemAddView {
             lockSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                    if (isChecked) {
-
-                    } else {
-
-                    }
+                    Map<String, Object> params = RequestParamsContants.getInstance().getMachineLightControlParams();
+                    params.put("isChecked",isChecked);
+                    TeleControlHelper.getInstance().setContext(context);
+                    TeleControlHelper.getInstance().getDatas(HttpRequstUrl.MACHINE_LightControl_URL, params);
                 }
             });
-            /*
-            * 设置进度条颜色
-            **/
-            int[] colors = new int[]{R.color.blue, R.color.colorAccent};
-            GradientDrawable gradientDrawable = new GradientDrawable(GradientDrawable.Orientation.LEFT_RIGHT, colors);
-            gradientDrawable.setGradientType(GradientDrawable.LINEAR_GRADIENT);
-            gradientDrawable.setCornerRadius(15);
-            gradientDrawable.setStroke(10, -1);
-            tempSeekbar.setProgressDrawable(gradientDrawable);
-
         }
 
         @Override
@@ -274,13 +263,18 @@ public class MachineItemAddView {
                     break;
                 case R.id.restart:
                     MyDialog restartDialog = new MyDialog(context);
-                    restartDialog.showDialog(restartDialog.getMachineTeleControlDialog("确定要重启机器吗？"));
+                    restartDialog.showDialog(restartDialog.getMachineTeleControlDialog("确定要重启机器吗？"
+                            , HttpRequstUrl.MACHINE_Restart_URL, RequestParamsContants.getInstance().getMachineRestartParams()));
                     break;
                 case R.id.shutDown:
                     MyDialog shutDownDialog = new MyDialog(context);
-                    shutDownDialog.showDialog(shutDownDialog.getMachineTeleControlDialog("确定要将机器关机吗？"));
+                    shutDownDialog.showDialog(shutDownDialog.getMachineTeleControlDialog("确定要将机器关机吗？"
+                            , HttpRequstUrl.MACHINE_Shutdown_URL, RequestParamsContants.getInstance().getMachineShutdownParams()));
                     break;
                 case R.id.check:
+                    MyDialog checkDialog = new MyDialog(context);
+                    checkDialog.showDialog(checkDialog.getMachineTeleControlDialog("确定要将机器关机吗？"
+                            , HttpRequstUrl.MACHINE_Check_URL, RequestParamsContants.getInstance().getMachineCheckParams()));
                     break;
             }
             tempSeekbar.setProgress(Integer.parseInt(targetTemp.getText().toString()));
@@ -337,30 +331,33 @@ public class MachineItemAddView {
         public ListView stockProductList;
         public MachineStockProductAdapter adapter;
         public List<ItemProduct> itemProducts;
-        public boolean scrollFlag = false;
+        public boolean isLoading = false;
 
-        public StockProductsHolder(View itemView, ItemMachine itemMachine, final ScrollView scrollView) {
+        public StockProductsHolder(View itemView, final ItemMachine itemMachine, final ScrollView scrollView) {
             itemProducts = new ArrayList<ItemProduct>();
             this.scrollView = scrollView;
             stockProductList = (ListView) itemView.findViewById(R.id.productList);
             adapter = new MachineStockProductAdapter(context, this.itemProducts);
             machineItemAddViewHelper = new MachineItemAddViewHelper(this.itemProducts, adapter, itemMachine);
+            machineItemAddViewHelper.setView(stockProductList, scrollView);
+            machineItemAddViewHelper.setContext(context);
             stockProductList.setAdapter(adapter);
             scrollView.setOnTouchListener(new View.OnTouchListener() {
                 @Override
                 public boolean onTouch(View v, MotionEvent event) {
-                    Log.e("----", "scrollView.getChildAt(0).getHeight()==" + scrollView.getChildAt(0).getHeight());
-                    Log.e("----", ").getHeight()==" + (scrollView.getHeight() +
-                            scrollView.getScrollY() - scrollView.getPaddingTop() - scrollView.getPaddingBottom()));
                     if (scrollView.getChildAt(0).getHeight() == scrollView.getHeight() +
                             scrollView.getScrollY() - scrollView.getPaddingTop() - scrollView.getPaddingBottom()) {
+                        if (!isLoading) {
+                            isLoading = true;
+                        } else {
+                            return false;
+                        }
                         if (machineItemAddViewHelper.getCurPage() < machineItemAddViewHelper.getTotalPage()) {
                             Map<String, Object> params = RequestParamsContants.getInstance().getMachineStockProductParams();
                             params.put("p", machineItemAddViewHelper.getCurPage() + 1);
                             machineItemAddViewHelper.getDatas(params);
-                            itemProducts = machineItemAddViewHelper.getItemProducts();
                             adapter.notifyDataSetChanged();
-
+                            ListViewForScrollView.setListViewHeightBasedOnChildren(stockProductList, scrollView);
                         } else {
                             Toast.makeText(context, "偷偷告诉你,数据已经全部加载...", Toast.LENGTH_SHORT).show();
                         }

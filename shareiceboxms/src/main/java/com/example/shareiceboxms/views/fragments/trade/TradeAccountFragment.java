@@ -116,7 +116,6 @@ public class TradeAccountFragment extends BaseFragment implements LoadMoreHelper
                 isTypeClicked = !isTypeClicked;
                 //弹出POPUPlistwindow
                 mTilePopup.show();
-                Toast.makeText(getContext(), "111'", Toast.LENGTH_SHORT).show();
                 chooseAccountIcon.setSelected(isTypeClicked);
                 break;
             case R.id.createAccount:
@@ -149,7 +148,6 @@ public class TradeAccountFragment extends BaseFragment implements LoadMoreHelper
         itemTradeAccounts.add(new ItemTradeAccount());
         itemTradeAccounts.add(new ItemTradeAccount());
 
-        Toast.makeText(getContext(), "111'", Toast.LENGTH_SHORT).show();
         if (loadMoreHelper != null) {
             loadMoreHelper.setLoading(false);
         }

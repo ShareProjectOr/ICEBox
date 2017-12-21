@@ -70,4 +70,52 @@ public class RequestParamsContants {
         params.put("machineID", FragmentFactory.getInstance().getSavedBundle().getInt("machineID"));
         return params;
     }
+
+    /*
+* 机器灯控制请求参数
+* */
+    public Map<String, Object> getMachineLightControlParams() {
+        Map<String, Object> params = new HashMap<>();
+        params.put("userID", 1);
+        params.put("appUserID", 1);
+        params.put("checkCode", 1);
+        params.put("machineID", FragmentFactory.getInstance().getSavedBundle().getInt("machineID"));
+        return params;
+    }
+
+    /*
+* 机器关机请求参数
+* */
+    public Map<String, Object> getMachineShutdownParams() {
+        Map<String, Object> params = new HashMap<>();
+        params.put("userID", 1);
+        params.put("appUserID", 1);
+        params.put("checkCode", 1);
+        params.put("machineID", FragmentFactory.getInstance().getSavedBundle().getInt("machineID"));
+        return params;
+    }
+
+    /*
+* 机器重启请求参数
+* */
+    public Map<String, Object> getMachineRestartParams() {
+        Map<String, Object> params = new HashMap<>();
+        params.put("userID", 1);
+        params.put("appUserID", 1);
+        params.put("checkCode", 1);
+        params.put("machineID", FragmentFactory.getInstance().getSavedBundle().getInt("machineID"));
+        return params;
+    }
+
+    /*
+* 机器盘点请求参数
+* */
+    public Map<String, Object> getMachineCheckParams() {
+        Map<String, Object> params = new HashMap<>();
+        params.put("userID", 1);
+        params.put("appUserID", 1);
+        params.put("checkCode", 1);
+        params.put("machineID", FragmentFactory.getInstance().getSavedBundle().getInt("machineID"));
+        return params;
+    }
 }

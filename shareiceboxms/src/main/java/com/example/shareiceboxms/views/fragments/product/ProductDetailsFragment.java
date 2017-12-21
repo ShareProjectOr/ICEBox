@@ -101,7 +101,7 @@ public class ProductDetailsFragment extends BaseFragment {
                     err = RequstTips.JSONException_Tip;
                     return false;
                 } catch (IOException e) {
-                    err = RequstTips.NetWork_ERROR;
+                    err = RequstTips.getErrorMsg(e.getMessage());
                     return false;
                 }
                 return true;

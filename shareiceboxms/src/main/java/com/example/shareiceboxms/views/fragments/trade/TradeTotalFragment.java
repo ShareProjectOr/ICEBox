@@ -12,7 +12,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ListView;
 import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -29,7 +28,6 @@ import com.example.shareiceboxms.models.helpers.DoubleDatePickerDialog;
 import com.example.shareiceboxms.models.http.JsonUtil;
 import com.example.shareiceboxms.models.http.OkHttpUtil;
 import com.example.shareiceboxms.views.fragments.BaseFragment;
-import com.squareup.okhttp.OkHttpClient;
 
 import org.json.JSONException;
 
@@ -81,16 +79,12 @@ public class TradeTotalFragment extends BaseFragment {
             public void onCheckedChanged(RadioGroup group, @IdRes int checkedId) {
                 switch (checkedId) {
                     case R.id.todayDate:
-                        Toast.makeText(getContext(), "1", Toast.LENGTH_SHORT).show();
                         break;
                     case R.id.weekDate:
-                        Toast.makeText(getContext(), "2", Toast.LENGTH_SHORT).show();
                         break;
                     case R.id.monthDate:
-                        Toast.makeText(getContext(), "3", Toast.LENGTH_SHORT).show();
                         break;
                     case R.id.yearDate:
-                        Toast.makeText(getContext(), "4", Toast.LENGTH_SHORT).show();
                         break;
                 }
             }
@@ -152,6 +146,7 @@ public class TradeTotalFragment extends BaseFragment {
             try {
                 Log.e("request params: ", JsonUtil.mapToJson(this.params));
                 response = OkHttpUtil.post(HttpRequstUrl.MACHINE_LIST_URL, JsonUtil.mapToJson(this.params));
+
              /*    被移动至JsonDataParse的getArrayList 方法中
                 JSONObject jsonObject = new JSONObject(response.toString());
                 JSONObject jsonD = jsonObject.getJSONObject("d");

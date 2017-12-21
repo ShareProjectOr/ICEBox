@@ -63,7 +63,6 @@ public class TradeFragment extends BaseFragment implements HomeActivity.OnBackPr
     }
 
     public void addFrameLayout(BaseFragment fragment) {
-        Toast.makeText(getContext(), "fdsafdsafdsafds", Toast.LENGTH_SHORT).show();
         curFrameFragment = fragment;
         super.addFrameLayout(fragment, R.id.detailFrameLayout);
         tradeDetailLayout.setVisibility(View.VISIBLE);

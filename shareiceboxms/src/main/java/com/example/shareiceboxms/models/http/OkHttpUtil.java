@@ -132,7 +132,8 @@ public class OkHttpUtil {
             return response.body().string();
         } else {
             Log.e("Unexpected code:", response + "");
-            throw new IOException("Unexpected code :" + response);
+            Log.e("Unexpected code:", response.code() + "");
+            throw new IOException("Unexpected code :" +response.code());
         }
     }
 

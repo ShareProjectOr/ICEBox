@@ -140,7 +140,7 @@ public class ChangePasswordFragment extends BaseFragment {
                         //  homeActivity.onBackPressed();
                     }
                 } catch (IOException e) {
-                    err = RequstTips.NetWork_ERROR;
+                    err = RequstTips.getErrorMsg(e.getMessage());
                     return false;
                 } catch (JSONException e) {
                     err = RequstTips.JSONException_Tip;

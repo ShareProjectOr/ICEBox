@@ -15,6 +15,10 @@ public interface HttpRequstUrl {
     String MACHINE_LIST_URL = "http://192.168.4.224:8082/" + "machine/search";
     String MACHINE_DETAIL_URL = "http://192.168.4.224:8082/" + "machine/get";
     String MACHINE_StockGoods_URL = "http://192.168.4.224:8082/" + "machine/stockGoods";
+    String MACHINE_Restart_URL = "http://192.168.4.224:8082/" + "machine/restart";
+    String MACHINE_Shutdown_URL = "http://192.168.4.224:8082/" + "machine/powerOff";
+    String MACHINE_LightControl_URL = "http://192.168.4.224:8082/" + "machine/toggleLock";
+    String MACHINE_Check_URL = "http://192.168.4.224:8082/" + "machine/check";//盘点
 
 
     String TEST_UERL = "http://192.168.4.211:8081/category/addLable";

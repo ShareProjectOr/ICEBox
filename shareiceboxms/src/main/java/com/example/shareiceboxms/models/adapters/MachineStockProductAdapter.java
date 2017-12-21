@@ -56,6 +56,9 @@ public class MachineStockProductAdapter extends BaseAdapter {
         } else {
             viewHolder = (ViewHolder) convertView.getTag();
         }
+        if (position >= itemProducts.size()) {
+            return null;
+        }
         //添加值
         viewHolder.productName.setText(itemProducts.get(position).goodsName);
         viewHolder.productPrice.setText(itemProducts.get(position).price + "");

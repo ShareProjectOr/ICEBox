@@ -19,6 +19,8 @@ import com.example.shareiceboxms.models.contants.Sql;
 import com.example.shareiceboxms.views.activities.HomeActivity;
 import com.example.shareiceboxms.views.activities.LoginActivity;
 
+import java.util.Map;
+
 /**
  * Created by WH on 2017/11/30.
  */
@@ -65,11 +67,12 @@ public class MyDialog {
         return dialog;
     }
 
-    public AlertDialog getMachineTeleControlDialog(String showMsg) {
+    public AlertDialog getMachineTeleControlDialog(String showMsg, final String url, final Map<String, Object> params) {
         AlertDialog dialog = new AlertDialog.Builder(context).setMessage(showMsg).setPositiveButton("确定", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
+                TeleControlHelper.getInstance().setContext(context);
+                TeleControlHelper.getInstance().getDatas(url, params);
             }
         }).setNegativeButton("取消", null).create();
         return dialog;

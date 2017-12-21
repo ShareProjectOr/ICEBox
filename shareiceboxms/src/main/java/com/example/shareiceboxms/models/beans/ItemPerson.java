@@ -37,7 +37,7 @@ public class ItemPerson {
             itemPerson.userID = response.getInt("userID");
             itemPerson.email = response.getString("email");
         } catch (JSONException e) {
-            Log.e("ItemMachine", e.toString());
+            Log.e("ItemPerson", e.toString());
         }
         return itemPerson;
     }

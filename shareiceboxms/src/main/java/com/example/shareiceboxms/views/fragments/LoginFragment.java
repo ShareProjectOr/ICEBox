@@ -166,7 +166,7 @@ public class LoginFragment extends BaseFragment {
         private final String mEmail;
         private final String mPassword;
         private String response;
-        private String err = RequstTips.NetWork_ERROR;
+        private String err = RequstTips.Server_ERROR_404;
         private JSONObject userJson;
 
         UserLoginTask(String email, String password) {
@@ -194,7 +194,7 @@ public class LoginFragment extends BaseFragment {
                 }
             } catch (IOException e) {
                 Log.e("response", e + "");
-                err = RequstTips.NetWork_ERROR;
+                err = RequstTips.getErrorMsg(e.getMessage());
             } catch (JSONException e) {
                 err = RequstTips.JSONException_Tip;
             }

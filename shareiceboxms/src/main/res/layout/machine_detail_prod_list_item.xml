@@ -22,7 +22,7 @@
             <TextView
                 android:id="@+id/productName"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:gravity="center"
                 android:text="品类名称" />
@@ -31,7 +31,7 @@
             <TextView
                 android:id="@+id/productPrice"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:gravity="center"
                 android:text="单价" />
@@ -39,7 +39,7 @@
             <TextView
                 android:id="@+id/productSpecPrice"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:gravity="center"
                 android:text="特价" />
@@ -47,7 +47,7 @@
             <TextView
                 android:id="@+id/timeLimit"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:gravity="center"
                 android:text="剩余时限" />
