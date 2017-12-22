@@ -83,9 +83,10 @@ public class CreateAccountFragment extends BaseFragment {
     }
 
     @Override
-    public void onDateSet(DatePicker startDatePicker, int startYear, int startMonthOfYear, int startDayOfMonth, DatePicker endDatePicker, int endYear, int endMonthOfYear, int endDayOfMonth) {
+    public String[] onDateSet(DatePicker startDatePicker, int startYear, int startMonthOfYear, int startDayOfMonth, DatePicker endDatePicker, int endYear, int endMonthOfYear, int endDayOfMonth) {
 
         //  int a = startYear;
         //textview中添加文本
+        return null;
     }
 }

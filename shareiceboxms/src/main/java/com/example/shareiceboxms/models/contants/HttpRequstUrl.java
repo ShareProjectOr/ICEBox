@@ -19,10 +19,16 @@ public interface HttpRequstUrl {
     String MACHINE_Shutdown_URL = "http://192.168.4.224:8082/" + "machine/powerOff";
     String MACHINE_LightControl_URL = "http://192.168.4.224:8082/" + "machine/toggleLock";
     String MACHINE_Check_URL = "http://192.168.4.224:8082/" + "machine/check";//盘点
+    String MACHINE_Temp_URL = "http://192.168.4.224:8082/" + "machine/setTemperature";
 
 
     String EDIT_PRICE_UERL = "http://192.168.4.211:8082/category/edit";
     String REPAIR_PASSWORD_URL = HOST_URL + "user/editPassword";
     String PRODUCT_TYPE_LIST_URL = "http://192.168.4.211:8082/category/search";
     String PRODUCT_TYPE_DETAIL_URL = "http://192.168.4.211:8082/category/get";
+
+    /*
+    * 交易统计
+    * */
+    String TRADE_TOTAL_URL = "http://192.168.4.224:8082/" + "trade/financialTotal";
 }

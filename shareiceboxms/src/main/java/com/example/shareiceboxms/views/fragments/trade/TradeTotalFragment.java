@@ -1,5 +1,6 @@
 package com.example.shareiceboxms.views.fragments.trade;
 
+import android.app.Dialog;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.IdRes;
@@ -12,6 +13,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.DatePicker;
 import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -23,8 +25,12 @@ import com.example.shareiceboxms.models.beans.ItemMachine;
 import com.example.shareiceboxms.models.beans.ItemTradeTotal;
 import com.example.shareiceboxms.models.contants.HttpRequstUrl;
 import com.example.shareiceboxms.models.contants.JsonDataParse;
+import com.example.shareiceboxms.models.contants.RequestParamsContants;
+import com.example.shareiceboxms.models.contants.RequstTips;
 import com.example.shareiceboxms.models.factories.FragmentFactory;
 import com.example.shareiceboxms.models.helpers.DoubleDatePickerDialog;
+import com.example.shareiceboxms.models.helpers.MyDialog;
+import com.example.shareiceboxms.models.helpers.SecondToDate;
 import com.example.shareiceboxms.models.http.JsonUtil;
 import com.example.shareiceboxms.models.http.OkHttpUtil;
 import com.example.shareiceboxms.views.fragments.BaseFragment;
@@ -32,7 +38,9 @@ import com.example.shareiceboxms.views.fragments.BaseFragment;
 import org.json.JSONException;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -50,6 +58,8 @@ public class TradeTotalFragment extends BaseFragment {
     private TradeTotalListAdapter adapter;
     private SwipeRefreshLayout refreshLayout;
     private ItemTradeTotal itemTradeTotal;
+    private Dialog dialog;
+    private String[] time = new String[]{"", ""};
 
 
     private DoubleDatePickerDialog datePickerDialog;
@@ -77,16 +87,23 @@ public class TradeTotalFragment extends BaseFragment {
         dateGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup group, @IdRes int checkedId) {
+
                 switch (checkedId) {
                     case R.id.todayDate:
+                        Log.e("-----------:", SecondToDate.getWeek() + "");
+                        time = SecondToDate.getDay();
                         break;
                     case R.id.weekDate:
+
+//                        setTime(date. + " 00:00", formatter.format(date) + " 23:59");
                         break;
                     case R.id.monthDate:
                         break;
                     case R.id.yearDate:
                         break;
                 }
+                timeSelector.setText("");
+                getDatas();
             }
         });
         dateGroup.check(R.id.todayDate);
@@ -95,7 +112,7 @@ public class TradeTotalFragment extends BaseFragment {
     }
 
     private void initDatas() {
-
+        dialog = MyDialog.loadDialog(getContext());
         tradeTotalList.setHasFixedSize(true);
         LinearLayoutManager mLayoutManager = new LinearLayoutManager(getContext());
         tradeTotalList.setLayoutManager(mLayoutManager);
@@ -105,17 +122,28 @@ public class TradeTotalFragment extends BaseFragment {
         datePickerDialog = new DoubleDatePickerDialog(getContext(), 0, this
                 , Calendar.getInstance().get(Calendar.YEAR), Calendar.getInstance().get(Calendar.MONTH)
                 , Calendar.getInstance().get(Calendar.DATE), true);
-        //联网刷新数据
-//        String dataJson = OkHttpUtil.post(url, params);
-//        itemTradeTotal = JsonUtil.jsonToJavaBean(dataJson, itemTradeTotal);
-//        adapter.notifyDataSetChanged();
+
+    }
+
+    private void setTime(String startTime, String endTime) {
+        time[0] = startTime;
+        time[1] = endTime;
+    }
+
+    private Map<String, Object> getParams() {
+        Map<String, Object> params = RequestParamsContants.getInstance().getTradeTotalParams();
+        params.put("searchTime", RequestParamsContants.getInstance().getSelectTime(time));
+        return params;
+    }
+
+    private void getDatas() {
+        TradeTotalTask task = new TradeTotalTask(getParams());
+        task.execute();
     }
 
     @Override
     public void onRefresh() {
-        if (itemTradeTotal != null) {
-            adapter.notifyDataSetChanged();
-        }
+        timeSelector.setText("");
 //        getDatas(getParams());
         refreshLayout.setRefreshing(false);//关闭刷新
     }
@@ -129,12 +157,19 @@ public class TradeTotalFragment extends BaseFragment {
         }
     }
 
+    @Override
+    public String[] onDateSet(DatePicker startDatePicker, int startYear, int startMonthOfYear, int startDayOfMonth, DatePicker endDatePicker, int endYear, int endMonthOfYear, int endDayOfMonth) {
+        time = super.onDateSet(startDatePicker, startYear, startMonthOfYear, startDayOfMonth, endDatePicker, endYear, endMonthOfYear, endDayOfMonth);
+        timeSelector.setText(time[0].replace(" 00:00", "") + " 至 " + time[1].replace(" 00:00", ""));
+        return null;
+    }
+
     //获取机器列表异步任务
     private class TradeTotalTask extends AsyncTask<Void, Void, Boolean> {
 
         private String response;
         private String err = "net_work_err";
-        private List<ItemMachine> machines;
+        private ItemTradeTotal tradeTotal;
         private Map<String, Object> params;
 
         TradeTotalTask(Map<String, Object> params) {
@@ -142,25 +177,31 @@ public class TradeTotalFragment extends BaseFragment {
         }
 
         @Override
+        protected void onPreExecute() {
+            if (dialog != null) {
+                dialog.show();
+            }
+        }
+
+        @Override
         protected Boolean doInBackground(Void... params) {
             try {
                 Log.e("request params: ", JsonUtil.mapToJson(this.params));
-                response = OkHttpUtil.post(HttpRequstUrl.MACHINE_LIST_URL, JsonUtil.mapToJson(this.params));
-
-             /*    被移动至JsonDataParse的getArrayList 方法中
-                JSONObject jsonObject = new JSONObject(response.toString());
-                JSONObject jsonD = jsonObject.getJSONObject("d");
-                totalNum = jsonD.getInt("t");
-                curPage = jsonD.getInt("p");
-                requestNum = jsonD.getInt("n");
-                JSONArray jsonList = jsonD.getJSONArray("list");*/
-                machines = ItemMachine.bindMachineList(JsonDataParse.getInstance().getArrayList(response.toString()));
-                Log.e("machines.size==", machines.size() + "");
+                response = OkHttpUtil.post(HttpRequstUrl.TRADE_TOTAL_URL, JsonUtil.mapToJson(this.params));
+                tradeTotal = ItemTradeTotal.bindTradeTotal(JsonDataParse.getInstance().getSingleObject(response.toString()));
                 Log.e("response", response.toString());
                 return true;
             } catch (IOException e) {
+                if (dialog != null) {
+                    dialog.dismiss();
+                }
+                err = RequstTips.getErrorMsg(e.getMessage());
                 Log.e("erro", e.toString());
             } catch (JSONException e) {
+                if (dialog != null) {
+                    dialog.dismiss();
+                }
+                err = RequstTips.JSONException_Tip;
                 Log.e("erro", e.toString());
             }
             return false;
@@ -168,14 +209,15 @@ public class TradeTotalFragment extends BaseFragment {
 
         @Override
         protected void onPostExecute(final Boolean success) {
+            if (dialog != null) {
+                dialog.dismiss();
+                dialog = null;
+            }
             if (success) {
+                itemTradeTotal = tradeTotal;
                 adapter.notifyDataSetChanged();
             } else {
                 Log.e("request error :", response + "");
-                if (response == null) {
-//                    Toast.makeText(getContext(), "网络请求超时", Toast.LENGTH_SHORT).show();
-                }
-
             }
         }
 

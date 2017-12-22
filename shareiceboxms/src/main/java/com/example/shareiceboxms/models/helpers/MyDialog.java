@@ -55,15 +55,19 @@ public class MyDialog {
 
     public static Dialog loadDialog(Context context) {
         Dialog dialog = new Dialog(context);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setContentView(R.layout.load_dialog_layout);
         Window window = dialog.getWindow();
         WindowManager.LayoutParams lp = window.getAttributes();
+        lp.width = Util.getScreenWidth(context) / 2;
+        window.setTitle(null);
         lp.alpha = 0.65f;
         window.setAttributes(lp);//设置透明度
-
+        //设置圆矩背景，dialog是为矩形
         window.setBackgroundDrawable(ContextCompat.getDrawable(context, R.drawable.shape_loading_layout));
-        dialog.setCancelable(false);
+        dialog.setCancelable(true);
         dialog.setCanceledOnTouchOutside(false);
+
         return dialog;
     }
 

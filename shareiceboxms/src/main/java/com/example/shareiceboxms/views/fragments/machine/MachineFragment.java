@@ -207,7 +207,17 @@ public class MachineFragment extends BaseFragment implements HomeActivity.OnBack
 
     @Override
     public void OnBackDown() {
+        if (dialog != null) {
+            dialog.dismiss();
+            return;
+        }
         if (curFrameFragment != null && curFrameFragment.isAdded()) {
+            Dialog dialog = ((MachineDetailFragment) curFrameFragment).getDialog();
+            if (dialog != null && dialog.isShowing()) {
+                dialog.dismiss();
+                return;
+            }
+            ((MachineDetailFragment) curFrameFragment).leaveToCommit();
             removeFrame(curFrameFragment);
             tradeDetailLayout.setVisibility(View.GONE);
             machineContainer.setVisibility(View.VISIBLE);
@@ -263,8 +273,14 @@ public class MachineFragment extends BaseFragment implements HomeActivity.OnBack
                 return true;
             } catch (IOException e) {
                 Log.e("erro", e.getMessage());
+                if (dialog != null) {
+                    dialog.dismiss();
+                }
                 err = RequstTips.getErrorMsg(e.getMessage());
             } catch (JSONException e) {
+                if (dialog != null) {
+                    dialog.dismiss();
+                }
                 err = RequstTips.JSONException_Tip;
                 Log.e("erro", e.toString());
             }
@@ -274,7 +290,7 @@ public class MachineFragment extends BaseFragment implements HomeActivity.OnBack
         @Override
         protected void onPostExecute(final Boolean success) {
             if (success) {
-                if (dialog!=null){
+                if (dialog != null) {
                     dialog.dismiss();
                     dialog = null;//第一次弹出dialog后，后续加载不在弹出
                 }
@@ -290,6 +306,9 @@ public class MachineFragment extends BaseFragment implements HomeActivity.OnBack
                 }
                 adapter.notifyDataSetChanged();
             } else {
+                if (dialog != null) {
+                    dialog.dismiss();
+                }
                 Log.e("request error :", response + "");
                 Toast.makeText(homeActivity, err, Toast.LENGTH_SHORT).show();
             }

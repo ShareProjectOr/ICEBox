@@ -154,9 +154,15 @@ public class MachineItemAddViewHelper {
                 return true;
             } catch (IOException e) {
                 Log.e("erro", e.toString());
+                if (dialog != null) {
+                    dialog.dismiss();
+                }
                 err = RequstTips.getErrorMsg(e.getMessage());
             } catch (JSONException e) {
                 Log.e("erro", e.toString());
+                if (dialog != null) {
+                    dialog.dismiss();
+                }
                 err = RequstTips.JSONException_Tip;
             }
             return false;
@@ -169,15 +175,13 @@ public class MachineItemAddViewHelper {
                 itemProducts.addAll(products);
                 adapter.notifyDataSetChanged();
                 ListViewForScrollView.setListViewHeightBasedOnChildren(listView, scrollView);
-
-//                if (adapter.getCount() == totalNum) {
-//                    Log.e("---11111-", "1111111111");
-////                    ListViewForScrollView.sub(listView);
-//                }
             } else {
                 Log.e("request error :", response + "");
                 if (context != null)
                     Toast.makeText(context, err, Toast.LENGTH_SHORT).show();
+            }
+            if (dialog != null) {
+                dialog.dismiss();
             }
         }
 

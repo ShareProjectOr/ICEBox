@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.CompoundButton;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -27,6 +28,7 @@ import com.example.shareiceboxms.models.contants.Constants;
 import com.example.shareiceboxms.models.contants.HttpRequstUrl;
 import com.example.shareiceboxms.models.contants.RequestParamsContants;
 import com.example.shareiceboxms.models.widget.ListViewForScrollView;
+import com.example.shareiceboxms.views.fragments.machine.MachineDetailFragment;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -46,6 +48,9 @@ public class MachineItemAddView {
     private TeleControlHolder teleControlHolder;
     private StockProductsHolder stockProductsHolder;
     private MachineItemAddViewHelper machineItemAddViewHelper;
+    private boolean isTempChanged = false;
+    private String targetTemp;
+    private String offsetTemp;
 
     public MachineItemAddView(Context context) {
         this.context = context;
@@ -101,13 +106,14 @@ public class MachineItemAddView {
     public void updateTeleControlUi(ItemMachine itemMachine) {
         teleControlHolder.targetTemp.setText(itemMachine.targetTemperature);
         teleControlHolder.offsetTemp.setText(itemMachine.deviationTemperature);
-        itemMachine.targetTemperature = "10℃";
-        itemMachine.deviationTemperature = "12℃";
-        int tartgetTemp = Integer.valueOf(itemMachine.targetTemperature.replace("℃", "").trim());
-        int offsetTemp = Integer.valueOf(itemMachine.deviationTemperature.replace("℃", "").trim());
-        Log.d("--updateTeleControlUi--", "tartgetTemp===" + tartgetTemp);
-        teleControlHolder.tempSeekbar.setProgress(tartgetTemp);
-        teleControlHolder.offSetTempSeekbar.setProgress(offsetTemp);
+        if (!itemMachine.targetTemperature.equals("")) {
+            float tartgetTemp = Float.parseFloat(itemMachine.targetTemperature.replace("℃", "").trim());
+            teleControlHolder.tempSeekbar.setProgress((int) tartgetTemp);
+        }
+        if (!itemMachine.deviationTemperature.equals("")) {
+            float offsetTemp =  Float.parseFloat(itemMachine.deviationTemperature.replace("℃", "").trim());
+            teleControlHolder.offSetTempSeekbar.setProgress((int) offsetTemp);
+        }
     }
 
 
@@ -136,11 +142,27 @@ public class MachineItemAddView {
 
     }
 
-    /*
-      *更新库存商品的值
-      * */
-    public void updateStockProductUi() {
 
+    public boolean isTempChanged() {
+        return isTempChanged;
+    }
+
+    public void saveTemp(TextView targetTempEdit, TextView offsetTempEdit) {
+
+        targetTemp = targetTempEdit.getText().toString();
+        offsetTemp = offsetTempEdit.getText().toString();
+    }
+
+    public String getTargetTemp() {
+        return targetTemp;
+    }
+
+    public String getOffsetTemp() {
+        return offsetTemp;
+    }
+
+    public void setTempChanged(boolean tempChanged) {
+        isTempChanged = tempChanged;
     }
 
     public View getStateControlView() {
@@ -209,15 +231,17 @@ public class MachineItemAddView {
             tempSeekbar.setOnSeekBarChangeListener(this);
             tempSeekbar.setMax(Constants.MAX_TARGET_TEMP);
             offSetTempSeekbar.setMax(Constants.MAX_OFFSET_TEMP);
+
             lockSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                     Map<String, Object> params = RequestParamsContants.getInstance().getMachineLightControlParams();
-                    params.put("isChecked",isChecked);
+                    params.put("isOpen", isChecked);
                     TeleControlHelper.getInstance().setContext(context);
                     TeleControlHelper.getInstance().getDatas(HttpRequstUrl.MACHINE_LightControl_URL, params);
                 }
             });
+
         }
 
         @Override
@@ -232,7 +256,7 @@ public class MachineItemAddView {
                         TargetTemp++;
                         targetTemp.setText(String.valueOf(TargetTemp));
                     }
-
+                    isTempChanged = true;
                     break;
                 case R.id.subTargetTemp:
                     if (TargetTemp <= Constants.MIN_TARGET_TEMP) {
@@ -241,7 +265,7 @@ public class MachineItemAddView {
                         TargetTemp--;
                         targetTemp.setText(String.valueOf(TargetTemp));
                     }
-
+                    isTempChanged = true;
                     break;
                 case R.id.addOffsetTemp:
                     if (OffSetTemp >= Constants.MAX_OFFSET_TEMP) {
@@ -250,7 +274,7 @@ public class MachineItemAddView {
                         OffSetTemp++;
                         offsetTemp.setText(String.valueOf(OffSetTemp));
                     }
-
+                    isTempChanged = true;
                     break;
                 case R.id.subOffsetTemp:
                     if (OffSetTemp <= Constants.MIN_OFFSET_TEMP) {
@@ -259,7 +283,7 @@ public class MachineItemAddView {
                         OffSetTemp--;
                         offsetTemp.setText(String.valueOf(OffSetTemp));
                     }
-
+                    isTempChanged = true;
                     break;
                 case R.id.restart:
                     MyDialog restartDialog = new MyDialog(context);
@@ -279,6 +303,7 @@ public class MachineItemAddView {
             }
             tempSeekbar.setProgress(Integer.parseInt(targetTemp.getText().toString()));
             offSetTempSeekbar.setProgress(Integer.parseInt(offsetTemp.getText().toString()));
+            saveTemp(targetTemp, offsetTemp);
         }
 
         @Override
@@ -288,6 +313,8 @@ public class MachineItemAddView {
             } else {
                 offsetTemp.setText(String.valueOf(progress));
             }
+            isTempChanged = true;
+            saveTemp(targetTemp, offsetTemp);
         }
 
         @Override
@@ -310,8 +337,6 @@ public class MachineItemAddView {
                     targetTemp.setText(String.valueOf(seekBar.getProgress()));
                 }
             } else {
-
-
                 //向左滑动的进度小于最低偏差温度时的处理
                 if (seekBar.getProgress() <= Constants.MIN_OFFSET_TEMP) {
                     seekBar.setProgress(Constants.MIN_OFFSET_TEMP);

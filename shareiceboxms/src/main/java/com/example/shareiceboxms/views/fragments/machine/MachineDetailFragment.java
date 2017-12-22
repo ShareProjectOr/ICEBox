@@ -30,6 +30,7 @@ import com.example.shareiceboxms.models.contants.RequstTips;
 import com.example.shareiceboxms.models.factories.FragmentFactory;
 import com.example.shareiceboxms.models.helpers.MachineItemAddView;
 import com.example.shareiceboxms.models.helpers.MyDialog;
+import com.example.shareiceboxms.models.helpers.TeleControlHelper;
 import com.example.shareiceboxms.models.http.JsonUtil;
 import com.example.shareiceboxms.models.http.OkHttpUtil;
 import com.example.shareiceboxms.views.activities.HomeActivity;
@@ -41,6 +42,7 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -153,10 +155,22 @@ public class MachineDetailFragment extends BaseFragment implements SwipeRefreshL
         machineListTask.execute();
     }
 
+    public Dialog getDialog() {
+        return dialog;
+    }
+
+    public ItemMachine getItemMachine() {
+        return itemMachine;
+    }
+
+    public void setItemMachine(ItemMachine itemMachine) {
+        this.itemMachine = itemMachine;
+    }
+
     /*
-    * 更新UI
-    * */
-    private void updateUi() {
+            * 更新UI
+            * */
+    public void updateUi() {
         machineAddr.setText(itemMachine.machineAddress);
         machineName.setText(itemMachine.machineName);
         isOnLine.setText(Constants.MachineOnLineState[itemMachine.networkState]);
@@ -176,6 +190,21 @@ public class MachineDetailFragment extends BaseFragment implements SwipeRefreshL
                 break;
         }
 
+    }
+
+    /*
+    * 离开页面时向服务器提交信息
+    * 温度改变
+    * */
+    public void leaveToCommit() {
+        if (machineItemAddView != null && machineItemAddView.isTempChanged()) {
+            TeleControlHelper.getInstance().setContext(homeActivity);
+            Map<String, Object> params = RequestParamsContants.getInstance().getMachineTempParams();
+            params.put("targetTemperature", machineItemAddView.getTargetTemp());
+            params.put("deviationTemperature", machineItemAddView.getOffsetTemp());
+            TeleControlHelper.getInstance().getDatas(HttpRequstUrl.MACHINE_Temp_URL, params);
+            machineItemAddView.setTempChanged(false);
+        }
     }
 
     @Override
@@ -230,9 +259,15 @@ public class MachineDetailFragment extends BaseFragment implements SwipeRefreshL
             } catch (IOException e) {
                 Log.e("erro", e.toString());
                 err = RequstTips.getErrorMsg(e.getMessage());
+                if (dialog != null) {
+                    dialog.dismiss();
+                }
             } catch (JSONException e) {
                 Log.e("erro", e.toString());
                 err = RequstTips.JSONException_Tip;
+                if (dialog != null) {
+                    dialog.dismiss();
+                }
             }
             return false;
         }
@@ -240,16 +275,20 @@ public class MachineDetailFragment extends BaseFragment implements SwipeRefreshL
         @Override
         protected void onPostExecute(final Boolean success) {
             if (success) {
-                if (dialog!=null){
+                if (dialog != null) {
                     dialog.dismiss();
                     dialog = null;//第一次弹出dialog后，后续加载不在弹出
                 }
                 itemMachine = machine;
                 updateUi();
             } else {
+                if (dialog != null) {
+                    dialog.dismiss();
+                }
                 Log.e("request error :", response + "");
                 Toast.makeText(homeActivity, err, Toast.LENGTH_SHORT).show();
             }
+
         }
 
         @Override

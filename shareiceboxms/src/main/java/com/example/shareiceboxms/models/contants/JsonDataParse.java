@@ -39,12 +39,22 @@ public class JsonDataParse {
 
     /*
 *
+* 解析单个对象
+* */
+    public JSONObject getSingleObject(String response) throws JSONException {
+        JSONObject jsonObject = new JSONObject(response.toString());
+        return jsonObject.getJSONObject("d");
+    }
+
+    /*
+*
 * 解析机器远程控制
 * */
     public boolean getTeleControlIsArrow(String response) throws JSONException {
         JSONObject jsonObject = new JSONObject(response.toString());
         return jsonObject.getBoolean("d");
     }
+
 
     public int getTotalNum() {
         return totalNum;

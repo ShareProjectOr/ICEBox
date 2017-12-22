@@ -148,9 +148,10 @@ public class ExceptionFragment extends BaseFragment implements CompoundButton.On
     }
 
     @Override
-    public void onDateSet(DatePicker startDatePicker, int startYear, int startMonthOfYear, int startDayOfMonth, DatePicker endDatePicker, int endYear, int endMonthOfYear, int endDayOfMonth) {
+    public String[] onDateSet(DatePicker startDatePicker, int startYear, int startMonthOfYear, int startDayOfMonth, DatePicker endDatePicker, int endYear, int endMonthOfYear, int endDayOfMonth) {
 
         //  int a = startYear;
+        return null;
     }
 
     @Override

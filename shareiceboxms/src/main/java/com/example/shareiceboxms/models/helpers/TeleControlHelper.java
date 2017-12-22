@@ -5,6 +5,7 @@ import android.os.AsyncTask;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.example.shareiceboxms.models.beans.ItemMachine;
 import com.example.shareiceboxms.models.contants.HttpRequstUrl;
 import com.example.shareiceboxms.models.contants.JsonDataParse;
 import com.example.shareiceboxms.models.http.JsonUtil;
@@ -20,7 +21,8 @@ import java.util.Map;
  * 关机
  * 重启
  * 灯控制
- * 盘点？
+ * 盘点
+ * 修改温度
  */
 
 public class TeleControlHelper {
@@ -66,7 +68,11 @@ public class TeleControlHelper {
                 Log.e("request params: ", JsonUtil.mapToJson(this.params));
                 response = OkHttpUtil.post(url, JsonUtil.mapToJson(this.params));
                 Log.e("response", response.toString());
-                isAllow = JsonDataParse.getInstance().getTeleControlIsArrow(response.toString());
+                if (url.equals(HttpRequstUrl.MACHINE_Temp_URL)) {
+
+                } else {
+                    isAllow = JsonDataParse.getInstance().getTeleControlIsArrow(response.toString());
+                }
                 return true;
             } catch (IOException e) {
                 Log.e("erro", e.toString());
@@ -79,16 +85,20 @@ public class TeleControlHelper {
         @Override
         protected void onPostExecute(Boolean success) {
             if (success) {
-                if (isAllow) {
-                    Toast.makeText(context, "操作成功", Toast.LENGTH_SHORT).show();
+                if (url.equals(HttpRequstUrl.MACHINE_Temp_URL)) {
+                    Toast.makeText(context, "温度信息已保存", Toast.LENGTH_SHORT).show();
                 } else {
-                    Toast.makeText(context, "操作失败，请重试！", Toast.LENGTH_SHORT).show();
+                    if (isAllow) {
+                        Toast.makeText(context, "操作成功", Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(context, "操作失败，请重试！", Toast.LENGTH_SHORT).show();
+                    }
                 }
+
             } else {
                 Log.e("request error :", response + "");
             }
         }
-
-
     }
+
 }

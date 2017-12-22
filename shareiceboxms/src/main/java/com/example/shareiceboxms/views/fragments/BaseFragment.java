@@ -24,7 +24,7 @@ import com.example.shareiceboxms.views.fragments.trade.TradeAccountDetailFragmen
 
 public class BaseFragment extends Fragment implements View.OnClickListener,
         SwipeRefreshLayout.OnRefreshListener, DoubleDatePickerDialog.OnDateSetListener,
-        HomeActivity.OnBackPressListener,LoadMoreHelper.LoadMoreListener {
+        HomeActivity.OnBackPressListener, LoadMoreHelper.LoadMoreListener {
     public static BaseFragment curFragment;
     public static TradeAccountDetailFragment tradeAccountDetailFragment;
 
@@ -72,9 +72,28 @@ public class BaseFragment extends Fragment implements View.OnClickListener,
 
     }
 
-    @Override
-    public void onDateSet(DatePicker startDatePicker, int startYear, int startMonthOfYear, int startDayOfMonth, DatePicker endDatePicker, int endYear, int endMonthOfYear, int endDayOfMonth) {
 
+    @Override
+    public String[] onDateSet(DatePicker startDatePicker, int startYear, int startMonthOfYear, int startDayOfMonth, DatePicker endDatePicker, int endYear, int endMonthOfYear, int endDayOfMonth) {
+        String startMonth = String.valueOf(startMonthOfYear + 1);
+        String startDay = String.valueOf(startDayOfMonth);
+        String endMonth = String.valueOf(endMonthOfYear + 1);
+        String endDay = String.valueOf(endDayOfMonth);
+        if (startMonth.length() < 2) {
+            startMonth = "0" + startMonth;
+        }
+        if (startDay.length() < 2) {
+            startDay = "0" + startDay;
+        }
+        if (endMonth.length() < 2) {
+            endMonth = "0" + endMonth;
+        }
+        if (endDay.length() < 2) {
+            endDay = "0" + endDay;
+        }
+        String startTime = startYear + "-" + startMonth + "-" + startDay + " 00:00";
+        String endTime = endYear + "-" + endMonth + "-" + endDay + " 00:00";
+        return new String[]{startTime, endTime};
     }
 
     @Override

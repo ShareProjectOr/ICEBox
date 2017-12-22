@@ -47,14 +47,37 @@ public class TradeTotalListAdapter extends RecyclerView.Adapter<RecyclerView.Vie
             viewHolder.hasPayTitle.setText(TradeTotalTitlesItem[2]);
             viewHolder.notPayTitle.setText(TradeTotalTitlesItem[3]);
         }
-//        viewHolder.totalMoneyNum.setText(itemTradeTotal);
-//        viewHolder.hasPayNum.setText(itemTradeTotal);
-//        viewHolder.notPayNum.setText(itemTradeTotal);
+        setValue(position, viewHolder);
     }
 
     @Override
     public int getItemCount() {
         return TradeTotalTitles.length;
+    }
+
+    private void setValue(int position, ViewHolder viewHolder) {
+        switch (position) {
+            case 0:
+                viewHolder.totalMoneyNum.setText(itemTradeTotal.totalMoney + "");
+                viewHolder.hasPayNum.setText(itemTradeTotal.totalMoney + "");
+                viewHolder.notPayNum.setText(itemTradeTotal.totalMoney + "");
+                break;
+            case 1:
+                viewHolder.totalMoneyNum.setText(itemTradeTotal.totalMoney + "");
+                viewHolder.hasPayNum.setText(itemTradeTotal.totalMoney + "");
+                viewHolder.notPayNum.setText(itemTradeTotal.totalMoney + "");
+                break;
+            case 2:
+                viewHolder.totalMoneyNum.setText(itemTradeTotal.totalMoney + "");
+                viewHolder.hasPayNum.setText(itemTradeTotal.totalMoney + "");
+                viewHolder.notPayNum.setText(itemTradeTotal.totalMoney + "");
+                break;
+            case 3:
+                viewHolder.totalMoneyNum.setText(itemTradeTotal.totalMoney + "");
+                viewHolder.hasPayNum.setText(itemTradeTotal.totalMoney + "");
+                viewHolder.notPayNum.setText(itemTradeTotal.totalMoney + "");
+                break;
+        }
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {

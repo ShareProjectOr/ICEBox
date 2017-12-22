@@ -46,7 +46,7 @@ public class DoubleDatePickerDialog extends AlertDialog implements OnClickListen
     public interface OnDateSetListener {
 
 
-        void onDateSet(DatePicker startDatePicker, int startYear, int startMonthOfYear, int startDayOfMonth,
+        String[] onDateSet(DatePicker startDatePicker, int startYear, int startMonthOfYear, int startDayOfMonth,
                        DatePicker endDatePicker, int endYear, int endMonthOfYear, int endDayOfMonth);
     }
 
