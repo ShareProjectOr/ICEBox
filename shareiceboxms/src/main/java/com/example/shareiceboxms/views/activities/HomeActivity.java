@@ -379,7 +379,7 @@ public class HomeActivity extends BaseActivity
         if (activitycalss != null) {
             intent.setClass(getApplication(), activitycalss);
             if (intentData != null) {
-                intent.putExtra("intentdata", intentData);
+                intent.putExtras(intentData);
             }
             startActivity(intent);
         }

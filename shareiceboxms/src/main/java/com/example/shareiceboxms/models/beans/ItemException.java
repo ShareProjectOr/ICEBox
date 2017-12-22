@@ -23,6 +23,16 @@ public class ItemException {
     public void bindData(JSONObject json) {
         try {
             exceptionID = json.getInt("exceptionID");
+            exceptionLevel = json.getInt("exceptionLevel");
+            exceptionCode = json.getString("exceptionCode");
+            happenTime = json.getString("happenTime");
+            dealTime = json.getString("dealTime");
+            dealMethod = json.getInt("dealMethod");
+            remark = json.getString("remark");
+            machineID = json.getJSONObject("machine").getInt("machineID");
+            machineName = json.getJSONObject("machine").getString("machineName");
+            machineCode = json.getJSONObject("machine").getString("machineCode");
+            machineAddress = json.getJSONObject("machine").getString("machineAddress");
         } catch (JSONException e) {
             e.printStackTrace();
         }

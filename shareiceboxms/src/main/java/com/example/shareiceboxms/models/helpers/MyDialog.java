@@ -33,10 +33,10 @@ public class MyDialog {
     }
 
     public AlertDialog getLogoutDialog(final HomeActivity activity) {
-        AlertDialog dialog = new AlertDialog.Builder(activity).setMessage("您确定退出吗？").setPositiveButton("确定", new DialogInterface.OnClickListener() {
+        return new AlertDialog.Builder(activity).setMessage("您确定退出吗？").setPositiveButton("确定", new DialogInterface.OnClickListener() {
             @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
+            public void onClick(DialogInterface dialog1, int which) {
+                dialog1.dismiss();
                 //清空缓存数据
                 Dosql();
                 ConstanceMethod.isFirstLogin(activity, true);
@@ -45,7 +45,7 @@ public class MyDialog {
                 activity.finish();
             }
         }).setNegativeButton("取消", null).create();
-        return dialog;
+
     }
 
     private void Dosql() {

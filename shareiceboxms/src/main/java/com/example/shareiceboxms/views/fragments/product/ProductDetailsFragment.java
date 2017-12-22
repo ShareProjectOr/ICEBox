@@ -9,7 +9,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -64,10 +63,16 @@ public class ProductDetailsFragment extends BaseFragment {
             containerView = super.onCreateView(inflater, container, FragmentFactory.getInstance().putLayoutId(R.layout.product_details_fragment));
             categoryID = FragmentFactory.getInstance().getSavedBundle().getInt("categoryID");
             initViews();
-            initDatas();
+
             initLisener();
         }
         return containerView;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        initDatas();
     }
 
     private void initLisener() {

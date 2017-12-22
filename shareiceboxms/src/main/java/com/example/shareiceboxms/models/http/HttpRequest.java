@@ -94,7 +94,8 @@ public class HttpRequest {
         return response.toString();
     }
 
-    public static String postStringbyJson(String requestURL, String json) throws IOException {
+    public static String postStringbyJson(String requestURL, Object json) throws IOException {
+
         System.out.println("postString url : " + requestURL);
         URL url;
         StringBuilder response = new StringBuilder();
@@ -103,17 +104,26 @@ public class HttpRequest {
         conn.setReadTimeout(6000);
         conn.setConnectTimeout(6000);
         conn.setRequestMethod("POST");
-        conn.setRequestProperty("Content-Type", "application/json; charset=utf-8");
+
         conn.setDoOutput(true);
         OutputStream os = conn.getOutputStream();
+
         BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(os, "UTF-8"));
-        JSONObject jsonObject = new JSONObject();
+      /*  JSONObject jsonObject = new JSONObject();
         try {
             jsonObject.putOpt("categoryLabel","测试用例test1");
         } catch (JSONException e) {
             e.printStackTrace();
+        }*/
+        if (json instanceof Map) {
+            writer.write(getEncodedString((Map<String, String>) json));
+        } else if (json instanceof String) {
+            conn.setRequestProperty("Content-Type", "application/json; charset=utf-8");
+            writer.write((String) json);
+        } else if (json instanceof JSONObject) {
+            conn.setRequestProperty("Content-Type", "application/json; charset=utf-8");
+            writer.write(json.toString());
         }
-        writer.write(jsonObject.toString());
         writer.flush();
         writer.close();
         int responseCode = conn.getResponseCode();

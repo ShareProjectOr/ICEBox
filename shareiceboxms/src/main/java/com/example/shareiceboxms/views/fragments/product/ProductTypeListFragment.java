@@ -5,7 +5,6 @@ import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -26,8 +25,6 @@ import com.example.shareiceboxms.models.factories.FragmentFactory;
 import com.example.shareiceboxms.models.factories.MyViewFactory;
 import com.example.shareiceboxms.models.helpers.LoadMoreHelper;
 import com.example.shareiceboxms.views.fragments.BaseFragment;
-import com.example.shareiceboxms.views.fragments.trade.TradeFragment;
-import com.example.shareiceboxms.views.fragments.trade.TradeRecordDetailFragment;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -41,13 +38,10 @@ public class ProductTypeListFragment extends BaseFragment {
     private View contentView;
     private EditText mMachineSearchInput;
     private Button mDoSearch;
-    private RecyclerView mProductList;
     private SwipeRefreshLayout mRefreashLayout;
     private ProductListData contentprovider;
-    private ProductListAdapter productAdapter;
     private Map<String, Object> initPostBody = new HashMap<>();
     private int currentPage = 1;
-    private LoadMoreHelper loadMoreHelper;
     private int pageNum = 5;
 
     @Nullable
@@ -84,11 +78,11 @@ public class ProductTypeListFragment extends BaseFragment {
         initPostBody.put("appUserID", PerSonMessage.userId);
         mMachineSearchInput = (EditText) contentView.findViewById(R.id.machineSearchInput);
         mDoSearch = (Button) contentView.findViewById(R.id.doSearch);
-        mProductList = (RecyclerView) contentView.findViewById(R.id.productList);
+        RecyclerView mProductList = (RecyclerView) contentView.findViewById(R.id.productList);
         mRefreashLayout = (SwipeRefreshLayout) contentView.findViewById(R.id.refreshLayout);
         mRefreashLayout.setColorSchemeColors(ContextCompat.getColor(getContext(), R.color.blue));
-        productAdapter = new ProductListAdapter(getActivity(), this);
-        loadMoreHelper = new LoadMoreHelper().setContext(getContext()).setAdapter(productAdapter)
+        ProductListAdapter productAdapter = new ProductListAdapter(getActivity(), this);
+        LoadMoreHelper loadMoreHelper = new LoadMoreHelper().setContext(getContext()).setAdapter(productAdapter)
                 .setLoadMoreListenner(this)
                 .bindScrollListener(mProductList)
                 .setVisibleThreshold(0);
@@ -132,7 +126,7 @@ public class ProductTypeListFragment extends BaseFragment {
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                //currentPage = 1;
+                currentPage = 1;
                 contentprovider.getData(HttpRequstUrl.PRODUCT_TYPE_LIST_URL, initPostBody, true);
 
                 mRefreashLayout.setRefreshing(false);

@@ -22,11 +22,11 @@ public interface HttpRequstUrl {
     String MACHINE_Temp_URL = "http://192.168.4.224:8082/" + "machine/setTemperature";
 
 
-    String EDIT_PRICE_UERL = "http://192.168.4.211:8082/category/edit";
     String REPAIR_PASSWORD_URL = HOST_URL + "user/editPassword";
     String PRODUCT_TYPE_LIST_URL = "http://192.168.4.211:8082/category/search";
     String PRODUCT_TYPE_DETAIL_URL = "http://192.168.4.211:8082/category/get";
-
+    String EDIT_PRICE_UERL = "http://192.168.4.211:8082/category/editPrice";
+    String EXCEPTION_LIST_URL = HOST_URL +"exception/search";
     /*
     * 交易统计
     * */

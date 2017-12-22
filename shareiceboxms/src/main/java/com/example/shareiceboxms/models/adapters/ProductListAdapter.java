@@ -25,7 +25,6 @@ public class ProductListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     private final static int TYPE_NORMAL_ITEM = 1;
     private ProductTypeListFragment productTypeListFragment;
     private ProductListData contentProvider;
-    private int position;
 
     public ProductListAdapter(Activity mContext, ProductTypeListFragment productTypeListFragment) {
         this.mContext = mContext;

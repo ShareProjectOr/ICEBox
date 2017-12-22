@@ -7,7 +7,7 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.example.shareiceboxms.models.beans.ItemProductType;
+import com.example.shareiceboxms.models.beans.ItemException;
 import com.example.shareiceboxms.models.contants.RequstTips;
 import com.example.shareiceboxms.models.helpers.LoadMoreHelper;
 import com.example.shareiceboxms.models.helpers.MyDialog;
@@ -24,20 +24,19 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Created by Lyu on 2017/12/19.
- * 品类列表提供类
+ * Created by Administrator on 2017/12/22.
  */
 
-public class ProductListData {
+public class ExceptionListData {
     private RecyclerView.Adapter mAdapter;
     private Activity mActivty;
-    private List<ItemProductType> DataSet = new ArrayList<>();
+    private List<ItemException> DataSet = new ArrayList<>();
     private int total = 0;
     private LoadMoreHelper mloadMoreHelper;
-    private int currentPage;
-    private int pagerNum = 1;
+    public int currentPage;
+    public int pagerNum = 1;
 
-    public ProductListData(RecyclerView.Adapter mAdapter, Activity mActivty) {
+    public ExceptionListData(RecyclerView.Adapter mAdapter, Activity mActivty) {
         this.mAdapter = mAdapter;
         this.mActivty = mActivty;
     }
@@ -78,7 +77,7 @@ public class ProductListData {
                     Log.e("订单列表", "list" + d.toString());
                     for (int i = 0; i < array.length(); i++) {
                         JSONObject itemobject = (JSONObject) array.opt(i);
-                        ItemProductType item = new ItemProductType();
+                        ItemException item = new ItemException();
                         item.bindData(itemobject);
                         DataSet.add(item);
                     }
@@ -89,12 +88,11 @@ public class ProductListData {
                     }
 
                 } catch (IOException e1) {
-                    error = "网络错误";
-                    Log.e("response", e1 + "");
+                    error = RequstTips.getErrorMsg(e1.getMessage());
                     return false;
 
                 } catch (JSONException e1) {
-                    error = RequstTips.JSONException_Tip;
+                    error = RequstTips.getErrorMsg(e1.getMessage());
                     Log.e("sss", e1 + "");
                     return false;
                 }
@@ -106,7 +104,7 @@ public class ProductListData {
                 dialog.dismiss();
                 if (DataSet.size() == 0 && error.equals("")) {
                     //没有数据的情况
-                    Toast.makeText(mActivty, "暂无任何商品品类信息", Toast.LENGTH_LONG).show();
+                    Toast.makeText(mActivty, "恭喜您,您的机器没有故障!", Toast.LENGTH_LONG).show();
                 }
                 if (!aBoolean) {
                     Toast.makeText(mActivty, error, Toast.LENGTH_LONG).show();
@@ -125,7 +123,7 @@ public class ProductListData {
 
     }
 
-    public ItemProductType getItem(int position) {
+    public ItemException getItem(int position) {
         return DataSet.get(position);
     }
 }

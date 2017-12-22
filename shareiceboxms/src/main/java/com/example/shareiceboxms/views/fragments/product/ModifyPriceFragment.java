@@ -62,7 +62,7 @@ public class ModifyPriceFragment extends BaseFragment {
     }
 
     private void initDatas() {
-        bundle = getActivity().getIntent().getBundleExtra("intentdata");
+        bundle = getActivity().getIntent().getExtras();
         mProductPrice.setText(bundle.getString("categoryPrice"));
         mProductSpecPrice.setText(bundle.getString("activityPrice"));
     }
@@ -84,6 +84,7 @@ public class ModifyPriceFragment extends BaseFragment {
                     Toast.makeText(getActivity(), "单价或活动价不能为0", Toast.LENGTH_LONG).show();
                     return;
                 }
+                changePrice();
                 break;
             case R.id.cancel:
                 getActivity().onBackPressed();
@@ -92,12 +93,13 @@ public class ModifyPriceFragment extends BaseFragment {
     }
 
 
-    private void repairPassword() {
+    private void changePrice() {
         final Dialog dialog = MyDialog.loadDialog(getContext());
         dialog.show();
         final Map<String, Object> requestbody = new HashMap<>();
         requestbody.put("categoryPrice", mProductPrice.getText().toString());
-        requestbody.put("categoryID", bundle.getString("categoryID"));
+        requestbody.put("categoryID", bundle.getInt("categoryID"));
+        requestbody.put("activityPrice", mProductSpecPrice.getText().toString());
         requestbody.put("appUserID", PerSonMessage.userId);
         new AsyncTask<Void, Void, Boolean>() {
             String response;
@@ -111,7 +113,7 @@ public class ModifyPriceFragment extends BaseFragment {
                     JSONObject object = new JSONObject(response);
                     Log.e("response", response);
                     err = object.getString("err");
-                    if (object.getString("err").equals("")) {
+                    if (object.getString("err").equals("") || object.getString("err").equals("null")) {
                         //  Toast.makeText(getActivity(), "密码修改成功", Toast.LENGTH_LONG).show();
                         return true;
                         //  homeActivity.onBackPressed();
