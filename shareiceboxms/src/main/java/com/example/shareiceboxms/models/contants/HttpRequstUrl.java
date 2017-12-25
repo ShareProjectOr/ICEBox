@@ -20,13 +20,19 @@ public interface HttpRequstUrl {
     String MACHINE_LightControl_URL = "http://192.168.4.224:8082/" + "machine/toggleLock";
     String MACHINE_Check_URL = "http://192.168.4.224:8082/" + "machine/check";//盘点
     String MACHINE_Temp_URL = "http://192.168.4.224:8082/" + "machine/setTemperature";
+    /*异常
 
-
-    String REPAIR_PASSWORD_URL = HOST_URL + "user/editPassword";
+    * */
+    /*商品模块
+    * */
+    String
+            REPAIR_PASSWORD_URL = HOST_URL + "user/editPassword";
     String PRODUCT_TYPE_LIST_URL = "http://192.168.4.211:8082/category/search";
     String PRODUCT_TYPE_DETAIL_URL = "http://192.168.4.211:8082/category/get";
+    String UPLOAD_RECORD_LIST_URL = "http://192.168.4.211:8082/" + "goods/unloadRecord";
     String EDIT_PRICE_UERL = "http://192.168.4.211:8082/category/editPrice";
-    String EXCEPTION_LIST_URL = HOST_URL +"exception/search";
+    String EXCEPTION_LIST_URL = "http://192.168.4.224:8082/" + "exception/search";
+    String UPLOAD_RECORD_DETAILS_URL = "http://192.168.4.211:8082/" + "goods/unloadDetail";
     /*
     * 交易统计
     * */

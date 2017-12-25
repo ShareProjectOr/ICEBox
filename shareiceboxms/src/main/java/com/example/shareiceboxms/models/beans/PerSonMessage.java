@@ -21,7 +21,7 @@ public class PerSonMessage {
     public static int disable;
     public static String loginAccount;
     public static String loginPassword;
-    public static String role;
+    public static String role="2";
     public static String address;
     public static String idCard;
     public static String lastLoginTime;

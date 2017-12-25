@@ -31,6 +31,7 @@ import com.example.shareiceboxms.models.adapters.ExceptionListAdapter;
 import com.example.shareiceboxms.models.beans.PerSonMessage;
 import com.example.shareiceboxms.models.contants.Constants;
 import com.example.shareiceboxms.models.contants.HttpRequstUrl;
+import com.example.shareiceboxms.models.contants.RequestParamsContants;
 import com.example.shareiceboxms.models.contentprovider.ExceptionListData;
 import com.example.shareiceboxms.models.factories.FragmentFactory;
 import com.example.shareiceboxms.models.factories.MyViewFactory;
@@ -66,11 +67,12 @@ public class ExceptionFragment extends BaseFragment implements CompoundButton.On
     private SwipeRefreshLayout mRefreshLayout;
     private RelativeLayout selectTimeLayout;
     private DoubleDatePickerDialog datePickerDialog;
-    private int exceptionLeve;
+    private Integer exceptionLeve = null;
     private Map<String, Object> initPostBody = new HashMap<>();
     private int currentPage = 1;
     private int pageNum = 5;
-    private int isDetail = 1;
+    private int isDetail = 0;
+    private String[] happenTime = null;
 
     @Nullable
     @Override
@@ -78,7 +80,6 @@ public class ExceptionFragment extends BaseFragment implements CompoundButton.On
         if (containerView == null) {
             containerView = super.onCreateView(inflater, container, FragmentFactory.getInstance().putLayoutId(R.layout.fragment_exception));
             initViews();
-            initFirstBody();
             initListener();
             initDatas();
         }
@@ -100,30 +101,13 @@ public class ExceptionFragment extends BaseFragment implements CompoundButton.On
         homeActivity = (HomeActivity) mContext;
         homeActivity.setOnBackPressListener(this);
         new MyViewFactory(mContext).BuildRecyclerViewRule(exceptionList, new LinearLayoutManager(mContext), new DefaultItemAnimator(), true).setAdapter(mRecycleAdapter);
-        contentprovider.getData(HttpRequstUrl.PRODUCT_TYPE_LIST_URL, initPostBody, true);
-    }
-
-    private void initFirstBody() {
-        initPostBody.put("n", pageNum);
-        initPostBody.put("p", currentPage);
-        initPostBody.put("appUserID", PerSonMessage.userId);
-        initPostBody.put("isDeal", isDetail);
-        switch (PerSonMessage.role) {
-            case "3":
-                initPostBody.put("managerID", PerSonMessage.userId);
-                break;
-            case "2":
-                initPostBody.put("agentID", PerSonMessage.userId);
-                break;
-            default:
-                break;
-
-        }
+        contentprovider.getData(HttpRequstUrl.EXCEPTION_LIST_URL, initPostBody, true);
     }
 
     private void initViews() {
         mContext = getActivity();
         Calendar c = Calendar.getInstance();
+        initPostBody = RequestParamsContants.getInstance().getExceptionListParams();
         drawerIcon = (ImageView) containerView.findViewById(R.id.drawerIcon);
         exceptionList = (RecyclerView) containerView.findViewById(R.id.exception_list);
         saoma = (ImageView) containerView.findViewById(R.id.saoma);
@@ -170,10 +154,36 @@ public class ExceptionFragment extends BaseFragment implements CompoundButton.On
             @Override
             public void run() {
                 currentPage = 1;
-                contentprovider.getData(HttpRequstUrl.PRODUCT_TYPE_LIST_URL, initPostBody, true);
+                getDatas(true);
                 mRefreshLayout.setRefreshing(false);
             }
         }, Constants.REFREASH_DELAYED_TIME);
+    }
+
+    private void getDatas(boolean b) {
+        Map<String, Object> map = new HashMap<>();
+        map.put("n", pageNum);
+        map.put("p", currentPage);
+        map.put("appUserID", PerSonMessage.userId);
+        map.put("isDeal", isDetail);
+        switch (PerSonMessage.role) {
+            case "3":
+                initPostBody.put("managerID", PerSonMessage.userId);
+                break;
+            case "2":
+                initPostBody.put("agentID", PerSonMessage.userId);
+                break;
+            default:
+                break;
+
+        }
+        if (exceptionLeve != null && exceptionLeve != 2) {
+            map.put("exceptionLevel", exceptionLeve);
+        } else {
+            map.put("exceptionLevel", null);
+        }
+        map.put("happenTime", happenTime);
+        contentprovider.getData(HttpRequstUrl.EXCEPTION_LIST_URL, map, b);
     }
 
     @Override
@@ -186,8 +196,12 @@ public class ExceptionFragment extends BaseFragment implements CompoundButton.On
 
     @Override
     public String[] onDateSet(DatePicker startDatePicker, int startYear, int startMonthOfYear, int startDayOfMonth, DatePicker endDatePicker, int endYear, int endMonthOfYear, int endDayOfMonth) {
+        //  mDateRange.setText(startYear + "-" + String.valueOf(startMonthOfYear + 1) + "-" + startDayOfMonth + "至" + endYear + "-" + String.valueOf(endMonthOfYear + 1) + "-" + endDayOfMonth);
 
-    return null;
+        happenTime = super.onDateSet(startDatePicker, startYear, startMonthOfYear, startDayOfMonth, endDatePicker, endYear, endMonthOfYear, endDayOfMonth);
+        currentPage = 1;
+        getDatas(true);
+        return null;
     }
 
     @Override
@@ -195,11 +209,16 @@ public class ExceptionFragment extends BaseFragment implements CompoundButton.On
         if (isChecked) {
             chooseIsDetails.setBackground(ContextCompat.getDrawable(mContext, R.drawable.shape_switch_open));
             chooseIsDetails.setTrackDrawable(ContextCompat.getDrawable(mContext, R.drawable.shape_switch_open));
+            isDetail = 1;
         } else {
             chooseIsDetails.setBackground(ContextCompat.getDrawable(mContext, R.drawable.shape_switch));
             chooseIsDetails.setTrackDrawable(ContextCompat.getDrawable(mContext, R.drawable.shape_switch));
+            isDetail = 0;
 
         }
+        mRecycleAdapter.isdetails = isDetail;
+        currentPage = 1;
+        getDatas(true);
     }
 
     @Override
@@ -207,6 +226,8 @@ public class ExceptionFragment extends BaseFragment implements CompoundButton.On
         mTilePopup.dismiss();
         exceptionType.setText(Constants.EXCEPTION_LV_TITLE[position]);
         exceptionLeve = position;
+        currentPage = 1;
+        getDatas(true);
     }
 
     @Override

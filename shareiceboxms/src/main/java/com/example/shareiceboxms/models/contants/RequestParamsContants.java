@@ -1,5 +1,6 @@
 package com.example.shareiceboxms.models.contants;
 
+import com.example.shareiceboxms.models.beans.PerSonMessage;
 import com.example.shareiceboxms.models.factories.FragmentFactory;
 
 import java.util.HashMap;
@@ -132,6 +133,32 @@ public class RequestParamsContants {
         params.put("deviationTemperature", 0);
         return params;
     }
+    public Map<String, Object> getExceptionListParams() {
+        Map<String, Object> params = new HashMap<>();
+        params.put("n", 5);
+        params.put("p", 1);
+        params.put("appUserID", PerSonMessage.userId);
+        params.put("isDeal", 0);
+        params.put("happenTime", null);
+        return params;
+    }
+
+    public Map<String, Object> getUploadListParams() {
+        Map<String, Object> params = new HashMap<>();
+        params.put("n", 5);
+        params.put("p", 1);
+        params.put("appUserID", PerSonMessage.userId);
+        params.put("operationTime", null);
+        //   params.put("userID", PerSonMessage.userId);
+        return params;
+    }
+
+    public Map<String, Object> getUploadDetailsParams() {
+        Map<String, Object> params = new HashMap<>();
+        params.put("recordID", FragmentFactory.getInstance().getSavedBundle().getString("recordID"));
+        params.put("appUserID", PerSonMessage.userId);
+        return params;
+    }
 
     /*
 * 交易统计-财务明细 请求参数
@@ -155,9 +182,15 @@ public class RequestParamsContants {
     }
 
     public Object[] getSelectTime(String[] selectTime) {
+        if (selectTime == null)
+            return null;
+
         Object[] searchTime = new Object[2];
         searchTime[0] = "between";
         searchTime[1] = selectTime;
         return searchTime;
+
+
     }
+
 }

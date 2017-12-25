@@ -50,6 +50,7 @@ public class ProductFragment extends BaseFragment implements HomeActivity.OnBack
         titleBar = (AppBarLayout) containerView.findViewById(R.id.appBarLayout);
         tabLayout = (TabLayout) containerView.findViewById(R.id.tablayout);
         viewPager = (ViewPager) containerView.findViewById(R.id.viewpager);
+        viewPager.setOffscreenPageLimit(1);
         drawerIcon = (ImageView) containerView.findViewById(R.id.drawerIcon);
         mSaoma = (ImageView) containerView.findViewById(R.id.saoma);
         tradeDetailLayout = (FrameLayout) containerView.findViewById(R.id.detailFrameLayout);

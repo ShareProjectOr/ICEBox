@@ -11,8 +11,10 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.shareiceboxms.R;
+import com.example.shareiceboxms.models.contants.Constants;
 import com.example.shareiceboxms.models.contentprovider.ExceptionListData;
 import com.example.shareiceboxms.models.contentprovider.ProductListData;
+import com.example.shareiceboxms.models.helpers.ExceptionTypeUtils;
 import com.example.shareiceboxms.views.fragments.product.ProductTypeListFragment;
 
 /**
@@ -24,6 +26,7 @@ public class ExceptionListAdapter extends RecyclerView.Adapter<RecyclerView.View
     private final static int TYPE_LOAD_ITEM = 0;
     private final static int TYPE_NORMAL_ITEM = 1;
     private ExceptionListData contentProvider;
+    public int isdetails = 0;
 
     public ExceptionListAdapter(Activity mContext) {
         this.mContext = mContext;
@@ -44,7 +47,7 @@ public class ExceptionListAdapter extends RecyclerView.Adapter<RecyclerView.View
                 viewHolder = new HeadViewHolder(view);
                 break;
             case TYPE_NORMAL_ITEM:
-                view = LayoutInflater.from(mContext).inflate(R.layout.exception_list_itemlayout, parent, false);
+                view = LayoutInflater.from(mContext).inflate(R.layout.exception_list_itemlayout, null);
                 viewHolder = new MyHolder(view);
                 break;
         }
@@ -61,7 +64,12 @@ public class ExceptionListAdapter extends RecyclerView.Adapter<RecyclerView.View
             case TYPE_NORMAL_ITEM:
                 MyHolder body = (MyHolder) holder;
 
-
+                body.excetionType.setText(ExceptionTypeUtils.getExceptionTypeByCode(contentProvider.getItem(position).exceptionCode));
+                body.isDetailsTagIcon.setImageResource(Constants.ExceptionIsDetailsICON[isdetails]);
+                body.machineName.setText(contentProvider.getItem(position).machineName);
+                body.machineAddr.setText(contentProvider.getItem(position).machineAddress);
+                body.exceptionLv.setText(Constants.EXCEPTION_LV_TITLE[contentProvider.getItem(position).exceptionLevel]);
+                body.exceptionCreateTime.setText(contentProvider.getItem(position).happenTime);
                 break;
         }
 

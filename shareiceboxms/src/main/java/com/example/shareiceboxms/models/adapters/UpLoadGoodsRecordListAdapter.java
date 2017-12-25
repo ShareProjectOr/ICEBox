@@ -1,5 +1,6 @@
 package com.example.shareiceboxms.models.adapters;
 
+import android.app.Activity;
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -10,25 +11,33 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.shareiceboxms.R;
+import com.example.shareiceboxms.models.contentprovider.UpLoadRecordListData;
 import com.example.shareiceboxms.models.factories.FragmentFactory;
+import com.example.shareiceboxms.models.helpers.SecondToDate;
 import com.example.shareiceboxms.views.fragments.product.UpLoadGoodsDetailsFragment;
 import com.example.shareiceboxms.views.fragments.product.UpLoadGoodsRecordFragment;
+
+import java.text.ParseException;
 
 /**
  * Created by Administrator on 2017/12/13.
  */
 
-public class UpLoadGoodsRecordListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> implements View.OnClickListener {
-    private Context mContext;
+public class UpLoadGoodsRecordListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+    private Activity mContext;
     private final static int TYPE_LOAD_ITEM = 0;
     private final static int TYPE_NORMAL_ITEM = 1;
-    private int Total = 20;
     private UpLoadGoodsRecordFragment upLoadGoodsRecordFragment;
-    private int position;
+    private UpLoadRecordListData contentProvider;
 
-    public UpLoadGoodsRecordListAdapter(Context mContext, UpLoadGoodsRecordFragment upLoadGoodsRecordFragment) {
+    public UpLoadGoodsRecordListAdapter(Activity mContext, UpLoadGoodsRecordFragment upLoadGoodsRecordFragment) {
         this.mContext = mContext;
         this.upLoadGoodsRecordFragment = upLoadGoodsRecordFragment;
+        contentProvider = new UpLoadRecordListData(this, mContext);
+    }
+
+    public UpLoadRecordListData getContentProvider() {
+        return contentProvider;
     }
 
     @Override
@@ -49,39 +58,55 @@ public class UpLoadGoodsRecordListAdapter extends RecyclerView.Adapter<RecyclerV
     }
 
     @Override
-    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+    public void onBindViewHolder(RecyclerView.ViewHolder holder, final int position) {
         switch (getItemViewType(position)) {
             case TYPE_LOAD_ITEM:
                 HeadViewHolder load = (HeadViewHolder) holder;
                 break;
             case TYPE_NORMAL_ITEM:
                 BodyViewHolder body = (BodyViewHolder) holder;
-                this.position = position;
-                body.itemLayout.setOnClickListener(this);
+                try {
+                    long time = SecondToDate.dateToStamp(contentProvider.getItem(position).closingTime) - SecondToDate.dateToStamp(contentProvider.getItem(position).openingTime);
+                    String[] mOperationTime = SecondToDate.formatLongToTimeStr(time);
+                    if (mOperationTime[1].equals("0")) {
+                        body.mOperationTime.setText("操作耗时:"+mOperationTime[2] + "分" + mOperationTime[3] + "秒");
+                    } else {
+                        body.mOperationTime.setText("操作耗时:"+mOperationTime[1] + "时" + mOperationTime[2] + "分" + mOperationTime[3] + "秒");
+                    }
+                } catch (ParseException e) {
+                   body.mOperationTime.setText("操作耗时:获取失败");
+                }
+
+
+                body.mOperationDate.setText(contentProvider.getItem(position).openingTime);
+                // body.mUpLoadNum.setText(contentProvider.getItem(position).);
+                // body.mDownLoadNum.setText(contentProvider.getItem(position));
+                body.mMachineName.setText(contentProvider.getItem(position).machineName);
+                body.mMachineAddr.setText("(" + contentProvider.getItem(position).machineAddress + ")");
+                body.mUpLoadCode.setText("记录编号"+contentProvider.getItem(position).recordID);
+                body.itemView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if (upLoadGoodsRecordFragment != null) {
+                            FragmentFactory.getInstance().getSavedBundle().putInt("recordID", contentProvider.getItem(position).recordID);
+                            upLoadGoodsRecordFragment.addFrameFragment();
+                        }
+                    }
+                });
                 break;
         }
     }
 
     @Override
     public int getItemCount() {
-        return 10;
+        return contentProvider.GetDataSetSize();
     }
 
     @Override
     public int getItemViewType(int position) {
-
-        return position < 9 ? TYPE_NORMAL_ITEM : TYPE_LOAD_ITEM;
+        return contentProvider.getItem(position) == null ? TYPE_LOAD_ITEM : TYPE_NORMAL_ITEM;
     }
 
-
-    @Override
-    public void onClick(View v) {
-        if (upLoadGoodsRecordFragment != null) {
-            Log.e("xxx", "item点击");
-            FragmentFactory.getInstance().getSavedBundle().putString("upLoadGoodsId", "1212121");
-            upLoadGoodsRecordFragment.addFrameFragment();
-        }
-    }
 
     class HeadViewHolder extends RecyclerView.ViewHolder {
 

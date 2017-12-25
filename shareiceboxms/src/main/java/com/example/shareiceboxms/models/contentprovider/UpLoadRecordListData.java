@@ -7,7 +7,8 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.example.shareiceboxms.models.beans.ItemException;
+import com.example.shareiceboxms.models.beans.ItemProductType;
+import com.example.shareiceboxms.models.beans.ItemUpload;
 import com.example.shareiceboxms.models.contants.RequstTips;
 import com.example.shareiceboxms.models.helpers.LoadMoreHelper;
 import com.example.shareiceboxms.models.helpers.MyDialog;
@@ -24,19 +25,19 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Created by Administrator on 2017/12/22.
+ * Created by Administrator on 2017/12/25.
  */
 
-public class ExceptionListData {
+public class UpLoadRecordListData {
     private RecyclerView.Adapter mAdapter;
     private Activity mActivty;
-    private List<ItemException> DataSet = new ArrayList<>();
+    private List<ItemUpload> DataSet = new ArrayList<>();
     private int total = 0;
     private LoadMoreHelper mloadMoreHelper;
-    public int currentPage;
-    public int pagerNum = 1;
+    private int currentPage;
+    private int pagerNum = 1;
 
-    public ExceptionListData(RecyclerView.Adapter mAdapter, Activity mActivty) {
+    public UpLoadRecordListData(RecyclerView.Adapter mAdapter, Activity mActivty) {
         this.mAdapter = mAdapter;
         this.mActivty = mActivty;
     }
@@ -74,10 +75,10 @@ public class ExceptionListData {
                     currentPage = d.getInt("p");//请求成功则将页数加1
                     pagerNum = d.getInt("n");
                     JSONArray array = d.getJSONArray("list");
-                    Log.e("异常列表", "list" + array.toString());
+                    Log.e("上下货记录", "list" + d.toString());
                     for (int i = 0; i < array.length(); i++) {
                         JSONObject itemobject = (JSONObject) array.opt(i);
-                        ItemException item = new ItemException();
+                        ItemUpload item = new ItemUpload();
                         item.bindData(itemobject);
                         DataSet.add(item);
                     }
@@ -89,6 +90,7 @@ public class ExceptionListData {
 
                 } catch (IOException e1) {
                     error = RequstTips.getErrorMsg(e1.getMessage());
+                    Log.e("response", e1 + "");
                     return false;
 
                 } catch (JSONException e1) {
@@ -102,12 +104,14 @@ public class ExceptionListData {
             @Override
             protected void onPostExecute(Boolean aBoolean) {
                 dialog.dismiss();
-                if (DataSet.size() == 0 && error.equals("")) {
-                    //没有数据的情况
-                    Toast.makeText(mActivty, "恭喜您,您的机器没有故障!", Toast.LENGTH_LONG).show();
-                }
+
                 if (!aBoolean) {
                     Toast.makeText(mActivty, error, Toast.LENGTH_LONG).show();
+                } else {
+                    if (DataSet.size() == 0) {
+                        //没有数据的情况
+                        Toast.makeText(mActivty, "暂无任何上下货记录信息", Toast.LENGTH_LONG).show();
+                    }
                 }
                 mAdapter.notifyDataSetChanged();
             }
@@ -123,7 +127,7 @@ public class ExceptionListData {
 
     }
 
-    public ItemException getItem(int position) {
+    public ItemUpload getItem(int position) {
         return DataSet.get(position);
     }
 }

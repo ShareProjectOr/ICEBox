@@ -20,8 +20,8 @@ public class ItemException {
     public String machineCode;
     public String machineAddress;
 
-    public void bindData(JSONObject json) {
-        try {
+    public void bindData(JSONObject json) throws JSONException {
+
             exceptionID = json.getInt("exceptionID");
             exceptionLevel = json.getInt("exceptionLevel");
             exceptionCode = json.getString("exceptionCode");
@@ -33,8 +33,6 @@ public class ItemException {
             machineName = json.getJSONObject("machine").getString("machineName");
             machineCode = json.getJSONObject("machine").getString("machineCode");
             machineAddress = json.getJSONObject("machine").getString("machineAddress");
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
+
     }
 }

@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
+import android.os.Build;
 import android.os.UserManager;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
@@ -59,7 +60,11 @@ public class MyDialog {
         dialog.setContentView(R.layout.load_dialog_layout);
         Window window = dialog.getWindow();
         WindowManager.LayoutParams lp = window.getAttributes();
-        lp.width = Util.getScreenWidth(context) / 2;
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+            //6.0以下
+            lp.width = Util.getScreenWidth(context) / 2;
+
+        }
         window.setTitle(null);
         lp.alpha = 0.65f;
         window.setAttributes(lp);//设置透明度

@@ -1,5 +1,6 @@
 package com.example.shareiceboxms.models.helpers;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -126,5 +127,15 @@ public class SecondToDate {
         int month = ca.get(Calendar.MONTH) + 1;
         int date = ca.get(Calendar.DAY_OF_MONTH);
         return year + "-" + month + "-" + date + " 00:00";
+    }
+    /*
+ * 将时间转换为时间戳
+ */
+    public static long dateToStamp(String s) throws ParseException {
+        String res;
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Date date = simpleDateFormat.parse(s);
+        long ts = date.getTime();
+        return ts;
     }
 }
