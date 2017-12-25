@@ -9,6 +9,11 @@ import java.util.Date;
  */
 
 public class SecondToDate {
+    public static int TODAY_CODE = 0;
+    public static int WEEK_CODE = 1;
+    public static int MONTH_CODE = 2;
+    public static int YEAR_CODE = 3;
+
     public static String[] formatLongToTimeStr(Long seconds) {
         String[] time = new String[4];
         int day = 0;
@@ -38,6 +43,35 @@ public class SecondToDate {
     }
 
     /*
+    * 获取日期数组参数
+    * */
+    public static String[] getDateParams(int code) {
+        String[] date = getDay();
+        switch (code) {
+            case 0:
+                break;
+            case 1:
+                date[0] = getWeek();
+                break;
+            case 2:
+                date[0] = getTimeOfMonthStart();
+                break;
+            case 3:
+                date[0] = getTimeOfYearStart();
+                break;
+        }
+        return date;
+    }
+
+    public static String getDateUiShow(String[] time) {
+        String[] dateShow = new String[2];
+        dateShow[0] = time[0].replace(" 00:00", "");
+        dateShow[1] = time[1].replace(" 23:59", "");
+        return dateShow[0] + " 至 " + dateShow[1];
+    }
+
+
+    /*
        *今天日期
        **/
     public static String[] getDay() {
@@ -59,7 +93,7 @@ public class SecondToDate {
         int year = ca.get(Calendar.YEAR);
         int month = ca.get(Calendar.MONTH) + 1;
         int date = ca.get(Calendar.DAY_OF_MONTH);
-        return year + "-" + month + "-" + date;
+        return year + "-" + month + "-" + date + " 00:00";
     }
 
     /*
@@ -75,7 +109,7 @@ public class SecondToDate {
         int year = ca.get(Calendar.YEAR);
         int month = ca.get(Calendar.MONTH) + 1;
         int date = ca.get(Calendar.DAY_OF_MONTH);
-        return year + "-" + month + "-" + date;
+        return year + "-" + month + "-" + date + " 00:00";
     }
 
     /*
@@ -91,6 +125,6 @@ public class SecondToDate {
         int year = ca.get(Calendar.YEAR);
         int month = ca.get(Calendar.MONTH) + 1;
         int date = ca.get(Calendar.DAY_OF_MONTH);
-        return year + "-" + month + "-" + date;
+        return year + "-" + month + "-" + date + " 00:00";
     }
 }

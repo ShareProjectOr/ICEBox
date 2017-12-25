@@ -92,7 +92,7 @@ public class BaseFragment extends Fragment implements View.OnClickListener,
             endDay = "0" + endDay;
         }
         String startTime = startYear + "-" + startMonth + "-" + startDay + " 00:00";
-        String endTime = endYear + "-" + endMonth + "-" + endDay + " 00:00";
+        String endTime = endYear + "-" + endMonth + "-" + endDay + " 23:59";
         return new String[]{startTime, endTime};
     }
 

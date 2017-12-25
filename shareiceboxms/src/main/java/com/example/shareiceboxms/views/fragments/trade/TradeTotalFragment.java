@@ -59,7 +59,7 @@ public class TradeTotalFragment extends BaseFragment {
     private SwipeRefreshLayout refreshLayout;
     private ItemTradeTotal itemTradeTotal;
     private Dialog dialog;
-    private String[] time = new String[]{"", ""};
+    private String[] time;
 
 
     private DoubleDatePickerDialog datePickerDialog;
@@ -90,28 +90,28 @@ public class TradeTotalFragment extends BaseFragment {
 
                 switch (checkedId) {
                     case R.id.todayDate:
-                        Log.e("-----------:", SecondToDate.getWeek() + "");
-                        time = SecondToDate.getDay();
+                        time = SecondToDate.getDateParams(SecondToDate.TODAY_CODE);
                         break;
                     case R.id.weekDate:
-
-//                        setTime(date. + " 00:00", formatter.format(date) + " 23:59");
+                        time = SecondToDate.getDateParams(SecondToDate.WEEK_CODE);
                         break;
                     case R.id.monthDate:
+                        time = SecondToDate.getDateParams(SecondToDate.MONTH_CODE);
                         break;
                     case R.id.yearDate:
+                        time = SecondToDate.getDateParams(SecondToDate.YEAR_CODE);
                         break;
                 }
-                timeSelector.setText("");
+                timeSelector.setText(SecondToDate.getDateUiShow(time));
                 getDatas();
             }
         });
-        dateGroup.check(R.id.todayDate);
         refreshLayout.setOnRefreshListener(this);
         refreshLayout.setColorSchemeColors(ContextCompat.getColor(getContext(), R.color.blue));
     }
 
     private void initDatas() {
+        time = RequestParamsContants.getInstance().getTimeSelectorParams();
         dialog = MyDialog.loadDialog(getContext());
         tradeTotalList.setHasFixedSize(true);
         LinearLayoutManager mLayoutManager = new LinearLayoutManager(getContext());
@@ -122,12 +122,7 @@ public class TradeTotalFragment extends BaseFragment {
         datePickerDialog = new DoubleDatePickerDialog(getContext(), 0, this
                 , Calendar.getInstance().get(Calendar.YEAR), Calendar.getInstance().get(Calendar.MONTH)
                 , Calendar.getInstance().get(Calendar.DATE), true);
-
-    }
-
-    private void setTime(String startTime, String endTime) {
-        time[0] = startTime;
-        time[1] = endTime;
+        dateGroup.check(R.id.todayDate);
     }
 
     private Map<String, Object> getParams() {
@@ -143,8 +138,9 @@ public class TradeTotalFragment extends BaseFragment {
 
     @Override
     public void onRefresh() {
-        timeSelector.setText("");
-//        getDatas(getParams());
+        time = SecondToDate.getDateParams(SecondToDate.TODAY_CODE);
+        timeSelector.setText(SecondToDate.getDateUiShow(time));
+        getDatas();
         refreshLayout.setRefreshing(false);//关闭刷新
     }
 
@@ -160,7 +156,8 @@ public class TradeTotalFragment extends BaseFragment {
     @Override
     public String[] onDateSet(DatePicker startDatePicker, int startYear, int startMonthOfYear, int startDayOfMonth, DatePicker endDatePicker, int endYear, int endMonthOfYear, int endDayOfMonth) {
         time = super.onDateSet(startDatePicker, startYear, startMonthOfYear, startDayOfMonth, endDatePicker, endYear, endMonthOfYear, endDayOfMonth);
-        timeSelector.setText(time[0].replace(" 00:00", "") + " 至 " + time[1].replace(" 00:00", ""));
+        timeSelector.setText(SecondToDate.getDateUiShow(time));
+        getDatas();
         return null;
     }
 
@@ -211,7 +208,7 @@ public class TradeTotalFragment extends BaseFragment {
         protected void onPostExecute(final Boolean success) {
             if (dialog != null) {
                 dialog.dismiss();
-                dialog = null;
+//                dialog = null;
             }
             if (success) {
                 itemTradeTotal = tradeTotal;

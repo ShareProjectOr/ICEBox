@@ -13,11 +13,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.DatePicker;
 import android.widget.DatePicker.OnDateChangedListener;
+import android.widget.Toast;
 
 
 import com.example.shareiceboxms.R;
 
 import java.lang.reflect.Field;
+import java.util.Calendar;
 
 /**
  * A simple dialog containing an {@link DatePicker}.
@@ -47,7 +49,7 @@ public class DoubleDatePickerDialog extends AlertDialog implements OnClickListen
 
 
         String[] onDateSet(DatePicker startDatePicker, int startYear, int startMonthOfYear, int startDayOfMonth,
-                       DatePicker endDatePicker, int endYear, int endMonthOfYear, int endDayOfMonth);
+                           DatePicker endDatePicker, int endYear, int endMonthOfYear, int endDayOfMonth);
     }
 
     /**
@@ -131,8 +133,28 @@ public class DoubleDatePickerDialog extends AlertDialog implements OnClickListen
         // Log.d(this.getClass().getSimpleName(), String.format("which:%d",
         // which));
         // 如果是“取 消”按钮，则返回，如果是“确 定”按钮，则往下执行
-        if (which == BUTTON_POSITIVE)
+        if (which == BUTTON_POSITIVE) {
+            Calendar c = Calendar.getInstance();
+            if (mDatePicker_start.getYear() > c.get(Calendar.YEAR) || mDatePicker_start.getYear() < c.get(Calendar.YEAR)) {
+                Toast.makeText(getContext(), "只能查看今年数据", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            if (mDatePicker_end.getYear() > c.get(Calendar.YEAR) || mDatePicker_end.getYear() < c.get(Calendar.YEAR)) {
+                Toast.makeText(getContext(), "只能查看今年数据", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            if (mDatePicker_start.getMonth() > mDatePicker_end.getMonth()) {
+                Toast.makeText(getContext(), "开始日期不能大于结束日期", Toast.LENGTH_SHORT).show();
+                return;
+            } else {
+                if (mDatePicker_end.getMonth() == mDatePicker_start.getMonth() && mDatePicker_start.getDayOfMonth() > mDatePicker_end.getDayOfMonth()) {
+                    Toast.makeText(getContext(), "开始日期不能大于结束日期", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+            }
             tryNotifyDateSet();
+        }
+
     }
 
     @Override

@@ -146,6 +146,14 @@ public class RequestParamsContants {
         return params;
     }
 
+    /*
+    * 时间参数
+    * */
+    public String[] getTimeSelectorParams() {
+        String[] time = new String[]{"", ""};
+        return time;
+    }
+
     public Object[] getSelectTime(String[] selectTime) {
         Object[] searchTime = new Object[2];
         searchTime[0] = "between";
