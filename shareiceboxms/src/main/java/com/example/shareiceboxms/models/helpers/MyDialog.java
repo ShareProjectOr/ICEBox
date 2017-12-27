@@ -10,16 +10,24 @@ import android.os.Build;
 import android.os.UserManager;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
+import android.view.LayoutInflater;
+import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.shareiceboxms.R;
 import com.example.shareiceboxms.models.beans.PerSonMessage;
+import com.example.shareiceboxms.models.beans.product.ItemSellProduct;
 import com.example.shareiceboxms.models.contants.ConstanceMethod;
 import com.example.shareiceboxms.models.contants.Sql;
 import com.example.shareiceboxms.views.activities.HomeActivity;
 import com.example.shareiceboxms.views.activities.LoginActivity;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -96,4 +104,43 @@ public class MyDialog {
         }
 
     }
+    /*
+* 批量退款dialog
+* */
+    public static AlertDialog getRefundDialog(List<ItemSellProduct> wellBeRefund, final HomeActivity activity) {
+        View view;
+        view = LayoutInflater.from(activity).inflate(R.layout.refund_more, null);
+        final AlertDialog dialog = new AlertDialog.Builder(activity).setView(view).create();
+
+        final TextView refundNum = (TextView) view.findViewById(R.id.refundNum);
+        final EditText refundCause = (EditText) view.findViewById(R.id.refundCause);
+        Button cancle = (Button) view.findViewById(R.id.cancle);
+        Button commit = (Button) view.findViewById(R.id.commit);
+        cancle.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (dialog.isShowing()) {
+                    dialog.dismiss();
+                }
+            }
+        });
+        commit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //提交退款操作
+                String cause = refundCause.getText().toString().trim();
+                if (cause.length() <= 0) {
+                    Toast.makeText(activity, "退款原因必填", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                //上传数据
+
+                if (dialog.isShowing()) {
+                    dialog.dismiss();
+                }
+            }
+        });
+        return dialog;
+    }
+
 }

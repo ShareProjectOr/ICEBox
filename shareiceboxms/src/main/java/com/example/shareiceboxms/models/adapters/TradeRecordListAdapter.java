@@ -1,6 +1,7 @@
 package com.example.shareiceboxms.models.adapters;
 
 import android.content.Context;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,6 +12,7 @@ import android.widget.Toast;
 
 import com.example.shareiceboxms.R;
 import com.example.shareiceboxms.models.beans.ItemTradeRecord;
+import com.example.shareiceboxms.models.contants.Constants;
 import com.example.shareiceboxms.models.factories.FragmentFactory;
 import com.example.shareiceboxms.views.fragments.trade.TradeRecordsFragment;
 
@@ -52,15 +54,33 @@ public class TradeRecordListAdapter extends RecyclerView.Adapter<RecyclerView.Vi
                 @Override
                 public void onClick(View v) {
                     if (tradeRecordsFragment != null) {
-                        FragmentFactory.getInstance().getSavedBundle().putString("machineCode","1212121");
+                        FragmentFactory.getInstance().getSavedBundle().putInt("tradeID", itemTradeRecords.get(position).tradeID);
                         tradeRecordsFragment.addFrameFragment();
                     }
                 }
             });
+            ItemTradeRecord itemTradeRecord = itemTradeRecords.get(position);
+            if (itemTradeRecord == null) {
+                return;
+            }
+            //totalRecordTime, totalMoneyNum, payState, machineNameAddr, tradeNo, jiesuanState, jiesuanWay
+            ((ViewHolder) holder).totalMoneyNum.setText(itemTradeRecord.tradeMoney);
+            ((ViewHolder) holder).totalRecordTime.setText(itemTradeRecord.tradeMoney);
+            ((ViewHolder) holder).payState.setText(itemTradeRecord.payState == 0 ? Constants.TradeStateTitle[2] : Constants.TradeStateTitle[1]);
+            if (itemTradeRecord.machine != null)
+                ((ViewHolder) holder).machineNameAddr.setText(itemTradeRecord.machine.machineName + "(" + itemTradeRecord.machine.machineAddress + ")");
+            ((ViewHolder) holder).tradeNo.setText(itemTradeRecord.tradeCode);
+            ((ViewHolder) holder).jiesuanState.setText(itemTradeRecord.payState == 0 ? Constants.TradeStateTitle[2] : Constants.TradeStateTitle[1]);
+            ((ViewHolder) holder).jiesuanWay.setText(itemTradeRecord.tradeMoney);
+            ((ViewHolder) holder).payIcon.setImageDrawable(ContextCompat.getDrawable(context, Constants.ExceptionIsDetailsICON[itemTradeRecord.payState]));
+
+
         } else if (holder instanceof LoadingHolder) {
             if (holder != null) {
             }
         }
+
+
     }
 
     @Override
@@ -74,7 +94,7 @@ public class TradeRecordListAdapter extends RecyclerView.Adapter<RecyclerView.Vi
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {
-        public TextView totalRecordTime, totalMoneyNum, payState, machineNameAddr, tradeNo;
+        public TextView totalRecordTime, totalMoneyNum, payState, machineNameAddr, tradeNo, jiesuanState, jiesuanWay;
         public ImageView payIcon;
 
         public ViewHolder(View itemView) {
@@ -85,6 +105,8 @@ public class TradeRecordListAdapter extends RecyclerView.Adapter<RecyclerView.Vi
             payState = (TextView) itemView.findViewById(R.id.payState);
             machineNameAddr = (TextView) itemView.findViewById(R.id.machineNameAddr);
             tradeNo = (TextView) itemView.findViewById(R.id.tradeNo);
+            jiesuanState = (TextView) itemView.findViewById(R.id.jiesuanState);
+            jiesuanWay = (TextView) itemView.findViewById(R.id.jiesuanWay);
         }
     }
 

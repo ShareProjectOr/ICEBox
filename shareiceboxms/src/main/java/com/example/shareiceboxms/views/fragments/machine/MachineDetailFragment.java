@@ -11,18 +11,14 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.shareiceboxms.R;
-import com.example.shareiceboxms.models.adapters.MachineListAdapter;
 import com.example.shareiceboxms.models.beans.ItemMachine;
-import com.example.shareiceboxms.models.beans.ItemProduct;
 import com.example.shareiceboxms.models.contants.Constants;
 import com.example.shareiceboxms.models.contants.HttpRequstUrl;
 import com.example.shareiceboxms.models.contants.RequestParamsContants;
@@ -36,14 +32,10 @@ import com.example.shareiceboxms.models.http.OkHttpUtil;
 import com.example.shareiceboxms.views.activities.HomeActivity;
 import com.example.shareiceboxms.views.fragments.BaseFragment;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -221,6 +213,9 @@ public class MachineDetailFragment extends BaseFragment implements SwipeRefreshL
 
     @Override
     public void onRefresh() {
+        if (refresh.isRefreshing()) {
+            return;
+        }
         if (curTabPosition == 2) {
             machineItemAddView.refreshStockProduct(true);
         }

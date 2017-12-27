@@ -2,6 +2,8 @@ package com.example.shareiceboxms.models.beans;
 
 import android.util.Log;
 
+import com.example.shareiceboxms.models.contants.JsonDataParse;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -98,11 +100,16 @@ public class ItemMachine {
                 itemMachine.faultState = item.getInt("faultState");
                 itemMachine.productionTime = item.getString("productionTime");
 
-                itemMachine.itemManager = ItemPerson.bindPerson(item.getJSONObject("manager"));
 
-                itemMachine.itemAgent = ItemPerson.bindPerson(item.getJSONObject("agent"));
-
-                itemMachine.itemCompany = ItemCompany.bindCompany(item.getJSONObject("company"));
+                if (!item.get("manager").equals(null)) {
+                    itemMachine.itemManager = ItemPerson.bindPerson(item.getJSONObject("manager"));
+                }
+                if (!item.get("agent").equals(null)) {
+                    itemMachine.itemAgent = ItemPerson.bindPerson(item.getJSONObject("agent"));
+                }
+                if (!item.get("company").equals(null)) {
+                    itemMachine.itemCompany = ItemCompany.bindCompanyFull(item.getJSONObject("company"));
+                }
 
                 itemMachines.add(itemMachine);
             }
@@ -143,18 +150,40 @@ public class ItemMachine {
             itemMachine.blowerState = item.getInt("blowerState");
             itemMachine.faultState = item.getInt("faultState");
             itemMachine.productionTime = item.getString("productionTime");
-            itemMachine.itemManager = ItemPerson.bindPerson(item.getJSONObject("manager"));
 
-            itemMachine.itemAgent = ItemPerson.bindPerson(item.getJSONObject("agent"));
-
-            itemMachine.itemCompany = ItemCompany.bindCompany(item.getJSONObject("company"));
+            if (!item.get("manager").equals(null)) {
+                itemMachine.itemManager = ItemPerson.bindPerson(item.getJSONObject("manager"));
+            }
+            if (!item.get("agent").equals(null)) {
+                itemMachine.itemAgent = ItemPerson.bindPerson(item.getJSONObject("agent"));
+            }
+            if (!item.get("company").equals(null)) {
+                itemMachine.itemCompany = ItemCompany.bindCompanyFull(item.getJSONObject("company"));
+            }
         } catch (JSONException e) {
             Log.e("ItemMachine", e.toString());
         }
         return itemMachine;
     }
+
     /*
-    * 绑定库存商品中保存的部分信息，也可以不保存
+    * 机器精简版
+    *  	machineID:454545，//Number 机器ID
+  	machineName:'展览机一号',//String 机器名称，管理员识别机器名称
+  	machineCode:'788ss' ,//String 机器码，机器唯一识别编码
+    machineAddress:'441502|四川省-绵阳市-涪城区|富乐路口凯德广场二期五楼',//String 机器安装地址省-市-县-详细地址
     * */
+    public static ItemMachine bindMachineNotFull(JSONObject item) throws JSONException {
+        ItemMachine itemMachine = new ItemMachine();
+        try {
+            itemMachine.machineName = item.getString("machineName");
+            itemMachine.machineID = item.getInt("machineID");
+            itemMachine.machineCode = item.getString("machineCode");
+            itemMachine.machineAddress = item.getString("machineAddress");
+        } catch (JSONException e) {
+            Log.e("ItemMachine", e.toString());
+        }
+        return itemMachine;
+    }
 
 }

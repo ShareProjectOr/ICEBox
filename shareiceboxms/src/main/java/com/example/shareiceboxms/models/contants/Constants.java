@@ -16,14 +16,14 @@ public interface Constants {
     * */
     String[] TradeTotalTitles = {"订单总金额", "冲抵后实际结算金额", "支付宝消费", "微信消费"};
     String[] TradeTotalTitlesItem = {"已扣款", "代扣款", "已支付", "待支付"};
-    String[] EXCEPTION_LV_TITLE = { "一般", "严重","全部"};
-    String[] TradeRecordDetailTitle = {"售出商品(0)", "已退款商品(0)"};
+    String[] EXCEPTION_LV_TITLE = {"一般", "严重", "全部"};
+    String[] TradeRecordDetailTitle = {"售出商品", "已退款商品"};
     long REFREASH_DELAYED_TIME = 1500; //刷新时间
     int[] TradeRecordPayICON = {R.mipmap.nopay, R.mipmap.paied};
     int[] ExceptionIsDetailsICON = {R.mipmap.machine_exception, R.mipmap.machine_normal};
     String[] TradeAccountDetailTitle = {"结算的交易记录", "冲抵的应退记录"};
     String[] TradeStateTitle = {"全部", "已支付", "未支付"};
-    String[] TradeAccountStateTitle = {"全部", "待审核", "待确认", "即将到帐", "已到账", "已复审", "已撤销"};
+    String[] TradeAccountStateTitle = {"全部", "待审核", "待确认", "待转账", "待复审", "复审完成", "被撤销"};
     /*
       商品管理
      */
@@ -36,7 +36,7 @@ public interface Constants {
     /*
     * 机器管理
     * */
-  //  String[] MachineItemOperator = {"状态监控", "远程控制", "库存商品"};
+    //  String[] MachineItemOperator = {"状态监控", "远程控制", "库存商品"};
     String[] settleWay = {"自动结算", "人工结算"};
     /*
    * 机器管理

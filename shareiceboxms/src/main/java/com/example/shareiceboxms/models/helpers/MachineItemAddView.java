@@ -1,15 +1,10 @@
 package com.example.shareiceboxms.models.helpers;
 
-import android.app.Dialog;
 import android.content.Context;
-import android.graphics.drawable.GradientDrawable;
-import android.os.Handler;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.CompoundButton;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -23,15 +18,14 @@ import android.widget.Toast;
 import com.example.shareiceboxms.R;
 import com.example.shareiceboxms.models.adapters.MachineStockProductAdapter;
 import com.example.shareiceboxms.models.beans.ItemMachine;
-import com.example.shareiceboxms.models.beans.ItemProduct;
+import com.example.shareiceboxms.models.beans.product.ItemProduct;
+import com.example.shareiceboxms.models.beans.product.ItemStockProduct;
 import com.example.shareiceboxms.models.contants.Constants;
 import com.example.shareiceboxms.models.contants.HttpRequstUrl;
 import com.example.shareiceboxms.models.contants.RequestParamsContants;
 import com.example.shareiceboxms.models.widget.ListViewForScrollView;
-import com.example.shareiceboxms.views.fragments.machine.MachineDetailFragment;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -355,11 +349,11 @@ public class MachineItemAddView {
         public ScrollView scrollView;
         public ListView stockProductList;
         public MachineStockProductAdapter adapter;
-        public List<ItemProduct> itemProducts;
+        public List<ItemStockProduct> itemProducts;
         public boolean isLoading = false;
 
         public StockProductsHolder(View itemView, final ItemMachine itemMachine, final ScrollView scrollView) {
-            itemProducts = new ArrayList<ItemProduct>();
+            itemProducts = new ArrayList<ItemStockProduct>();
             this.scrollView = scrollView;
             stockProductList = (ListView) itemView.findViewById(R.id.productList);
             adapter = new MachineStockProductAdapter(context, this.itemProducts);

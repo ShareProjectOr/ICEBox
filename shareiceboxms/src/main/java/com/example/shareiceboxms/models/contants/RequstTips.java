@@ -1,5 +1,7 @@
 package com.example.shareiceboxms.models.contants;
 
+import android.util.Log;
+
 /**
  * Created by Administrator on 2017/12/18.
  */
@@ -16,7 +18,7 @@ public class RequstTips {
 
     public static String getErrorMsg(String errorMsg) {
         String errMsg = "";
-        if (!errMsg.contains("Unexpected code :")) {
+        if (!errorMsg.contains("Unexpected code :")) {
             return NETWORK_TIMEOUT;
         }
         int code = Integer.valueOf(errorMsg.replace("Unexpected code :", "").trim());

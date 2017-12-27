@@ -1,19 +1,17 @@
 package com.example.shareiceboxms.models.adapters;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
-import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.shareiceboxms.R;
-import com.example.shareiceboxms.models.beans.ItemProduct;
+import com.example.shareiceboxms.models.beans.product.ItemProduct;
+import com.example.shareiceboxms.models.beans.product.ItemSellProduct;
 import com.example.shareiceboxms.views.fragments.trade.TradeRecordDetailFragment;
 
 import java.util.ArrayList;
@@ -25,7 +23,7 @@ import java.util.List;
 
 public class TradeRecordDetailAdapter extends BaseAdapter {
     private Context context;
-    private List<ItemProduct> itemProductList;
+    private List<ItemSellProduct> itemProductList;
     TradeRecordDetailFragment tradeRecordDetailFragment;
     boolean isAllChecked = false;
     int totalCheckedCount = 0;
@@ -90,15 +88,23 @@ public class TradeRecordDetailAdapter extends BaseAdapter {
         return convertView;
     }
 
-    public void setItemProductList(List<ItemProduct> itemProductList) {
-        this.itemProductList = itemProductList;
-        this.notifyDataSetChanged();
+    public void setItemProductList(List<ItemSellProduct> itemProductList) {
+        if (itemProductList != null) {
+            this.itemProductList.clear();
+            this.itemProductList.addAll(itemProductList);
+            this.notifyDataSetChanged();
+        }
+    }
+
+
+    public List<ItemSellProduct> getItemProductList() {
+        return itemProductList;
     }
 
     public void checkAllItem(boolean isChecked) {
 
         for (int i = 0; i < getCount(); i++) {
-            ItemProduct itemProduct = itemProductList.get(i);
+            ItemSellProduct itemProduct = itemProductList.get(i);
             itemProduct.setChecked(isChecked);
         }
         isAllChecked = isChecked;

@@ -30,7 +30,7 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentEnd="true"
                     android:layout_alignParentTop="true"
-                    android:text="订单金额fdsafdafd"
+                    android:text="交易时间"
                     android:textSize="15sp" />
 
                 <TextView
@@ -67,15 +67,14 @@
                     <ImageView
                         android:id="@+id/payIcon"
                         android:layout_width="20dp"
-                        android:layout_height="20dp"
-                        android:src="@mipmap/head" />
+                        android:layout_height="20dp" />
 
                     <TextView
                         android:id="@+id/payState"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="10dp"
-                        android:text="已支付"
+                        android:text="支付状态"
                         android:textColor="@color/black"
                         android:textSize="18sp" />
                 </LinearLayout>
@@ -98,7 +97,7 @@
                     android:id="@+id/machineNameAddr"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="商贸展览一号机"
+                    android:text="机器名称"
                     android:textSize="15sp" />
 
                 <LinearLayout
@@ -116,7 +115,6 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="10dp"
-                        android:text="0.00"
                         android:textSize="15sp" />
                 </LinearLayout>
 
@@ -135,7 +133,6 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="10dp"
-                        android:text="0.00"
                         android:textSize="15sp" />
                 </LinearLayout>
             </LinearLayout>

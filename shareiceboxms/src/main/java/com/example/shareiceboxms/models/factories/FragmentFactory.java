@@ -5,6 +5,7 @@ import android.os.Bundle;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.example.shareiceboxms.models.beans.PerSonMessage;
 import com.example.shareiceboxms.views.fragments.BaseFragment;
 import com.example.shareiceboxms.views.fragments.machine.MachineFragment;
 import com.example.shareiceboxms.views.fragments.exception.ExceptionFragment;
@@ -47,9 +48,22 @@ public class FragmentFactory {
         List<BaseFragment> mFragments = new ArrayList<>();
         mFragments.add(new TradeTotalFragment());
         mFragments.add(new TradeRecordsFragment());
-        mFragments.add(new TradeAccountFragment());
+
+        PerSonMessage.role = "1";
+        switch (PerSonMessage.role) {
+            case "1"://'系统管理员,运营商'
+                mFragments.add(new TradeAccountFragment());
+                break;
+            case "2"://'代理商'
+                break;
+            case "3"://'机器管理员'
+                break;
+        }
+
+
         return mFragments;
     }
+
     public List<BaseFragment> getProductChildFragments() {
         List<BaseFragment> mFragments = new ArrayList<>();
         mFragments.add(new ProductTypeListFragment());

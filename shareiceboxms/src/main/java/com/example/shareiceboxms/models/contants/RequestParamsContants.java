@@ -193,4 +193,97 @@ public class RequestParamsContants {
 
     }
 
+    /*
+* 交易记录列表参数
+* */
+    public Map<String, Object> getTradeRecordsParams() {
+        Map<String, Object> params = new HashMap<>();
+        params.put("userID", 1);
+        params.put("appUserID", 1);
+        params.put("checkCode", 1);
+        params.put("tradeCode", "");
+//        params.put("payState", "");
+        params.put("createTime", null);
+        params.put("divideID", "");
+        params.put("machineID", "");
+        params.put("consumerID", "");
+        params.put("n", 6);
+        params.put("p", 1);
+        return params;
+    }
+
+    /*
+* 交易记录详情请求参数
+* */
+    public Map<String, Object> getTradeRecoredDetailParams() {
+        Map<String, Object> params = new HashMap<>();
+        params.put("userID", 1);
+        params.put("appUserID", 1);
+        params.put("checkCode", 1);
+        params.put("tradeID", FragmentFactory.getInstance().getSavedBundle().getInt("tradeID", 0));
+        return params;
+    }
+
+    /*
+* 交易记录详情售出商品请求参数,请求所有数据
+* */
+    public Map<String, Object> getTradeRecoredDetailProductParams() {
+        Map<String, Object> params = new HashMap<>();
+        params.put("userID", 1);
+        params.put("appUserID", 1);
+        params.put("checkCode", 1);
+        params.put("RFID", "");
+//        params.put("categoryID", 0);
+//        params.put("machineID", 0);
+//        params.put("isRefund", 0);//0:未退款
+//        params.put("operationTime", "");
+        params.put("p", 1);
+        params.put("n", 1000);
+        params.put("type", "3");//商品状态类型，默认1 ： 0-失效商品表（报损、丢失）；1-有效商品（正在售卖的）；2-未上架商品；3；售出的（售出及退货）
+        params.put("tradeID", FragmentFactory.getInstance().getSavedBundle().getInt("tradeID", 0));//（type=3）时才有这个参数
+        return params;
+    }
+
+    /*
+* 服务费结算请求参数，针对运营商
+* {
+  agentID:8787878745,//Number 代理商ID
+  createTime:[ //Array 时间区间
+    'between',
+    ['2016-04-03 12:12','2016-04-04 12:12']
+  ],
+  divideState:0,//Number 工单状态,详情见工单状态代码
+  n:12,//Number 每页显示个数
+  p:1,//Number 当前是第几页
+  sessionID:'hua78ad78a7aasa809hn' ,//String (session ID)
+}
+* */
+    public Map<String, Object> getAccountsParams() {
+        Map<String, Object> params = new HashMap<>();
+        params.put("userID", 1);
+        params.put("appUserID", 1);
+        params.put("checkCode", 1);
+        params.put("p", 1);
+        params.put("n", 6);
+//        params.put("agentID", "");
+        params.put("createTime", null);
+        params.put("divideState", "");
+        return params;
+    }
+
+    /*
+    * 工单结算交易记录,工单冲抵的应退记录
+    * */
+    public Map<String, Object> getAccountJieSuanParams() {
+        Map<String, Object> params = new HashMap<>();
+        params.put("userID", 1);
+        params.put("appUserID", 1);
+        params.put("checkCode", 1);
+        params.put("p", 1);
+        params.put("n", 6);
+        params.put("divideID","");
+        return params;
+    }
+
+
 }

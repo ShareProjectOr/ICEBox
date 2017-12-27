@@ -63,6 +63,7 @@ public class MachineListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
                     ((ItemViewHolder) holder).isOnLine.setTextColor(ContextCompat.getColor(context, Constants.MachineStateColor[itemMachines.get(position).networkState]));
                     ((ItemViewHolder) holder).isException.setText(itemMachines.get(position).faultState == 0 ? Constants.MachineFaultState[0] : Constants.MachineFaultState[1]);
                     ((ItemViewHolder) holder).isException.setTextColor(ContextCompat.getColor(context, itemMachines.get(position).faultState == 0 ? Constants.MachineStateColor[1] : Constants.MachineStateColor[0]));
+                    if (itemMachines.get(position).itemManager!=null)
                     ((ItemViewHolder) holder).managerName.setText(itemMachines.get(position).itemManager.name);
                     ((ItemViewHolder) holder).machineAddr.setText(itemMachines.get(position).machineAddress);
                     holder.itemView.setOnClickListener(new View.OnClickListener() {

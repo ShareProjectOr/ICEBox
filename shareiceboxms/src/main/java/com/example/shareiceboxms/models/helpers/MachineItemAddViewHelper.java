@@ -3,7 +3,6 @@ package com.example.shareiceboxms.models.helpers;
 import android.app.Dialog;
 import android.content.Context;
 import android.os.AsyncTask;
-import android.os.Handler;
 import android.util.Log;
 import android.widget.ListView;
 import android.widget.ScrollView;
@@ -11,7 +10,7 @@ import android.widget.Toast;
 
 import com.example.shareiceboxms.models.adapters.MachineStockProductAdapter;
 import com.example.shareiceboxms.models.beans.ItemMachine;
-import com.example.shareiceboxms.models.beans.ItemProduct;
+import com.example.shareiceboxms.models.beans.product.ItemStockProduct;
 import com.example.shareiceboxms.models.contants.HttpRequstUrl;
 import com.example.shareiceboxms.models.contants.JsonDataParse;
 import com.example.shareiceboxms.models.contants.RequestParamsContants;
@@ -20,9 +19,7 @@ import com.example.shareiceboxms.models.http.JsonUtil;
 import com.example.shareiceboxms.models.http.OkHttpUtil;
 import com.example.shareiceboxms.models.widget.ListViewForScrollView;
 
-import org.json.JSONArray;
 import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -35,14 +32,14 @@ import java.util.Map;
 
 public class MachineItemAddViewHelper {
     private int curPage, requestNum, totalNum, totalPage;
-    private List<ItemProduct> itemProducts;
+    private List<ItemStockProduct> itemProducts;
     private MachineStockProductAdapter adapter;
     private ItemMachine itemMachine;
     private Context context;
     private ListView listView;
     private ScrollView scrollView;
 
-    public MachineItemAddViewHelper(List<ItemProduct> itemProducts, MachineStockProductAdapter adapter, ItemMachine itemMachine) {
+    public MachineItemAddViewHelper(List<ItemStockProduct> itemProducts, MachineStockProductAdapter adapter, ItemMachine itemMachine) {
         this.itemProducts = itemProducts;
         this.adapter = adapter;
         this.itemMachine = itemMachine;
@@ -86,11 +83,11 @@ public class MachineItemAddViewHelper {
         this.totalPage = totalPage;
     }
 
-    public List<ItemProduct> getItemProducts() {
+    public List<ItemStockProduct> getItemProducts() {
         return itemProducts;
     }
 
-    public void setItemProducts(List<ItemProduct> itemProducts) {
+    public void setItemProducts(List<ItemStockProduct> itemProducts) {
         this.itemProducts = itemProducts;
     }
 
@@ -114,7 +111,7 @@ public class MachineItemAddViewHelper {
     public class MachineStockProductTask extends AsyncTask<Void, Void, Boolean> {
         private String response;
         private String err = "net_work_err";
-        private List<ItemProduct> products;
+        private List<ItemStockProduct> products;
         private Map<String, Object> params;
         private Dialog dialog;
 
@@ -144,7 +141,7 @@ public class MachineItemAddViewHelper {
                 requestNum = jsonD.getInt("n");
                 totalPage = totalNum / requestNum + (totalNum % requestNum > 0 ? 1 : 0);
                 JSONArray jsonList = jsonD.getJSONArray("list");*/
-                products = ItemProduct.bindProductList(JsonDataParse.getInstance().getArrayList(response.toString()), itemMachine);
+                products = ItemStockProduct.bindProductList(JsonDataParse.getInstance().getArrayList(response.toString()), itemMachine);
                 totalNum = JsonDataParse.getInstance().getTotalNum();
                 curPage = JsonDataParse.getInstance().getCurPage();
                 requestNum = JsonDataParse.getInstance().getRequestNum();

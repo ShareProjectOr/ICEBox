@@ -1,7 +1,6 @@
 package com.example.shareiceboxms.models.adapters;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,7 +8,8 @@ import android.widget.BaseAdapter;
 import android.widget.TextView;
 
 import com.example.shareiceboxms.R;
-import com.example.shareiceboxms.models.beans.ItemProduct;
+import com.example.shareiceboxms.models.beans.product.ItemProduct;
+import com.example.shareiceboxms.models.beans.product.ItemStockProduct;
 import com.example.shareiceboxms.models.helpers.SecondToDate;
 
 import java.util.List;
@@ -20,9 +20,9 @@ import java.util.List;
 
 public class MachineStockProductAdapter extends BaseAdapter {
     private Context context;
-    private List<ItemProduct> itemProducts;
+    private List<ItemStockProduct> itemProducts;
 
-    public MachineStockProductAdapter(Context context, List<ItemProduct> itemProducts) {
+    public MachineStockProductAdapter(Context context, List<ItemStockProduct> itemProducts) {
         this.context = context;
         this.itemProducts = itemProducts;
     }

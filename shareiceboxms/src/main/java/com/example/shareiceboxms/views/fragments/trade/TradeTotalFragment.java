@@ -34,6 +34,7 @@ import com.example.shareiceboxms.models.helpers.SecondToDate;
 import com.example.shareiceboxms.models.http.JsonUtil;
 import com.example.shareiceboxms.models.http.OkHttpUtil;
 import com.example.shareiceboxms.views.fragments.BaseFragment;
+import com.example.shareiceboxms.views.fragments.machine.MachineDetailFragment;
 
 import org.json.JSONException;
 
@@ -138,6 +139,9 @@ public class TradeTotalFragment extends BaseFragment {
 
     @Override
     public void onRefresh() {
+        if (refreshLayout.isRefreshing()) {
+            return;
+        }
         time = SecondToDate.getDateParams(SecondToDate.TODAY_CODE);
         timeSelector.setText(SecondToDate.getDateUiShow(time));
         getDatas();
@@ -161,7 +165,7 @@ public class TradeTotalFragment extends BaseFragment {
         return null;
     }
 
-    //获取机器列表异步任务
+    //获取交易统计异步任务
     private class TradeTotalTask extends AsyncTask<Void, Void, Boolean> {
 
         private String response;
@@ -175,7 +179,7 @@ public class TradeTotalFragment extends BaseFragment {
 
         @Override
         protected void onPreExecute() {
-            if (dialog != null) {
+            if (dialog != null && !dialog.isShowing()) {
                 dialog.show();
             }
         }
@@ -195,7 +199,7 @@ public class TradeTotalFragment extends BaseFragment {
                 err = RequstTips.getErrorMsg(e.getMessage());
                 Log.e("erro", e.toString());
             } catch (JSONException e) {
-                if (dialog != null) {
+                if (dialog != null && dialog.isShowing()) {
                     dialog.dismiss();
                 }
                 err = RequstTips.JSONException_Tip;
@@ -206,7 +210,7 @@ public class TradeTotalFragment extends BaseFragment {
 
         @Override
         protected void onPostExecute(final Boolean success) {
-            if (dialog != null) {
+            if (dialog != null && dialog.isShowing()) {
                 dialog.dismiss();
 //                dialog = null;
             }

@@ -6,15 +6,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.Button;
-import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.TextView;
 
 import com.example.shareiceboxms.R;
-import com.example.shareiceboxms.models.beans.ItemProduct;
 import com.example.shareiceboxms.models.beans.ItemTradeRecord;
+import com.example.shareiceboxms.models.factories.FragmentFactory;
 import com.example.shareiceboxms.views.fragments.trade.TradeAccountDetailFragment;
-import com.example.shareiceboxms.views.fragments.trade.TradeRecordDetailFragment;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -61,7 +58,8 @@ public class TradeAccountDetailAdapter extends BaseAdapter {
             viewHolder.operator.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (tradeAccountDetailFragment!=null){
+                    if (tradeAccountDetailFragment != null) {
+                        FragmentFactory.getInstance().getSavedBundle().putInt("tradeID", itemRecordList.get(position).tradeID);
                         tradeAccountDetailFragment.addFrameFragment();
                     }
                 }

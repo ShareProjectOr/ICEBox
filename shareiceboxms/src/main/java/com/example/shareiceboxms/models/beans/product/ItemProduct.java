@@ -1,6 +1,8 @@
-package com.example.shareiceboxms.models.beans;
+package com.example.shareiceboxms.models.beans.product;
 
 import android.util.Log;
+
+import com.example.shareiceboxms.models.beans.ItemMachine;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -11,6 +13,7 @@ import java.util.List;
 
 /**
  * Created by WH on 2017/12/9.
+ *
  */
 
 public class ItemProduct {
@@ -29,6 +32,27 @@ public class ItemProduct {
     * 保存机器实例，可以获得agent,manager,company
     * */
     public ItemMachine machine;
+/*  售出商品
+    goodsID:78791212,//Number RFID的ID
+    categoryID:787,//Number 商品所属品类的ID
+    goodsName:'农夫山泉',//String 商品名称
+    pirse:1.99，//Number 商品单价
+    activityPrice:12.65,//Number 活动价格
+    soldPrise:0.99,//Number 交易单价
+    RFID:'67tguas8y87as',//String RFID
+
+    inputTime:'2017-11-21 12:23:49',//String 商品录入时间
+    bindingTime:'2017-11-21 12:23:49',//String 商品绑定时间
+    exhibitTime:'2017-11-21 12:23:49',//String 商品上货时间
+    soldTime:'2017-11-21 12:23:49',//String 商品售出时间（即数据库内订单生成时间）
+    residueStorageTime:445455,//String  商品剩余存储时间,以S为单位
+
+    isRefund:0,//商品是否退款,详情见商品退款状态码
+
+    trade:{交易记录精简版},//交易ID
+    agent:{用户精简版},//代理商
+    company:{公司},//公司
+    machine:{机器精简版},//机器*/
 
 /*   {
 

@@ -1,5 +1,7 @@
 package com.example.shareiceboxms.models.helpers;
 
+import android.text.TextUtils;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -14,6 +16,7 @@ public class SecondToDate {
     public static int WEEK_CODE = 1;
     public static int MONTH_CODE = 2;
     public static int YEAR_CODE = 3;
+    public static String FORMAT_TYPE = "yyyy-MM-dd HH:mm:ss";
 
     public static String[] formatLongToTimeStr(Long seconds) {
         String[] time = new String[4];
@@ -128,14 +131,77 @@ public class SecondToDate {
         int date = ca.get(Calendar.DAY_OF_MONTH);
         return year + "-" + month + "-" + date + " 00:00";
     }
+
     /*
- * 将时间转换为时间戳
- */
-    public static long dateToStamp(String s) throws ParseException {
-        String res;
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        Date date = simpleDateFormat.parse(s);
-        long ts = date.getTime();
-        return ts;
+ * 日期转化为字符串
+ * */
+    public static String getStrOfDate(Date date) throws ParseException {
+        return new SimpleDateFormat(FORMAT_TYPE).format(date);
+    }
+
+    /*
+    * 字符串转换为日期
+    * */
+    public static Date getDateOfString(String dateStr) throws ParseException {
+        if ("".equals(dateStr) || dateStr == null) {
+            return null;
+        } else {
+            SimpleDateFormat format = new SimpleDateFormat(FORMAT_TYPE);
+            Date date = format.parse(dateStr);
+            return date;
+        }
+    }
+
+    /*
+    * 将long型转化为date型
+    * */
+    public static Date getDateOfLong(long dateLong) throws ParseException {
+        Date date = new Date(dateLong);
+        String dateStr = getStrOfDate(date);
+        return getDateOfString(dateStr);
+    }
+
+    /*
+    * date转化为long型
+    * */
+    public static long getLongOfDate(Date date) throws ParseException {
+        return date.getTime();
+    }
+
+    /*
+    * 获取两个日期之间差值 long型
+    * */
+    public static long getSubOfDates(Date startDate, Date endDate) {
+        if (startDate == null || endDate == null) return 0;
+        long startTime = startDate.getTime();
+        long endTime = endDate.getTime();
+        long subTime = Math.abs(endTime - startTime);
+        return subTime;
+    }
+
+    /*
+  * 将两string差值直接转换为天时分秒
+  * */
+    public static String getSubString(String startTime, String endTime) throws ParseException {
+        String timeStr = "";
+        String[] time = SecondToDate.formatLongToTimeStr(
+                SecondToDate.getSubOfDates(SecondToDate.getDateOfString(startTime)
+                        , SecondToDate.getDateOfString(endTime)));
+        if (!time[0].equals("0")) {
+            timeStr += time[0] + "天";
+        }
+        if (!time[1].equals("0")) {
+            timeStr += time[1] + "时";
+        }
+        if (!time[2].equals("0")) {
+            timeStr += time[2] + "分";
+        }
+        if (!time[3].equals("0")) {
+            timeStr += time[3] + "秒";
+        }
+        if (TextUtils.equals(timeStr, "")) {
+            return "已过期";
+        }
+        return timeStr;
     }
 }

@@ -94,7 +94,6 @@ public class TradeFragment extends BaseFragment implements HomeActivity.OnBackPr
             removeFrame(curFrameFragment);
             tradeDetailLayout.setVisibility(View.GONE);
             curFrameFragment = null;
-
         } else {
             homeActivity.finishActivity();
         }

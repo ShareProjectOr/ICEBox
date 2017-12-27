@@ -55,7 +55,6 @@ public class JsonDataParse {
         return jsonObject.getBoolean("d");
     }
 
-
     public int getTotalNum() {
         return totalNum;
     }

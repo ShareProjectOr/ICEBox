@@ -167,7 +167,11 @@ public class MachineFragment extends BaseFragment implements HomeActivity.OnBack
 
     @Override
     public void onRefresh() {
-
+/*
+     添加上时，刷新无效，不发送请求消息
+       if (machineRefresh.isRefreshing()) {
+            return;
+        }*/
         if (itemMachines != null) {
             itemMachines.clear();
             initPage();

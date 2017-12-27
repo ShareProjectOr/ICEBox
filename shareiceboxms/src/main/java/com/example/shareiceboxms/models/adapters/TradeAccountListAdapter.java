@@ -12,10 +12,14 @@ import android.widget.Toast;
 import com.example.shareiceboxms.R;
 import com.example.shareiceboxms.models.beans.ItemTradeAccount;
 import com.example.shareiceboxms.models.beans.ItemTradeRecord;
+import com.example.shareiceboxms.models.contants.Constants;
 import com.example.shareiceboxms.models.factories.FragmentFactory;
+import com.example.shareiceboxms.models.helpers.SecondToDate;
 import com.example.shareiceboxms.views.fragments.trade.TradeAccountDetailFragment;
 import com.example.shareiceboxms.views.fragments.trade.TradeAccountFragment;
 
+import java.io.Serializable;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -49,18 +53,47 @@ public class TradeAccountListAdapter extends RecyclerView.Adapter<RecyclerView.V
     }
 
     @Override
-    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+    public void onBindViewHolder(RecyclerView.ViewHolder holder, final int position) {
         if (holder instanceof ViewHolder) {
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     if (tradeAccountFragment != null) {
-                        FragmentFactory.getInstance().getSavedBundle().putString("machineCode", "1212121");
+                        FragmentFactory.getInstance().getSavedBundle().putSerializable("ItemTradeAccount", itemTradeAccounts.get(position));
                         tradeAccountFragment.addFrameFragment(new TradeAccountDetailFragment());
-//                        Toast.makeText(context, itemTradeAccounts.get(position).getStr(), Toast.LENGTH_SHORT).show();
                     }
                 }
             });
+//            totalAccountTime, accountMoney, accountState, timePeriod;
+            ItemTradeAccount itemTradeAccount = itemTradeAccounts.get(position);
+
+            switch (itemTradeAccount.divideState) {
+                case 0://待审核状态时显示工单创建时间
+                    ((ViewHolder) holder).totalAccountTime.setText(itemTradeAccount.createTime);
+                    break;
+                case 1://待确认-审核时间
+                    ((ViewHolder) holder).totalAccountTime.setText(itemTradeAccount.checkTime);
+                    break;
+                case 2://待转账-确认时间
+                    ((ViewHolder) holder).totalAccountTime.setText(itemTradeAccount.configTime);
+                    break;
+                case 3://待复审-转账确认时间
+                    ((ViewHolder) holder).totalAccountTime.setText(itemTradeAccount.configTransferTime);
+                    break;
+                case 4://复审完成-复审完成时间
+                    ((ViewHolder) holder).totalAccountTime.setText(itemTradeAccount.recheckTime);
+                    break;
+                case 5://背撤销-撤销时间
+                    ((ViewHolder) holder).totalAccountTime.setText(itemTradeAccount.cancelTime);
+                    break;
+            }
+            ((ViewHolder) holder).accountMoney.setText(itemTradeAccount.divideMoney);
+            ((ViewHolder) holder).accountState.setText(Constants.TradeAccountStateTitle[itemTradeAccount.divideState + 1]);
+            try {
+                ((ViewHolder) holder).timePeriod.setText(SecondToDate.getSubString(itemTradeAccount.startTime,itemTradeAccount.endTime));
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
         } else if (holder instanceof LoadingHolder) {
             if (holder != null) {
             }
