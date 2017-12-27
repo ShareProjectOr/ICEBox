@@ -211,7 +211,7 @@ public class MachineFragment extends BaseFragment implements HomeActivity.OnBack
 
     @Override
     public void OnBackDown() {
-        if (dialog != null) {
+        if (dialog != null && dialog.isShowing()) {
             dialog.dismiss();
             return;
         }
@@ -219,7 +219,7 @@ public class MachineFragment extends BaseFragment implements HomeActivity.OnBack
             Dialog dialog = ((MachineDetailFragment) curFrameFragment).getDialog();
             if (dialog != null && dialog.isShowing()) {
                 dialog.dismiss();
-                return;
+//                return;
             }
             ((MachineDetailFragment) curFrameFragment).leaveToCommit();
             removeFrame(curFrameFragment);

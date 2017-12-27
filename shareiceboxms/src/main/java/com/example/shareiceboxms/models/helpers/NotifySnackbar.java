@@ -2,28 +2,17 @@ package com.example.shareiceboxms.models.helpers;
 
 import android.animation.Animator;
 import android.animation.ObjectAnimator;
-import android.content.Context;
-import android.support.design.widget.BaseTransientBottomBar;
 import android.support.design.widget.Snackbar;
-import android.support.design.widget.TabLayout;
 import android.support.v4.content.ContextCompat;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
-import android.view.WindowManager;
-import android.view.animation.AlphaAnimation;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.example.shareiceboxms.R;
 import com.example.shareiceboxms.views.activities.HomeActivity;
-
-import javax.net.ssl.SNIHostName;
 
 /**
  * Created by WH on 2017/12/7.
@@ -32,19 +21,20 @@ import javax.net.ssl.SNIHostName;
 public class NotifySnackbar {
     private static Snackbar.SnackbarLayout snackbarLayout;
     private static Snackbar snackbar;
+    private String msg;
 
-    public NotifySnackbar(HomeActivity activity, View bindView) {
-        addNotifySnackbar(activity, bindView);
+    public NotifySnackbar(HomeActivity activity, View bindView, String msg) {
+        addNotifySnackbar(activity, bindView,msg);
     }
 
-    public static void addNotifySnackbar(final HomeActivity activity, View coorView) {
+    public static void addNotifySnackbar(final HomeActivity activity, View coorView, String msg) {
 //隐藏虚拟按键栏(否则SnackBar高度很高)
 //        activity.getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION |
 //                View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE); //防止点击屏幕时,隐藏虚拟按键栏又弹了出来 //  
         View view = LayoutInflater.from(activity).inflate(R.layout.notify_window, null, false);
 
 
-        snackbar = Snackbar.make(coorView, "有新的故障出现！", Snackbar.LENGTH_INDEFINITE);
+        snackbar = Snackbar.make(coorView, msg, Snackbar.LENGTH_INDEFINITE);
         snackbarLayout = (Snackbar.SnackbarLayout) snackbar.getView();
         if (snackbarLayout != null) {
             snackbarLayout.setBackground(ContextCompat.getDrawable(activity, R.drawable.shape_float_botton));
@@ -134,6 +124,5 @@ public class NotifySnackbar {
 
             }
         });
-
     }
 }

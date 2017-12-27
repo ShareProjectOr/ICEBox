@@ -179,6 +179,17 @@ public class SecondToDate {
         return subTime;
     }
 
+    /*  
+  * 将时间转换为时间戳 
+  */
+    public static long dateToStamp(String s) throws ParseException {
+        String res;
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss:SSS");
+        Date date = simpleDateFormat.parse(s);
+        return date.getTime();
+    }
+
+
     /*
   * 将两string差值直接转换为天时分秒
   * */

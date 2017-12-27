@@ -133,6 +133,7 @@ public class RequestParamsContants {
         params.put("deviationTemperature", 0);
         return params;
     }
+
     public Map<String, Object> getExceptionListParams() {
         Map<String, Object> params = new HashMap<>();
         params.put("n", 5);
@@ -281,9 +282,26 @@ public class RequestParamsContants {
         params.put("checkCode", 1);
         params.put("p", 1);
         params.put("n", 6);
-        params.put("divideID","");
+        params.put("divideID", "");
         return params;
     }
 
+    /*
+    * 创建结算工单
+    *   agentID:8787878745,//Number 代理商ID
+  createTime:[ //Array 时间区间
+    'between',
+    ['2016-04-03 12:12','2016-04-04 12:12']
+  ],
+    * */
+    public Map<String, Object> getCreateJieSuanParams() {
+        Map<String, Object> params = new HashMap<>();
+        params.put("userID", 1);
+        params.put("appUserID", 1);
+        params.put("checkCode", 1);
+//        params.put("agentID", "");
+        params.put("createTime", null);
+        return params;
+    }
 
 }
