@@ -6,22 +6,16 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.shareiceboxms.R;
 import com.example.shareiceboxms.models.beans.ItemMachine;
-import com.example.shareiceboxms.models.beans.ItemTradeTotal;
 import com.example.shareiceboxms.models.contants.Constants;
 import com.example.shareiceboxms.models.factories.FragmentFactory;
 import com.example.shareiceboxms.views.fragments.machine.MachineDetailFragment;
 import com.example.shareiceboxms.views.fragments.machine.MachineFragment;
 
 import java.util.List;
-
-import static com.example.shareiceboxms.models.contants.Constants.TradeTotalTitles;
-import static com.example.shareiceboxms.models.contants.Constants.TradeTotalTitlesItem;
 
 /**
  * Created by WH on 2017/12/9.

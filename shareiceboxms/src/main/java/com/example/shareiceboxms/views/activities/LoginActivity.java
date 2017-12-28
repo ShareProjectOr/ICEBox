@@ -8,6 +8,7 @@ import android.os.Bundle;
 import com.example.shareiceboxms.R;
 
 import com.example.shareiceboxms.models.beans.PerSonMessage;
+import com.example.shareiceboxms.models.helpers.ProvenceAndCodeUtil;
 import com.example.shareiceboxms.views.fragments.LoginFragment;
 import com.example.shareiceboxms.views.fragments.WelcomeFragment;
 
@@ -21,12 +22,11 @@ public class LoginActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         initViews();
-        if (PerSonMessage.isexcit){
+        if (PerSonMessage.isexcit) {
             login();
-        }else {
+        } else {
             welcome();
         }
-
     }
 
     private void welcome() {
@@ -45,6 +45,15 @@ public class LoginActivity extends BaseActivity {
 
     private void initViews() {
 
+    }
+
+    /*
+    * 解析地址
+    * 如果直接再activity中使用，在启动时会出现空白，然后跳转到静态图片
+    * 如果再fragment中使用，静态图片显示时间稍长，然后加载相应的fragment，但不会出现留白页面
+    * */
+    public void parseAddress() {
+        ProvenceAndCodeUtil.getInstance(this);
     }
 
     @Override

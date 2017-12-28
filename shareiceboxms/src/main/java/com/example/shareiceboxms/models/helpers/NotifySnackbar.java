@@ -24,17 +24,17 @@ public class NotifySnackbar {
     private String msg;
 
     public NotifySnackbar(HomeActivity activity, View bindView, String msg) {
-        addNotifySnackbar(activity, bindView,msg);
+
     }
 
-    public static void addNotifySnackbar(final HomeActivity activity, View coorView, String msg) {
+    public static void addNotifySnackbar(final HomeActivity activity, View coorView) {
 //隐藏虚拟按键栏(否则SnackBar高度很高)
 //        activity.getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION |
 //                View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE); //防止点击屏幕时,隐藏虚拟按键栏又弹了出来 //  
         View view = LayoutInflater.from(activity).inflate(R.layout.notify_window, null, false);
 
 
-        snackbar = Snackbar.make(coorView, msg, Snackbar.LENGTH_INDEFINITE);
+        snackbar = Snackbar.make(coorView, "", Snackbar.LENGTH_INDEFINITE);
         snackbarLayout = (Snackbar.SnackbarLayout) snackbar.getView();
         if (snackbarLayout != null) {
             snackbarLayout.setBackground(ContextCompat.getDrawable(activity, R.drawable.shape_float_botton));
@@ -84,17 +84,23 @@ public class NotifySnackbar {
                 snackbar.dismiss();
             }
         }).show();*/
-
-        snackbar.show();
     }
 
-    public static void showNotify() {
+    public static void showNotify(String msg) {
+        if (!snackbar.isShown()){
+            snackbar.show();
+        }
         if (snackbarLayout != null) {
             snackbarLayout.setVisibility(View.VISIBLE);
+            snackbar.setText(msg);
         }
         ObjectAnimator objectAnimator = ObjectAnimator.ofFloat(snackbarLayout, "alpha", 0f, 1f);
         objectAnimator.setDuration(200);
         objectAnimator.start();
+    }
+
+    public static Snackbar getSnackbar() {
+        return snackbar;
     }
 
     public static void hideNotify() {

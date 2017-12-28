@@ -1,6 +1,9 @@
-package com.example.shareiceboxms.models.beans;
+package com.example.shareiceboxms.models.beans.trade;
 
 import android.util.Log;
+
+import com.example.shareiceboxms.models.beans.ItemCompany;
+import com.example.shareiceboxms.models.beans.ItemPerson;
 
 import org.json.JSONArray;
 import org.json.JSONException;

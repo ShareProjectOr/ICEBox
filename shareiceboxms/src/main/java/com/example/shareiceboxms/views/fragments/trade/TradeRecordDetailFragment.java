@@ -18,7 +18,7 @@ import android.widget.Toast;
 
 import com.example.shareiceboxms.R;
 import com.example.shareiceboxms.models.adapters.TradeRecordDetailAdapter;
-import com.example.shareiceboxms.models.beans.ItemTradeRecord;
+import com.example.shareiceboxms.models.beans.trade.ItemTradeRecord;
 import com.example.shareiceboxms.models.beans.product.ItemSellProduct;
 import com.example.shareiceboxms.models.contants.Constants;
 import com.example.shareiceboxms.models.contants.HttpRequstUrl;

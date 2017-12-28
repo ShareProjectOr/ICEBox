@@ -5,12 +5,10 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
 import android.widget.TextView;
 
 import com.example.shareiceboxms.R;
-import com.example.shareiceboxms.models.beans.ItemTradeTotal;
-import com.example.shareiceboxms.models.contants.Constants;
+import com.example.shareiceboxms.models.beans.trade.ItemTradeTotal;
 
 import static com.example.shareiceboxms.models.contants.Constants.TradeTotalTitles;
 import static com.example.shareiceboxms.models.contants.Constants.TradeTotalTitlesItem;

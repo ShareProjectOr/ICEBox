@@ -5,7 +5,7 @@ import android.util.Log;
 import com.example.shareiceboxms.models.beans.ItemCompany;
 import com.example.shareiceboxms.models.beans.ItemMachine;
 import com.example.shareiceboxms.models.beans.ItemPerson;
-import com.example.shareiceboxms.models.beans.ItemTradeRecord;
+import com.example.shareiceboxms.models.beans.trade.ItemTradeRecord;
 
 import org.json.JSONArray;
 import org.json.JSONException;

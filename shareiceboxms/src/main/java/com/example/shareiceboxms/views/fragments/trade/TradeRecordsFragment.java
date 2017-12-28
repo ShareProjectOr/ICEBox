@@ -22,8 +22,7 @@ import android.widget.Toast;
 
 import com.example.shareiceboxms.R;
 import com.example.shareiceboxms.models.adapters.TradeRecordListAdapter;
-import com.example.shareiceboxms.models.beans.ItemTradeRecord;
-import com.example.shareiceboxms.models.beans.ItemTradeTotal;
+import com.example.shareiceboxms.models.beans.trade.ItemTradeRecord;
 import com.example.shareiceboxms.models.contants.Constants;
 import com.example.shareiceboxms.models.contants.HttpRequstUrl;
 import com.example.shareiceboxms.models.contants.JsonDataParse;
@@ -31,7 +30,6 @@ import com.example.shareiceboxms.models.contants.RequestParamsContants;
 import com.example.shareiceboxms.models.contants.RequstTips;
 import com.example.shareiceboxms.models.factories.FragmentFactory;
 import com.example.shareiceboxms.models.factories.MyViewFactory;
-import com.example.shareiceboxms.models.helpers.ActionItem;
 import com.example.shareiceboxms.models.helpers.DoubleDatePickerDialog;
 import com.example.shareiceboxms.models.helpers.LoadMoreHelper;
 import com.example.shareiceboxms.models.helpers.MenuPop;

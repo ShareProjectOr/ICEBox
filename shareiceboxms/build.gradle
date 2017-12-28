@@ -52,4 +52,5 @@ dependencies {
     compile 'pl.droidsonroids.gif:android-gif-drawable:1.2.9'
     //动态图加载框架
     compile files('libs/org.eclipse.paho.client.mqttv3-1.0.2.jar')
+    compile files('libs/jxl.jar')
 }

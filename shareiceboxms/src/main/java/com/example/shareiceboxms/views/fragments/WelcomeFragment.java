@@ -70,6 +70,10 @@ public class WelcomeFragment extends BaseFragment {
     private void isAutoLogin() {
         Log.d("debug", "isFirst==========" + mSharedPreferences.getBoolean("isFirst", true));
         if (!mSharedPreferences.getBoolean("isFirst", true)) {
+            /*
+            * 解析地址
+            * */
+            loginActivity.parseAddress();
             hasLogined();
         } else {
             isNotLogined();

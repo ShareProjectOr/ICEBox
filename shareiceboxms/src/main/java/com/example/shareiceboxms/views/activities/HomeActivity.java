@@ -30,7 +30,8 @@ import com.example.shareiceboxms.models.contants.Sql;
 import com.example.shareiceboxms.models.factories.FragmentFactory;
 import com.example.shareiceboxms.models.helpers.MyDialog;
 import com.example.shareiceboxms.models.helpers.NotifySnackbar;
-import com.example.shareiceboxms.models.http.GetService;
+import com.example.shareiceboxms.models.http.mqtt.GetService;
+import com.example.shareiceboxms.models.http.mqtt.MqttService;
 import com.example.shareiceboxms.views.fragments.AboutFragment;
 import com.example.shareiceboxms.views.fragments.BaseFragment;
 import com.example.shareiceboxms.views.fragments.ChangePasswordFragment;
@@ -67,7 +68,7 @@ public class HomeActivity extends BaseActivity
         initViews();
         initData();
         initListener();
-        GetService.getInstance().start(this);
+        startMqttService();
     }
 
     private void initListener() {
@@ -84,9 +85,7 @@ public class HomeActivity extends BaseActivity
         }
         curFragment = new TradeFragment();
         switchFragment();
-        showNotify();
-
-
+        setNotifySnackbar();
     }
 
     private void initViews() {
@@ -107,6 +106,10 @@ public class HomeActivity extends BaseActivity
         toggle.syncState();
     }
 
+    public void startMqttService() {
+        Intent intent = new Intent(this, MqttService.class);
+        startService(intent);
+    }
 
     public DrawerLayout getDrawer() {
         return drawer;
@@ -387,16 +390,16 @@ public class HomeActivity extends BaseActivity
     /*
         * 添加通知
         * */
-    public void setNotifySnackbar(String msg) {
-        NotifySnackbar.addNotifySnackbar(this, notifyLayout, msg);
+    public void setNotifySnackbar() {
+        NotifySnackbar.addNotifySnackbar(this, notifyLayout);
     }
 
     public void selectedException() {
         tabLayout.getTabAt(2).select();
     }
 
-    public void showNotify() {
-        NotifySnackbar.showNotify();
+    public void showNotify(String msg) {
+        NotifySnackbar.showNotify(msg);
     }
 
     @Override

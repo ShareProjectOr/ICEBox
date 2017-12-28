@@ -1,5 +1,6 @@
 package com.example.shareiceboxms.views.fragments;
 
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
@@ -23,6 +24,7 @@ import com.bumptech.glide.Glide;
 import com.example.shareiceboxms.models.contants.HttpRequstUrl;
 import com.example.shareiceboxms.models.beans.PerSonMessage;
 import com.example.shareiceboxms.models.contants.RequstTips;
+import com.example.shareiceboxms.models.helpers.ProvenceAndCodeUtil;
 import com.example.shareiceboxms.models.http.JsonUtil;
 import com.example.shareiceboxms.models.http.OkHttpUtil;
 import com.example.shareiceboxms.views.activities.HomeActivity;
@@ -68,6 +70,10 @@ public class LoginFragment extends BaseFragment {
     }
 
     private void initDatas() {
+         /*
+            * 解析地址
+            * */
+        loginActivity.parseAddress();
         //   Glide.with(this).load(R.drawable.opening).into(imageView);
     }
 
@@ -116,15 +122,15 @@ public class LoginFragment extends BaseFragment {
                     passEdit.requestFocus();
                     return;
                 }
-                mAuthTask = new UserLoginTask(accountEdit.getText().toString(), passEdit.getText().toString());
-                mAuthTask.execute();
+//                mAuthTask = new UserLoginTask(accountEdit.getText().toString(), passEdit.getText().toString());
+//                mAuthTask.execute();
 //                LoginAnimPresentor.loginAnim(editLayout, barLayout);
 //                loginBnt.setVisibility(View.GONE);
 //                passLayout.setVisibility(View.GONE);
-           /*     Intent intent = new Intent();
+                Intent intent = new Intent();
                 intent.setClass(getActivity(), HomeActivity.class);
                 startActivity(intent);
-                getActivity().finish();*/
+                getActivity().finish();
                 break;
             case R.id.isClose:
                 accountEdit.setText("");

@@ -21,9 +21,7 @@ import android.widget.Toast;
 
 import com.example.shareiceboxms.R;
 import com.example.shareiceboxms.models.adapters.TradeAccountListAdapter;
-import com.example.shareiceboxms.models.adapters.TradeRecordListAdapter;
-import com.example.shareiceboxms.models.beans.ItemTradeAccount;
-import com.example.shareiceboxms.models.beans.ItemTradeRecord;
+import com.example.shareiceboxms.models.beans.trade.ItemTradeAccount;
 import com.example.shareiceboxms.models.contants.Constants;
 import com.example.shareiceboxms.models.contants.HttpRequstUrl;
 import com.example.shareiceboxms.models.contants.JsonDataParse;
@@ -34,7 +32,6 @@ import com.example.shareiceboxms.models.factories.MyViewFactory;
 import com.example.shareiceboxms.models.helpers.LoadMoreHelper;
 import com.example.shareiceboxms.models.helpers.MenuPop;
 import com.example.shareiceboxms.models.helpers.MyDialog;
-import com.example.shareiceboxms.models.helpers.SecondToDate;
 import com.example.shareiceboxms.models.http.JsonUtil;
 import com.example.shareiceboxms.models.http.OkHttpUtil;
 import com.example.shareiceboxms.views.activities.HomeActivity;

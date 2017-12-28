@@ -1,12 +1,11 @@
-package com.example.shareiceboxms.models.http; /**
+package com.example.shareiceboxms.models.http.mqtt; /**
  * Description:
  *
  * @author admin
  * 2017年2月10日下午18:04:07
  */
 
-import android.util.Log;
-
+import com.example.shareiceboxms.models.helpers.NotifySnackbar;
 import com.example.shareiceboxms.views.activities.HomeActivity;
 
 import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
@@ -30,15 +29,11 @@ import org.eclipse.paho.client.mqttv3.MqttMessage;
  * 由 MqttClient.connect 激活此回调。
  */
 public class PushCallback implements MqttCallback {
-    HomeActivity homeActivity;
-
-    public PushCallback(HomeActivity homeActivity) {
-        this.homeActivity = homeActivity;
-    }
 
     public void connectionLost(Throwable cause) {
         // 连接丢失后，一般在这里面进行重连
         System.out.println("连接断开，可以做重连");
+        GetService.getInstance().start();
     }
 
     public void deliveryComplete(IMqttDeliveryToken token) {
@@ -50,6 +45,8 @@ public class PushCallback implements MqttCallback {
         System.out.println("接收消息主题 : " + topic);
         System.out.println("接收消息Qos : " + message.getQos());
         System.out.println("接收消息内容 : " + new String(message.getPayload()));
-        homeActivity.setNotifySnackbar(new String(message.getPayload()));
+        if (NotifySnackbar.getSnackbar() != null) {
+            NotifySnackbar.showNotify(new String(message.getPayload()));
+        }
     }
 }
