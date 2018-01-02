@@ -1,9 +1,14 @@
 package com.example.shareiceboxms.views.fragments;
 
 import android.app.Dialog;
+import android.graphics.Rect;
+import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.content.ContextCompat;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,6 +16,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.shareiceboxms.R;
@@ -35,15 +41,19 @@ import java.util.Map;
  * Created by Administrator on 2017/12/12.
  */
 
-public class ChangePasswordFragment extends BaseFragment {
+public class ChangePasswordFragment extends BaseFragment implements View.OnFocusChangeListener {
     private ImageView drawerIcon, saoma;
     private HomeActivity homeActivity;
     private View contentView;
     private EditText mNowPassword;
     private EditText mNewPassword;
     private EditText mConfirmPassword;
+    private ImageView oldPassClear, newPassClear, surePassClear;
+    private TextView oldErrorTip, newErrorTip, sureErrorTip;
     private Button mCommit;
     private Button mCancel;
+    private TextWatcher textWatcher;
+    private int tipPosition = 0;
 
     @Nullable
     @Override
@@ -51,9 +61,38 @@ public class ChangePasswordFragment extends BaseFragment {
         if (contentView == null) {
             contentView = super.onCreateView(inflater, container, FragmentFactory.getInstance().putLayoutId(R.layout.change_password_fragment));
             bindViews();
+            bindDatas();
             initListener();
         }
         return contentView;
+    }
+
+    private void bindDatas() {
+        textWatcher = new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                switch (tipPosition) {
+                    case 0:
+                        oldErrorTip.setVisibility(View.GONE);
+                        break;
+                    case 1:
+                        newErrorTip.setVisibility(View.GONE);
+                        break;
+                    case 2:
+                        sureErrorTip.setVisibility(View.GONE);
+                        break;
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        };
     }
 
     private void initListener() {
@@ -61,6 +100,12 @@ public class ChangePasswordFragment extends BaseFragment {
         saoma.setOnClickListener(this);
         mCommit.setOnClickListener(this);
         mCancel.setOnClickListener(this);
+        oldPassClear.setOnClickListener(this);
+        newPassClear.setOnClickListener(this);
+        surePassClear.setOnClickListener(this);
+        mNowPassword.addTextChangedListener(textWatcher);
+        mNewPassword.addTextChangedListener(textWatcher);
+        mConfirmPassword.addTextChangedListener(textWatcher);
     }
 
     private void bindViews() {
@@ -72,6 +117,12 @@ public class ChangePasswordFragment extends BaseFragment {
         mCancel = (Button) contentView.findViewById(R.id.cancel);
         drawerIcon = (ImageView) contentView.findViewById(R.id.drawerIcon);
         saoma = (ImageView) contentView.findViewById(R.id.saoma);
+        oldPassClear = (ImageView) contentView.findViewById(R.id.oldPassClear);
+        newPassClear = (ImageView) contentView.findViewById(R.id.newPassClear);
+        surePassClear = (ImageView) contentView.findViewById(R.id.surePassClear);
+        oldErrorTip = (TextView) contentView.findViewById(R.id.oldErrorTip);
+        newErrorTip = (TextView) contentView.findViewById(R.id.newErrorTip);
+        sureErrorTip = (TextView) contentView.findViewById(R.id.sureErrorTip);
     }
 
     @Override
@@ -83,6 +134,18 @@ public class ChangePasswordFragment extends BaseFragment {
             case R.id.saoma:
                 homeActivity.openSaoma();
                 break;
+            case R.id.oldPassClear:
+                mNowPassword.setText("");
+                oldErrorTip.setVisibility(View.GONE);
+                break;
+            case R.id.newPassClear:
+                mNewPassword.setText("");
+                newErrorTip.setVisibility(View.GONE);
+                break;
+            case R.id.surePassClear:
+                mConfirmPassword.setText("");
+                sureErrorTip.setVisibility(View.GONE);
+                break;
             case R.id.cancel:
                 homeActivity.onBackPressed();
                 break;
@@ -93,19 +156,16 @@ public class ChangePasswordFragment extends BaseFragment {
                 }
 
                 if (!mNowPassword.getText().toString().equals(PerSonMessage.loginPassword)) {
-                    mNowPassword.setError("旧密码输入错误");
-                    mNowPassword.requestFocus();
+                    oldErrorTip.setVisibility(View.VISIBLE);
                     return;
                 }
 
                 if (mNewPassword.getText().toString().length() < 6) {
-                    mNewPassword.setError("密码至少为6位");
-                    mNewPassword.requestFocus();
+                    newErrorTip.setVisibility(View.VISIBLE);
                     return;
                 }
                 if (!mNewPassword.getText().toString().equals(mConfirmPassword.getText().toString())) {
-                    mConfirmPassword.setError("两次输入的新密码不一致");
-                    mConfirmPassword.requestFocus();
+                    sureErrorTip.setVisibility(View.VISIBLE);
                     return;
                 }
 
@@ -163,5 +223,23 @@ public class ChangePasswordFragment extends BaseFragment {
             }
         }.execute();
 
+    }
+
+    @Override
+    public void onFocusChange(View v, boolean hasFocus) {
+        if (hasFocus) {
+            switch (v.getId()) {
+                case R.id.nowPassword:
+                    tipPosition = 0;
+                    break;
+                case R.id.newPassword:
+                    tipPosition = 1;
+                    break;
+                case R.id.confirmPassword:
+                    tipPosition = 2;
+                    break;
+            }
+
+        }
     }
 }
