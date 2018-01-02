@@ -26,7 +26,7 @@ public class OkHttpUtil {
     private static final OkHttpClient mOkHttpClient = new OkHttpClient();
 
     static {
-        mOkHttpClient.setConnectTimeout(30, TimeUnit.SECONDS);
+        mOkHttpClient.setConnectTimeout(20, TimeUnit.SECONDS);
     }
 
     /**
@@ -123,11 +123,11 @@ public class OkHttpUtil {
     public static final MediaType JSON = MediaType.parse("application/json; charset=utf-8");
 
     public static String post(String url, String json) throws IOException {
-        OkHttpClient okHttpClient = new OkHttpClient();
+//        OkHttpClient okHttpClient = new OkHttpClient();
         RequestBody requestBody = RequestBody.create(JSON, json);
 
         Request request = new Request.Builder().url(url).addHeader("content-type", "application/json;charset:utf-8").post(requestBody).build();
-        Response response = okHttpClient.newCall(request).execute();//mOkHttpClient
+        Response response = mOkHttpClient.newCall(request).execute();//mOkHttpClient
         if (response.isSuccessful()) {
             return response.body().string();
         } else {

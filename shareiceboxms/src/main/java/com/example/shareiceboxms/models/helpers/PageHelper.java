@@ -57,8 +57,8 @@ public class PageHelper implements View.OnClickListener {
     }
 
     private void bindDatas() {
-        totalPageCount.setText(totalPageText);
-        totalCount.setText(totalCountText);
+        totalPageCount.setText(totalPageText+"");
+        totalCount.setText(totalCountText+"");
     }
 
     public void setTotalText(int totalPageText, int totalCountText) {

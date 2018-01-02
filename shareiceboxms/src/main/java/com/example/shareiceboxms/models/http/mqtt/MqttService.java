@@ -9,7 +9,8 @@ import android.util.Log;
  * Created by WH on 2017/12/28.
  */
 
-public class MqttService extends IntentService {
+public class MqttService extends IntentService{
+
     public MqttService() {
         super("MqttService");
     }
@@ -19,13 +20,13 @@ public class MqttService extends IntentService {
      *
      * @param name Used to name the worker thread, important only for debugging.
      */
-
     public MqttService(String name) {
         super(name);
     }
 
     @Override
     protected void onHandleIntent(@Nullable Intent intent) {
-        GetService.getInstance().start();
+        Log.d("11111222222222222222", "222222222222222222222222222222");
+        new GetService().start();
     }
 }

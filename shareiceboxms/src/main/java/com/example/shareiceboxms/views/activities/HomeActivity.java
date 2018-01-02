@@ -1,11 +1,16 @@
 package com.example.shareiceboxms.views.activities;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.PixelFormat;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.NonNull;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.NavigationView;
+import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentManager;
@@ -19,8 +24,11 @@ import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -34,6 +42,8 @@ import com.example.shareiceboxms.models.helpers.MyDialog;
 import com.example.shareiceboxms.models.helpers.NotifySnackbar;
 import com.example.shareiceboxms.models.http.mqtt.GetService;
 import com.example.shareiceboxms.models.http.mqtt.MqttService;
+import com.example.shareiceboxms.models.http.mqtt.PushCallback;
+import com.example.shareiceboxms.models.http.mqtt.ServerMQTT;
 import com.example.shareiceboxms.views.fragments.AboutFragment;
 import com.example.shareiceboxms.views.fragments.BaseFragment;
 import com.example.shareiceboxms.views.fragments.ChangePasswordFragment;
@@ -44,22 +54,29 @@ import com.example.shareiceboxms.views.fragments.product.ProductFragment;
 import com.example.shareiceboxms.views.fragments.OpeningDoorFragment;
 import com.example.shareiceboxms.views.fragments.trade.TradeFragment;
 
+import org.eclipse.paho.client.mqttv3.MqttException;
 import org.zackratos.ultimatebar.UltimateBar;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import static com.example.shareiceboxms.R.id.toolbar;
+
 public class HomeActivity extends BaseActivity
-        implements NavigationView.OnNavigationItemSelectedListener, TabLayout.OnTabSelectedListener {
+        implements NavigationView.OnNavigationItemSelectedListener, TabLayout.OnTabSelectedListener{
     DrawerLayout drawer;
     NavigationView navigationView;
     private TabLayout tabLayout;
     private TextView notifyLayout;
     public BaseFragment curFragment = null;
-    String curFragmentTag;
     private OnBackPressListener mOnBackPressListener;
     private int currentHomePageNum = 0;
     private boolean showHomepage = true;
     private final int SCANNIN_GREQUEST_CODE = 1;
     private static final int CAMERA_OK = 517;
     private long lastBackClicked;
+    private GetService getService;
+    TextView notifyText;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,7 +88,6 @@ public class HomeActivity extends BaseActivity
         initViews();
         initData();
         initListener();
-        startMqttService();
     }
 
     private void initListener() {
@@ -79,7 +95,7 @@ public class HomeActivity extends BaseActivity
     }
 
     private void initData() {
-
+        tabLayout.setBackgroundColor(ContextCompat.getColor(this, R.color.white));
         for (int i = 0; i < Constants.TabTitles.length; i++) {
             TabLayout.Tab tab = tabLayout.newTab();
             tab.setIcon(Constants.TabIcons[i]);
@@ -88,7 +104,7 @@ public class HomeActivity extends BaseActivity
         }
         curFragment = new TradeFragment();
         switchFragment();
-        setNotifySnackbar();
+        startMqttService();
     }
 
     private void initViews() {
@@ -108,10 +124,14 @@ public class HomeActivity extends BaseActivity
         drawer.addDrawerListener(toggle);
         toggle.syncState();
     }
-
     public void startMqttService() {
-        Intent intent = new Intent(this, MqttService.class);
-        startService(intent);
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                getService = new GetService();
+                getService.start();
+            }
+        }).start();
     }
 
     public DrawerLayout getDrawer() {
@@ -390,19 +410,39 @@ public class HomeActivity extends BaseActivity
 
     }
 
-    /*
-        * 添加通知
-        * */
-    public void setNotifySnackbar() {
-        NotifySnackbar.addNotifySnackbar(this, notifyLayout);
-    }
-
     public void selectedException() {
         tabLayout.getTabAt(2).select();
     }
 
-    public void showNotify(String msg) {
-        NotifySnackbar.showNotify(msg);
+    public void addNotifySnackbar(final HomeActivity activity, View coorView, String msg) {
+
+        final Snackbar snackbar = Snackbar.make(coorView, msg, Snackbar.LENGTH_INDEFINITE);
+        Snackbar.SnackbarLayout snackbarLayout = (Snackbar.SnackbarLayout) snackbar.getView();
+        if (snackbarLayout != null) {
+            snackbarLayout.setBackground(ContextCompat.getDrawable(activity, R.drawable.shape_float_botton));
+            Button button = (Button) snackbarLayout.findViewById(R.id.snackbar_action);
+            if (button != null) {
+                ViewGroup.LayoutParams params = button.getLayoutParams();
+                params.width = 70;
+                params.height = 70;
+                button.setBackground(ContextCompat.getDrawable(activity, R.mipmap.notify_close));
+            }
+            TextView textView = (TextView) snackbarLayout.findViewById(R.id.snackbar_text);
+            LinearLayout.LayoutParams params1 = new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT);
+            params1.weight = 1;
+            if (textView != null) {
+                textView.setLayoutParams(params1);
+                textView.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+                textView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        activity.selectedException();
+                        snackbar.dismiss();
+                    }
+                });
+            }
+        }
+        snackbar.show();
     }
 
     @Override
@@ -446,6 +486,14 @@ public class HomeActivity extends BaseActivity
     @Override
     public void onTabReselected(TabLayout.Tab tab) {
 
+    }
+
+    @Override
+    protected void onDestroy() {
+        if (getService != null) {
+            getService = null;
+        }
+        super.onDestroy();
     }
 
     public interface OnBackPressListener {

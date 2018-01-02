@@ -17,6 +17,7 @@ import android.widget.DatePicker;
 import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.shareiceboxms.R;
 import com.example.shareiceboxms.models.adapters.TradeTotalListAdapter;
@@ -55,7 +56,6 @@ public class TradeTotalFragment extends BaseFragment {
     private ItemTradeTotal itemTradeTotal;
     private Dialog dialog;
     private String[] time;
-
 
     private DoubleDatePickerDialog datePickerDialog;
 
@@ -128,14 +128,14 @@ public class TradeTotalFragment extends BaseFragment {
 
     private void getDatas() {
         TradeTotalTask task = new TradeTotalTask(getParams());
-        task.execute();
+        task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
     }
 
     @Override
     public void onRefresh() {
-        if (refreshLayout.isRefreshing()) {
-            return;
-        }
+//        if (refreshLayout.isRefreshing()) {
+//            return;
+//        }
         time = SecondToDate.getDateParams(SecondToDate.TODAY_CODE);
         timeSelector.setText(SecondToDate.getDateUiShow(time));
         getDatas();
@@ -169,6 +169,7 @@ public class TradeTotalFragment extends BaseFragment {
 
         TradeTotalTask(Map<String, Object> params) {
             this.params = params;
+
         }
 
         @Override
@@ -187,7 +188,7 @@ public class TradeTotalFragment extends BaseFragment {
                 Log.e("response", response.toString());
                 return true;
             } catch (IOException e) {
-                if (dialog != null) {
+                if (dialog != null && dialog.isShowing()) {
                     dialog.dismiss();
                 }
                 err = RequstTips.getErrorMsg(e.getMessage());
@@ -196,6 +197,7 @@ public class TradeTotalFragment extends BaseFragment {
                 if (dialog != null && dialog.isShowing()) {
                     dialog.dismiss();
                 }
+
                 err = RequstTips.JSONException_Tip;
                 Log.e("erro", e.toString());
             }
@@ -218,9 +220,8 @@ public class TradeTotalFragment extends BaseFragment {
 
         @Override
         protected void onCancelled() {
-
+            super.onCancelled();
         }
-
-
     }
+
 }

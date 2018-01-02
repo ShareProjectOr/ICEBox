@@ -1,5 +1,6 @@
 package com.example.shareiceboxms.views.fragments.trade;
 
+import android.app.Dialog;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
@@ -15,6 +16,7 @@ import com.example.shareiceboxms.R;
 import com.example.shareiceboxms.models.adapters.ViewPagerAdapter;
 import com.example.shareiceboxms.models.contants.Constants;
 import com.example.shareiceboxms.models.factories.FragmentFactory;
+import com.example.shareiceboxms.models.helpers.MyDialog;
 import com.example.shareiceboxms.views.activities.HomeActivity;
 import com.example.shareiceboxms.views.fragments.BaseFragment;
 
@@ -61,6 +63,7 @@ public class TradeFragment extends BaseFragment implements HomeActivity.OnBackPr
         homeActivity = (HomeActivity) getActivity();
         homeActivity.setOnBackPressListener(this);
     }
+
 
     public void addFrameLayout(BaseFragment fragment) {
         curFrameFragment = fragment;

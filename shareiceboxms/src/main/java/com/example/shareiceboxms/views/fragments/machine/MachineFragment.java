@@ -98,7 +98,8 @@ public class MachineFragment extends BaseFragment implements HomeActivity.OnBack
 
     private void getDatas(Map<String, Object> params) {
         MachineListTask machineListTask = new MachineListTask(params);
-        machineListTask.execute();
+//        machineListTask.execute();
+        machineListTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
     }
 
     private void initViews() {

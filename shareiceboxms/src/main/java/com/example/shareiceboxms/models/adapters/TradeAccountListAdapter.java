@@ -61,7 +61,7 @@ public class TradeAccountListAdapter extends RecyclerView.Adapter<RecyclerView.V
             });
 //            totalAccountTime, accountMoney, accountState, timePeriod;
             ItemTradeAccount itemTradeAccount = itemTradeAccounts.get(position);
-
+            if (itemTradeAccount == null) return;
             switch (itemTradeAccount.divideState) {
                 case 0://待审核状态时显示工单创建时间
                     ((ViewHolder) holder).totalAccountTime.setText(itemTradeAccount.createTime);
@@ -85,7 +85,7 @@ public class TradeAccountListAdapter extends RecyclerView.Adapter<RecyclerView.V
             ((ViewHolder) holder).accountMoney.setText(itemTradeAccount.divideMoney);
             ((ViewHolder) holder).accountState.setText(Constants.TradeAccountStateTitle[itemTradeAccount.divideState + 1]);
             try {
-                ((ViewHolder) holder).timePeriod.setText(SecondToDate.getSubString(itemTradeAccount.startTime,itemTradeAccount.endTime));
+                ((ViewHolder) holder).timePeriod.setText(SecondToDate.getSubString(itemTradeAccount.startTime, itemTradeAccount.endTime));
             } catch (ParseException e) {
                 e.printStackTrace();
             }

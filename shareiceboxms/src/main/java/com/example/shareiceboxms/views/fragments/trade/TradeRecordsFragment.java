@@ -52,6 +52,7 @@ import java.util.Map;
 /**
  * Created by WH on 2017/11/27.
  * 交易记录
+ * 将被预加载，故此处不在使用dialog，否则统计页面会出现dialog叠加现象
  */
 
 public class TradeRecordsFragment extends BaseFragment implements LoadMoreHelper.LoadMoreListener {
@@ -70,7 +71,7 @@ public class TradeRecordsFragment extends BaseFragment implements LoadMoreHelper
     private HomeActivity homeActivity;
     private Map<String, Object> params;
     private String[] time;
-    private Dialog dialog;
+    //    private Dialog dialog;
     private int curPage, requestNum, totalNum, totalPage;
 
     @Nullable
@@ -123,9 +124,9 @@ public class TradeRecordsFragment extends BaseFragment implements LoadMoreHelper
                 , Calendar.getInstance().get(Calendar.DATE), true);
         mTilePopup = MenuPop.CreateMenuPop(getContext(), tradeType, Constants.TradeStateTitle);
         mTilePopup.setOnItemClickListener(this);
-        dialog = MyDialog.loadDialog(getContext());
+//        dialog = MyDialog.loadDialog(getContext());
         RecyclerView tradeRecordList = (android.support.v7.widget.RecyclerView) containerView.findViewById(R.id.tradeRecordList);
-        TradeRecordListAdapter adapter = new TradeRecordListAdapter(getContext(), itemTradeRecords, this);
+        adapter = new TradeRecordListAdapter(getContext(), itemTradeRecords, this);
         new MyViewFactory(getContext()).BuildRecyclerViewRule(tradeRecordList,
                 new LinearLayoutManager(getContext()), null, true).setAdapter(adapter);
         loadMoreHelper = new LoadMoreHelper().setContext(getContext()).setAdapter(adapter)
@@ -145,7 +146,7 @@ public class TradeRecordsFragment extends BaseFragment implements LoadMoreHelper
         return params;
     }
 
-    private void getDatas(Map<String, Object> params) {
+    private void getDatas(final Map<String, Object> params) {
         TradeRecordsTask task = new TradeRecordsTask(params);
         task.execute();
     }
@@ -240,7 +241,6 @@ public class TradeRecordsFragment extends BaseFragment implements LoadMoreHelper
             params.put("p", curPage + 1);
             getDatas(params);
         }
-        adapter.notifyDataSetChanged();
     }
 
     @Override
@@ -267,9 +267,9 @@ public class TradeRecordsFragment extends BaseFragment implements LoadMoreHelper
 
         @Override
         protected void onPreExecute() {
-            if (dialog != null) {
-                dialog.show();
-            }
+//            if (dialog != null) {
+//                dialog.show();
+//            }
         }
 
         @Override
@@ -285,15 +285,15 @@ public class TradeRecordsFragment extends BaseFragment implements LoadMoreHelper
                 Log.e("response", response.toString());
                 return true;
             } catch (IOException e) {
-                if (dialog != null) {
-                    dialog.dismiss();
-                }
+//                if (dialog != null) {
+//                    dialog.dismiss();
+//                }
                 err = RequstTips.getErrorMsg(e.getMessage());
                 Log.e("erro", e.toString());
             } catch (JSONException e) {
-                if (dialog != null) {
-                    dialog.dismiss();
-                }
+//                if (dialog != null) {
+//                    dialog.dismiss();
+//                }
                 err = RequstTips.JSONException_Tip;
                 Log.e("erro", e.toString());
             }
@@ -303,10 +303,10 @@ public class TradeRecordsFragment extends BaseFragment implements LoadMoreHelper
         @Override
         protected void onPostExecute(final Boolean success) {
             if (success) {
-                if (dialog != null) {
-                    dialog.dismiss();
-                    dialog = null;//第一次弹出dialog后，后续加载不在弹出
-                }
+//                if (dialog != null) {
+//                    dialog.dismiss();
+//                    dialog = null;//第一次弹出dialog后，后续加载不在弹出
+//                }
                 if (itemTradeRecords.size() > 0) {
                     if (itemTradeRecords.get(itemTradeRecords.size() - 1) == null) {
                         itemTradeRecords.remove(itemTradeRecords.size() - 1);
@@ -319,9 +319,9 @@ public class TradeRecordsFragment extends BaseFragment implements LoadMoreHelper
                 }
                 adapter.notifyDataSetChanged();
             } else {
-                if (dialog != null) {
-                    dialog.dismiss();
-                }
+//                if (dialog != null) {
+//                    dialog.dismiss();
+//                }
                 Log.e("request error :", response + "");
                 Toast.makeText(homeActivity, err, Toast.LENGTH_SHORT).show();
             }

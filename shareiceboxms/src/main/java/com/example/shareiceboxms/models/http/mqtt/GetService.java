@@ -2,30 +2,25 @@ package com.example.shareiceboxms.models.http.mqtt;
 
 import android.util.Log;
 
-import com.example.shareiceboxms.views.activities.HomeActivity;
-
 import org.eclipse.paho.client.mqttv3.MqttClient;
 import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
 import org.eclipse.paho.client.mqttv3.MqttTopic;
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
 
 public class GetService {
-    public static GetService instance;
+
     public static final String HOST = "tcp://192.168.4.233:61613";//tcp://127.0.0.1:61613
     private static MqttClient client;
     private MqttConnectOptions options;
     private String userName = "admin";
     private String passWord = "password";
 
-    public static synchronized GetService getInstance() {
-        if (instance == null) {
-            instance = new GetService();
-        }
-        return instance;
+    public GetService() {
     }
 
+
     public void start() {
-        Log.d("-----------------","------------------------------------------");
+        Log.d("-----------------", "------------------------------------------");
         init();
     }
 
@@ -46,7 +41,7 @@ public class GetService {
             // 设置会话心跳时间 单位为秒 服务器会每隔1.5*20秒的时间向客户端发送个消息判断客户端是否在线，但这个方法并没有重连的机制
             options.setKeepAliveInterval(20);
             // 设置回调
-            client.setCallback(new PushCallback());
+            client.setCallback(PushCallback.getInstance());
             MqttTopic topic = client.getTopic("000");
             // setWill方法，如果项目中需要知道客户端是否掉线可以调用该方法。设置最终端口的通知消息
             options.setWill(topic, "close".getBytes(), 2, true);
