@@ -1,16 +1,14 @@
 package com.example.shareiceboxms.views.activities;
 
-import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.PixelFormat;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
 import android.support.annotation.NonNull;
-import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.NavigationView;
-import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentManager;
@@ -25,11 +23,8 @@ import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.Button;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -37,17 +32,21 @@ import com.example.shareiceboxms.R;
 import com.example.shareiceboxms.models.beans.PerSonMessage;
 import com.example.shareiceboxms.models.contants.ConstanceMethod;
 import com.example.shareiceboxms.models.contants.Constants;
+import com.example.shareiceboxms.models.contants.RequstTips;
 import com.example.shareiceboxms.models.contants.Sql;
 import com.example.shareiceboxms.models.factories.FragmentFactory;
 import com.example.shareiceboxms.models.helpers.MyDialog;
 import com.example.shareiceboxms.models.helpers.NotifySnackbar;
+import com.example.shareiceboxms.models.http.JsonUtil;
+import com.example.shareiceboxms.models.http.OkHttpUtil;
 import com.example.shareiceboxms.models.http.mqtt.GetService;
 import com.example.shareiceboxms.models.http.mqtt.MqttService;
-import com.example.shareiceboxms.models.http.mqtt.PushCallback;
-import com.example.shareiceboxms.models.http.mqtt.ServerMQTT;
 import com.example.shareiceboxms.views.fragments.AboutFragment;
 import com.example.shareiceboxms.views.fragments.BaseFragment;
 import com.example.shareiceboxms.views.fragments.ChangePasswordFragment;
+import com.example.shareiceboxms.views.fragments.CloseDoorFragment;
+import com.example.shareiceboxms.views.fragments.OpenDoorFailFragment;
+import com.example.shareiceboxms.views.fragments.OpenDoorSuccessFragment;
 import com.example.shareiceboxms.views.fragments.PerSonFragment;
 import com.example.shareiceboxms.views.fragments.exception.ExceptionFragment;
 import com.example.shareiceboxms.views.fragments.machine.MachineFragment;
@@ -55,13 +54,15 @@ import com.example.shareiceboxms.views.fragments.product.ProductFragment;
 import com.example.shareiceboxms.views.fragments.OpeningDoorFragment;
 import com.example.shareiceboxms.views.fragments.trade.TradeFragment;
 
-import org.eclipse.paho.client.mqttv3.MqttException;
+import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
+import org.eclipse.paho.client.mqttv3.MqttMessage;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.zackratos.ultimatebar.UltimateBar;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import static com.example.shareiceboxms.R.id.toolbar;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 public class HomeActivity extends BaseActivity
         implements NavigationView.OnNavigationItemSelectedListener, TabLayout.OnTabSelectedListener {
@@ -70,14 +71,13 @@ public class HomeActivity extends BaseActivity
     private TabLayout tabLayout;
     private TextView notifyLayout;
     public BaseFragment curFragment = null;
+    String curFragmentTag;
     private OnBackPressListener mOnBackPressListener;
     private int currentHomePageNum = 0;
     private boolean showHomepage = true;
     private final int SCANNIN_GREQUEST_CODE = 1;
     private static final int CAMERA_OK = 517;
     private long lastBackClicked;
-    private GetService getService;
-    TextView notifyText;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -89,6 +89,7 @@ public class HomeActivity extends BaseActivity
         initViews();
         initData();
         initListener();
+        startMqttService();
     }
 
     private void initListener() {
@@ -96,7 +97,7 @@ public class HomeActivity extends BaseActivity
     }
 
     private void initData() {
-        tabLayout.setBackgroundColor(ContextCompat.getColor(this, R.color.white));
+
         for (int i = 0; i < Constants.TabTitles.length; i++) {
             TabLayout.Tab tab = tabLayout.newTab();
             tab.setIcon(Constants.TabIcons[i]);
@@ -105,7 +106,7 @@ public class HomeActivity extends BaseActivity
         }
         curFragment = new TradeFragment();
         switchFragment();
-        startMqttService();
+        setNotifySnackbar();
     }
 
     private void initViews() {
@@ -127,13 +128,8 @@ public class HomeActivity extends BaseActivity
     }
 
     public void startMqttService() {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                getService = new GetService();
-                getService.start();
-            }
-        }).start();
+        Intent intent = new Intent(this, MqttService.class);
+        startService(intent);
     }
 
     public DrawerLayout getDrawer() {
@@ -325,14 +321,10 @@ public class HomeActivity extends BaseActivity
                     String result = data.getStringExtra("QR_CODE");
                     // TODO 获取结果，做逻辑操作
                     Toast.makeText(getApplication(), result, Toast.LENGTH_LONG).show();
+                    requestOpenDoor(result);
                     //  mMachineCode.setText(result);
                     //    tvResult.setText(result);
-                    if (!(curFragment instanceof OpeningDoorFragment)) {
-                        FragmentFactory.getInstance().getSavedBundle().putString("eQcode", result);
-                        curFragment = new OpeningDoorFragment();
-                        showHomepage = false;
-                        switchFragment();
-                    }
+
                 } else {
                     Toast.makeText(getApplication(), "无法获取扫描结果", Toast.LENGTH_LONG).show();
                     //  new AlertView("提示", "无法获取扫描结果", null, new String[]{"确定"}, null, getActivity(), AlertView.Style.Alert, null).show();
@@ -340,6 +332,54 @@ public class HomeActivity extends BaseActivity
                 break;
 
         }
+    }
+
+    private void requestOpenDoor(final String QRCode) {
+        String qrString[] = QRCode.split("\\&");
+        String headerString[] = qrString[0].split("\\?");
+        String stateString[] = headerString[1].split("\\=");
+        String machineCode = stateString[1];
+        final Map<String, Object> body = new HashMap<>();
+        body.put("machineCode", machineCode);
+        body.put("userID", PerSonMessage.userId);
+        body.put("QRCode", QRCode);
+        body.put("password", PerSonMessage.loginPassword);
+        new AsyncTask<Void, Void, Boolean>() {
+            String err;
+
+            @Override
+            protected Boolean doInBackground(Void... params) {
+                try {
+                    String response = OkHttpUtil.post("", JsonUtil.mapToJson(body));
+                    JSONObject object = new JSONObject(response);
+                    err = object.getString("err");
+                    if (object.getBoolean("d")) {
+                        return true;
+                    } else {
+                        return false;
+                    }
+                } catch (IOException e) {
+                    err = RequstTips.getErrorMsg(e.getMessage());
+                } catch (JSONException e) {
+                    err = RequstTips.JSONException_Tip;
+                }
+                return false;
+            }
+
+            @Override
+            protected void onPostExecute(Boolean aBoolean) {
+                if (aBoolean) {
+                    if (!(curFragment instanceof OpeningDoorFragment)) {
+                        FragmentFactory.getInstance().getSavedBundle().putString("QRCode", QRCode);
+                        curFragment = new OpeningDoorFragment();
+                        showHomepage = false;
+                        switchFragment();
+                    }
+                } else {
+                    Toast.makeText(getApplication(), err, Toast.LENGTH_SHORT).show();
+                }
+            }
+        }.execute();
     }
 
     @Override
@@ -386,18 +426,6 @@ public class HomeActivity extends BaseActivity
         }
     }
 
-/*    public void jumpActivity(Class<?> activitycalss, Bundle intentData) {
-        Log.e("HomeActivity", "扫码");
-        Intent intent = new Intent();
-        if (activitycalss != null) {
-            intent.setClass(getApplication(), activitycalss);
-            if (intentData != null) {
-                intent.putExtra("intentdata", intentData);
-            }
-            startActivity(intent);
-        }
-
-    }*/
 
     @Override
     public void jumpActivity(Class<?> activitycalss, Bundle intentData) {
@@ -412,39 +440,19 @@ public class HomeActivity extends BaseActivity
 
     }
 
+    /*
+        * 添加通知
+        * */
+    public void setNotifySnackbar() {
+      //  NotifySnackbar.addNotifySnackbar(this, notifyLayout);
+    }
+
     public void selectedException() {
         tabLayout.getTabAt(2).select();
     }
 
-    public void addNotifySnackbar(final HomeActivity activity, View coorView, String msg) {
-
-        final Snackbar snackbar = Snackbar.make(coorView, msg, Snackbar.LENGTH_INDEFINITE);
-        Snackbar.SnackbarLayout snackbarLayout = (Snackbar.SnackbarLayout) snackbar.getView();
-        if (snackbarLayout != null) {
-            snackbarLayout.setBackground(ContextCompat.getDrawable(activity, R.drawable.shape_float_botton));
-            Button button = (Button) snackbarLayout.findViewById(R.id.snackbar_action);
-            if (button != null) {
-                ViewGroup.LayoutParams params = button.getLayoutParams();
-                params.width = 70;
-                params.height = 70;
-                button.setBackground(ContextCompat.getDrawable(activity, R.mipmap.notify_close));
-            }
-            TextView textView = (TextView) snackbarLayout.findViewById(R.id.snackbar_text);
-            LinearLayout.LayoutParams params1 = new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT);
-            params1.weight = 1;
-            if (textView != null) {
-                textView.setLayoutParams(params1);
-                textView.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
-                textView.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        activity.selectedException();
-                        snackbar.dismiss();
-                    }
-                });
-            }
-        }
-        snackbar.show();
+    public void showNotify(String msg) {
+    //    NotifySnackbar.showNotify(msg);
     }
 
     @Override
@@ -490,16 +498,64 @@ public class HomeActivity extends BaseActivity
 
     }
 
-    @Override
-    protected void onDestroy() {
-        if (getService != null) {
-            getService = null;
-        }
-        super.onDestroy();
-    }
-
     public interface OnBackPressListener {
         void OnBackDown();
+    }
+
+    @Override
+    public void connectionLost(Throwable throwable) {
+        super.connectionLost(throwable);
+    }
+
+    @Override
+    public void messageArrived(final String s, MqttMessage mqttMessage) throws Exception {
+        if (!s.isEmpty()) {
+            final JSONObject object = new JSONObject(s);
+            String tymsgType = object.getString("msgType");
+            Handler handler = new Handler(Looper.getMainLooper());
+            switch (tymsgType) {
+                case "01"://上下货推送
+                    handler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            try {
+                                if (object.getInt("doorState") == 1) {//已开门
+                                    if (!(curFragment instanceof OpenDoorSuccessFragment)) {
+                                        curFragment = new OpenDoorSuccessFragment();
+                                        showHomepage = false;
+                                        switchFragment();
+                                    }
+                                } else if (object.getInt("doorState") == 2) {//关门,上货成功
+                                    if (!(curFragment instanceof CloseDoorFragment)) {
+                                        FragmentFactory.getInstance().getSavedBundle().putString("callbackMsg", s);
+                                        curFragment = new CloseDoorFragment();
+                                        showHomepage = false;
+                                        switchFragment();
+                                    }
+                                } else {
+                                    if (!(curFragment instanceof OpenDoorFailFragment)) {//开门失败
+                                        curFragment = new OpenDoorFailFragment();
+                                        showHomepage = false;
+                                        switchFragment();
+                                    }
+                                }
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+
+                        }
+                    });
+
+                    break;
+                case "02"://故障推送
+                    break;
+            }
+        }
+    }
+
+    @Override
+    public void deliveryComplete(IMqttDeliveryToken iMqttDeliveryToken) {
+
     }
 
 

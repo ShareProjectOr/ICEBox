@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <com.example.shareiceboxms.models.helpers.CustomHorizontalScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/scroller"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:baselineAligned="false"
@@ -24,9 +25,12 @@
                 android:gravity="center">
 
                 <TextView
+                    android:id="@+id/starttimeTitle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="开始日期(向左滑动选取结束时间)" />
+                    android:layout_margin="5dp"
+                    android:text="开始日期(点我选择结束时间)"
+                    android:textSize="16sp" />
 
                 <ImageView
                     android:layout_width="20dp"
@@ -57,10 +61,13 @@
             android:orientation="vertical">
 
             <TextView
+                android:id="@+id/endtimeTitle"
                 android:layout_width="wrap_content"
-                android:layout_height="20dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
                 android:gravity="center"
-                android:text="结束日期" />
+                android:text="结束日期(点我选择开始时间)"
+                android:textSize="16sp" />
 
             <DatePicker
                 android:id="@+id/datePickerEnd"

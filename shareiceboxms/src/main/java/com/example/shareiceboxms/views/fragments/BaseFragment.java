@@ -101,6 +101,11 @@ public class BaseFragment extends Fragment implements View.OnClickListener,
     }
 
     @Override
+    public void clearDates() {
+
+    }
+
+    @Override
     public void OnBackDown() {
 
     }

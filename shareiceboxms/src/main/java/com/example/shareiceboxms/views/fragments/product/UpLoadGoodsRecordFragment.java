@@ -149,6 +149,12 @@ public class UpLoadGoodsRecordFragment extends BaseFragment {
     }
 
     @Override
+    public void clearDates() {
+        mDateRange.setText("");
+        operationTime = null;
+    }
+
+    @Override
     public void loadMore(RecyclerView.Adapter<RecyclerView.ViewHolder> adapter, RecyclerView recyclerView) {
         Log.e("loadmore", "doing");
         if (currentPage < contentProvider.GetMaxPageAccount()) {

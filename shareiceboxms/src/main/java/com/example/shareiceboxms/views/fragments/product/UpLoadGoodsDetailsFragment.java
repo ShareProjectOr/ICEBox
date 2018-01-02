@@ -90,6 +90,7 @@ public class UpLoadGoodsDetailsFragment extends BaseFragment {
                     JSONObject jsonObject = new JSONObject(respone);
                     err = jsonObject.getString("err");
                     if (err.equals("") || err.equals("null")) {
+                        Log.e("uploadDetails",respone.toString());
                         mAdapter.setJsonData(jsonObject.getJSONObject("d"));
                         return true;
                     }

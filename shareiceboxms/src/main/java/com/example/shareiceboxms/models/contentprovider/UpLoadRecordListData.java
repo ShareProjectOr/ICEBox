@@ -48,8 +48,8 @@ public class UpLoadRecordListData {
     }
 
     public void getData(final String url, final Map<String, Object> body, final boolean refresh) {
-        final Dialog dialog = MyDialog.loadDialog(mActivty);
-        dialog.show();
+      /*  final Dialog dialog = MyDialog.loadDialog(mActivty);
+        dialog.show();*/
         new AsyncTask<Void, Void, Boolean>() {
             String error;
 
@@ -90,6 +90,7 @@ public class UpLoadRecordListData {
 
                 } catch (IOException e1) {
                     error = RequstTips.getErrorMsg(e1.getMessage());
+
                     Log.e("response", e1 + "");
                     return false;
 
@@ -103,7 +104,7 @@ public class UpLoadRecordListData {
 
             @Override
             protected void onPostExecute(Boolean aBoolean) {
-                dialog.dismiss();
+             //   dialog.dismiss();
 
                 if (!aBoolean) {
                     Toast.makeText(mActivty, error, Toast.LENGTH_LONG).show();

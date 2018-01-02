@@ -171,7 +171,7 @@ public class RequestParamsContants {
 
     public Map<String, Object> getUploadDetailsParams() {
         Map<String, Object> params = new HashMap<>();
-        params.put("recordID", FragmentFactory.getInstance().getSavedBundle().getString("recordID"));
+        params.put("recordID", FragmentFactory.getInstance().getSavedBundle().getInt("recordID"));
         params.put("appUserID", PerSonMessage.userId);
         return params;
     }

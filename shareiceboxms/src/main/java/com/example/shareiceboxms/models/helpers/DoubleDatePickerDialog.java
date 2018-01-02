@@ -9,10 +9,14 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.os.Bundle;
+import android.os.Handler;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.DatePicker;
 import android.widget.DatePicker.OnDateChangedListener;
+import android.widget.Scroller;
+import android.widget.TextView;
 import android.widget.Toast;
 
 
@@ -29,7 +33,7 @@ import java.util.Calendar;
  * guide.
  * </p>
  */
-public class DoubleDatePickerDialog extends AlertDialog implements OnClickListener, OnDateChangedListener {
+public class DoubleDatePickerDialog extends AlertDialog implements OnClickListener, OnDateChangedListener, View.OnClickListener {
 
     private static final String START_YEAR = "start_year";
     private static final String END_YEAR = "end_year";
@@ -41,6 +45,23 @@ public class DoubleDatePickerDialog extends AlertDialog implements OnClickListen
     private final DatePicker mDatePicker_start;
     private final DatePicker mDatePicker_end;
     private final OnDateSetListener mCallBack;
+    private final CustomHorizontalScrollView mScroller;
+    private final TextView mStartTimeTitle, mEndTimeTitle;
+    private int datePickWith;
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.starttimeTitle:
+                Log.d("witch","宽度"+mDatePicker_end.getWidth());
+                mScroller.smoothScrollTo(mDatePicker_end.getWidth(), 0);
+                break;
+            case R.id.endtimeTitle:
+                mScroller.smoothScrollTo(0, 0);
+
+                break;
+        }
+    }
 
     /**
      * The callback used to indicate the user is done filling in the date.
@@ -50,6 +71,8 @@ public class DoubleDatePickerDialog extends AlertDialog implements OnClickListen
 
         String[] onDateSet(DatePicker startDatePicker, int startYear, int startMonthOfYear, int startDayOfMonth,
                            DatePicker endDatePicker, int endYear, int endMonthOfYear, int endDayOfMonth);
+
+        void clearDates();
     }
 
     /**
@@ -85,6 +108,7 @@ public class DoubleDatePickerDialog extends AlertDialog implements OnClickListen
         Context themeContext = getContext();
         setButton(BUTTON_POSITIVE, "确 定", this);
         setButton(BUTTON_NEGATIVE, "取 消", this);
+        setButton(BUTTON_NEUTRAL, "清除", this);
         // setButton(BUTTON_POSITIVE,
         // themeContext.getText(android.R.string.date_time_done), this);
         setIcon(0);
@@ -93,11 +117,15 @@ public class DoubleDatePickerDialog extends AlertDialog implements OnClickListen
         View view = inflater.inflate(R.layout.date_picker_dialog, null);
         setView(view);
         mDatePicker_start = (DatePicker) view.findViewById(R.id.datePickerStart);
+        mScroller = (CustomHorizontalScrollView) view.findViewById(R.id.scroller);
         mDatePicker_end = (DatePicker) view.findViewById(R.id.datePickerEnd);
+        mStartTimeTitle = (TextView) view.findViewById(R.id.starttimeTitle);
+        mEndTimeTitle = (TextView) view.findViewById(R.id.endtimeTitle);
         mDatePicker_start.init(year, monthOfYear, dayOfMonth, this);
         mDatePicker_end.init(year, monthOfYear, dayOfMonth, this);
+        mStartTimeTitle.setOnClickListener(this);
+        mEndTimeTitle.setOnClickListener(this);
         // updateTitle(year, monthOfYear, dayOfMonth);
-
         // 如果要隐藏当前日期，则使用下面方法。
         if (!isDayVisible) {
             hidDay(mDatePicker_start);
@@ -153,6 +181,8 @@ public class DoubleDatePickerDialog extends AlertDialog implements OnClickListen
                 }
             }
             tryNotifyDateSet();
+        } else if (which == BUTTON_NEUTRAL) {
+            mCallBack.clearDates();
         }
 
     }

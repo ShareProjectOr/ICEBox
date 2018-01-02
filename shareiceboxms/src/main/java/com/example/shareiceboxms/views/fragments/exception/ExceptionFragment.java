@@ -61,6 +61,7 @@ public class ExceptionFragment extends BaseFragment implements CompoundButton.On
     private Context mContext;
     private ExceptionListData contentprovider;
     private TextView exceptionType;
+    private TextView mTimeSelect;
     private ListPopupWindow mTilePopup;
     private Switch chooseIsDetails;
     private LinearLayout exceptionTypeLayout;
@@ -109,6 +110,7 @@ public class ExceptionFragment extends BaseFragment implements CompoundButton.On
         Calendar c = Calendar.getInstance();
         initPostBody = RequestParamsContants.getInstance().getExceptionListParams();
         drawerIcon = (ImageView) containerView.findViewById(R.id.drawerIcon);
+        mTimeSelect = (TextView) containerView.findViewById(R.id.timeSelector);
         exceptionList = (RecyclerView) containerView.findViewById(R.id.exception_list);
         saoma = (ImageView) containerView.findViewById(R.id.saoma);
         selectTimeLayout = (RelativeLayout) containerView.findViewById(R.id.selectTime);
@@ -182,7 +184,7 @@ public class ExceptionFragment extends BaseFragment implements CompoundButton.On
         } else {
             map.put("exceptionLevel", null);
         }
-        map.put("happenTime", happenTime);
+        map.put("happenTime", RequestParamsContants.getInstance().getSelectTime(happenTime));
         contentprovider.getData(HttpRequstUrl.EXCEPTION_LIST_URL, map, b);
     }
 
@@ -196,12 +198,17 @@ public class ExceptionFragment extends BaseFragment implements CompoundButton.On
 
     @Override
     public String[] onDateSet(DatePicker startDatePicker, int startYear, int startMonthOfYear, int startDayOfMonth, DatePicker endDatePicker, int endYear, int endMonthOfYear, int endDayOfMonth) {
-        //  mDateRange.setText(startYear + "-" + String.valueOf(startMonthOfYear + 1) + "-" + startDayOfMonth + "至" + endYear + "-" + String.valueOf(endMonthOfYear + 1) + "-" + endDayOfMonth);
+        mTimeSelect.setText(startYear + "-" + String.valueOf(startMonthOfYear + 1) + "-" + startDayOfMonth + "至" + endYear + "-" + String.valueOf(endMonthOfYear + 1) + "-" + endDayOfMonth);
 
         happenTime = super.onDateSet(startDatePicker, startYear, startMonthOfYear, startDayOfMonth, endDatePicker, endYear, endMonthOfYear, endDayOfMonth);
         currentPage = 1;
         getDatas(true);
         return null;
+    }
+
+    @Override
+    public void clearDates() {
+        happenTime = null;
     }
 
     @Override

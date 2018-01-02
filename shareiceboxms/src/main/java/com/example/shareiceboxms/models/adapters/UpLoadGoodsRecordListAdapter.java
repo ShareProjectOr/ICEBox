@@ -69,21 +69,21 @@ public class UpLoadGoodsRecordListAdapter extends RecyclerView.Adapter<RecyclerV
                     long time = SecondToDate.dateToStamp(contentProvider.getItem(position).closingTime) - SecondToDate.dateToStamp(contentProvider.getItem(position).openingTime);
                     String[] mOperationTime = SecondToDate.formatLongToTimeStr(time);
                     if (mOperationTime[1].equals("0")) {
-                        body.mOperationTime.setText("操作耗时:"+mOperationTime[2] + "分" + mOperationTime[3] + "秒");
+                        body.mOperationTime.setText("操作耗时:" + mOperationTime[2] + "分" + mOperationTime[3] + "秒");
                     } else {
-                        body.mOperationTime.setText("操作耗时:"+mOperationTime[1] + "时" + mOperationTime[2] + "分" + mOperationTime[3] + "秒");
+                        body.mOperationTime.setText("操作耗时:" + mOperationTime[1] + "时" + mOperationTime[2] + "分" + mOperationTime[3] + "秒");
                     }
                 } catch (ParseException e) {
-                   body.mOperationTime.setText("操作耗时:获取失败");
+                    body.mOperationTime.setText("操作耗时:获取失败");
                 }
 
 
                 body.mOperationDate.setText(contentProvider.getItem(position).openingTime);
-                // body.mUpLoadNum.setText(contentProvider.getItem(position).);
-                // body.mDownLoadNum.setText(contentProvider.getItem(position));
+                body.mUpLoadNum.setText(contentProvider.getItem(position).UpLoadNum);
+                body.mDownLoadNum.setText(contentProvider.getItem(position).DownLoadNum);
                 body.mMachineName.setText(contentProvider.getItem(position).machineName);
                 body.mMachineAddr.setText("(" + contentProvider.getItem(position).machineAddress + ")");
-                body.mUpLoadCode.setText("记录编号"+contentProvider.getItem(position).recordID);
+                body.mUpLoadCode.setText("记录编号" + contentProvider.getItem(position).recordID);
                 body.itemView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {

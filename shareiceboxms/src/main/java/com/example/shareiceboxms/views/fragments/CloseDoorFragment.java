@@ -12,19 +12,15 @@ import com.example.shareiceboxms.R;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class OpenDoorSuccessFragment extends BaseFragment {
+public class CloseDoorFragment extends BaseFragment {
 
-
-    public OpenDoorSuccessFragment() {
-        // Required empty public constructor
-    }
+    private String callbackMsg;
 
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_open_door_success, container, false);
+        return inflater.inflate(R.layout.fragment_close_door, container, false);
     }
 
 }

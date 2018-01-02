@@ -7,6 +7,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -98,6 +99,12 @@ public class ProductTypeListFragment extends BaseFragment {
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.doSearch:
+                if (TextUtils.isEmpty(mMachineSearchInput.getText().toString())) {
+                    Toast.makeText(getContext(), "搜索内容不能为空", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                initPostBody.put("keyword", mMachineSearchInput.getText().toString());
+                contentprovider.getData(HttpRequstUrl.PRODUCT_TYPE_LIST_URL, initPostBody, true);
                 break;
         }
     }
@@ -123,12 +130,14 @@ public class ProductTypeListFragment extends BaseFragment {
 
     @Override
     public void onRefresh() {
+        if (mRefreashLayout.isRefreshing())
+            return;
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
                 currentPage = 1;
+                initPostBody.put("keyword", mMachineSearchInput.getText().toString());
                 contentprovider.getData(HttpRequstUrl.PRODUCT_TYPE_LIST_URL, initPostBody, true);
-
                 mRefreashLayout.setRefreshing(false);
             }
         }, Constants.REFREASH_DELAYED_TIME);

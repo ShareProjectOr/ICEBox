@@ -1,6 +1,7 @@
 package com.example.shareiceboxms.views.fragments;
 
 import android.graphics.Color;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -13,8 +14,12 @@ import com.bumptech.glide.Glide;
 
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.example.shareiceboxms.R;
+import com.example.shareiceboxms.models.beans.PerSonMessage;
 import com.example.shareiceboxms.models.factories.FragmentFactory;
 import com.example.shareiceboxms.models.widget.PathTextView;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import pl.droidsonroids.gif.GifImageView;
 
@@ -27,6 +32,7 @@ public class OpeningDoorFragment extends BaseFragment {
     private PathTextView mShowtext;
     private GifImageView mShowgif;
     private View content;
+    private String QRCode;
 
     @Nullable
     @Override
@@ -41,7 +47,9 @@ public class OpeningDoorFragment extends BaseFragment {
     private void bindViews() {
         mShowtext = (PathTextView) content.findViewById(R.id.showtext);
         mShowgif = (GifImageView) content.findViewById(R.id.showgif);
-      //  Glide.with(this).load(R.drawable.opening).asGif().fitCenter().diskCacheStrategy(DiskCacheStrategy.SOURCE).into(mShowgif);
+        QRCode = FragmentFactory.getInstance().getSavedBundle().getString("QRCode");
+
+        //  Glide.with(this).load(R.drawable.opening).asGif().fitCenter().diskCacheStrategy(DiskCacheStrategy.SOURCE).into(mShowgif);
         if (Build.VERSION.SDK_INT >= 21) {
             //5.0以上
             mShowtext.setTextColor(Color.BLUE);

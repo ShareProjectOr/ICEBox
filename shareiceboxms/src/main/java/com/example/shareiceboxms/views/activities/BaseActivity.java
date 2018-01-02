@@ -6,11 +6,18 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 
+import com.example.shareiceboxms.models.helpers.NotifySnackbar;
+import com.example.shareiceboxms.models.http.mqtt.GetService;
+
+import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
+import org.eclipse.paho.client.mqttv3.MqttCallback;
+import org.eclipse.paho.client.mqttv3.MqttMessage;
+
 /**
  * Created by Administrator on 2017/12/12.
  */
 
-public class BaseActivity extends AppCompatActivity implements View.OnClickListener {
+public class BaseActivity extends AppCompatActivity implements View.OnClickListener, MqttCallback {
     @Override
     public void onClick(View v) {
 
@@ -27,5 +34,27 @@ public class BaseActivity extends AppCompatActivity implements View.OnClickListe
             startActivity(intent);
         }
 
+    }
+
+    @Override
+    public void connectionLost(Throwable throwable) {
+        // 连接丢失后，一般在这里面进行重连
+        System.out.println("连接断开，可以做重连");
+        GetService.getInstance().start();
+    }
+
+    @Override
+    public void messageArrived(String topic, MqttMessage message) throws Exception {
+        System.out.println("接收消息主题 : " + topic);
+        System.out.println("接收消息Qos : " + message.getQos());
+        System.out.println("接收消息内容 : " + new String(message.getPayload()));
+        if (NotifySnackbar.getSnackbar() != null) {
+            NotifySnackbar.showNotify(new String(message.getPayload()));
+        }
+    }
+
+    @Override
+    public void deliveryComplete(IMqttDeliveryToken iMqttDeliveryToken) {
+        System.out.println("deliveryComplete---------" + iMqttDeliveryToken.isComplete());
     }
 }

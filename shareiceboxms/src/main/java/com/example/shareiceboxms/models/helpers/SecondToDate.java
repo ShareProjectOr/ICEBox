@@ -180,11 +180,19 @@ public class SecondToDate {
     }
 
     /*  
+  * 将时间戳 转化为日期
+  */
+    public static String getDateToString(long milSecond) {
+        Date date = new Date(milSecond);
+        SimpleDateFormat format = new SimpleDateFormat(FORMAT_TYPE);
+        return format.format(date);
+    }
+
+    /*  
   * 将时间转换为时间戳 
   */
     public static long dateToStamp(String s) throws ParseException {
-        String res;
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss:SSS");
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(FORMAT_TYPE);
         Date date = simpleDateFormat.parse(s);
         return date.getTime();
     }
