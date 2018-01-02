@@ -19,6 +19,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
@@ -63,7 +64,7 @@ import java.util.List;
 import static com.example.shareiceboxms.R.id.toolbar;
 
 public class HomeActivity extends BaseActivity
-        implements NavigationView.OnNavigationItemSelectedListener, TabLayout.OnTabSelectedListener{
+        implements NavigationView.OnNavigationItemSelectedListener, TabLayout.OnTabSelectedListener {
     DrawerLayout drawer;
     NavigationView navigationView;
     private TabLayout tabLayout;
@@ -124,6 +125,7 @@ public class HomeActivity extends BaseActivity
         drawer.addDrawerListener(toggle);
         toggle.syncState();
     }
+
     public void startMqttService() {
         new Thread(new Runnable() {
             @Override

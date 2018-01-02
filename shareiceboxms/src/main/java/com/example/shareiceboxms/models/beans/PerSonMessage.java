@@ -21,7 +21,7 @@ public class PerSonMessage {
     public static int disable;
     public static String loginAccount;
     public static String loginPassword;
-    public static String role="2";
+    public static String role = "2";
     public static String address;
     public static String idCard;
     public static String lastLoginTime;
@@ -33,6 +33,10 @@ public class PerSonMessage {
     public static String minBalance;//sp
     public static String bankAccount;//sp
     public static boolean isexcit = false;
+    /*    company:{公司},
+        agent:{用户精简版},//机器管理员对象*/
+    public static ItemPerson agent;
+    public static ItemCompany company;
 
     public static void bindMessage(String userJson) {
         try {
@@ -49,22 +53,33 @@ public class PerSonMessage {
             idCard = userObject.getJSONObject("d").getString("idCard");
             lastLoginTime = userObject.getJSONObject("d").getString("lastLoginTime");
             loginIP = userObject.getJSONObject("d").getString("loginIP");
-            JSONObject company = userObject.getJSONObject("d").getJSONObject("company");
-            if (company.has("settleWay")) {
-                settleWay = company.getInt("settleWay");
+
+            if (userObject.has("agent") && !userObject.get("agent").equals(null)) {
+                agent = ItemPerson.bindPerson(userObject.getJSONObject("d").getJSONObject("agent"));
             }
-            companyName = company.getString("companyName");
-            companyCreditCode = company.getString("companyCreditCode");
-            if (company.has("settlementProportion")) {
-                settlementProportion = company.getInt("settlementProportion");
+            if (userObject.has("company") && !userObject.get("company").equals(null)) {
+                company = ItemCompany.bindCompany(userObject.getJSONObject("d").getJSONObject("company"));
             }
-            if (company.has("minBalance")) {
-                minBalance = company.getString("minBalance");
+            /*
+            * 下面这些真是多余，但又用到了，不改
+            * */
+            JSONObject companyObject = userObject.getJSONObject("d").getJSONObject("company");
+            if (companyObject.has("settleWay")) {
+                settleWay = companyObject.getInt("settleWay");
+            }
+            companyName = companyObject.getString("companyName");
+            companyCreditCode = companyObject.getString("companyCreditCode");
+            if (companyObject.has("settlementProportion")) {
+                settlementProportion = companyObject.getInt("settlementProportion");
+            }
+            if (companyObject.has("minBalance")) {
+                minBalance = companyObject.getString("minBalance");
 
             }
-            if (company.has("bankAccount")) {
-                bankAccount = company.getString("bankAccount");
+            if (companyObject.has("bankAccount")) {
+                bankAccount = companyObject.getString("bankAccount");
             }
+
         } catch (JSONException e) {
             Log.e("PerSonMessage", e.toString());
         }

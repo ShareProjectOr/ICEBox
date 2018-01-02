@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.example.shareiceboxms.models.beans.PerSonMessage;
+import com.example.shareiceboxms.models.contants.Constants;
 import com.example.shareiceboxms.views.fragments.BaseFragment;
 import com.example.shareiceboxms.views.fragments.machine.MachineFragment;
 import com.example.shareiceboxms.views.fragments.exception.ExceptionFragment;
@@ -49,14 +50,20 @@ public class FragmentFactory {
         mFragments.add(new TradeTotalFragment());
         mFragments.add(new TradeRecordsFragment());
 
-        PerSonMessage.role = "1";
-        switch (PerSonMessage.role) {
-            case "1"://'系统管理员,运营商'
+        PerSonMessage.userType = 2;
+        switch (PerSonMessage.userType) {
+            case Constants.SUPER_MANAGER://'系统管理员,运营商'
                 mFragments.add(new TradeAccountFragment());
                 break;
-            case "2"://'代理商'
+            case Constants.SYSTEM_MANAGER:
+                mFragments.add(new TradeAccountFragment());
                 break;
-            case "3"://'机器管理员'
+            case Constants.AGENT_MANAGER://'代理商'
+                mFragments.add(new TradeAccountFragment());
+                break;
+            case Constants.MACHINE_MANAGER://'机器管理员'
+                break;
+            default:
                 break;
         }
 

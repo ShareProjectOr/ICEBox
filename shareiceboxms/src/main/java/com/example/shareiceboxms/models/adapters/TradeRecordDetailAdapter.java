@@ -10,8 +10,10 @@ import android.widget.CompoundButton;
 import android.widget.TextView;
 
 import com.example.shareiceboxms.R;
+import com.example.shareiceboxms.models.beans.PerSonMessage;
 import com.example.shareiceboxms.models.beans.product.ItemProduct;
 import com.example.shareiceboxms.models.beans.product.ItemSellProduct;
+import com.example.shareiceboxms.models.contants.Constants;
 import com.example.shareiceboxms.views.fragments.trade.TradeRecordDetailFragment;
 
 import java.util.ArrayList;
@@ -61,30 +63,43 @@ public class TradeRecordDetailAdapter extends BaseAdapter {
             //如果不是退回商品，就显示checkbox
 
             viewHolder.checkbox = (CheckBox) convertView.findViewById(R.id.checkbox);
-            viewHolder.checkbox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-                @Override
-                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                    itemProductList.get(position).setChecked(isChecked);
-                    if (isChecked && totalCheckedCount != getCount()) {
-                        totalCheckedCount += 1;
-                        totalCheckedMoney += 2.00f;
-                        if (totalCheckedCount == getCount()) {
-                            isAllChecked = true;
-                        }
-                    }
-                    if (!isChecked && totalCheckedCount > 0) {
-                        totalCheckedCount--;
-                        totalCheckedMoney -= 2.00f;
-                        isAllChecked = false;
-                    }
-                    tradeRecordDetailFragment.changeCheckedCount();
-                }
-            });
             convertView.setTag(viewHolder);
         } else {
             viewHolder = (ViewHolder) convertView.getTag();
         }
-        viewHolder.checkbox.setChecked(itemProductList.get(position).isChecked());
+        final ItemSellProduct product = itemProductList.get(position);
+        if (product != null) {
+            viewHolder.checkbox.setChecked(itemProductList.get(position).isChecked());
+            viewHolder.productName.setText(product.goodsName);
+            viewHolder.productPrice.setText(product.soldPrise);
+            /*
+            * 如果是机器管理员，不能操作退款
+            * */
+            if (PerSonMessage.userType == Constants.MACHINE_MANAGER || PerSonMessage.userType == Constants.AGENT_MANAGER) {
+                viewHolder.checkbox.setVisibility(View.GONE);
+            } else {
+                viewHolder.checkbox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                    @Override
+                    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                        itemProductList.get(position).setChecked(isChecked);
+                        if (isChecked && totalCheckedCount != getCount()) {
+                            totalCheckedCount += 1;
+                            totalCheckedMoney += Float.parseFloat(product.soldPrise);
+                            if (totalCheckedCount == getCount()) {
+                                isAllChecked = true;
+                            }
+                        }
+                        if (!isChecked && totalCheckedCount > 0) {
+                            totalCheckedCount--;
+                            totalCheckedMoney -= Float.parseFloat(product.soldPrise);
+                            isAllChecked = false;
+                        }
+                        tradeRecordDetailFragment.changeCheckedCount();
+                    }
+                });
+            }
+        }
+
         return convertView;
     }
 

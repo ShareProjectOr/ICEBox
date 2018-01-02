@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 
+import java.math.BigDecimal;
 import java.util.Calendar;
 
 /**

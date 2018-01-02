@@ -151,14 +151,6 @@ public class MachineDetailFragment extends BaseFragment implements SwipeRefreshL
         return dialog;
     }
 
-    public ItemMachine getItemMachine() {
-        return itemMachine;
-    }
-
-    public void setItemMachine(ItemMachine itemMachine) {
-        this.itemMachine = itemMachine;
-    }
-
     /*
             * 更新UI
             * */

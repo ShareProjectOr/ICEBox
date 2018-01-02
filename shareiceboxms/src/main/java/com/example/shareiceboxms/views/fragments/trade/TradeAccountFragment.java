@@ -21,6 +21,7 @@ import android.widget.Toast;
 
 import com.example.shareiceboxms.R;
 import com.example.shareiceboxms.models.adapters.TradeAccountListAdapter;
+import com.example.shareiceboxms.models.beans.PerSonMessage;
 import com.example.shareiceboxms.models.beans.trade.ItemTradeAccount;
 import com.example.shareiceboxms.models.contants.Constants;
 import com.example.shareiceboxms.models.contants.HttpRequstUrl;
@@ -85,7 +86,11 @@ public class TradeAccountFragment extends BaseFragment implements LoadMoreHelper
         chooseAccountIcon = (ImageView) containerView.findViewById(R.id.chooseAccountIcon);
         accountRefresh = (android.support.v4.widget.SwipeRefreshLayout) containerView.findViewById(R.id.accountRefresh);
 
-        createAccount.setOnClickListener(this);
+        if (PerSonMessage.userType == Constants.AGENT_MANAGER) {
+            createAccount.setVisibility(View.GONE);
+        } else {
+            createAccount.setOnClickListener(this);
+        }
         accountType.setOnClickListener(this);
         accountRefresh.setOnRefreshListener(this);
         accountRefresh.setColorSchemeColors(ContextCompat.getColor(getContext(), R.color.blue));
@@ -100,6 +105,7 @@ public class TradeAccountFragment extends BaseFragment implements LoadMoreHelper
         itemTradeAccounts.add(new ItemTradeAccount());
         itemTradeAccounts.add(new ItemTradeAccount());
         itemTradeAccounts.add(null);
+
 
         mTilePopup = MenuPop.CreateMenuPop(getContext(), accountType, Constants.TradeAccountStateTitle);
         dialog = MyDialog.loadDialog(getContext());
