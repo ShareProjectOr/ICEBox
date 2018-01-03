@@ -23,13 +23,14 @@ public class ItemProductBase {
     public Integer goodsID;
     public Integer categoryID;
     public String goodsName;
-    public float price;
+    public float pirse;
     public float activityPrice;
     public String rfid;
     public String inputTime;
     public String bindingTime;
     public String exhibitTime;
     public Integer residueStorageTime;
+    public int state;
 
     public ItemPerson agent;
     public ItemCompany company;

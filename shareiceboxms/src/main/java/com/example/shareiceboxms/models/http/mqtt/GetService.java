@@ -2,6 +2,7 @@ package com.example.shareiceboxms.models.http.mqtt;
 
 import android.util.Log;
 
+import com.example.shareiceboxms.models.beans.PerSonMessage;
 import com.example.shareiceboxms.views.activities.BaseActivity;
 
 import org.eclipse.paho.client.mqttv3.MqttClient;
@@ -53,7 +54,7 @@ public class GetService {
             client.connect(options);
             // 订阅消息
             int[] Qos = {2};
-            String[] topic1 = {"wc"};
+            String[] topic1 = {String.valueOf(PerSonMessage.userId)};
             client.subscribe(topic1, Qos);
 
         } catch (Exception e) {

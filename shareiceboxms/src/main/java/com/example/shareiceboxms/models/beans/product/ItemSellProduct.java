@@ -20,7 +20,6 @@ import java.util.List;
  */
 
 public class ItemSellProduct extends ItemProductBase {
-
     /*
     * 只针对售出和退款的
     * */
@@ -87,13 +86,14 @@ public class ItemSellProduct extends ItemProductBase {
                 itemProduct.goodsID = item.getInt("goodsID");
                 itemProduct.categoryID = item.getInt("categoryID");
                 itemProduct.goodsName = item.getString("goodsName");
-                itemProduct.price = (float) item.getDouble("price");
+                itemProduct.pirse = (float) item.getDouble("pirse");
                 itemProduct.activityPrice = (float) item.getDouble("activityPrice");
                 itemProduct.rfid = item.getString("rfid");
                 itemProduct.inputTime = item.getString("inputTime");
                 itemProduct.bindingTime = item.getString("bindingTime");
                 itemProduct.exhibitTime = item.getString("exhibitTime");
                 itemProduct.residueStorageTime = item.getInt("residueStorageTime");
+                itemProduct.state = item.getInt("state");
                 if (item.has("isRefund")) {
                     itemProduct.isRefund = item.getInt("isRefund");
                 }

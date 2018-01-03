@@ -10,6 +10,7 @@ import android.widget.BaseAdapter;
 import android.widget.LinearLayout;
 import android.widget.ListAdapter;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 
 import com.example.shareiceboxms.models.helpers.LoadMoreHelper;
@@ -44,6 +45,45 @@ public class ListViewForScrollView extends ListView {// implements NestedScrolli
                 MeasureSpec.AT_MOST);
         super.onMeasure(widthMeasureSpec, expandSpec);
     }
+
+    /**
+     * 动态设置ListView的高度
+     *
+     * @param listView
+     */
+    public static void setListViewHeightBasedOnChildren(ListView listView, RelativeLayout relativeLayout) {
+        if (listView == null) return;
+        ListAdapter listAdapter = listView.getAdapter();
+        if (listAdapter == null) {
+            // pre-condition
+            return;
+        }
+
+        int totalHeight = 0;
+        for (int i = 0; i < listAdapter.getCount(); i++) {
+            View listItem = listAdapter.getView(i, null, listView);
+            listItem.measure(0, 0);
+            totalHeight += listItem.getMeasuredHeight();
+        }
+        ViewGroup.LayoutParams params = listView.getLayoutParams();
+        ScrollView scrollView = (ScrollView) relativeLayout.getChildAt(1);
+        LinearLayout childLayout = (LinearLayout) scrollView.getChildAt(0);
+
+        LinearLayout layout = (LinearLayout) relativeLayout.getChildAt(0);
+
+        params.height = totalHeight + (listView.getDividerHeight() * (listAdapter.getCount() - 1)) + childLayout.getChildAt(0).getHeight() + layout.getHeight();
+/*
+* layout.getHeight()在上面使用时是0，因为视图正在绘制，可以使用延时更新
+* */
+        Log.d("--layout.getHeight()--", layout.getHeight() + "");
+        Log.d("--totalHeight--", totalHeight + "");
+        Log.d("--childLayou--", childLayout.getChildAt(0).getHeight() + "");
+
+        // layout.getChildAt(0).getMeasuredHeight():scrollView中不仅包含ListView
+        // layout.getChildAt(0).getHeight():空白比上一个小
+        listView.setLayoutParams(params);
+    }
+
 
     /**
      * 动态设置ListView的高度

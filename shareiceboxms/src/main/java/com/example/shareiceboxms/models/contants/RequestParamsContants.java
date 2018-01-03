@@ -30,7 +30,11 @@ public class RequestParamsContants {
         if (PerSonMessage.userType == Constants.AGENT_MANAGER) {
             params.put("agentID", PerSonMessage.userId);
         } else if (PerSonMessage.userType == Constants.MACHINE_MANAGER) {
-            params.put("agentID", PerSonMessage.agent.userID);
+            if (PerSonMessage.agent != null) {
+                params.put("agentID", PerSonMessage.agent.userID);
+            } else {
+                params.put("agentID", null);
+            }
             params.put("managerID", "");
         } else {
             params.put("agentID", "");
@@ -215,7 +219,7 @@ public class RequestParamsContants {
     public Map<String, Object> getTradeRecordsParams() {
         Map<String, Object> params = new HashMap<>();
 //        params.put("userID", 1);
-        params.put("appUserID", 1);
+        params.put("appUserID", PerSonMessage.userId);
         params.put("checkCode", 1);
         params.put("tradeCode", "");
 //        params.put("payState", "");
@@ -233,8 +237,7 @@ public class RequestParamsContants {
 * */
     public Map<String, Object> getTradeRecoredDetailParams() {
         Map<String, Object> params = new HashMap<>();
-//        params.put("userID", 1);
-        params.put("appUserID", 1);
+        params.put("appUserID", PerSonMessage.userId);
         params.put("checkCode", 1);
         params.put("tradeID", FragmentFactory.getInstance().getSavedBundle().getInt("tradeID", 0));
         return params;

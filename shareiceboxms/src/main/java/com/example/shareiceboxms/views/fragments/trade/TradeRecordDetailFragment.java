@@ -18,6 +18,7 @@ import android.widget.Toast;
 
 import com.example.shareiceboxms.R;
 import com.example.shareiceboxms.models.adapters.TradeRecordDetailAdapter;
+import com.example.shareiceboxms.models.beans.PerSonMessage;
 import com.example.shareiceboxms.models.beans.trade.ItemTradeRecord;
 import com.example.shareiceboxms.models.beans.product.ItemSellProduct;
 import com.example.shareiceboxms.models.contants.Constants;
@@ -45,6 +46,7 @@ import java.util.Map;
  */
 
 public class TradeRecordDetailFragment extends BaseFragment implements RecordDetailProductHelper.ProductResponseLisenner {
+    private static String TAG = "TradeRecordDetailFragment";
     private View containerView;
     private ScrollView scrollView;
     private android.support.design.widget.TabLayout productTabLayout;
@@ -110,17 +112,21 @@ public class TradeRecordDetailFragment extends BaseFragment implements RecordDet
         drawerIcon.setOnClickListener(this);
         saoma.setOnClickListener(this);
         moreRefund.setOnClickListener(this);
-
-        allProductCB.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (!isChecked && adapter.getTotalCheckedCount() != adapter.getCount()) {
-                    return;
+        if (PerSonMessage.userType < Constants.AGENT_MANAGER) {
+            allProductCB.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                    if (!isChecked && adapter.getTotalCheckedCount() != adapter.getCount()) {
+                        return;
+                    }
+                    adapter.checkAllItem(isChecked);
+                    changeCheckedCount();
                 }
-                adapter.checkAllItem(isChecked);
-                changeCheckedCount();
-            }
-        });
+            });
+        } else {
+            allProductCB.setVisibility(View.GONE);
+        }
+
         title.setText("交易详情");
         productTabLayout.setTabMode(TabLayout.MODE_FIXED);
         productTabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
@@ -156,6 +162,8 @@ public class TradeRecordDetailFragment extends BaseFragment implements RecordDet
 
     private void initDatas() {
         homeActivity = (HomeActivity) getActivity();
+        itemBuyProducts = new ArrayList<>();
+        itemRefundProducts = new ArrayList<>();
         adapter = new TradeRecordDetailAdapter(getContext(), this);
         productList.setAdapter(adapter);
         for (int i = 0; i < Constants.TradeRecordDetailTitle.length; i++) {
@@ -166,20 +174,6 @@ public class TradeRecordDetailFragment extends BaseFragment implements RecordDet
         initHelper();
         getDatas();
     }
-
-//    /*
-//    *
-//    * 切换tab时拉去响应的数据,开始时设置商品绑定的machine为null(看执行的先后顺序)，详情数据拉去后，为每个商品设置machine
-//    * */
-//    private void loadProductForSell(List<ItemSellProduct> itemProducts, int value) {
-//
-//        if (itemProducts.size() <= 0) {//第一次加载时拉去数据
-//            Map<String, Object> params = RequestParamsContants.getInstance().getTradeRecoredDetailProductParams();
-//            recordDetailProductHelper.setMachine(itemTradeRecord.machine);
-//            recordDetailProductHelper.getDatas(params);
-//        }
-//
-//    }
 
     private void initHelper() {
         recordDetailProductHelper = new RecordDetailProductHelper(getContext(), this);
@@ -196,9 +190,9 @@ public class TradeRecordDetailFragment extends BaseFragment implements RecordDet
         tradeTime.setText(itemTradeRecord.closingTime);
         totalMoney.setText(itemTradeRecord.tradeMoney);
         payState.setText(itemTradeRecord.payState == 0 ? Constants.TradeStateTitle[2] : Constants.TradeStateTitle[1]);
-        payState.setTextColor(ContextCompat.getColor(getContext(), itemTradeRecord.payState == 0 ? R.color.red : R.color.sucessgreen));
+        payState.setTextColor(ContextCompat.getColor(getContext(), Constants.TreadIsPayCOLOR[itemTradeRecord.payState]));
         machineNameAddr.setText(itemTradeRecord.machine.machineAddress);
-        customerId.setText(itemTradeRecord.consumer.userID);
+        customerId.setText(itemTradeRecord.consumer.userID + "");
         tradeNo.setText(itemTradeRecord.tradeCode);
         jiesuanMoney.setText(itemTradeRecord.settlementMoney);
         jiesuanReal.setText(itemTradeRecord.realSettlementMoney);
@@ -280,7 +274,7 @@ public class TradeRecordDetailFragment extends BaseFragment implements RecordDet
     private class TradeRecordDetailTask extends AsyncTask<Void, Void, Boolean> {
 
         private String response;
-        private String err = "net_work_err";
+        private String err = "";
         private ItemTradeRecord tradeRecord;
         private Map<String, Object> params;
 
@@ -295,23 +289,23 @@ public class TradeRecordDetailFragment extends BaseFragment implements RecordDet
         @Override
         protected Boolean doInBackground(Void... params) {
             try {
+                Log.e(TAG, " request url: " + HttpRequstUrl.TRADE_RECOR_DETAIL_URL);
+                Log.e(TAG, "request params: " + JsonUtil.mapToJson(this.params));
                 Log.e("request params: ", JsonUtil.mapToJson(this.params));
                 response = OkHttpUtil.post(HttpRequstUrl.TRADE_RECOR_DETAIL_URL, JsonUtil.mapToJson(this.params));
                 tradeRecord = ItemTradeRecord.bindTradeRecord(JsonDataParse.getInstance().getSingleObject(response.toString()));
-                Log.e("response", response.toString());
                 return true;
             } catch (IOException e) {
                 err = RequstTips.getErrorMsg(e.getMessage());
-                Log.e("erro", e.toString());
             } catch (JSONException e) {
                 err = RequstTips.JSONException_Tip;
-                Log.e("erro", e.toString());
             }
             return false;
         }
 
         @Override
         protected void onPostExecute(final Boolean success) {
+            Log.e(TAG, "response:" + response);
             if (success) {
                 itemTradeRecord = tradeRecord;
                 updateUi();
@@ -320,14 +314,8 @@ public class TradeRecordDetailFragment extends BaseFragment implements RecordDet
                 * */
                 recordDetailProductHelper.setMachine(itemTradeRecord.machine);
             } else {
-                Log.e("request error :", response + "");
+                Toast.makeText(homeActivity, err, Toast.LENGTH_SHORT).show();
             }
         }
-
-        @Override
-        protected void onCancelled() {
-
-        }
     }
-
 }

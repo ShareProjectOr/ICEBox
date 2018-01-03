@@ -62,16 +62,17 @@ public class TradeRecordListAdapter extends RecyclerView.Adapter<RecyclerView.Vi
             if (itemTradeRecord == null) {
                 return;
             }
-            //totalRecordTime, totalMoneyNum, payState, machineNameAddr, tradeNo, jiesuanState, jiesuanWay
             ((ViewHolder) holder).totalMoneyNum.setText(itemTradeRecord.tradeMoney);
             ((ViewHolder) holder).totalRecordTime.setText(itemTradeRecord.tradeMoney);
             ((ViewHolder) holder).payState.setText(itemTradeRecord.payState == 0 ? Constants.TradeStateTitle[2] : Constants.TradeStateTitle[1]);
+            ((ViewHolder) holder).payState.setTextColor(ContextCompat.getColor(context, Constants.TreadIsPayCOLOR[itemTradeRecord.payState]));
             if (itemTradeRecord.machine != null)
                 ((ViewHolder) holder).machineNameAddr.setText(itemTradeRecord.machine.machineName + "(" + itemTradeRecord.machine.machineAddress + ")");
             ((ViewHolder) holder).tradeNo.setText(itemTradeRecord.tradeCode);
-            ((ViewHolder) holder).jiesuanState.setText(itemTradeRecord.payState == 0 ? Constants.TradeStateTitle[2] : Constants.TradeStateTitle[1]);
-            ((ViewHolder) holder).jiesuanWay.setText(itemTradeRecord.tradeMoney);
-            ((ViewHolder) holder).payIcon.setImageDrawable(ContextCompat.getDrawable(context, Constants.ExceptionIsDetailsICON[itemTradeRecord.payState]));
+            ((ViewHolder) holder).jiesuanState.setText(Constants.TradeJieSuanStateTitle[itemTradeRecord.settleWay]);
+            ((ViewHolder) holder).jiesuanState.setText(Constants.TradeJieSuanStateTitle[itemTradeRecord.settleWay]);
+//            ((ViewHolder) holder).jiesuanWay.setText(itemTradeRecord.tradeMoney);
+            ((ViewHolder) holder).payIcon.setImageDrawable(ContextCompat.getDrawable(context, Constants.TreadIsPayICON[itemTradeRecord.payState]));
 
 
         } else if (holder instanceof LoadingHolder) {
@@ -105,7 +106,7 @@ public class TradeRecordListAdapter extends RecyclerView.Adapter<RecyclerView.Vi
             machineNameAddr = (TextView) itemView.findViewById(R.id.machineNameAddr);
             tradeNo = (TextView) itemView.findViewById(R.id.tradeNo);
             jiesuanState = (TextView) itemView.findViewById(R.id.jiesuanState);
-            jiesuanWay = (TextView) itemView.findViewById(R.id.jiesuanWay);
+//            jiesuanWay = (TextView) itemView.findViewById(R.id.jiesuanWay);
         }
     }
 

@@ -29,8 +29,11 @@ public interface Constants {
     long REFREASH_DELAYED_TIME = 1500; //刷新时间
     int[] TradeRecordPayICON = {R.mipmap.nopay, R.mipmap.paied};
     int[] ExceptionIsDetailsICON = {R.mipmap.machine_exception, R.mipmap.machine_normal};
+    int[] TreadIsPayICON = {R.mipmap.nopay, R.mipmap.machine_normal};
+    int[] TreadIsPayCOLOR = {R.color.red, R.color.deepgreen};
     String[] TradeAccountDetailTitle = {"结算的交易记录", "冲抵的应退记录"};
     String[] TradeStateTitle = {"全部", "已支付", "未支付"};
+    String[] TradeJieSuanStateTitle = {"未结算", "已结算"};
     String[] TradeAccountStateTitle = {"全部", "待审核", "待确认", "待转账", "待复审", "复审完成", "被撤销"};
     /*
       商品管理

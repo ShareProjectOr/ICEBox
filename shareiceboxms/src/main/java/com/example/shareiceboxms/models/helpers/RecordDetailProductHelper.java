@@ -30,11 +30,7 @@ import java.util.Map;
 
 public class RecordDetailProductHelper {
     private Context context;
-//    private int curPage, requestNum, totalNum, totalPage;
     private ItemMachine itemMachine;
-//    private ListView listView;
-//    private ScrollView scrollView;
-//    private TradeRecordDetailAdapter adapter;
     private List<ItemSellProduct> itemProducts;
     private ProductResponseLisenner productResponseLisenner;
 
@@ -108,6 +104,7 @@ public class RecordDetailProductHelper {
 
         @Override
         protected void onPreExecute() {
+            itemProducts = new ArrayList<>();
             products.clear();
             dialog.show();
         }
@@ -118,10 +115,6 @@ public class RecordDetailProductHelper {
                 Log.e("request params: ", JsonUtil.mapToJson(this.params));
                 response = OkHttpUtil.post(HttpRequstUrl.TRADE_RECOR_DETAIL_PRODUCT_URL, JsonUtil.mapToJson(this.params));
                 products = ItemSellProduct.bindProductList(JsonDataParse.getInstance().getArrayList(response.toString()), itemMachine);
-//                totalNum = JsonDataParse.getInstance().getTotalNum();
-//                curPage = JsonDataParse.getInstance().getCurPage();
-//                requestNum = JsonDataParse.getInstance().getRequestNum();
-//                totalPage = JsonDataParse.getInstance().getTotalPage();
                 Log.e("DetailProductHelper", "products.size==" + products.size() + "");
                 Log.e("response", response.toString());
                 return true;
@@ -149,10 +142,6 @@ public class RecordDetailProductHelper {
                 if (productResponseLisenner != null) {
                     productResponseLisenner.getProducts(itemProducts);
                 }
-//                if (adapter != null) {
-//                    adapter.notifyDataSetChanged();
-//                    ListViewForScrollView.setListViewHeightBasedOnChildren(listView, scrollView);
-//                }
             } else {
                 Log.e("request error :", response + "");
                 if (context != null)

@@ -123,16 +123,15 @@ public class OkHttpUtil {
     public static final MediaType JSON = MediaType.parse("application/json; charset=utf-8");
 
     public static String post(String url, String json) throws IOException {
-//        OkHttpClient okHttpClient = new OkHttpClient();
+        OkHttpClient okHttpClient = new OkHttpClient();
         RequestBody requestBody = RequestBody.create(JSON, json);
 
         Request request = new Request.Builder().url(url).addHeader("content-type", "application/json;charset:utf-8").post(requestBody).build();
-        Response response = mOkHttpClient.newCall(request).execute();//mOkHttpClient
+        Response response = okHttpClient.newCall(request).execute();//mOkHttpClient
         if (response.isSuccessful()) {
             return response.body().string();
         } else {
             Log.e("Unexpected code:", response + "");
-            Log.e("Unexpected code:", response.code() + "");
             throw new IOException("Unexpected code :" + response.code());
         }
     }

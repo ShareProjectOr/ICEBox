@@ -8,6 +8,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -56,6 +57,7 @@ import java.util.Map;
  */
 
 public class TradeRecordsFragment extends BaseFragment implements LoadMoreHelper.LoadMoreListener {
+    private static String TAG = "TradeRecordsFragment";
     private View containerView;
     private ImageView tradeSearch, tradeTypeIcon;
     private TextView tradeNo, tradeTypeText, timeSelector;
@@ -106,18 +108,6 @@ public class TradeRecordsFragment extends BaseFragment implements LoadMoreHelper
     private void initDatas() {
         itemTradeRecords = new ArrayList<>();
         params = new HashMap<>();
-
-        itemTradeRecords.add(new ItemTradeRecord());
-        itemTradeRecords.add(new ItemTradeRecord());
-        itemTradeRecords.add(new ItemTradeRecord());
-        itemTradeRecords.add(new ItemTradeRecord());
-        itemTradeRecords.add(new ItemTradeRecord());
-        itemTradeRecords.add(new ItemTradeRecord());
-        itemTradeRecords.add(new ItemTradeRecord());
-        itemTradeRecords.add(new ItemTradeRecord());
-        itemTradeRecords.add(new ItemTradeRecord());
-        itemTradeRecords.add(new ItemTradeRecord());
-        itemTradeRecords.add(null);
         homeActivity = (HomeActivity) getActivity();
         datePickerDialog = new DoubleDatePickerDialog(getContext(), 0, this
                 , Calendar.getInstance().get(Calendar.YEAR), Calendar.getInstance().get(Calendar.MONTH)
@@ -186,18 +176,19 @@ public class TradeRecordsFragment extends BaseFragment implements LoadMoreHelper
         tradeTypeText.setText(Constants.TradeStateTitle[position]);
         mTilePopup.setSelection(tradeTypeText.getText().toString().length());
         switch (position) {
-            case 0:
+            case 0://
                 if (params.containsKey("payState")) {
                     params.remove("payState");
                 }
                 break;
-            case 1:
+            case 1://已支付
                 params.put("payState", 1);
                 break;
-            case 2:
+            case 2://未支付
                 params.put("payState", 0);
                 break;
         }
+        itemTradeRecords.clear();
         getDatas(params);
         mTilePopup.dismiss();
     }
@@ -207,13 +198,13 @@ public class TradeRecordsFragment extends BaseFragment implements LoadMoreHelper
 //        if (recordRefresh.isRefreshing()) {
 //            return;
 //        }
-        timeSelector.setText(SecondToDate.getDateUiShow(SecondToDate.getDateParams(SecondToDate.TODAY_CODE)));
+//        timeSelector.setText(SecondToDate.getDateUiShow(SecondToDate.getDateParams(SecondToDate.TODAY_CODE)));
         if (itemTradeRecords != null) {
             itemTradeRecords.clear();
             initPage();
             adapter.notifyDataSetChanged();
         }
-        getDatas(getParams());
+        getDatas(params);
         recordRefresh.setRefreshing(false);
     }
 
@@ -256,7 +247,7 @@ public class TradeRecordsFragment extends BaseFragment implements LoadMoreHelper
     private class TradeRecordsTask extends AsyncTask<Void, Void, Boolean> {
 
         private String response;
-        private String err = "net_work_err";
+        private String err = "";
         private Map<String, Object> params;
         private List<ItemTradeRecord> tradeRecords;
 
@@ -275,33 +266,35 @@ public class TradeRecordsFragment extends BaseFragment implements LoadMoreHelper
         @Override
         protected Boolean doInBackground(Void... params) {
             try {
-                Log.e("request params: ", JsonUtil.mapToJson(this.params));
+                Log.e(TAG, " request url: " + HttpRequstUrl.TRADE_RECORDS_URL);
+                Log.e(TAG, "request params: " + JsonUtil.mapToJson(this.params));
                 response = OkHttpUtil.post(HttpRequstUrl.TRADE_RECORDS_URL, JsonUtil.mapToJson(this.params));
+                if (JsonDataParse.getInstance().getArrayList(response.toString()).length() <= 0) {
+                    return false;
+                }
                 tradeRecords = ItemTradeRecord.bindTradeRecordsList(JsonDataParse.getInstance().getArrayList(response.toString()));
                 totalNum = JsonDataParse.getInstance().getTotalNum();
                 curPage = JsonDataParse.getInstance().getCurPage();
                 requestNum = JsonDataParse.getInstance().getRequestNum();
                 totalPage = JsonDataParse.getInstance().getTotalPage();
-                Log.e("response", response.toString());
                 return true;
             } catch (IOException e) {
 //                if (dialog != null) {
 //                    dialog.dismiss();
 //                }
                 err = RequstTips.getErrorMsg(e.getMessage());
-                Log.e("erro", e.toString());
             } catch (JSONException e) {
 //                if (dialog != null) {
 //                    dialog.dismiss();
 //                }
                 err = RequstTips.JSONException_Tip;
-                Log.e("erro", e.toString());
             }
             return false;
         }
 
         @Override
         protected void onPostExecute(final Boolean success) {
+            Log.e(TAG, "response:" + response);
             if (success) {
 //                if (dialog != null) {
 //                    dialog.dismiss();
@@ -322,16 +315,17 @@ public class TradeRecordsFragment extends BaseFragment implements LoadMoreHelper
 //                if (dialog != null) {
 //                    dialog.dismiss();
 //                }
-                Log.e("request error :", response + "");
-                Toast.makeText(homeActivity, err, Toast.LENGTH_SHORT).show();
+                /*
+                *获得数据为空时，提示
+                * */
+                if (tradeRecords.size() <= 0 && TextUtils.equals(err, "")) {
+                    Toast.makeText(homeActivity, "没有数据！", Toast.LENGTH_SHORT).show();
+                    itemTradeRecords.clear();
+                    adapter.notifyDataSetChanged();
+                } else {
+                    Toast.makeText(homeActivity, err, Toast.LENGTH_SHORT).show();
+                }
             }
         }
-
-        @Override
-        protected void onCancelled() {
-
-        }
-
-
     }
 }

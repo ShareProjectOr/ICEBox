@@ -104,7 +104,9 @@ public class HomeActivity extends BaseActivity
             tab.setText(Constants.TabTitles[i]);
             tabLayout.addTab(tab);
         }
-        curFragment = new TradeFragment();
+//        curFragment = new TradeFragment();
+        curFragment = new CloseDoorFragment();
+        showHomepage = false;
         switchFragment();
         setNotifySnackbar();
     }
@@ -149,10 +151,7 @@ public class HomeActivity extends BaseActivity
                 getCurFragment();
                 switchFragment();
                 navigationView.setCheckedItem(R.id.icon_home);
-                tabLayout.setVisibility(View.VISIBLE);
             }
-
-//            super.onBackPressed();
         }
     }
 
@@ -256,16 +255,16 @@ public class HomeActivity extends BaseActivity
     * 切换fragment
     * */
     public void switchFragment() {
-        if (showHomepage) {
-            tabLayout.setVisibility(View.VISIBLE);
-        } else {
-            tabLayout.setVisibility(View.GONE);
-        }
         FragmentManager fm = getSupportFragmentManager();
         FragmentTransaction ft = fm.beginTransaction();
         ft.replace(R.id.home_tab_frame, curFragment);
         ft.commit();
         BaseFragment.curFragment = curFragment;
+        if (showHomepage) {
+            tabLayout.setVisibility(View.VISIBLE);
+        } else {
+            tabLayout.setVisibility(View.GONE);
+        }
     }
 
     public void DoSql() {
@@ -444,7 +443,7 @@ public class HomeActivity extends BaseActivity
         * 添加通知
         * */
     public void setNotifySnackbar() {
-      //  NotifySnackbar.addNotifySnackbar(this, notifyLayout);
+        //  NotifySnackbar.addNotifySnackbar(this, notifyLayout);
     }
 
     public void selectedException() {
@@ -452,7 +451,7 @@ public class HomeActivity extends BaseActivity
     }
 
     public void showNotify(String msg) {
-    //    NotifySnackbar.showNotify(msg);
+        //    NotifySnackbar.showNotify(msg);
     }
 
     @Override
@@ -508,9 +507,9 @@ public class HomeActivity extends BaseActivity
     }
 
     @Override
-    public void messageArrived(final String s, MqttMessage mqttMessage) throws Exception {
+    public void messageArrived(String s, final MqttMessage mqttMessage) throws Exception {
         if (!s.isEmpty()) {
-            final JSONObject object = new JSONObject(s);
+            final JSONObject object = new JSONObject(new String(mqttMessage.getPayload()));
             String tymsgType = object.getString("msgType");
             Handler handler = new Handler(Looper.getMainLooper());
             switch (tymsgType) {
@@ -527,7 +526,7 @@ public class HomeActivity extends BaseActivity
                                     }
                                 } else if (object.getInt("doorState") == 2) {//关门,上货成功
                                     if (!(curFragment instanceof CloseDoorFragment)) {
-                                        FragmentFactory.getInstance().getSavedBundle().putString("callbackMsg", s);
+                                        FragmentFactory.getInstance().getSavedBundle().putString("callbackMsg", new String(mqttMessage.getPayload()));
                                         curFragment = new CloseDoorFragment();
                                         showHomepage = false;
                                         switchFragment();

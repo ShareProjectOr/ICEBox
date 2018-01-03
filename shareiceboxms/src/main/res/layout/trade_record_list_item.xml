@@ -98,17 +98,16 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="已结算"
-                            android:textColor="@color/sucessgreen"
-                            android:textSize="10sp" />
+                            android:textSize="13sp" />
 
-                        <TextView
-                            android:id="@+id/jiesuanWay"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginLeft="10dp"
-                            android:text="人工结算"
-                            android:textColor="@color/sucessgreen"
-                            android:textSize="10sp" />
+                        <!--<TextView-->
+                            <!--android:id="@+id/jiesuanWay"-->
+                            <!--android:layout_width="wrap_content"-->
+                            <!--android:layout_height="wrap_content"-->
+                            <!--android:layout_marginLeft="10dp"-->
+                            <!--android:text="人工结算"-->
+                            <!--android:textColor="@color/sucessgreen"-->
+                            <!--android:textSize="10sp" />-->
                     </LinearLayout>
 
                 </LinearLayout>

@@ -46,5 +46,4 @@
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true" />
     </android.support.design.widget.CoordinatorLayout>
-
 </RelativeLayout>

@@ -48,9 +48,9 @@ public class BaseActivity extends AppCompatActivity implements View.OnClickListe
         System.out.println("接收消息主题 : " + topic);
         System.out.println("接收消息Qos : " + message.getQos());
         System.out.println("接收消息内容 : " + new String(message.getPayload()));
-        if (NotifySnackbar.getSnackbar() != null) {
-            NotifySnackbar.showNotify(new String(message.getPayload()));
-        }
+//        if (NotifySnackbar.getSnackbar() != null) {
+//            NotifySnackbar.showNotify(new String(message.getPayload()));
+//        }
     }
 
     @Override

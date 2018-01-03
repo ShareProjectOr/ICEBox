@@ -55,6 +55,35 @@ public class ItemTradeRecord {
         {
             公司
         },//公司*/
+
+/*    {
+        "refundSettlementMoney":null, "realRefundNum":null, "openingTime":null, "payState":
+        null, "realSettlementMoney":null, "realRefundMoney":null, "serviceCharge":0.111000,
+            "closingTime":null,
+            "userCutModel":{
+        "disable":0, "name":"代理商", "tel":"18888888888", "userType":2, "userID":29, "email":
+        "agent@changhong.com"
+    },
+        "company":{
+        "agentWechat":"444", "bankAccount":"333", "companyID":16, "minBalance":
+        4545.000000, "companyAddress":"510703|四川-绵阳-涪城|绵州大道中段长虹工业园"
+                , "companyName":"代理商", "agentAlipay":"555", "companyCreditCode":
+        "222", "settlementProportion":40, "settleWay":0
+    }
+        ,"refundServiceCharge":null,
+            machineCutModel:{
+        "machineAddress":"||", "machineCode":"121231", "machineID":1, "machineName":"测"
+    },
+        "consumer":{
+        "consumerType":0, "unpaidMoney":0.000000, "money":5623.000000, "transactionsNum":
+        263, "consumerID":1, "disable":1, "openID":"652322563", "nickname":"程序猿"
+    },
+        "settleWay":0, "tradeID":1, "receiveMoney":null, "tradeCode":"12312312312", "refundMoney":
+        213, "settlementState":null, "tradeMoney":11.10,
+            "createTime":"2018-01-03 11:07:43.0", "unlockTime":null, "settlementMoney":
+/*   0*//*.333000, "chargeProportion":0.0100, "settlementProportion":0.0300
+    }*/
+
     public int tradeID;
     public String tradeCode;
     public int settlementState;
@@ -74,6 +103,9 @@ public class ItemTradeRecord {
     public String unlockTime;
     public String openingTime;
     public String closingTime;
+    public String settlementProportion;
+    public String payTime;
+    public int settleWay;
     public ItemMachine machine;
     public ItemPerson agent;
     public ItemPerson consumer;
@@ -87,24 +119,65 @@ public class ItemTradeRecord {
                 ItemTradeRecord itemTradeRecord = new ItemTradeRecord();
                 itemTradeRecord.tradeID = item.getInt("tradeID");
                 itemTradeRecord.tradeCode = item.getString("tradeCode");
-                itemTradeRecord.settlementState = item.getInt("settlementState");
+                if (item.has("settlementState") && !item.get("settlementState").equals(null)) {
+                    itemTradeRecord.settlementState = item.getInt("settlementState");
+                }
                 itemTradeRecord.createTime = item.getString("createTime");
-                itemTradeRecord.payState = item.getInt("payState");
-                itemTradeRecord.realRefundNum = item.getString("realRefundNum");
-                itemTradeRecord.tradeMoney = item.getString("tradeMoney");
-                itemTradeRecord.receiveMoney = item.getString("receiveMoney");
-                itemTradeRecord.serviceCharge = item.getString("serviceCharge");
-                itemTradeRecord.chargeProportion = item.getString("chargeProportion");
-                itemTradeRecord.refundMoney = item.getString("refundMoney");
-                itemTradeRecord.realRefundMoney = item.getString("realRefundMoney");
-                itemTradeRecord.refundServiceCharge = item.getString("refundServiceCharge");
-                itemTradeRecord.settlementMoney = item.getString("settlementMoney");
-                itemTradeRecord.realSettlementMoney = item.getString("realSettlementMoney");
-                itemTradeRecord.refundSettlementMoney = item.getString("refundSettlementMoney");
-                itemTradeRecord.unlockTime = item.getString("unlockTime");
-                itemTradeRecord.openingTime = item.getString("openingTime");
-                itemTradeRecord.closingTime = item.getString("closingTime");
+                if (item.has("payState") && !item.get("payState").equals(null)) {
+                    itemTradeRecord.payState = item.getInt("payState");
+                }
+                if (item.has("realRefundNum") && !item.get("realRefundNum").equals(null)) {
+                    itemTradeRecord.realRefundNum = item.getString("realRefundNum");
+                }
+                if (item.has("tradeMoney") && !item.get("tradeMoney").equals(null)) {
+                    itemTradeRecord.tradeMoney = item.getString("tradeMoney");
+                }
+                if (item.has("receiveMoney") && !item.get("receiveMoney").equals(null)) {
+                    itemTradeRecord.receiveMoney = item.getString("receiveMoney");
+                }
+                if (item.has("serviceCharge") && !item.get("serviceCharge").equals(null)) {
+                    itemTradeRecord.serviceCharge = item.getString("serviceCharge");
+                }
+                if (item.has("chargeProportion") && !item.get("chargeProportion").equals(null)) {
+                    itemTradeRecord.chargeProportion = item.getString("chargeProportion");
+                }
+                if (item.has("refundMoney") && !item.get("refundMoney").equals(null)) {
+                    itemTradeRecord.refundMoney = item.getString("refundMoney");
+                }
+                if (item.has("realRefundMoney") && !item.get("realRefundMoney").equals(null)) {
+                    itemTradeRecord.realRefundMoney = item.getString("realRefundMoney");
+                }
+                if (item.has("refundServiceCharge") && !item.get("refundServiceCharge").equals(null)) {
+                    itemTradeRecord.refundServiceCharge = item.getString("refundServiceCharge");
+                }
+                if (item.has("settlementMoney") && !item.get("settlementMoney").equals(null)) {
+                    itemTradeRecord.settlementMoney = item.getString("settlementMoney");
+                }
+                if (item.has("realSettlementMoney") && !item.get("realSettlementMoney").equals(null)) {
+                    itemTradeRecord.realSettlementMoney = item.getString("realSettlementMoney");
+                }
+                if (item.has("refundSettlementMoney") && !item.get("refundSettlementMoney").equals(null)) {
+                    itemTradeRecord.refundSettlementMoney = item.getString("refundSettlementMoney");
+                }
+                if (item.has("unlockTime") && !item.get("unlockTime").equals(null)) {
+                    itemTradeRecord.unlockTime = item.getString("unlockTime");
+                }
+                if (item.has("openingTime") && !item.get("openingTime").equals(null)) {
+                    itemTradeRecord.openingTime = item.getString("openingTime");
+                }
+                if (item.has("closingTime") && !item.get("closingTime").equals(null)) {
+                    itemTradeRecord.closingTime = item.getString("closingTime");
+                }
+                if (item.has("settlementProportion") && !item.get("settlementProportion").equals(null)) {
+                    itemTradeRecord.settlementProportion = item.getString("settlementProportion");
+                }
+                if (item.has("payTime") && !item.get("payTime").equals(null)) {
+                    itemTradeRecord.payTime = item.getString("payTime");
+                }
+                if (item.has("settleWay") && !item.get("settleWay").equals(null)) {
+                    itemTradeRecord.settleWay = item.getInt("settleWay");
 
+                }
                 if (item.has("machine") && !item.get("machine").equals(null))
                     itemTradeRecord.machine = ItemMachine.bindMachine(item.getJSONObject("machine"));
 
@@ -130,24 +203,65 @@ public class ItemTradeRecord {
         try {
             itemTradeRecord.tradeID = item.getInt("tradeID");
             itemTradeRecord.tradeCode = item.getString("tradeCode");
-            itemTradeRecord.settlementState = item.getInt("settlementState");
+            if (item.has("settlementState") && !item.get("settlementState").equals(null)) {
+                itemTradeRecord.settlementState = item.getInt("settlementState");
+            }
             itemTradeRecord.createTime = item.getString("createTime");
-            itemTradeRecord.payState = item.getInt("payState");
-            itemTradeRecord.realRefundNum = item.getString("realRefundNum");
-            itemTradeRecord.tradeMoney = item.getString("tradeMoney");
-            itemTradeRecord.receiveMoney = item.getString("receiveMoney");
-            itemTradeRecord.serviceCharge = item.getString("serviceCharge");
-            itemTradeRecord.chargeProportion = item.getString("chargeProportion");
-            itemTradeRecord.refundMoney = item.getString("refundMoney");
-            itemTradeRecord.realRefundMoney = item.getString("realRefundMoney");
-            itemTradeRecord.refundServiceCharge = item.getString("refundServiceCharge");
-            itemTradeRecord.settlementMoney = item.getString("settlementMoney");
-            itemTradeRecord.realSettlementMoney = item.getString("realSettlementMoney");
-            itemTradeRecord.refundSettlementMoney = item.getString("refundSettlementMoney");
-            itemTradeRecord.unlockTime = item.getString("unlockTime");
-            itemTradeRecord.openingTime = item.getString("openingTime");
-            itemTradeRecord.closingTime = item.getString("closingTime");
+            if (item.has("payState") && !item.get("payState").equals(null)) {
+                itemTradeRecord.payState = item.getInt("payState");
+            }
+            if (item.has("realRefundNum") && !item.get("realRefundNum").equals(null)) {
+                itemTradeRecord.realRefundNum = item.getString("realRefundNum");
+            }
+            if (item.has("tradeMoney") && !item.get("tradeMoney").equals(null)) {
+                itemTradeRecord.tradeMoney = item.getString("tradeMoney");
+            }
+            if (item.has("receiveMoney") && !item.get("receiveMoney").equals(null)) {
+                itemTradeRecord.receiveMoney = item.getString("receiveMoney");
+            }
+            if (item.has("serviceCharge") && !item.get("serviceCharge").equals(null)) {
+                itemTradeRecord.serviceCharge = item.getString("serviceCharge");
+            }
+            if (item.has("chargeProportion") && !item.get("chargeProportion").equals(null)) {
+                itemTradeRecord.chargeProportion = item.getString("chargeProportion");
+            }
+            if (item.has("refundMoney") && !item.get("refundMoney").equals(null)) {
+                itemTradeRecord.refundMoney = item.getString("refundMoney");
+            }
+            if (item.has("realRefundMoney") && !item.get("realRefundMoney").equals(null)) {
+                itemTradeRecord.realRefundMoney = item.getString("realRefundMoney");
+            }
+            if (item.has("refundServiceCharge") && !item.get("refundServiceCharge").equals(null)) {
+                itemTradeRecord.refundServiceCharge = item.getString("refundServiceCharge");
+            }
+            if (item.has("settlementMoney") && !item.get("settlementMoney").equals(null)) {
+                itemTradeRecord.settlementMoney = item.getString("settlementMoney");
+            }
+            if (item.has("realSettlementMoney") && !item.get("realSettlementMoney").equals(null)) {
+                itemTradeRecord.realSettlementMoney = item.getString("realSettlementMoney");
+            }
+            if (item.has("refundSettlementMoney") && !item.get("refundSettlementMoney").equals(null)) {
+                itemTradeRecord.refundSettlementMoney = item.getString("refundSettlementMoney");
+            }
+            if (item.has("unlockTime") && !item.get("unlockTime").equals(null)) {
+                itemTradeRecord.unlockTime = item.getString("unlockTime");
+            }
+            if (item.has("openingTime") && !item.get("openingTime").equals(null)) {
+                itemTradeRecord.openingTime = item.getString("openingTime");
+            }
+            if (item.has("closingTime") && !item.get("closingTime").equals(null)) {
+                itemTradeRecord.closingTime = item.getString("closingTime");
+            }
+            if (item.has("settlementProportion") && !item.get("settlementProportion").equals(null)) {
+                itemTradeRecord.settlementProportion = item.getString("settlementProportion");
+            }
+            if (item.has("payTime") && !item.get("payTime").equals(null)) {
+                itemTradeRecord.payTime = item.getString("payTime");
+            }
+            if (item.has("settleWay") && !item.get("settleWay").equals(null)) {
+                itemTradeRecord.settleWay = item.getInt("settleWay");
 
+            }
             if (item.has("machine") && !item.get("machine").equals(null))
                 itemTradeRecord.machine = ItemMachine.bindMachine(item.getJSONObject("machine"));
 
