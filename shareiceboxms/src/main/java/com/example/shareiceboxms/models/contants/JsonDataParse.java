@@ -55,6 +55,16 @@ public class JsonDataParse {
         return jsonObject.getBoolean("d");
     }
 
+    /*
+*
+* 解析err
+* */
+    public String getErr(String response) throws JSONException {
+        JSONObject jsonObject = new JSONObject(response.toString());
+        return jsonObject.getString("err");
+    }
+
+
     public int getTotalNum() {
         return totalNum;
     }

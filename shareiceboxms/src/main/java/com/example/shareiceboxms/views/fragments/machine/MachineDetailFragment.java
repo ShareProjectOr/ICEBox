@@ -7,6 +7,7 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,6 +22,7 @@ import com.example.shareiceboxms.R;
 import com.example.shareiceboxms.models.beans.ItemMachine;
 import com.example.shareiceboxms.models.contants.Constants;
 import com.example.shareiceboxms.models.contants.HttpRequstUrl;
+import com.example.shareiceboxms.models.contants.JsonDataParse;
 import com.example.shareiceboxms.models.contants.RequestParamsContants;
 import com.example.shareiceboxms.models.contants.RequstTips;
 import com.example.shareiceboxms.models.factories.FragmentFactory;
@@ -218,7 +220,7 @@ public class MachineDetailFragment extends BaseFragment implements SwipeRefreshL
     private class MachineDetailTask extends AsyncTask<Void, Void, Boolean> {
 
         private String response;
-        private String err = "net_work_err";
+        private String err = "";
         private Map<String, Object> params;
         private ItemMachine machine;
 
@@ -238,19 +240,20 @@ public class MachineDetailFragment extends BaseFragment implements SwipeRefreshL
             try {
                 Log.e("request params: ", JsonUtil.mapToJson(this.params));
                 response = OkHttpUtil.post(HttpRequstUrl.MACHINE_DETAIL_URL, JsonUtil.mapToJson(this.params));
+                if (response == null) {
+                    return false;
+                }
                 JSONObject jsonObject = new JSONObject(response.toString());
                 JSONObject jsonD = jsonObject.getJSONObject("d");
                 machine = ItemMachine.bindMachine(jsonD);
                 Log.e("response", response.toString());
                 return true;
             } catch (IOException e) {
-                Log.e("erro", e.toString());
                 err = RequstTips.getErrorMsg(e.getMessage());
                 if (dialog != null) {
                     dialog.dismiss();
                 }
             } catch (JSONException e) {
-                Log.e("erro", e.toString());
                 err = RequstTips.JSONException_Tip;
                 if (dialog != null) {
                     dialog.dismiss();
@@ -261,28 +264,17 @@ public class MachineDetailFragment extends BaseFragment implements SwipeRefreshL
 
         @Override
         protected void onPostExecute(final Boolean success) {
+            if (dialog != null) {
+                dialog.dismiss();
+                dialog = null;//第一次弹出dialog后，后续加载不在弹出
+            }
             if (success) {
-                if (dialog != null) {
-                    dialog.dismiss();
-                    dialog = null;//第一次弹出dialog后，后续加载不在弹出
-                }
                 itemMachine = machine;
                 updateUi();
             } else {
-                if (dialog != null) {
-                    dialog.dismiss();
-                }
-                Log.e("request error :", response + "");
                 Toast.makeText(homeActivity, err, Toast.LENGTH_SHORT).show();
             }
 
         }
-
-        @Override
-        protected void onCancelled() {
-
-        }
-
-
     }
 }

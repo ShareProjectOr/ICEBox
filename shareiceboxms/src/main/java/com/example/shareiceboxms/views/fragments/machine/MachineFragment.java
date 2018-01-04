@@ -8,6 +8,9 @@ import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Editable;
+import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -48,11 +51,10 @@ import java.util.Map;
  */
 
 public class MachineFragment extends BaseFragment implements HomeActivity.OnBackPressListener, LoadMoreHelper.LoadMoreListener {
+    private static String TAG = "MachineFragment";
     private View containerView;
-    BaseFragment curFrameFragment;
     private FrameLayout tradeDetailLayout;
-    HomeActivity homeActivity;
-    private ImageView drawerIcon, saoma;
+    private ImageView drawerIcon, saoma, clearSearch;
     private CoordinatorLayout machineContainer;
     private android.support.v4.widget.SwipeRefreshLayout machineRefresh;
     private android.support.v7.widget.RecyclerView machineRecycler;
@@ -60,26 +62,72 @@ public class MachineFragment extends BaseFragment implements HomeActivity.OnBack
     private EditText inputMachineName;
     private Button search;
     private TextView title;
-    MachineListAdapter adapter;
-    LoadMoreHelper loadMoreHelper;
-    Dialog dialog;
-    private List<ItemMachine> itemMachines;
     private int curPage, requestNum, totalNum, totalPage;
+    private List<ItemMachine> itemMachines;
+    private MachineListAdapter adapter;
+    private LoadMoreHelper loadMoreHelper;
+    private Dialog dialog;
+    private BaseFragment curFrameFragment;
+    private HomeActivity homeActivity;
+    private MachineListTask machineListTask;
+    private boolean isSearchClick = false;
 
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         if (containerView == null) {
-            Log.e("------", "-----------onCreateView_---------");
             containerView = super.onCreateView(inflater, container, FragmentFactory.getInstance().putLayoutId(R.layout.fragment_machine));
             initViews();
+            initLisenner();
             initDatas();
         }
         return containerView;
     }
 
+    private void initViews() {
+        machineContainer = (CoordinatorLayout) containerView.findViewById(R.id.machineContainer);
+        tradeDetailLayout = (FrameLayout) containerView.findViewById(R.id.detailFrameLayout);
+        drawerIcon = (ImageView) containerView.findViewById(R.id.drawerIcon);
+        saoma = (ImageView) containerView.findViewById(R.id.saoma);
+        clearSearch = (ImageView) containerView.findViewById(R.id.clearSearch);
+        machineRefresh = (android.support.v4.widget.SwipeRefreshLayout) containerView.findViewById(R.id.machineRefresh);
+        machineRecycler = (android.support.v7.widget.RecyclerView) containerView.findViewById(R.id.machineRecycler);
+        detailFrameLayout = (FrameLayout) containerView.findViewById(R.id.detailFrameLayout);
+        inputMachineName = (EditText) containerView.findViewById(R.id.inputMachineName);
+        search = (Button) containerView.findViewById(R.id.search);
+        title = (TextView) containerView.findViewById(R.id.title);
+    }
+
+    private void initLisenner() {
+        machineRefresh.setOnRefreshListener(this);
+        drawerIcon.setOnClickListener(this);
+        saoma.setOnClickListener(this);
+        search.setOnClickListener(this);
+        clearSearch.setOnClickListener(this);
+        inputMachineName.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                if (s.length() <= 0 && isSearchClick) {
+                    isSearchClick = false;
+                    getDatas(RequestParamsContants.getInstance().getMachineListParams());
+                }
+            }
+        });
+    }
+
     private void initDatas() {
+        initPage();
         homeActivity = (HomeActivity) getActivity();
         homeActivity.setOnBackPressListener(this);
         itemMachines = new ArrayList<>();
@@ -91,34 +139,44 @@ public class MachineFragment extends BaseFragment implements HomeActivity.OnBack
                 .setLoadMoreListenner(this)
                 .bindScrollListener(machineRecycler)
                 .setVisibleThreshold(0);
-        initPage();
         dialog = MyDialog.loadDialog(getActivity());
+        machineRefresh.setColorSchemeColors(ContextCompat.getColor(getContext(), R.color.blue));
+        title.setText("机器列表");
         getDatas(getParams());
     }
 
-    private void getDatas(Map<String, Object> params) {
-        MachineListTask machineListTask = new MachineListTask(params);
-//        machineListTask.execute();
-        machineListTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+    private void initPage() {
+        curPage = 1;
+        requestNum = 1;
+        totalNum = 0;
     }
 
-    private void initViews() {
-        machineContainer = (CoordinatorLayout) containerView.findViewById(R.id.machineContainer);
-        tradeDetailLayout = (FrameLayout) containerView.findViewById(R.id.detailFrameLayout);
-        drawerIcon = (ImageView) containerView.findViewById(R.id.drawerIcon);
-        saoma = (ImageView) containerView.findViewById(R.id.saoma);
-        machineRefresh = (android.support.v4.widget.SwipeRefreshLayout) containerView.findViewById(R.id.machineRefresh);
-        machineRecycler = (android.support.v7.widget.RecyclerView) containerView.findViewById(R.id.machineRecycler);
-        detailFrameLayout = (FrameLayout) containerView.findViewById(R.id.detailFrameLayout);
-        inputMachineName = (EditText) containerView.findViewById(R.id.inputMachineName);
-        search = (Button) containerView.findViewById(R.id.search);
-        title = (TextView) containerView.findViewById(R.id.title);
-        title.setText("机器列表");
-        machineRefresh.setOnRefreshListener(this);
-        drawerIcon.setOnClickListener(this);
-        saoma.setOnClickListener(this);
-        search.setOnClickListener(this);
-        machineRefresh.setColorSchemeColors(ContextCompat.getColor(getContext(), R.color.blue));
+    private Map<String, Object> getParams() {
+        Map<String, Object> body = RequestParamsContants.getInstance().getMachineListParams();
+        body.put("n", 2);
+        return body;
+    }
+
+    private void getDatas(Map<String, Object> params) {
+        if (machineListTask == null) {
+            machineListTask = new MachineListTask(params);
+            //        machineListTask.execute();
+            machineListTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+            return;
+        }
+//        machineListTask.onPostExecute(false);
+        machineListTask = null;
+        System.gc();
+        getDatas(params);
+    }
+
+    /*
+  * 设置能够滑动加载
+  * */
+    private void setCanLoad() {
+        if (loadMoreHelper != null) {
+            loadMoreHelper.setLoading(false);
+        }
     }
 
     public void addFrameLayout(BaseFragment fragment) {
@@ -126,12 +184,6 @@ public class MachineFragment extends BaseFragment implements HomeActivity.OnBack
         super.addFrameLayout(fragment, R.id.detailFrameLayout);
         tradeDetailLayout.setVisibility(View.VISIBLE);
         machineContainer.setVisibility(View.GONE);
-    }
-
-    private Map<String, Object> getParams() {
-        Map<String, Object> body = RequestParamsContants.getInstance().getMachineListParams();
-        body.put("n", 2);
-        return body;
     }
 
     @Override
@@ -142,12 +194,16 @@ public class MachineFragment extends BaseFragment implements HomeActivity.OnBack
                 body.put("keyword", inputMachineName.getText().toString());
                 itemMachines.clear();
                 getDatas(body);
+                isSearchClick = true;
                 break;
             case R.id.saoma:
                 homeActivity.openSaoma();
                 break;
             case R.id.drawerIcon:
                 homeActivity.clickIconToOpenDrawer();
+                break;
+            case R.id.clearSearch:
+                inputMachineName.setText("");
                 break;
         }
     }
@@ -168,12 +224,6 @@ public class MachineFragment extends BaseFragment implements HomeActivity.OnBack
         machineRefresh.setRefreshing(false);
     }
 
-    private void initPage() {
-        curPage = 1;
-        requestNum = 1;
-        totalNum = 0;
-    }
-
     @Override
     public void loadMore(RecyclerView.Adapter<RecyclerView.ViewHolder> adapter, RecyclerView recyclerView) {
 
@@ -184,15 +234,6 @@ public class MachineFragment extends BaseFragment implements HomeActivity.OnBack
             Map<String, Object> params = getParams();
             params.put("p", curPage + 1);
             getDatas(params);
-        }
-    }
-
-    /*
-    * 设置能够滑动加载
-    * */
-    private void setCanLoad() {
-        if (loadMoreHelper != null) {
-            loadMoreHelper.setLoading(false);
         }
     }
 
@@ -228,7 +269,7 @@ public class MachineFragment extends BaseFragment implements HomeActivity.OnBack
     private class MachineListTask extends AsyncTask<Void, Void, Boolean> {
 
         private String response;
-        private String err = "net_work_err";
+        private String err = "";
         private List<ItemMachine> machines;
         private Map<String, Object> params;
 
@@ -246,8 +287,10 @@ public class MachineFragment extends BaseFragment implements HomeActivity.OnBack
         @Override
         protected Boolean doInBackground(Void... params) {
             try {
-                Log.e("request params: ", JsonUtil.mapToJson(this.params));
+                Log.e(TAG, "request url: " + HttpRequstUrl.MACHINE_LIST_URL);
+                Log.e(TAG, "request params: " + JsonUtil.mapToJson(this.params));
                 response = OkHttpUtil.post(HttpRequstUrl.MACHINE_LIST_URL, JsonUtil.mapToJson(this.params));
+                Log.e(TAG, "response" + response);
              /*    被移动至JsonDataParse的getArrayList 方法中
                 JSONObject jsonObject = new JSONObject(response.toString());
                 JSONObject jsonD = jsonObject.getJSONObject("d");
@@ -255,15 +298,22 @@ public class MachineFragment extends BaseFragment implements HomeActivity.OnBack
                 curPage = jsonD.getInt("p");
                 requestNum = jsonD.getInt("n");
                 JSONArray jsonList = jsonD.getJSONArray("list");*/
-                machines = ItemMachine.bindMachineList(JsonDataParse.getInstance().getArrayList(response.toString()));
+                if (response == null) {
+                    return false;
+                }
+               /* else {
+                    err = JsonDataParse.getInstance().getErr(response);
+                    if (!TextUtils.equals(err, "")) {
+                        return false;
+                    }
+                }*/
+                machines = ItemMachine.bindMachineList(JsonDataParse.getInstance().getArrayList(response));
                 totalNum = JsonDataParse.getInstance().getTotalNum();
                 curPage = JsonDataParse.getInstance().getCurPage();
                 requestNum = JsonDataParse.getInstance().getRequestNum();
-                Log.e("machines.size==", machines.size() + "");
-                Log.e("response", response.toString());
+                Log.e(TAG, "machines.size==" + machines.size());
                 return true;
             } catch (IOException e) {
-                Log.e("erro", e.getMessage());
                 if (dialog != null) {
                     dialog.dismiss();
                 }
@@ -273,18 +323,17 @@ public class MachineFragment extends BaseFragment implements HomeActivity.OnBack
                     dialog.dismiss();
                 }
                 err = RequstTips.JSONException_Tip;
-                Log.e("erro", e.toString());
             }
             return false;
         }
 
         @Override
         protected void onPostExecute(final Boolean success) {
+            if (dialog != null) {
+                dialog.dismiss();
+//                dialog = null;//第一次弹出dialog后，后续加载不在弹出
+            }
             if (success) {
-                if (dialog != null) {
-                    dialog.dismiss();
-                    dialog = null;//第一次弹出dialog后，后续加载不在弹出
-                }
                 if (itemMachines.size() > 0) {
                     if (itemMachines.get(itemMachines.size() - 1) == null) {
                         itemMachines.remove(itemMachines.size() - 1);
@@ -297,20 +346,17 @@ public class MachineFragment extends BaseFragment implements HomeActivity.OnBack
                 }
                 adapter.notifyDataSetChanged();
             } else {
-                if (dialog != null) {
-                    dialog.dismiss();
+                if (!TextUtils.equals(err, "")) {
+                    Toast.makeText(homeActivity, err, Toast.LENGTH_SHORT).show();
+                } else {
+
                 }
-                Log.e("request error :", response + "");
-                Toast.makeText(homeActivity, err, Toast.LENGTH_SHORT).show();
             }
         }
 
         @Override
         protected void onCancelled() {
-
+            machineListTask = null;
         }
-
-
     }
-
 }

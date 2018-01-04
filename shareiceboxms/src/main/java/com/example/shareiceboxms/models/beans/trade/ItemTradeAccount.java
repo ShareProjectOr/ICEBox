@@ -3,6 +3,7 @@ package com.example.shareiceboxms.models.beans.trade;
 import android.util.Log;
 
 import com.example.shareiceboxms.models.beans.ItemCompany;
+import com.example.shareiceboxms.models.beans.ItemMachine;
 import com.example.shareiceboxms.models.beans.ItemPerson;
 
 import org.json.JSONArray;
@@ -102,21 +103,50 @@ public class ItemTradeAccount implements Serializable {
             for (int i = 0; i < list.length(); i++) {
                 JSONObject item = (JSONObject) list.get(i);
                 ItemTradeAccount itemTradeAccount = new ItemTradeAccount();
-                itemTradeAccount.divideID = item.getInt("divideID");
-                itemTradeAccount.createTime = item.getString("createTime");
-                itemTradeAccount.checkTime = item.getString("checkTime");
-                itemTradeAccount.configTime = item.getString("configTime");
-                itemTradeAccount.configTransferTime = item.getString("configTransferTime");
-                itemTradeAccount.recheckTime = item.getString("recheckTime");
-                itemTradeAccount.cancelTime = item.getString("cancelTime");
-                itemTradeAccount.startTime = item.getString("startTime");
-                itemTradeAccount.endTime = item.getString("endTime");
-                itemTradeAccount.divideState = item.getInt("divideState");
-                itemTradeAccount.divideNum = item.getInt("divideNum");
-                itemTradeAccount.divideMoney = item.getString("divideMoney");
-                itemTradeAccount.offsetMoney = item.getString("offsetMoney");
-                itemTradeAccount.actualPayment = item.getString("actualPayment");
-                itemTradeAccount.divideType = item.getInt("divideType");
+                if (item.has("divideID") && !item.get("divideID").equals(null))
+                    itemTradeAccount.divideID = item.getInt("divideID");
+
+                if (item.has("createTime") && !item.get("createTime").equals(null))
+                    itemTradeAccount.createTime = item.getString("createTime");
+
+                if (item.has("checkTime") && !item.get("checkTime").equals(null))
+                    itemTradeAccount.checkTime = item.getString("checkTime");
+
+                if (item.has("configTime") && !item.get("configTime").equals(null))
+                    itemTradeAccount.configTime = item.getString("configTime");
+
+                if (item.has("configTransferTime") && !item.get("configTransferTime").equals(null))
+                    itemTradeAccount.configTransferTime = item.getString("configTransferTime");
+
+                if (item.has("recheckTime") && !item.get("recheckTime").equals(null))
+                    itemTradeAccount.recheckTime = item.getString("recheckTime");
+
+                if (item.has("cancelTime") && !item.get("cancelTime").equals(null))
+                    itemTradeAccount.cancelTime = item.getString("cancelTime");
+
+                if (item.has("startTime") && !item.get("startTime").equals(null))
+                    itemTradeAccount.startTime = item.getString("startTime");
+
+                if (item.has("endTime") && !item.get("endTime").equals(null))
+                    itemTradeAccount.endTime = item.getString("endTime");
+
+                if (item.has("divideState") && !item.get("divideState").equals(null))
+                    itemTradeAccount.divideState = item.getInt("divideState");
+
+                if (item.has("divideNum") && !item.get("divideNum").equals(null))
+                    itemTradeAccount.divideNum = item.getInt("divideNum");
+
+                if (item.has("divideMoney") && !item.get("divideMoney").equals(null))
+                    itemTradeAccount.divideMoney = item.getString("divideMoney");
+
+                if (item.has("offsetMoney") && !item.get("offsetMoney").equals(null))
+                    itemTradeAccount.offsetMoney = item.getString("offsetMoney");
+
+                if (item.has("actualPayment") && !item.get("actualPayment").equals(null))
+                    itemTradeAccount.actualPayment = item.getString("actualPayment");
+
+                if (item.has("actualPayment") && !item.get("actualPayment").equals(null))
+                    itemTradeAccount.divideType = item.getInt("divideType");
 
                 if (item.has("creator") && !item.get("creator").equals(null))
                     itemTradeAccount.creator = ItemPerson.bindPerson(item.getJSONObject("creator"));

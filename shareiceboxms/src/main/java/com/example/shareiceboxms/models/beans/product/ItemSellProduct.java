@@ -83,28 +83,50 @@ public class ItemSellProduct extends ItemProductBase {
             for (int i = 0; i < list.length(); i++) {
                 JSONObject item = (JSONObject) list.get(i);
                 ItemSellProduct itemProduct = new ItemSellProduct();
-                itemProduct.goodsID = item.getInt("goodsID");
-                itemProduct.categoryID = item.getInt("categoryID");
-                itemProduct.goodsName = item.getString("goodsName");
-                itemProduct.pirse = (float) item.getDouble("pirse");
-                itemProduct.activityPrice = (float) item.getDouble("activityPrice");
-                itemProduct.rfid = item.getString("rfid");
-                itemProduct.inputTime = item.getString("inputTime");
-                itemProduct.bindingTime = item.getString("bindingTime");
-                itemProduct.exhibitTime = item.getString("exhibitTime");
-                itemProduct.residueStorageTime = item.getInt("residueStorageTime");
-                itemProduct.state = item.getInt("state");
-                if (item.has("isRefund")) {
+                if (item.has("goodsID") && !item.get("goodsID").equals(null)) {
+                    itemProduct.goodsID = item.getInt("goodsID");
+                }
+                if (item.has("categoryID") && !item.get("categoryID").equals(null)) {
+                    itemProduct.categoryID = item.getInt("categoryID");
+                }
+                if (item.has("goodsName") && !item.get("goodsName").equals(null)) {
+                    itemProduct.goodsName = item.getString("goodsName");
+                }
+                if (item.has("pirse") && !item.get("pirse").equals(null)) {
+                    itemProduct.pirse = (float) item.getDouble("pirse");
+                }
+                if (item.has("activityPrice") && !item.get("activityPrice").equals(null)) {
+                    itemProduct.activityPrice = (float) item.getDouble("activityPrice");
+                }
+                if (item.has("rfid") && !item.get("rfid").equals(null)) {
+                    itemProduct.rfid = item.getString("rfid");
+                }
+                if (item.has("inputTime") && !item.get("inputTime").equals(null)) {
+                    itemProduct.inputTime = item.getString("inputTime");
+                }
+                if (item.has("bindingTime") && !item.get("bindingTime").equals(null)) {
+                    itemProduct.bindingTime = item.getString("bindingTime");
+                }
+                if (item.has("exhibitTime") && !item.get("exhibitTime").equals(null)) {
+                    itemProduct.exhibitTime = item.getString("exhibitTime");
+                }
+                if (item.has("residueStorageTime") && !item.get("residueStorageTime").equals(null)) {
+                    itemProduct.residueStorageTime = item.getInt("residueStorageTime");
+                }
+                if (item.has("state") && !item.get("state").equals(null)) {
+                    itemProduct.state = item.getInt("state");
+                }
+                if (item.has("isRefund") && !item.get("isRefund").equals(null)) {
                     itemProduct.isRefund = item.getInt("isRefund");
                 }
                 if (item.has("agent") && !item.get("agent").equals(null)) {
-                    itemProduct.agent = ItemPerson.bindPerson(item.getJSONObject("agent"));
+//                    itemProduct.agent = ItemPerson.bindPerson(item.getJSONObject("agent"));
                 }
                 if (item.has("company") && !item.get("company").equals(null)) {
                     itemProduct.company = ItemCompany.bindCompany(item.getJSONObject("company"));
                 }
                 if (item.has("machine") && !item.get("machine").equals(null)) {
-                    itemProduct.machine = ItemMachine.bindMachineNotFull(item.getJSONObject("machine"));
+//                    itemProduct.machine = ItemMachine.bindMachineNotFull(item.getJSONObject("machine"));
                 }
                 if (item.has("trade") && !item.get("trade").equals(null)) {
                     itemProduct.trade = ItemTradeRecord.bindTradeRecordNotFull(item.getJSONObject("trade"));

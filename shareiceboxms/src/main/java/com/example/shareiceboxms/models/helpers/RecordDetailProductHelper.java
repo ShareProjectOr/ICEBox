@@ -29,6 +29,7 @@ import java.util.Map;
  */
 
 public class RecordDetailProductHelper {
+    private static String TAG = "RecordDetailProductHelper";
     private Context context;
     private ItemMachine itemMachine;
     private List<ItemSellProduct> itemProducts;
@@ -89,7 +90,7 @@ public class RecordDetailProductHelper {
 
     public class RecordDetailProductTask extends AsyncTask<Void, Void, Boolean> {
         private String response;
-        private String err = "net_work_err";
+        private String err = "";
         private List<ItemSellProduct> products;
         private Map<String, Object> params;
         private List<ItemSellProduct> itemProducts;
@@ -112,20 +113,19 @@ public class RecordDetailProductHelper {
         @Override
         protected Boolean doInBackground(Void... params) {
             try {
-                Log.e("request params: ", JsonUtil.mapToJson(this.params));
+                Log.e(TAG, " request url: " + HttpRequstUrl.TRADE_RECOR_DETAIL_PRODUCT_URL);
+                Log.e(TAG, "request params: " + JsonUtil.mapToJson(this.params));
                 response = OkHttpUtil.post(HttpRequstUrl.TRADE_RECOR_DETAIL_PRODUCT_URL, JsonUtil.mapToJson(this.params));
                 products = ItemSellProduct.bindProductList(JsonDataParse.getInstance().getArrayList(response.toString()), itemMachine);
-                Log.e("DetailProductHelper", "products.size==" + products.size() + "");
-                Log.e("response", response.toString());
+                Log.e(TAG, "products.size==" + products.size() + "");
+                Log.e(TAG, "response:" + response.toString());
                 return true;
             } catch (IOException e) {
-                Log.e("erro", e.toString());
                 if (dialog != null) {
                     dialog.dismiss();
                 }
                 err = RequstTips.getErrorMsg(e.getMessage());
             } catch (JSONException e) {
-                Log.e("erro", e.toString());
                 if (dialog != null) {
                     dialog.dismiss();
                 }
@@ -136,6 +136,7 @@ public class RecordDetailProductHelper {
 
         @Override
         protected void onPostExecute(Boolean success) {
+            Log.e("request error :", response + "");
             if (success) {
                 dialog.dismiss();
                 itemProducts.addAll(products);
@@ -143,7 +144,6 @@ public class RecordDetailProductHelper {
                     productResponseLisenner.getProducts(itemProducts);
                 }
             } else {
-                Log.e("request error :", response + "");
                 if (context != null)
                     Toast.makeText(context, err, Toast.LENGTH_SHORT).show();
             }

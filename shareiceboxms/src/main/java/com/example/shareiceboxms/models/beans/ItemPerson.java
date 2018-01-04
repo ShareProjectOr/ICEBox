@@ -82,8 +82,11 @@ public class ItemPerson {
     public static ItemPerson bindPerson(JSONObject response) throws JSONException {
         ItemPerson itemPerson = new ItemPerson();
         try {
+
             itemPerson.disable = response.getInt("disable");
-            itemPerson.name = response.getString("name");
+            if (response.has("machine") && !response.get("name").equals(null)) {
+                itemPerson.name = response.getString("name");
+            }
             itemPerson.tel = response.getString("tel");
             if (response.get("userType").equals(null)) {
                 itemPerson.userType = response.getInt("userType");

@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -52,6 +53,7 @@ public class TradeRecordDetailFragment extends BaseFragment implements RecordDet
     private android.support.design.widget.TabLayout productTabLayout;
     private CheckBox allProductCB;
     private com.example.shareiceboxms.models.widget.ListViewForScrollView productList;
+    private LinearLayout refundMoreLayout;
 
     private TextView tradeTime, totalMoney, payState, machineNameAddr, customerId, tradeNo;
     private ImageView payIcon;
@@ -87,6 +89,7 @@ public class TradeRecordDetailFragment extends BaseFragment implements RecordDet
         productTabLayout = (android.support.design.widget.TabLayout) containerView.findViewById(R.id.productTabLayout);
         allProductCB = (CheckBox) containerView.findViewById(R.id.allProductCB);
         productList = (com.example.shareiceboxms.models.widget.ListViewForScrollView) containerView.findViewById(R.id.productList);
+        refundMoreLayout = (LinearLayout) containerView.findViewById(R.id.refundMoreLayout);
 
         tradeTime = (TextView) containerView.findViewById(R.id.tradeTime);
         totalMoney = (TextView) containerView.findViewById(R.id.totalMoney);
@@ -126,7 +129,9 @@ public class TradeRecordDetailFragment extends BaseFragment implements RecordDet
         } else {
             allProductCB.setVisibility(View.GONE);
         }
-
+        if (PerSonMessage.userType == Constants.AGENT_MANAGER) {
+            refundMoreLayout.setVisibility(View.GONE);
+        }
         title.setText("交易详情");
         productTabLayout.setTabMode(TabLayout.MODE_FIXED);
         productTabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {

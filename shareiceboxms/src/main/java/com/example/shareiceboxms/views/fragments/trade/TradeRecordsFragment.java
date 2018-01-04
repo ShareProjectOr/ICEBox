@@ -8,13 +8,16 @@ import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.DatePicker;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListPopupWindow;
 import android.widget.RelativeLayout;
@@ -60,7 +63,8 @@ public class TradeRecordsFragment extends BaseFragment implements LoadMoreHelper
     private static String TAG = "TradeRecordsFragment";
     private View containerView;
     private ImageView tradeSearch, tradeTypeIcon;
-    private TextView tradeNo, tradeTypeText, timeSelector;
+    private TextView tradeTypeText, timeSelector;
+    private EditText tradeNo;
     private RelativeLayout tradeType, selectTime;
     private android.support.v4.widget.SwipeRefreshLayout recordRefresh;
     private android.support.v7.widget.RecyclerView tradeRecordList;
@@ -73,8 +77,9 @@ public class TradeRecordsFragment extends BaseFragment implements LoadMoreHelper
     private HomeActivity homeActivity;
     private Map<String, Object> params;
     private String[] time;
-    //    private Dialog dialog;
+    private Dialog dialog;
     private int curPage, requestNum, totalNum, totalPage;
+    private boolean searchClicked = false;
 
     @Nullable
     @Override
@@ -90,7 +95,7 @@ public class TradeRecordsFragment extends BaseFragment implements LoadMoreHelper
 
     private void initViews() {
         tradeSearch = (ImageView) containerView.findViewById(R.id.tradeSearch);
-        tradeNo = (TextView) containerView.findViewById(R.id.tradeNo);
+        tradeNo = (EditText) containerView.findViewById(R.id.tradeNo);
         tradeType = (RelativeLayout) containerView.findViewById(R.id.tradeType);
         selectTime = (RelativeLayout) containerView.findViewById(R.id.selectTime);
         timeSelector = (TextView) containerView.findViewById(R.id.timeSelector);
@@ -102,7 +107,29 @@ public class TradeRecordsFragment extends BaseFragment implements LoadMoreHelper
         tradeSearch.setOnClickListener(this);
         selectTime.setOnClickListener(this);
         recordRefresh.setColorSchemeColors(ContextCompat.getColor(getContext(), R.color.blue));
+        tradeNo.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if (tradeNo.getText().toString().length() <= 0 && searchClicked) {
+                    if (params.containsKey("tradeCode")) {
+                        params.remove("tradeCode");
+                    }
+                    itemTradeRecords.clear();
+                    getDatas(params);
+                    searchClicked = false;
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
     }
 
     private void initDatas() {
@@ -114,7 +141,9 @@ public class TradeRecordsFragment extends BaseFragment implements LoadMoreHelper
                 , Calendar.getInstance().get(Calendar.DATE), true);
         mTilePopup = MenuPop.CreateMenuPop(getContext(), tradeType, Constants.TradeStateTitle);
         mTilePopup.setOnItemClickListener(this);
-//        dialog = MyDialog.loadDialog(getContext());
+        if (FragmentFactory.getInstance().getTradeChildFragments().size() == 1) {
+            dialog = MyDialog.loadDialog(getContext());
+        }
         RecyclerView tradeRecordList = (android.support.v7.widget.RecyclerView) containerView.findViewById(R.id.tradeRecordList);
         adapter = new TradeRecordListAdapter(getContext(), itemTradeRecords, this);
         new MyViewFactory(getContext()).BuildRecyclerViewRule(tradeRecordList,
@@ -157,6 +186,7 @@ public class TradeRecordsFragment extends BaseFragment implements LoadMoreHelper
                 //模糊查询订单号
                 params.put("tradeCode", tradeNo.getText().toString());
                 getDatas(params);
+                searchClicked = true;
                 break;
             case R.id.tradeType:
                 isTypeClicked = !isTypeClicked;
@@ -195,10 +225,6 @@ public class TradeRecordsFragment extends BaseFragment implements LoadMoreHelper
 
     @Override
     public void onRefresh() {
-//        if (recordRefresh.isRefreshing()) {
-//            return;
-//        }
-//        timeSelector.setText(SecondToDate.getDateUiShow(SecondToDate.getDateParams(SecondToDate.TODAY_CODE)));
         if (itemTradeRecords != null) {
             itemTradeRecords.clear();
             initPage();
@@ -239,7 +265,9 @@ public class TradeRecordsFragment extends BaseFragment implements LoadMoreHelper
         time = super.onDateSet(startDatePicker, startYear, startMonthOfYear, startDayOfMonth, endDatePicker, endYear, endMonthOfYear, endDayOfMonth);
         timeSelector.setText(SecondToDate.getDateUiShow(time));
         params.put("createTime", RequestParamsContants.getInstance().getSelectTime(time));
+        itemTradeRecords.clear();
         getDatas(params);
+
         return null;
     }
 
@@ -258,9 +286,9 @@ public class TradeRecordsFragment extends BaseFragment implements LoadMoreHelper
 
         @Override
         protected void onPreExecute() {
-//            if (dialog != null) {
-//                dialog.show();
-//            }
+            if (dialog != null) {
+                dialog.show();
+            }
         }
 
         @Override
@@ -269,9 +297,10 @@ public class TradeRecordsFragment extends BaseFragment implements LoadMoreHelper
                 Log.e(TAG, " request url: " + HttpRequstUrl.TRADE_RECORDS_URL);
                 Log.e(TAG, "request params: " + JsonUtil.mapToJson(this.params));
                 response = OkHttpUtil.post(HttpRequstUrl.TRADE_RECORDS_URL, JsonUtil.mapToJson(this.params));
-                if (JsonDataParse.getInstance().getArrayList(response.toString()).length() <= 0) {
+                if (response == null) {
                     return false;
                 }
+                Log.e(TAG, "response :" + response);
                 tradeRecords = ItemTradeRecord.bindTradeRecordsList(JsonDataParse.getInstance().getArrayList(response.toString()));
                 totalNum = JsonDataParse.getInstance().getTotalNum();
                 curPage = JsonDataParse.getInstance().getCurPage();
@@ -279,14 +308,14 @@ public class TradeRecordsFragment extends BaseFragment implements LoadMoreHelper
                 totalPage = JsonDataParse.getInstance().getTotalPage();
                 return true;
             } catch (IOException e) {
-//                if (dialog != null) {
-//                    dialog.dismiss();
-//                }
+                if (dialog != null) {
+                    dialog.dismiss();
+                }
                 err = RequstTips.getErrorMsg(e.getMessage());
             } catch (JSONException e) {
-//                if (dialog != null) {
-//                    dialog.dismiss();
-//                }
+                if (dialog != null) {
+                    dialog.dismiss();
+                }
                 err = RequstTips.JSONException_Tip;
             }
             return false;
@@ -294,12 +323,11 @@ public class TradeRecordsFragment extends BaseFragment implements LoadMoreHelper
 
         @Override
         protected void onPostExecute(final Boolean success) {
-            Log.e(TAG, "response:" + response);
+            if (dialog != null) {
+                dialog.dismiss();
+//                dialog = null;//第一次弹出dialog后，后续加载不在弹出
+            }
             if (success) {
-//                if (dialog != null) {
-//                    dialog.dismiss();
-//                    dialog = null;//第一次弹出dialog后，后续加载不在弹出
-//                }
                 if (itemTradeRecords.size() > 0) {
                     if (itemTradeRecords.get(itemTradeRecords.size() - 1) == null) {
                         itemTradeRecords.remove(itemTradeRecords.size() - 1);
@@ -312,9 +340,9 @@ public class TradeRecordsFragment extends BaseFragment implements LoadMoreHelper
                 }
                 adapter.notifyDataSetChanged();
             } else {
-//                if (dialog != null) {
-//                    dialog.dismiss();
-//                }
+                if (dialog != null) {
+                    dialog.dismiss();
+                }
                 /*
                 *获得数据为空时，提示
                 * */

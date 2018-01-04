@@ -50,8 +50,8 @@ public class RequestParamsContants {
    * */
     public Map<String, Object> getMachineListParams() {
         Map<String, Object> params = new HashMap<>();
-//        params.put("userID", PerSonMessage.userId);
-        params.put("appUserID", PerSonMessage.userId);
+        params.put("userID",1 );//PerSonMessage.userId
+        params.put("appUserID",1 );//PerSonMessage.userId
         params.put("keyword", "");
         params.put("p", 1);
         params.put("n", 4);
@@ -70,7 +70,7 @@ public class RequestParamsContants {
     * */
     public Map<String, Object> getMachineDetailParams() {
         Map<String, Object> params = new HashMap<>();
-//        params.put("userID", PerSonMessage.userId);
+        params.put("userID", PerSonMessage.userId);
         params.put("appUserID", PerSonMessage.userId);
         params.put("checkCode", 1);
         params.put("machineID", FragmentFactory.getInstance().getSavedBundle().getInt("machineID"));
@@ -82,7 +82,7 @@ public class RequestParamsContants {
     * */
     public Map<String, Object> getMachineStockProductParams() {
         Map<String, Object> params = new HashMap<>();
-//        params.put("userID", PerSonMessage.userId);
+        params.put("userID", PerSonMessage.userId);
         params.put("appUserID", PerSonMessage.userId);
         params.put("checkCode", 1);
         params.put("p", 1);
@@ -96,7 +96,7 @@ public class RequestParamsContants {
 * */
     public Map<String, Object> getMachineLightControlParams() {
         Map<String, Object> params = new HashMap<>();
-//        params.put("userID", PerSonMessage.userId);
+        params.put("userID", PerSonMessage.userId);
         params.put("appUserID", PerSonMessage.userId);
         params.put("checkCode", 1);
         params.put("machineID", FragmentFactory.getInstance().getSavedBundle().getInt("machineID"));
@@ -108,7 +108,7 @@ public class RequestParamsContants {
 * */
     public Map<String, Object> getMachineShutdownParams() {
         Map<String, Object> params = new HashMap<>();
-//        params.put("userID", PerSonMessage.userId);
+        params.put("userID", PerSonMessage.userId);
         params.put("appUserID", PerSonMessage.userId);
         params.put("checkCode", 1);
         params.put("machineID", FragmentFactory.getInstance().getSavedBundle().getInt("machineID"));
@@ -120,7 +120,7 @@ public class RequestParamsContants {
 * */
     public Map<String, Object> getMachineRestartParams() {
         Map<String, Object> params = new HashMap<>();
-//        params.put("userID", PerSonMessage.userId);
+        params.put("userID", PerSonMessage.userId);
         params.put("appUserID", PerSonMessage.userId);
         params.put("checkCode", 1);
         params.put("machineID", FragmentFactory.getInstance().getSavedBundle().getInt("machineID"));
@@ -132,7 +132,7 @@ public class RequestParamsContants {
 * */
     public Map<String, Object> getMachineCheckParams() {
         Map<String, Object> params = new HashMap<>();
-//        params.put("userID", PerSonMessage.userId);
+        params.put("userID", PerSonMessage.userId);
         params.put("appUserID", PerSonMessage.userId);
         params.put("checkCode", 1);
         params.put("machineID", FragmentFactory.getInstance().getSavedBundle().getInt("machineID"));
@@ -144,7 +144,7 @@ public class RequestParamsContants {
 * */
     public Map<String, Object> getMachineTempParams() {
         Map<String, Object> params = new HashMap<>();
-//        params.put("userID", PerSonMessage.userId);
+        params.put("userID", PerSonMessage.userId);
         params.put("appUserID", PerSonMessage.userId);
         params.put("checkCode", 1);
         params.put("machineID", FragmentFactory.getInstance().getSavedBundle().getInt("machineID"));
@@ -218,9 +218,9 @@ public class RequestParamsContants {
 * */
     public Map<String, Object> getTradeRecordsParams() {
         Map<String, Object> params = new HashMap<>();
-//        params.put("userID", 1);
+//        params.put("userID", PerSonMessage.userId);
         params.put("appUserID", PerSonMessage.userId);
-        params.put("checkCode", 1);
+//        params.put("checkCode", 1);
         params.put("tradeCode", "");
 //        params.put("payState", "");
         params.put("createTime", null);
@@ -249,7 +249,7 @@ public class RequestParamsContants {
     public Map<String, Object> getTradeRecoredDetailProductParams() {
         Map<String, Object> params = new HashMap<>();
 //        params.put("userID", 1);
-        params.put("appUserID", 1);
+        params.put("appUserID", 29);//PerSonMessage.userId
         params.put("checkCode", 1);
         params.put("RFID", "");
 //        params.put("categoryID", 0);

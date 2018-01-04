@@ -2,6 +2,7 @@ package com.example.shareiceboxms.models.beans;
 
 import android.util.Log;
 
+import com.example.shareiceboxms.models.beans.trade.ItemTradeRecord;
 import com.example.shareiceboxms.models.contants.JsonDataParse;
 
 import org.json.JSONArray;
@@ -122,7 +123,9 @@ public class ItemMachine {
     public static ItemMachine bindMachine(JSONObject item) throws JSONException {
         ItemMachine itemMachine = new ItemMachine();
         try {
-            itemMachine.loginitude = item.getDouble("loginitude");
+            if (item.has("loginitude") && !item.get("loginitude").equals(null)) {
+                itemMachine.loginitude = item.getDouble("loginitude");
+            }
             itemMachine.doorState = item.getInt("doorState");
             itemMachine.latitude = item.getDouble("latitude");
             itemMachine.activationState = item.getInt("activationState");
@@ -176,6 +179,7 @@ public class ItemMachine {
     public static ItemMachine bindMachineNotFull(JSONObject item) throws JSONException {
         ItemMachine itemMachine = new ItemMachine();
         try {
+
             itemMachine.machineName = item.getString("machineName");
             itemMachine.machineID = item.getInt("machineID");
             itemMachine.machineCode = item.getString("machineCode");
