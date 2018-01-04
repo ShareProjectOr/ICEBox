@@ -7,13 +7,17 @@ import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.shareiceboxms.R;
@@ -35,7 +39,7 @@ import java.util.Map;
  * 品类列表视图管理类
  */
 
-public class ProductTypeListFragment extends BaseFragment {
+public class ProductTypeListFragment extends BaseFragment implements TextWatcher {
     private View contentView;
     private EditText mMachineSearchInput;
     private Button mDoSearch;
@@ -62,6 +66,7 @@ public class ProductTypeListFragment extends BaseFragment {
         if (!mRefreashLayout.isRefreshing()) {
             mRefreashLayout.setOnRefreshListener(this);
         }
+        mMachineSearchInput.addTextChangedListener(this);
     }
 
     private void inidata() {
@@ -103,6 +108,7 @@ public class ProductTypeListFragment extends BaseFragment {
                     Toast.makeText(getContext(), "搜索内容不能为空", Toast.LENGTH_SHORT).show();
                     return;
                 }
+
                 initPostBody.put("keyword", mMachineSearchInput.getText().toString());
                 contentprovider.getData(HttpRequstUrl.PRODUCT_TYPE_LIST_URL, initPostBody, true);
                 break;
@@ -141,5 +147,23 @@ public class ProductTypeListFragment extends BaseFragment {
                 mRefreashLayout.setRefreshing(false);
             }
         }, Constants.REFREASH_DELAYED_TIME);
+    }
+
+    @Override
+    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+    }
+
+    @Override
+    public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+    }
+
+    @Override
+    public void afterTextChanged(Editable s) {
+        if (s.length() == 0) {
+            initPostBody.put("keyword", "");
+            contentprovider.getData(HttpRequstUrl.PRODUCT_TYPE_LIST_URL, initPostBody, true);
+        }
     }
 }

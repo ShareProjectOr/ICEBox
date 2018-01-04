@@ -9,8 +9,18 @@
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.VIBRATE" />
+
+    <uses-feature
+        android:name="android.hardware.camera"
+        android:required="false" />
+    <uses-feature
+        android:name="android.hardware.camera.flash"
+        android:required="false" />
 
     <application
+        android:name=".views.activities.QrCodeApplication"
         android:allowBackup="true"
         android:icon="@mipmap/logo"
         android:label="@string/app_name"
@@ -23,9 +33,9 @@
         <!-- LoginActivity" -->
         <activity
             android:name=".views.activities.LoginActivity"
-            android:theme="@style/AppTheme.NoActionBar" >
+            android:theme="@style/AppTheme.NoActionBar">
 
-            </activity>
+        </activity>
 
         <activity android:name=".views.activities.HomeActivity">
             <intent-filter>
@@ -37,6 +47,7 @@
         <activity android:name=".views.activities.ModifyPriceActivity" />
         <activity android:name=".views.activities.CaptureActivity"></activity>
         <activity android:name=".views.activities.OpenDoorSuccessActivity"></activity>
+        <activity android:name=".views.activities.QrCodeActivity" />
 
         <service android:name=".models.http.mqtt.MqttService" />
     </application>

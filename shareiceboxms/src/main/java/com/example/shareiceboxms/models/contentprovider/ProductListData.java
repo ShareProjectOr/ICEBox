@@ -106,7 +106,7 @@ public class ProductListData {
                 dialog.dismiss();
                 if (DataSet.size() == 0 && error.equals("")) {
                     //没有数据的情况
-                    Toast.makeText(mActivty, "暂无任何商品品类信息", Toast.LENGTH_LONG).show();
+                 //   Toast.makeText(mActivty, "暂无任何商品品类信息", Toast.LENGTH_LONG).show();
                 }
                 if (!aBoolean) {
                     Toast.makeText(mActivty, error, Toast.LENGTH_LONG).show();

@@ -139,7 +139,6 @@ public class UpLoadDetailsGoodListAdapter extends BaseAdapter {
                 }
                 break;
             case TYPE_BODY_ITEM:
-
                 position -= SPECIAL_ITEM_COUNT;
                 if (convertView == null) {
                     convertView = LayoutInflater.from(mContext).inflate(R.layout.upload_details_goodlist_itemlayout, null);

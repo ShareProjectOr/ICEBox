@@ -82,7 +82,6 @@ public class UpLoadGoodsDetailsFragment extends BaseFragment {
         new AsyncTask<Void, Void, Boolean>() {
             String respone;
             String err;
-
             @Override
             protected Boolean doInBackground(Void... params) {
                 try {

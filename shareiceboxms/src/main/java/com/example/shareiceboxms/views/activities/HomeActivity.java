@@ -32,6 +32,7 @@ import com.example.shareiceboxms.R;
 import com.example.shareiceboxms.models.beans.PerSonMessage;
 import com.example.shareiceboxms.models.contants.ConstanceMethod;
 import com.example.shareiceboxms.models.contants.Constants;
+import com.example.shareiceboxms.models.contants.HttpRequstUrl;
 import com.example.shareiceboxms.models.contants.RequstTips;
 import com.example.shareiceboxms.models.contants.Sql;
 import com.example.shareiceboxms.models.factories.FragmentFactory;
@@ -104,9 +105,7 @@ public class HomeActivity extends BaseActivity
             tab.setText(Constants.TabTitles[i]);
             tabLayout.addTab(tab);
         }
-//        curFragment = new TradeFragment();
-        curFragment = new CloseDoorFragment();
-        showHomepage = false;
+        curFragment = new TradeFragment();
         switchFragment();
         setNotifySnackbar();
     }
@@ -151,7 +150,10 @@ public class HomeActivity extends BaseActivity
                 getCurFragment();
                 switchFragment();
                 navigationView.setCheckedItem(R.id.icon_home);
+                tabLayout.setVisibility(View.VISIBLE);
             }
+
+//            super.onBackPressed();
         }
     }
 
@@ -255,16 +257,16 @@ public class HomeActivity extends BaseActivity
     * 切换fragment
     * */
     public void switchFragment() {
-        FragmentManager fm = getSupportFragmentManager();
-        FragmentTransaction ft = fm.beginTransaction();
-        ft.replace(R.id.home_tab_frame, curFragment);
-        ft.commit();
-        BaseFragment.curFragment = curFragment;
         if (showHomepage) {
             tabLayout.setVisibility(View.VISIBLE);
         } else {
             tabLayout.setVisibility(View.GONE);
         }
+        FragmentManager fm = getSupportFragmentManager();
+        FragmentTransaction ft = fm.beginTransaction();
+        ft.replace(R.id.home_tab_frame, curFragment);
+        ft.commit();
+        BaseFragment.curFragment = curFragment;
     }
 
     public void DoSql() {
@@ -320,7 +322,7 @@ public class HomeActivity extends BaseActivity
                     String result = data.getStringExtra("QR_CODE");
                     // TODO 获取结果，做逻辑操作
                     Toast.makeText(getApplication(), result, Toast.LENGTH_LONG).show();
-                    requestOpenDoor(result);
+                    //    requestOpenDoor(result);
                     //  mMachineCode.setText(result);
                     //    tvResult.setText(result);
 
@@ -334,32 +336,47 @@ public class HomeActivity extends BaseActivity
     }
 
     private void requestOpenDoor(final String QRCode) {
-        String qrString[] = QRCode.split("\\&");
-        String headerString[] = qrString[0].split("\\?");
-        String stateString[] = headerString[1].split("\\=");
-        String machineCode = stateString[1];
+        String qrString[] = QRCode.split("\\?");
+        String headerString[] = qrString[1].split("\\&");
+        String machineCodeArray[] = new String[2];
+        for (int i = 0; i < headerString.length; i++) {
+            if (headerString[i].contains("state=")) {
+                machineCodeArray = headerString[i].split("\\=");
+                break;
+            }
+        }
+
+        String machineCode = machineCodeArray[1];
+        Log.e("machineCode", machineCode);
         final Map<String, Object> body = new HashMap<>();
-        body.put("machineCode", machineCode);
-        body.put("userID", PerSonMessage.userId);
+        body.put("machineCode", "121231");
+        body.put("userID", 0);
         body.put("QRCode", QRCode);
-        body.put("password", PerSonMessage.loginPassword);
+        body.put("password", "123456");
         new AsyncTask<Void, Void, Boolean>() {
             String err;
 
             @Override
             protected Boolean doInBackground(Void... params) {
                 try {
-                    String response = OkHttpUtil.post("", JsonUtil.mapToJson(body));
+                    String response = OkHttpUtil.post(HttpRequstUrl.OPEN_MACHINE_DOOR_URL, JsonUtil.mapToJson(body));
+                    Log.e("openResponse", response + "##");
                     JSONObject object = new JSONObject(response);
                     err = object.getString("err");
-                    if (object.getBoolean("d")) {
-                        return true;
+                    if (err.equals("") || err.equals("null")) {
+                        if (object.getBoolean("d")) {
+                            return true;
+                        } else {
+                            return false;
+                        }
                     } else {
                         return false;
                     }
+
                 } catch (IOException e) {
                     err = RequstTips.getErrorMsg(e.getMessage());
                 } catch (JSONException e) {
+                    Log.e("openResponse", e + "##");
                     err = RequstTips.JSONException_Tip;
                 }
                 return false;
@@ -375,6 +392,7 @@ public class HomeActivity extends BaseActivity
                         switchFragment();
                     }
                 } else {
+                    // Log.e("openErr",err.toString()+"##");
                     Toast.makeText(getApplication(), err, Toast.LENGTH_SHORT).show();
                 }
             }
@@ -388,7 +406,7 @@ public class HomeActivity extends BaseActivity
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     //这里已经获取到了摄像头的权限，想干嘛干嘛了可以
                     Intent intent = new Intent();
-                    intent.setClass(getApplication(), CaptureActivity.class);
+                    intent.setClass(getApplication(), QrCodeActivity.class);
                     startActivityForResult(intent, SCANNIN_GREQUEST_CODE);
 
                 } else {
@@ -413,13 +431,13 @@ public class HomeActivity extends BaseActivity
             } else {
                 //说明已经获取到摄像头权限了 想干嘛干嘛
                 Intent intent = new Intent();
-                intent.setClass(getApplication(), CaptureActivity.class);
+                intent.setClass(getApplication(), QrCodeActivity.class);
                 startActivityForResult(intent, SCANNIN_GREQUEST_CODE);
             }
         } else {
 //这个说明系统版本在6.0之下，不需要动态获取权限。
             Intent intent = new Intent();
-            intent.setClass(getApplication(), CaptureActivity.class);
+            intent.setClass(getApplication(), QrCodeActivity.class);
             startActivityForResult(intent, SCANNIN_GREQUEST_CODE);
 
         }
@@ -507,9 +525,9 @@ public class HomeActivity extends BaseActivity
     }
 
     @Override
-    public void messageArrived(String s, final MqttMessage mqttMessage) throws Exception {
+    public void messageArrived(final String s, MqttMessage mqttMessage) throws Exception {
         if (!s.isEmpty()) {
-            final JSONObject object = new JSONObject(new String(mqttMessage.getPayload()));
+            final JSONObject object = new JSONObject(s);
             String tymsgType = object.getString("msgType");
             Handler handler = new Handler(Looper.getMainLooper());
             switch (tymsgType) {
@@ -526,7 +544,7 @@ public class HomeActivity extends BaseActivity
                                     }
                                 } else if (object.getInt("doorState") == 2) {//关门,上货成功
                                     if (!(curFragment instanceof CloseDoorFragment)) {
-                                        FragmentFactory.getInstance().getSavedBundle().putString("callbackMsg", new String(mqttMessage.getPayload()));
+                                        FragmentFactory.getInstance().getSavedBundle().putString("callbackMsg", s);
                                         curFragment = new CloseDoorFragment();
                                         showHomepage = false;
                                         switchFragment();
