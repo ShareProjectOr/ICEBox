@@ -167,7 +167,7 @@ public class RequestParamsContants {
         Map<String, Object> params = new HashMap<>();
         params.put("n", 5);
         params.put("p", 1);
-        params.put("appUserID", PerSonMessage.userId);
+        params.put("appUserID", 29);
         params.put("operationTime", null);
         //   params.put("userID", PerSonMessage.userId);
         return params;

@@ -133,7 +133,7 @@ public class UpLoadGoodsRecordFragment extends BaseFragment {
         Map<String, Object> map = new HashMap<>();
         map.put("n", pageNum);
         map.put("p", currentPage);
-        map.put("appUserID", PerSonMessage.userId);
+        map.put("appUserID",29);
         //  map.put("userID", PerSonMessage.userId);
         map.put("operationTime", RequestParamsContants.getInstance().getSelectTime(operationTime));
         contentProvider.getData(HttpRequstUrl.UPLOAD_RECORD_LIST_URL, map, b);

@@ -26,7 +26,7 @@ import java.util.List;
  * Created by Administrator on 2017/12/13.
  */
 
-public class UpLoadDetailsGoodListAdapter extends BaseAdapter {
+public class UpLoadDetailsGoodListAdapter extends BaseAdapter implements View.OnClickListener {
     private Context mContext;
     private static final int TYPE_HEAD_ITEM = 0;
     private static final int TYPE_BODY_ITEM = 1;
@@ -111,11 +111,14 @@ public class UpLoadDetailsGoodListAdapter extends BaseAdapter {
     public View getView(int position, View convertView, ViewGroup parent) {
         int type = getItemType(position);
         ViewHolder holder;
+
         switch (type) {
             case TYPE_HEAD_ITEM:
+
                 if (convertView == null) {
                     convertView = LayoutInflater.from(mContext).inflate(R.layout.upload_details_goodlist_itemheadlayout, null);
-
+                    TextView operationType = (TextView) convertView.findViewById(R.id.operationType);
+                    operationType.setOnClickListener(this);
                 }
                 if (mJson != null) {
                     try {
@@ -123,8 +126,16 @@ public class UpLoadDetailsGoodListAdapter extends BaseAdapter {
                         long oPentime = SecondToDate.dateToStamp(mJson.getString("openingTime"));
                         long closeTime = SecondToDate.dateToStamp(mJson.getString("closingTime"));
                         long Sendtime = closeTime - oPentime;
-
-                        String msg[] = {"操作耗时:" + String.valueOf(Sendtime / (1000 * 60)) + "分", "记录编号:" + mJson.getInt("recordID"),
+                        String timeString = "获取失败";
+                        String[] mOperationTime = SecondToDate.formatLongToTimeStr(Sendtime / 1000);
+                        if (mOperationTime[1].equals("0")) {
+                            timeString = mOperationTime[2] + "分" + mOperationTime[3] + "秒";
+                        } else if (mOperationTime[0].equals("0")) {
+                            timeString = mOperationTime[1] + "时" + mOperationTime[2] + "分" + mOperationTime[3] + "秒";
+                        } else {
+                            timeString = mOperationTime[0] + "天" + mOperationTime[1] + "时" + mOperationTime[2] + "分" + mOperationTime[3] + "秒";
+                        }
+                        String msg[] = {"操作耗时:" + timeString, "记录编号:" + mJson.getInt("recordID"),
                                 "机器名称:" + mJson.getJSONObject("machine").getString("machineName"), "机器编号:" + mJson.getJSONObject("machine").getString("machineCode"),
                                 "安装地址:" + mJson.getJSONObject("machine").getString("machineAddress")};
                         for (int i = 0; i < mTextViews.length; i++) {
@@ -156,13 +167,11 @@ public class UpLoadDetailsGoodListAdapter extends BaseAdapter {
                         holder.goodtypePrice.setText("￥" + (upLoads.get(position)).price);
                         holder.goodtypePrice.setText((upLoads.get(position)).goodsName);
                         holder.operation.setText("上货");
-                        //  dataSet = upLoads;
                         break;
                     default:
                         holder.goodtypePrice.setText("￥" + (downLoads.get(position)).price);
                         holder.goodtypePrice.setText((downLoads.get(position)).goodsName);
                         holder.operation.setText("下货");
-                        //  dataSet = downLoads;
                         break;
                 }
 
@@ -171,6 +180,16 @@ public class UpLoadDetailsGoodListAdapter extends BaseAdapter {
 
 
         return convertView;
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.operationType:
+                changeOprationType();
+                this.notifyDataSetChanged();
+                break;
+        }
     }
 
     class ViewHolder {

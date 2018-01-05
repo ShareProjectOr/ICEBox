@@ -67,7 +67,7 @@ public class UpLoadGoodsRecordListAdapter extends RecyclerView.Adapter<RecyclerV
                 BodyViewHolder body = (BodyViewHolder) holder;
                 try {
                     long time = SecondToDate.dateToStamp(contentProvider.getItem(position).closingTime) - SecondToDate.dateToStamp(contentProvider.getItem(position).openingTime);
-                    String[] mOperationTime = SecondToDate.formatLongToTimeStr(time);
+                    String[] mOperationTime = SecondToDate.formatLongToTimeStr(time/1000);
                     if (mOperationTime[1].equals("0")) {
                         body.mOperationTime.setText("操作耗时:" + mOperationTime[2] + "分" + mOperationTime[3] + "秒");
                     } else {
@@ -79,8 +79,8 @@ public class UpLoadGoodsRecordListAdapter extends RecyclerView.Adapter<RecyclerV
 
 
                 body.mOperationDate.setText(contentProvider.getItem(position).openingTime);
-                body.mUpLoadNum.setText(contentProvider.getItem(position).UpLoadNum);
-                body.mDownLoadNum.setText(contentProvider.getItem(position).DownLoadNum);
+                body.mUpLoadNum.setText(contentProvider.getItem(position).UpLoadNum+"");
+                body.mDownLoadNum.setText(contentProvider.getItem(position).DownLoadNum+"");
                 body.mMachineName.setText(contentProvider.getItem(position).machineName);
                 body.mMachineAddr.setText("(" + contentProvider.getItem(position).machineAddress + ")");
                 body.mUpLoadCode.setText("记录编号" + contentProvider.getItem(position).recordID);

@@ -13,7 +13,7 @@ import java.math.BigDecimal;
 
 public class PerSonMessage {
     private static JSONObject userObject;
-    public static int userId = 7;
+    public static int userId = 0;
     public static String name;
     public static String email;
     public static String tel;
@@ -21,7 +21,7 @@ public class PerSonMessage {
     public static int disable;
     public static String loginAccount;
     public static String loginPassword;
-    public static String role = "2";
+    public static String role = "1-2-3";
     public static String address;
     public static String idCard;
     public static String lastLoginTime;
