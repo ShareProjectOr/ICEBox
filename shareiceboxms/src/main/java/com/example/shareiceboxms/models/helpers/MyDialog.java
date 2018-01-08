@@ -178,6 +178,14 @@ public class MyDialog {
                 agentIds.add(agents.get(which));
             }
         });
+        builder.setNeutralButton("全选", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                FragmentFactory.getInstance().getSavedBundle().putSerializable("CREATE_AGENTS_ACCOUNT", (Serializable) agents);
+                dialog.dismiss();
+                tradeAccountFragment.addFrameFragment(new CreateAccountFragment());
+            }
+        });
         builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {

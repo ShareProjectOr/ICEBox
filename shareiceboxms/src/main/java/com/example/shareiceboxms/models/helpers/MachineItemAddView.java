@@ -100,6 +100,7 @@ public class MachineItemAddView {
     public void updateTeleControlUi(ItemMachine itemMachine) {
         teleControlHolder.targetTemp.setText(itemMachine.targetTemperature);
         teleControlHolder.offsetTemp.setText(itemMachine.deviationTemperature);
+        teleControlHolder.lockSwitch.setChecked(itemMachine.lightState == 0 ? false : true);
         if (!itemMachine.targetTemperature.equals("")) {
             float tartgetTemp = Float.parseFloat(itemMachine.targetTemperature.replace("℃", "").trim());
             teleControlHolder.tempSeekbar.setProgress((int) tartgetTemp);

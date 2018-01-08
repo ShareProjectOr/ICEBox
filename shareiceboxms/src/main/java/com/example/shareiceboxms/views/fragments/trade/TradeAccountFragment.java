@@ -105,12 +105,12 @@ public class TradeAccountFragment extends BaseFragment implements LoadMoreHelper
         homeActivity = (HomeActivity) getActivity();
         itemTradeAccounts = new ArrayList<>();
         tradeAccountFragment = this;
-
+/*
         itemTradeAccounts.add(new ItemTradeAccount());
         itemTradeAccounts.add(new ItemTradeAccount());
         itemTradeAccounts.add(new ItemTradeAccount());
         itemTradeAccounts.add(new ItemTradeAccount());
-        itemTradeAccounts.add(null);
+        itemTradeAccounts.add(null);*/
 
 
         mTilePopup = MenuPop.CreateMenuPop(getContext(), accountType, Constants.TradeAccountStateTitle);

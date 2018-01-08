@@ -136,7 +136,6 @@ public class RecordDetailProductHelper {
 
         @Override
         protected void onPostExecute(Boolean success) {
-            Log.e("request error :", response + "");
             if (success) {
                 dialog.dismiss();
                 itemProducts.addAll(products);

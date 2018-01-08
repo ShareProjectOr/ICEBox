@@ -50,7 +50,7 @@ public class RequestParamsContants {
    * */
     public Map<String, Object> getMachineListParams() {
         Map<String, Object> params = new HashMap<>();
-        params.put("appUserID",PerSonMessage.userId );
+        params.put("appUserID", PerSonMessage.userId);
         params.put("keyword", "");
         params.put("p", 1);
         params.put("n", 4);
@@ -313,6 +313,7 @@ public class RequestParamsContants {
         params.put("createTime", null);
         return params;
     }
+
     /*
        * 批量退款
        *   RFIDList:RFID-RFID-RFID,//String 单个或多个RFID组成的字符串
@@ -349,6 +350,19 @@ public class RequestParamsContants {
         params.put("disable", 0);
         params.put("p", 1);
         params.put("n", 1000);
+        return params;
+    }
+
+    /*
+    * 冲抵的应退记录参数
+    * */
+    public Map<String, Object> getRefundOfChongdiParams() {
+        Map<String, Object> params = new HashMap<>();
+        params.put("appUserID", PerSonMessage.userId);
+        params.put("divideID", "");
+        params.put("p", 1);
+        params.put("n", 6);
+        params.put("checkCode", 1);
         return params;
     }
 }

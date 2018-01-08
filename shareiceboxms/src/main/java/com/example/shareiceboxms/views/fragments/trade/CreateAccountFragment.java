@@ -168,8 +168,14 @@ public class CreateAccountFragment extends BaseFragment {
                 isCommited = JsonDataParse.getInstance().getTeleControlIsArrow(response);
                 return true;
             } catch (IOException e) {
+                if (dialog != null && dialog.isShowing()) {
+                    dialog.dismiss();
+                }
                 err = RequstTips.getErrorMsg(e.getMessage());
             } catch (JSONException e) {
+                if (dialog != null && dialog.isShowing()) {
+                    dialog.dismiss();
+                }
                 err = RequstTips.JSONException_Tip;
             }
             return false;
@@ -186,12 +192,5 @@ public class CreateAccountFragment extends BaseFragment {
                 Toast.makeText(homeActivity, "创建失败，请重试！" + err, Toast.LENGTH_SHORT).show();
             }
         }
-
-        @Override
-        protected void onCancelled() {
-
-        }
-
-
     }
 }

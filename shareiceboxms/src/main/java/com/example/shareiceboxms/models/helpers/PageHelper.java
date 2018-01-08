@@ -2,6 +2,8 @@ package com.example.shareiceboxms.models.helpers;
 
 import android.content.Context;
 import android.support.v4.content.ContextCompat;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
@@ -32,6 +34,7 @@ public class PageHelper implements View.OnClickListener {
     private TextView intent;
     private static int SHOW_PAGE = 5;//总共显示5页
     private int totalPageText = 1, totalCountText = 0;
+    private boolean isChongdiRefund;
 
     public PageHelper(Context context, TradeAccountDetailFragment fragment, View view) {
         this.context = context;
@@ -54,11 +57,29 @@ public class PageHelper implements View.OnClickListener {
         lastPage.setOnClickListener(this);
         nextPage.setOnClickListener(this);
         intent.setOnClickListener(this);
+        page.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                if (s.length() <= 0) {
+                    page.setText("1");
+                }
+            }
+        });
     }
 
     private void bindDatas() {
-        totalPageCount.setText(totalPageText+"");
-        totalCount.setText(totalCountText+"");
+        totalPageCount.setText(totalPageText + "");
+        totalCount.setText(totalCountText + "");
     }
 
     public void setTotalText(int totalPageText, int totalCountText) {
@@ -68,8 +89,11 @@ public class PageHelper implements View.OnClickListener {
         initTextColor();
     }
 
+    public void setChongdiRefund(boolean chongdiRefund) {
+        isChongdiRefund = chongdiRefund;
+    }
+
     public void initTextColor() {
-        int pageText = Integer.parseInt(page.getText().toString());
         if (totalPageText > 1) {
             nextPage.setTextColor(ContextCompat.getColor(context, R.color.blue));
         }
@@ -89,7 +113,12 @@ public class PageHelper implements View.OnClickListener {
                 lastPage.setTextColor(ContextCompat.getColor(context, R.color.gray_light_deep));
                 initTextColor();
                 page.setText("1");
-                fragment.getRecorDatas(params);
+                if (!isChongdiRefund) {
+                    fragment.getRecorDatas(params);
+                } else {
+                    fragment.getChongdiDatas(Integer.parseInt(page.getText().toString()), 6);
+                }
+
                 break;
             case R.id.lastPage:
                 int curPage = Integer.valueOf(page.getText().toString());
@@ -104,7 +133,11 @@ public class PageHelper implements View.OnClickListener {
                 }
                 page.setText(curPage - 1);
                 params.put("p", Integer.parseInt(page.getText().toString()));
-                fragment.getRecorDatas(params);
+                if (!isChongdiRefund) {
+                    fragment.getRecorDatas(params);
+                } else {
+                    fragment.getChongdiDatas(Integer.parseInt(page.getText().toString()), 6);
+                }
                 break;
             case R.id.nextPage:
                 int curPage1 = Integer.valueOf(page.getText().toString());
@@ -119,7 +152,11 @@ public class PageHelper implements View.OnClickListener {
                 }
                 page.setText(curPage1 + 1);
                 params.put("p", Integer.parseInt(page.getText().toString()));
-                fragment.getRecorDatas(params);
+                if (!isChongdiRefund) {
+                    fragment.getRecorDatas(params);
+                } else {
+                    fragment.getChongdiDatas(Integer.parseInt(page.getText().toString()), 6);
+                }
                 break;
             case R.id.intent:
                 if (Integer.parseInt(page.getText().toString()) > totalPageText) {
@@ -129,7 +166,11 @@ public class PageHelper implements View.OnClickListener {
                     page.setText("1");
                 }
                 params.put("p", Integer.parseInt(page.getText().toString()));
-                fragment.getRecorDatas(params);
+                if (!isChongdiRefund) {
+                    fragment.getRecorDatas(params);
+                } else {
+                    fragment.getChongdiDatas(Integer.parseInt(page.getText().toString()), 6);
+                }
                 break;
         }
     }

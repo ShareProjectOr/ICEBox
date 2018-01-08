@@ -43,9 +43,9 @@ public interface HttpRequstUrl {
     String TRADE_RECORDS_URL = HOST_URL + "trade/search";
     String TRADE_RECOR_DETAIL_URL = HOST_URL + "trade/get";
     String TRADE_RECOR_DETAIL_PRODUCT_URL = HOST_URL + "goods/search";
-    String TRADE_ACCOUONT_CHONGDI_RECORD_URL = HOST_URL_1 + "settle/refundLog";
-    String TRADE_CREATE_JIESUAN_URL = HOST_URL_1 + "settle/buildSettle";
-    String TRADE_JIESUAN_LIST_URL = HOST_URL_1 + "settle/search";
+    String TRADE_ACCOUONT_CHONGDI_RECORD_URL = HOST_URL + "settle/refundLog";
+    String TRADE_CREATE_JIESUAN_URL = HOST_URL + "settle/buildSettle";
+    String TRADE_JIESUAN_LIST_URL = HOST_URL + "settle/search";
     //批量退款
     String TRADE_REFUND_URL = HOST_URL_2 + "trade/refund";
 }

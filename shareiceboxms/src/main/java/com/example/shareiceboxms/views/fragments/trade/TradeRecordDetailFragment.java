@@ -143,11 +143,15 @@ public class TradeRecordDetailFragment extends BaseFragment implements RecordDet
                 switch (tab.getPosition()) {
                     case 0:
                         if (adapter != null) {
+                            allProductCB.setVisibility(View.VISIBLE);
+                            adapter.setRefundProductSelected(false);
                             adapter.setItemProductList(itemBuyProducts);
                         }
                         break;
                     case 1:
                         if (adapter != null) {
+                            allProductCB.setVisibility(View.GONE);
+                            adapter.setRefundProductSelected(true);
                             adapter.setItemProductList(itemRefundProducts);
                         }
                         break;
@@ -223,6 +227,8 @@ public class TradeRecordDetailFragment extends BaseFragment implements RecordDet
     }
 
     public void getProductDatas() {
+        chooseItemCount.setText("0");
+        chooseItemMoney.setText("0.00");
         itemRefundProducts.clear();
         itemBuyProducts.clear();
         Map<String, Object> params = RequestParamsContants.getInstance().getTradeRecoredDetailProductParams();
@@ -260,7 +266,7 @@ public class TradeRecordDetailFragment extends BaseFragment implements RecordDet
                             rfids += "-";
                         }
                     }
-                    MyDialog.getRefundDialog(checkNum, rfids, homeActivity,this).show();
+                    MyDialog.getRefundDialog(checkNum, rfids, homeActivity, this).show();
                 } else {
                     Toast.makeText(homeActivity, "没有可退款项", Toast.LENGTH_SHORT).show();
                 }

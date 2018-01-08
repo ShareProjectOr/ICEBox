@@ -17,6 +17,7 @@ import android.widget.Toast;
 
 import com.example.shareiceboxms.R;
 import com.example.shareiceboxms.models.adapters.TradeAccountDetailAdapter;
+import com.example.shareiceboxms.models.beans.trade.ItemChongdiRefundRecord;
 import com.example.shareiceboxms.models.beans.trade.ItemTradeAccount;
 import com.example.shareiceboxms.models.beans.trade.ItemTradeRecord;
 import com.example.shareiceboxms.models.contants.Constants;
@@ -26,6 +27,8 @@ import com.example.shareiceboxms.models.contants.RequestParamsContants;
 import com.example.shareiceboxms.models.contants.RequstTips;
 import com.example.shareiceboxms.models.factories.FragmentFactory;
 import com.example.shareiceboxms.models.helpers.PageHelper;
+import com.example.shareiceboxms.models.helpers.RefundChongdiHelper;
+import com.example.shareiceboxms.models.helpers.RefundMoreHelper;
 import com.example.shareiceboxms.models.helpers.SecondToDate;
 import com.example.shareiceboxms.models.http.JsonUtil;
 import com.example.shareiceboxms.models.http.OkHttpUtil;
@@ -45,6 +48,7 @@ import java.util.Map;
  */
 
 public class TradeAccountDetailFragment extends BaseFragment {
+    private static String TAG = "TradeAccountDetailFragment";
     private View containerView;
 
     private android.support.design.widget.TabLayout accountTabLayout;
@@ -55,12 +59,13 @@ public class TradeAccountDetailFragment extends BaseFragment {
     private LinearLayout pageLayout;
 
     private ImageView drawerIcon, saoma;
-    private TextView title, timeTitle;
+    private TextView title, timeTitle, moneyTitle;
 
     private TextView chongdiRefundMoney, realMoney;
 
 
-    private List<ItemTradeRecord> itemBuyProducts, itemRefundProducts;
+    private List<ItemTradeRecord> itemBuyProducts;
+    private List<ItemChongdiRefundRecord> itemRefundProducts;
     TradeAccountDetailAdapter adapter;
     PageHelper pageHelper;
     HomeActivity homeActivity;
@@ -98,6 +103,7 @@ public class TradeAccountDetailFragment extends BaseFragment {
         saoma = (ImageView) containerView.findViewById(R.id.saoma);
         title = (TextView) containerView.findViewById(R.id.title);
         timeTitle = (TextView) containerView.findViewById(R.id.timeTitle);
+        moneyTitle = (TextView) containerView.findViewById(R.id.moneyTitle);
 
         chongdiRefundMoney = (TextView) containerView.findViewById(R.id.chongdiRefundMoney);
         realMoney = (TextView) containerView.findViewById(R.id.realMoney);
@@ -112,24 +118,12 @@ public class TradeAccountDetailFragment extends BaseFragment {
         itemTradeAccount = (ItemTradeAccount) FragmentFactory.getInstance().getSavedBundle().getSerializable("ItemTradeAccount");
         itemBuyProducts = new ArrayList<>();
         itemRefundProducts = new ArrayList<>();
+        itemBuyProducts.add(new ItemTradeRecord());
+        itemBuyProducts.add(new ItemTradeRecord());
+        itemBuyProducts.add(new ItemTradeRecord());
+        itemBuyProducts.add(new ItemTradeRecord());
+        itemBuyProducts.add(new ItemTradeRecord());
 
-        itemRefundProducts.add(new ItemTradeRecord());
-        itemRefundProducts.add(new ItemTradeRecord());
-        itemRefundProducts.add(new ItemTradeRecord());
-        itemRefundProducts.add(new ItemTradeRecord());
-        itemRefundProducts.add(new ItemTradeRecord());
-        itemRefundProducts.add(new ItemTradeRecord());
-        itemRefundProducts.add(new ItemTradeRecord());
-
-
-        itemBuyProducts.add(new ItemTradeRecord());
-        itemBuyProducts.add(new ItemTradeRecord());
-        itemBuyProducts.add(new ItemTradeRecord());
-        itemBuyProducts.add(new ItemTradeRecord());
-        itemBuyProducts.add(new ItemTradeRecord());
-        itemBuyProducts.add(new ItemTradeRecord());
-        itemBuyProducts.add(new ItemTradeRecord());
-        itemBuyProducts.add(new ItemTradeRecord());
 
         pageHelper = new PageHelper(getContext(), this, pageLayout);
         accountTabLayout.setTabMode(TabLayout.MODE_FIXED);
@@ -147,11 +141,22 @@ public class TradeAccountDetailFragment extends BaseFragment {
             public void onTabSelected(TabLayout.Tab tab) {
                 curTab = tab.getPosition();
                 if (tab.getPosition() == 0) {
+                    moneyTitle.setText("交易金额");
                     timeTitle.setText("交易时间");
+                    adapter.setRefundList(false);
                     adapter.setItemAccountList(itemBuyProducts);
+                    pageHelper.setTotalText(totalPage, totalNum);
+                    pageHelper.setChongdiRefund(false);
                 } else {
+                    moneyTitle.setText("应退金额");
                     timeTitle.setText("退回时间");
-                    adapter.setItemAccountList(itemRefundProducts);
+                    adapter.setRefundList(true);
+                    adapter.setItemChongdiAccountList(itemRefundProducts);
+                    if (itemRefundProducts.size() <= 0) {
+                        getChongdiDatas(1, 6);
+                    }
+                    pageHelper.setTotalText(RefundChongdiHelper.getInstance().totalPage, RefundChongdiHelper.getInstance().totalNum);
+                    pageHelper.setChongdiRefund(true);
                 }
             }
 
@@ -168,6 +173,17 @@ public class TradeAccountDetailFragment extends BaseFragment {
         title.setText("结算工单详情");
         init();
         getRecorDatas(getParams());
+    }
+
+    public void getChongdiDatas(int page, int requestNum) {
+        Map<String, Object> params = RequestParamsContants.getInstance().getRefundOfChongdiParams();
+        params.put("divideID", itemTradeAccount.divideID);
+        params.put("p", page);
+        RefundChongdiHelper.getInstance().setContext(homeActivity);
+        RefundChongdiHelper.getInstance().setAdapter(adapter);
+        RefundChongdiHelper.getInstance().setItemRefundProducts(itemRefundProducts);
+        RefundChongdiHelper.getInstance().setItemTradeAccount(itemTradeAccount);
+        RefundChongdiHelper.getInstance().getDatas(params);
     }
 
     private void init() {
@@ -241,13 +257,15 @@ public class TradeAccountDetailFragment extends BaseFragment {
     private class TradeRecordsTask extends AsyncTask<Void, Void, Boolean> {
 
         private String response;
-        private String err = "net_work_err";
+        private String err = "";
         private Map<String, Object> params;
         private List<ItemTradeRecord> tradeRecords;
+        private List<ItemChongdiRefundRecord> itemChongdiRefundRecords;
 
         TradeRecordsTask(Map<String, Object> params) {
             this.params = params;
             tradeRecords = new ArrayList<>();
+            itemChongdiRefundRecords = new ArrayList<>();
         }
 
         @Override
@@ -260,12 +278,10 @@ public class TradeAccountDetailFragment extends BaseFragment {
         @Override
         protected Boolean doInBackground(Void... params) {
             try {
-                Log.e("request params: ", JsonUtil.mapToJson(this.params));
-                if (curTab == 0) {
-                    response = OkHttpUtil.post(HttpRequstUrl.TRADE_RECORDS_URL, JsonUtil.mapToJson(this.params));
-                } else {
-                    response = OkHttpUtil.post(HttpRequstUrl.TRADE_ACCOUONT_CHONGDI_RECORD_URL, JsonUtil.mapToJson(this.params));
-                }
+                Log.e(TAG, "request URL: " + HttpRequstUrl.TRADE_RECORDS_URL);
+                Log.e(TAG, "request params: " + JsonUtil.mapToJson(this.params));
+                response = OkHttpUtil.post(HttpRequstUrl.TRADE_RECORDS_URL, JsonUtil.mapToJson(this.params));
+                Log.e(TAG, "response: " + response);
                 if (response == null) {
                     return false;
                 } else {
@@ -274,25 +290,23 @@ public class TradeAccountDetailFragment extends BaseFragment {
                         return false;
                     }
                 }
-                tradeRecords = ItemTradeRecord.bindTradeRecordsList(JsonDataParse.getInstance().getArrayList(response.toString()));
+                tradeRecords = ItemTradeRecord.bindTradeRecordsList(JsonDataParse.getInstance().getArrayList(response));
                 totalNum = JsonDataParse.getInstance().getTotalNum();
                 curPage = JsonDataParse.getInstance().getCurPage();
                 requestNum = JsonDataParse.getInstance().getRequestNum();
                 totalPage = JsonDataParse.getInstance().getTotalPage();
-                Log.e("response", response.toString());
+
                 return true;
             } catch (IOException e) {
                 if (dialog != null) {
                     dialog.dismiss();
                 }
                 err = RequstTips.getErrorMsg(e.getMessage());
-                Log.e("erro", e.toString());
             } catch (JSONException e) {
                 if (dialog != null) {
                     dialog.dismiss();
                 }
                 err = RequstTips.JSONException_Tip;
-                Log.e("erro", e.toString());
             }
             return false;
         }
@@ -304,21 +318,16 @@ public class TradeAccountDetailFragment extends BaseFragment {
                     dialog.dismiss();
                     dialog = null;//第一次弹出dialog后，后续加载不在弹出
                 }
+                itemBuyProducts.clear();
+                itemBuyProducts.addAll(tradeRecords);
                 if (curTab == 0) {
-                    itemBuyProducts.clear();
-                    itemBuyProducts.addAll(tradeRecords);
+                    pageHelper.setTotalText(totalPage, totalNum);
                 }
-                if (curTab == 1) {
-                    itemRefundProducts.clear();
-                    itemRefundProducts.addAll(tradeRecords);
-                }
-                pageHelper.setTotalText(totalPage, totalNum);
                 adapter.notifyDataSetChanged();
             } else {
                 if (dialog != null) {
                     dialog.dismiss();
                 }
-                Log.e("request error :", response + "");
                 Toast.makeText(homeActivity, err, Toast.LENGTH_SHORT).show();
             }
         }

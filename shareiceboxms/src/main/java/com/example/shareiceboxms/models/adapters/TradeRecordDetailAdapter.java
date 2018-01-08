@@ -29,6 +29,7 @@ public class TradeRecordDetailAdapter extends BaseAdapter {
     private List<ItemSellProduct> itemProductList;
     TradeRecordDetailFragment tradeRecordDetailFragment;
     boolean isAllChecked = false;
+    boolean isRefundProductSelected = false;
     int totalCheckedCount = 0;
     float totalCheckedMoney = 0;
 
@@ -81,10 +82,15 @@ public class TradeRecordDetailAdapter extends BaseAdapter {
             * */
             if (PerSonMessage.userType == Constants.MACHINE_MANAGER || PerSonMessage.userType == Constants.AGENT_MANAGER) {
                 viewHolder.checkbox.setVisibility(View.GONE);
+            } else if (isRefundProductSelected) {
+                viewHolder.checkbox.setVisibility(View.GONE);
             } else {
                 viewHolder.checkbox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                     @Override
                     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                        if (position >= itemProductList.size()) {
+                            return;
+                        }
                         itemProductList.get(position).setChecked(isChecked);
                         if (isChecked && totalCheckedCount != getCount()) {
                             totalCheckedCount += 1;
@@ -118,6 +124,9 @@ public class TradeRecordDetailAdapter extends BaseAdapter {
         }
     }
 
+    public void setRefundProductSelected(boolean refundProductSelected) {
+        isRefundProductSelected = refundProductSelected;
+    }
 
     public List<ItemSellProduct> getItemProductList() {
         return itemProductList;

@@ -88,7 +88,10 @@ public class ItemPerson implements Serializable{
             if (response.has("machine") && !response.get("name").equals(null)) {
                 itemPerson.name = response.getString("name");
             }
-            itemPerson.tel = response.getString("tel");
+            if (response.get("tel").equals(null)) {
+                itemPerson.tel = response.getString("tel");
+            }
+
             if (response.get("userType").equals(null)) {
                 itemPerson.userType = response.getInt("userType");
             }

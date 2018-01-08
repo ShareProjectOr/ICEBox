@@ -9,6 +9,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.example.shareiceboxms.R;
+import com.example.shareiceboxms.models.beans.trade.ItemChongdiRefundRecord;
 import com.example.shareiceboxms.models.beans.trade.ItemTradeRecord;
 import com.example.shareiceboxms.models.factories.FragmentFactory;
 import com.example.shareiceboxms.views.fragments.trade.TradeAccountDetailFragment;
@@ -23,22 +24,25 @@ import java.util.List;
 public class TradeAccountDetailAdapter extends BaseAdapter {
     private Context context;
     private List<ItemTradeRecord> itemRecordList;
+    private List<ItemChongdiRefundRecord> itemChongdiRecordList;
     TradeAccountDetailFragment tradeAccountDetailFragment;
+    private boolean isRefundList = false;//是否是应退记录
 
     public TradeAccountDetailAdapter(Context context, TradeAccountDetailFragment tradeAccountDetailFragment) {
         this.context = context;
         this.tradeAccountDetailFragment = tradeAccountDetailFragment;
         itemRecordList = new ArrayList<>();
+        itemChongdiRecordList = new ArrayList<>();
     }
 
     @Override
     public int getCount() {
-        return itemRecordList.size();
+        return isRefundList ? itemChongdiRecordList.size() : itemRecordList.size();
     }
 
     @Override
     public Object getItem(int position) {
-        return itemRecordList == null ? null : itemRecordList.get(position);
+        return isRefundList ? itemChongdiRecordList.get(position) : itemRecordList.get(position);
     }
 
     @Override
@@ -69,11 +73,35 @@ public class TradeAccountDetailAdapter extends BaseAdapter {
             viewHolder = (ViewHolder) convertView.getTag();
         }
         //添加值
+        if (!isRefundList) {
+            ItemTradeRecord itemTradeRecord = itemRecordList.get(position);
+            if (itemTradeRecord != null) {
+                viewHolder.itemMoney.setText(itemTradeRecord.tradeMoney);
+                viewHolder.itemTime.setText(itemTradeRecord.closingTime);
+            }
+        } else {
+            ItemChongdiRefundRecord itemChongdiRefundRecord = itemChongdiRecordList.get(position);
+            if (itemChongdiRefundRecord != null) {
+                viewHolder.itemMoney.setText(itemChongdiRefundRecord.refundMoney);
+                viewHolder.itemTime.setText(itemChongdiRefundRecord.refundTime);
+            }
+        }
+
+
         return convertView;
+    }
+
+    public void setRefundList(boolean refundList) {
+        isRefundList = refundList;
     }
 
     public void setItemAccountList(List<ItemTradeRecord> itemRecordList) {
         this.itemRecordList = itemRecordList;
+        this.notifyDataSetChanged();
+    }
+
+    public void setItemChongdiAccountList(List<ItemChongdiRefundRecord> itemRecordList) {
+        this.itemChongdiRecordList = itemRecordList;
         this.notifyDataSetChanged();
     }
 
