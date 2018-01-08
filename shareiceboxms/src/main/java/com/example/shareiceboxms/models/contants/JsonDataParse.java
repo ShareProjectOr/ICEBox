@@ -48,7 +48,7 @@ public class JsonDataParse {
 
     /*
 *
-* 解析机器远程控制
+* 解析机器远程控制,解析单个对象,d:boolean
 * */
     public boolean getTeleControlIsArrow(String response) throws JSONException {
         JSONObject jsonObject = new JSONObject(response.toString());

@@ -119,14 +119,19 @@ public class ItemSellProduct extends ItemProductBase {
                 if (item.has("isRefund") && !item.get("isRefund").equals(null)) {
                     itemProduct.isRefund = item.getInt("isRefund");
                 }
+
+                if (item.has("soldPrise") ) {//&& !item.get("soldPrise").equals(null)
+                    itemProduct.soldPrise = item.getString("soldPrise");
+                }
+
                 if (item.has("agent") && !item.get("agent").equals(null)) {
-//                    itemProduct.agent = ItemPerson.bindPerson(item.getJSONObject("agent"));
+                    itemProduct.agent = ItemPerson.bindPerson(item.getJSONObject("agent"));
                 }
                 if (item.has("company") && !item.get("company").equals(null)) {
                     itemProduct.company = ItemCompany.bindCompany(item.getJSONObject("company"));
                 }
                 if (item.has("machine") && !item.get("machine").equals(null)) {
-//                    itemProduct.machine = ItemMachine.bindMachineNotFull(item.getJSONObject("machine"));
+                    itemProduct.machine = ItemMachine.bindMachineNotFull(item.getJSONObject("machine"));
                 }
                 if (item.has("trade") && !item.get("trade").equals(null)) {
                     itemProduct.trade = ItemTradeRecord.bindTradeRecordNotFull(item.getJSONObject("trade"));

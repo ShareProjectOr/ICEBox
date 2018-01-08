@@ -105,7 +105,7 @@ public class MachineItemAddView {
             teleControlHolder.tempSeekbar.setProgress((int) tartgetTemp);
         }
         if (!itemMachine.deviationTemperature.equals("")) {
-            float offsetTemp =  Float.parseFloat(itemMachine.deviationTemperature.replace("℃", "").trim());
+            float offsetTemp = Float.parseFloat(itemMachine.deviationTemperature.replace("℃", "").trim());
             teleControlHolder.offSetTempSeekbar.setProgress((int) offsetTemp);
         }
     }
@@ -230,7 +230,7 @@ public class MachineItemAddView {
                 @Override
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                     Map<String, Object> params = RequestParamsContants.getInstance().getMachineLightControlParams();
-                    params.put("isOpen", isChecked);
+                    params.put("isOpen", isChecked ? 1 : 0);
                     TeleControlHelper.getInstance().setContext(context);
                     TeleControlHelper.getInstance().getDatas(HttpRequstUrl.MACHINE_LightControl_URL, params);
                 }

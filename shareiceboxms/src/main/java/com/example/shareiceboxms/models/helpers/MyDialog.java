@@ -1,15 +1,13 @@
 package com.example.shareiceboxms.models.helpers;
 
-import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.graphics.Color;
 import android.os.Build;
-import android.os.UserManager;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
@@ -20,13 +18,19 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.shareiceboxms.R;
+import com.example.shareiceboxms.models.beans.ItemPerson;
 import com.example.shareiceboxms.models.beans.PerSonMessage;
-import com.example.shareiceboxms.models.beans.product.ItemSellProduct;
 import com.example.shareiceboxms.models.contants.ConstanceMethod;
 import com.example.shareiceboxms.models.contants.Sql;
+import com.example.shareiceboxms.models.factories.FragmentFactory;
 import com.example.shareiceboxms.views.activities.HomeActivity;
 import com.example.shareiceboxms.views.activities.LoginActivity;
+import com.example.shareiceboxms.views.fragments.trade.CreateAccountFragment;
+import com.example.shareiceboxms.views.fragments.trade.TradeAccountFragment;
+import com.example.shareiceboxms.views.fragments.trade.TradeRecordDetailFragment;
 
+import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -78,8 +82,8 @@ public class MyDialog {
         window.setAttributes(lp);//设置透明度
         //设置圆矩背景，dialog是为矩形
         window.setBackgroundDrawable(ContextCompat.getDrawable(context, R.drawable.shape_loading_layout));
-        dialog.setCancelable(true);
-        dialog.setCanceledOnTouchOutside(false);
+        dialog.setCancelable(true);//dialog可以取消
+        dialog.setCanceledOnTouchOutside(false);//dialog框外不能取消
 
         return dialog;
     }
@@ -104,10 +108,11 @@ public class MyDialog {
         }
 
     }
+
     /*
 * 批量退款dialog
 * */
-    public static AlertDialog getRefundDialog(List<ItemSellProduct> wellBeRefund, final HomeActivity activity) {
+    public static AlertDialog getRefundDialog(int count, final String wellBeRefundRFIDs, final HomeActivity activity, final TradeRecordDetailFragment tradeRecordDetailFragment) {
         View view;
         view = LayoutInflater.from(activity).inflate(R.layout.refund_more, null);
         final AlertDialog dialog = new AlertDialog.Builder(activity).setView(view).create();
@@ -116,6 +121,7 @@ public class MyDialog {
         final EditText refundCause = (EditText) view.findViewById(R.id.refundCause);
         Button cancle = (Button) view.findViewById(R.id.cancle);
         Button commit = (Button) view.findViewById(R.id.commit);
+        refundNum.setText(count + "");
         cancle.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -133,14 +139,60 @@ public class MyDialog {
                     Toast.makeText(activity, "退款原因必填", Toast.LENGTH_SHORT).show();
                     return;
                 }
-                //上传数据
 
+                if (TextUtils.equals(wellBeRefundRFIDs, "")) {
+                    Toast.makeText(activity, "没有可退款项！", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                RefundMoreHelper.getInstance().setContext(activity);
+                RefundMoreHelper.getInstance().setParams(wellBeRefundRFIDs, cause);
+                RefundMoreHelper.getInstance().setTradeRecordDetailFragment(tradeRecordDetailFragment);
+                RefundMoreHelper.getInstance().getDatas();
                 if (dialog.isShowing()) {
                     dialog.dismiss();
+//                    String refundResult = RefundMoreHelper.getInstance().isRefundSuccessed()?"退款成功":"退款失败！";
+//                    Toast.makeText(activity, refundResult, Toast.LENGTH_SHORT).show();
                 }
             }
         });
         return dialog;
     }
 
+    public static AlertDialog getAgentsDialog(final HomeActivity activity, final List<ItemPerson> agents, final TradeAccountFragment tradeAccountFragment) {
+        if (agents == null || agents.size() <= 0) {
+            Toast.makeText(activity, "没有代理商，无法创建工单", Toast.LENGTH_SHORT).show();
+            return null;
+        }
+        AlertDialog dialog;
+        String[] agentNames = new String[agents.size()];
+        final List<ItemPerson> agentIds = new ArrayList<ItemPerson>();
+        for (int i = 0; i < agents.size(); i++) {
+            ItemPerson person = agents.get(i);
+            agentNames[i] = person.name;
+        }
+        AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+        //设置对话框的标题
+        builder.setTitle("请选择结算代理商");
+        builder.setMultiChoiceItems(agentNames, null, new DialogInterface.OnMultiChoiceClickListener() {
+            public void onClick(DialogInterface dialog, int which, boolean isChecked) {
+                agentIds.add(agents.get(which));
+            }
+        });
+        builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+        builder.setPositiveButton(" 确 定 ", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int which) {
+                FragmentFactory.getInstance().getSavedBundle().putSerializable("CREATE_AGENTS_ACCOUNT", (Serializable) agentIds);
+                dialog.dismiss();
+                tradeAccountFragment.addFrameFragment(new CreateAccountFragment());
+            }
+        });
+        //创建一个复选框对话框
+        dialog = builder.create();
+        return dialog;
+    }
 }

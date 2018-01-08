@@ -26,5 +26,5 @@
         android:layout_alignTop="@id/imageSelector"
         android:gravity="center_vertical"
         android:paddingStart="20dp"
-        android:text="请选择时间" />
+        android:hint="请选择时间" />
 </RelativeLayout>

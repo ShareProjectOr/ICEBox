@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
 import android.support.v4.content.ContextCompat;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -70,6 +71,7 @@ public class TradeRecordDetailFragment extends BaseFragment implements RecordDet
     HomeActivity homeActivity;
     RecordDetailProductHelper recordDetailProductHelper;
     private int curTabSelect = 0;
+    private int checkNum = 0;
 
 
     @Nullable
@@ -209,6 +211,7 @@ public class TradeRecordDetailFragment extends BaseFragment implements RecordDet
 * 修改选中数量和价格
 * */
     public void changeCheckedCount() {
+        checkNum = adapter.getTotalCheckedCount();
         allProductCB.setChecked(adapter.isAllChecked());
         chooseItemCount.setText(adapter.getTotalCheckedCount() + "");
         chooseItemMoney.setText(adapter.getTotalCheckedMoney() + "");
@@ -219,7 +222,9 @@ public class TradeRecordDetailFragment extends BaseFragment implements RecordDet
         task.execute();
     }
 
-    private void getProductDatas() {
+    public void getProductDatas() {
+        itemRefundProducts.clear();
+        itemBuyProducts.clear();
         Map<String, Object> params = RequestParamsContants.getInstance().getTradeRecoredDetailProductParams();
         if (itemTradeRecord != null) {
             recordDetailProductHelper.setMachine(itemTradeRecord.machine);
@@ -239,17 +244,25 @@ public class TradeRecordDetailFragment extends BaseFragment implements RecordDet
                 break;
             case R.id.moreRefund:
                 //请求网络退款操作
-                if (adapter.getTotalCheckedCount() > 0) {
-                    List<ItemSellProduct> wellBeRefund = new ArrayList<>();
+                if (checkNum > 0) {
+                    List<ItemSellProduct> refundProducts = new ArrayList<>();
+                    String rfids = "";
                     for (int i = 0; i < itemBuyProducts.size(); i++) {
                         ItemSellProduct itemSellProduct = itemBuyProducts.get(i);
                         if (itemSellProduct.isChecked()) {
-                            wellBeRefund.add(itemSellProduct);
+                            refundProducts.add(itemSellProduct);
                         }
                     }
-                    MyDialog.getRefundDialog(wellBeRefund, homeActivity).show();
+                    for (int i = 0; i < refundProducts.size(); i++) {
+                        ItemSellProduct itemSellProduct = refundProducts.get(i);
+                        rfids += itemSellProduct.rfid;
+                        if (i != refundProducts.size() - 1) {
+                            rfids += "-";
+                        }
+                    }
+                    MyDialog.getRefundDialog(checkNum, rfids, homeActivity,this).show();
                 } else {
-                    Toast.makeText(homeActivity, "没有退款项", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(homeActivity, "没有可退款项", Toast.LENGTH_SHORT).show();
                 }
 
                 break;
@@ -298,6 +311,14 @@ public class TradeRecordDetailFragment extends BaseFragment implements RecordDet
                 Log.e(TAG, "request params: " + JsonUtil.mapToJson(this.params));
                 Log.e("request params: ", JsonUtil.mapToJson(this.params));
                 response = OkHttpUtil.post(HttpRequstUrl.TRADE_RECOR_DETAIL_URL, JsonUtil.mapToJson(this.params));
+                if (response == null) {
+                    return false;
+                } else {
+                    err = JsonDataParse.getInstance().getErr(response);
+                    if ((!TextUtils.equals(err, "")) && !err.equals("null")) {
+                        return false;
+                    }
+                }
                 tradeRecord = ItemTradeRecord.bindTradeRecord(JsonDataParse.getInstance().getSingleObject(response.toString()));
                 return true;
             } catch (IOException e) {

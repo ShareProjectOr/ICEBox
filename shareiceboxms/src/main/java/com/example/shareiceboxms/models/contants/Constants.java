@@ -18,7 +18,7 @@ public interface Constants {
     String[] TabTitles = {"交易", "机器", "异常", "商品"};
     int[] TabIcons = {R.drawable.selector_trade, R.drawable.selector_machine,
             R.drawable.selector_exception, R.drawable.selector_product};
-    String[] TradeTabTitles = {"交易统计", "交易记录", "服务结算费"};
+    String[] TradeTabTitles = {"交易统计", "交易记录", "工单结算"};
     /*
     * 交易统计
     * */

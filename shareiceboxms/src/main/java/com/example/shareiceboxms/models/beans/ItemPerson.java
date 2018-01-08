@@ -8,6 +8,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,7 +16,7 @@ import java.util.List;
  * Created by WH on 2017/12/18.
  */
 
-public class ItemPerson {
+public class ItemPerson implements Serializable{
     /*    userID:788,//Number 用户编号（ID） 主键
         name:'刘江东', //String 用户ID
         email:'jiangdong.liu@chanaghong.com',//String 邮箱
@@ -97,5 +98,15 @@ public class ItemPerson {
             Log.e("ItemPerson", e.toString());
         }
         return itemPerson;
+    }
+
+    public static List<ItemPerson> getPersonList(JSONArray list) throws JSONException {
+        List<ItemPerson> persons = new ArrayList<>();
+        for (int i = 0; i < list.length(); i++) {
+            JSONObject item = (JSONObject) list.get(i);
+            ItemPerson itemPerson = ItemPerson.bindPersonFull(item);
+            persons.add(itemPerson);
+        }
+        return persons;
     }
 }

@@ -5,6 +5,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -54,7 +55,7 @@ public class TradeAccountDetailFragment extends BaseFragment {
     private LinearLayout pageLayout;
 
     private ImageView drawerIcon, saoma;
-    private TextView title;
+    private TextView title, timeTitle;
 
     private TextView chongdiRefundMoney, realMoney;
 
@@ -96,7 +97,7 @@ public class TradeAccountDetailFragment extends BaseFragment {
         drawerIcon = (ImageView) containerView.findViewById(R.id.drawerIcon);
         saoma = (ImageView) containerView.findViewById(R.id.saoma);
         title = (TextView) containerView.findViewById(R.id.title);
-        title.setText("结算工单详情");
+        timeTitle = (TextView) containerView.findViewById(R.id.timeTitle);
 
         chongdiRefundMoney = (TextView) containerView.findViewById(R.id.chongdiRefundMoney);
         realMoney = (TextView) containerView.findViewById(R.id.realMoney);
@@ -146,8 +147,10 @@ public class TradeAccountDetailFragment extends BaseFragment {
             public void onTabSelected(TabLayout.Tab tab) {
                 curTab = tab.getPosition();
                 if (tab.getPosition() == 0) {
+                    timeTitle.setText("交易时间");
                     adapter.setItemAccountList(itemBuyProducts);
                 } else {
+                    timeTitle.setText("退回时间");
                     adapter.setItemAccountList(itemRefundProducts);
                 }
             }
@@ -162,6 +165,7 @@ public class TradeAccountDetailFragment extends BaseFragment {
 
             }
         });
+        title.setText("结算工单详情");
         init();
         getRecorDatas(getParams());
     }
@@ -262,6 +266,14 @@ public class TradeAccountDetailFragment extends BaseFragment {
                 } else {
                     response = OkHttpUtil.post(HttpRequstUrl.TRADE_ACCOUONT_CHONGDI_RECORD_URL, JsonUtil.mapToJson(this.params));
                 }
+                if (response == null) {
+                    return false;
+                } else {
+                    err = JsonDataParse.getInstance().getErr(response);
+                    if ((!TextUtils.equals(err, "")) && !err.equals("null")) {
+                        return false;
+                    }
+                }
                 tradeRecords = ItemTradeRecord.bindTradeRecordsList(JsonDataParse.getInstance().getArrayList(response.toString()));
                 totalNum = JsonDataParse.getInstance().getTotalNum();
                 curPage = JsonDataParse.getInstance().getCurPage();
@@ -310,12 +322,5 @@ public class TradeAccountDetailFragment extends BaseFragment {
                 Toast.makeText(homeActivity, err, Toast.LENGTH_SHORT).show();
             }
         }
-
-        @Override
-        protected void onCancelled() {
-
-        }
-
-
     }
 }

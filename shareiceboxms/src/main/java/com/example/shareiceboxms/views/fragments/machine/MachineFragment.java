@@ -300,13 +300,12 @@ public class MachineFragment extends BaseFragment implements HomeActivity.OnBack
                 JSONArray jsonList = jsonD.getJSONArray("list");*/
                 if (response == null) {
                     return false;
-                }
-               /* else {
+                } else {
                     err = JsonDataParse.getInstance().getErr(response);
-                    if (!TextUtils.equals(err, "")) {
+                    if ((!TextUtils.equals(err, "")) && !err.equals("null")) {
                         return false;
                     }
-                }*/
+                }
                 machines = ItemMachine.bindMachineList(JsonDataParse.getInstance().getArrayList(response));
                 totalNum = JsonDataParse.getInstance().getTotalNum();
                 curPage = JsonDataParse.getInstance().getCurPage();

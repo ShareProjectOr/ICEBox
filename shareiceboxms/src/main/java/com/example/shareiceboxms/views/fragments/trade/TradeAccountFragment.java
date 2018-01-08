@@ -7,6 +7,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,6 +22,7 @@ import android.widget.Toast;
 
 import com.example.shareiceboxms.R;
 import com.example.shareiceboxms.models.adapters.TradeAccountListAdapter;
+import com.example.shareiceboxms.models.beans.ItemPerson;
 import com.example.shareiceboxms.models.beans.PerSonMessage;
 import com.example.shareiceboxms.models.beans.trade.ItemTradeAccount;
 import com.example.shareiceboxms.models.contants.Constants;
@@ -30,6 +32,7 @@ import com.example.shareiceboxms.models.contants.RequestParamsContants;
 import com.example.shareiceboxms.models.contants.RequstTips;
 import com.example.shareiceboxms.models.factories.FragmentFactory;
 import com.example.shareiceboxms.models.factories.MyViewFactory;
+import com.example.shareiceboxms.models.helpers.GetAgentsToCreateAccountHelper;
 import com.example.shareiceboxms.models.helpers.LoadMoreHelper;
 import com.example.shareiceboxms.models.helpers.MenuPop;
 import com.example.shareiceboxms.models.helpers.MyDialog;
@@ -51,6 +54,7 @@ import java.util.Map;
  */
 
 public class TradeAccountFragment extends BaseFragment implements LoadMoreHelper.LoadMoreListener {
+    private static String TAG = "TradeAccountFragment";
     private View containerView;
     private Button createAccount;
     private RelativeLayout accountType;
@@ -66,6 +70,7 @@ public class TradeAccountFragment extends BaseFragment implements LoadMoreHelper
     HomeActivity homeActivity;
     private int curPage, requestNum, totalNum, totalPage, curType;
     private Dialog dialog;
+    TradeAccountFragment tradeAccountFragment;
 
 
     @Nullable
@@ -99,6 +104,7 @@ public class TradeAccountFragment extends BaseFragment implements LoadMoreHelper
     private void initDatas() {
         homeActivity = (HomeActivity) getActivity();
         itemTradeAccounts = new ArrayList<>();
+        tradeAccountFragment = this;
 
         itemTradeAccounts.add(new ItemTradeAccount());
         itemTradeAccounts.add(new ItemTradeAccount());
@@ -164,7 +170,15 @@ public class TradeAccountFragment extends BaseFragment implements LoadMoreHelper
                 chooseAccountIcon.setSelected(isTypeClicked);
                 break;
             case R.id.createAccount:
-                addFrameFragment(new CreateAccountFragment());
+                GetAgentsToCreateAccountHelper.getInstance().setContext(homeActivity);
+                GetAgentsToCreateAccountHelper.getInstance().setGetAgentsLisenner(new GetAgentsToCreateAccountHelper.GetAgentsLisenner() {
+                    @Override
+                    public void getAgents(List<ItemPerson> agents) {
+                        MyDialog.getAgentsDialog(homeActivity, agents, tradeAccountFragment).show();
+                    }
+                });
+                GetAgentsToCreateAccountHelper.getInstance().getDatas();
+//                addFrameFragment(new CreateAccountFragment());
                 break;
             default:
                 break;
@@ -237,7 +251,7 @@ public class TradeAccountFragment extends BaseFragment implements LoadMoreHelper
     private class TradeAccountsTask extends AsyncTask<Void, Void, Boolean> {
 
         private String response;
-        private String err = "net_work_err";
+        private String err = "";
         private Map<String, Object> params;
         private List<ItemTradeAccount> tradeRecords;
 
@@ -256,27 +270,35 @@ public class TradeAccountFragment extends BaseFragment implements LoadMoreHelper
         @Override
         protected Boolean doInBackground(Void... params) {
             try {
-                Log.e("request params: ", JsonUtil.mapToJson(this.params));
-                response = OkHttpUtil.post(HttpRequstUrl.TRADE_RECORDS_URL, JsonUtil.mapToJson(this.params));
+                Log.e(TAG, "request URL: " + HttpRequstUrl.TRADE_JIESUAN_LIST_URL);
+                Log.e(TAG, "request params: " + JsonUtil.mapToJson(this.params));
+                response = OkHttpUtil.post(HttpRequstUrl.TRADE_JIESUAN_LIST_URL, JsonUtil.mapToJson(this.params));
+                if (response == null) {
+                    return false;
+                } else {
+                    err = JsonDataParse.getInstance().getErr(response);
+                    if ((!TextUtils.equals(err, "")) && !err.equals("null")) {
+                        return false;
+                    }
+                }
                 tradeRecords = ItemTradeAccount.bindTradeAccountsList(JsonDataParse.getInstance().getArrayList(response.toString()));
                 totalNum = JsonDataParse.getInstance().getTotalNum();
                 curPage = JsonDataParse.getInstance().getCurPage();
                 requestNum = JsonDataParse.getInstance().getRequestNum();
                 totalPage = JsonDataParse.getInstance().getTotalPage();
-                Log.e("response", response.toString());
+                Log.e(TAG, "tradeRecords.size" + tradeRecords.size());
+                Log.e(TAG, "response" + response.toString());
                 return true;
             } catch (IOException e) {
                 if (dialog != null) {
                     dialog.dismiss();
                 }
                 err = RequstTips.getErrorMsg(e.getMessage());
-                Log.e("erro", e.toString());
             } catch (JSONException e) {
                 if (dialog != null) {
                     dialog.dismiss();
                 }
                 err = RequstTips.JSONException_Tip;
-                Log.e("erro", e.toString());
             }
             return false;
         }
@@ -303,16 +325,8 @@ public class TradeAccountFragment extends BaseFragment implements LoadMoreHelper
                 if (dialog != null) {
                     dialog.dismiss();
                 }
-                Log.e("request error :", response + "");
                 Toast.makeText(homeActivity, err, Toast.LENGTH_SHORT).show();
             }
         }
-
-        @Override
-        protected void onCancelled() {
-
-        }
-
-
     }
 }

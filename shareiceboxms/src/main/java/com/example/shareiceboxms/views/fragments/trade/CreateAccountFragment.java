@@ -1,8 +1,10 @@
 package com.example.shareiceboxms.views.fragments.trade;
 
+import android.app.Dialog;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,12 +17,14 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.shareiceboxms.R;
+import com.example.shareiceboxms.models.beans.ItemPerson;
 import com.example.shareiceboxms.models.contants.HttpRequstUrl;
 import com.example.shareiceboxms.models.contants.JsonDataParse;
 import com.example.shareiceboxms.models.contants.RequestParamsContants;
 import com.example.shareiceboxms.models.contants.RequstTips;
 import com.example.shareiceboxms.models.factories.FragmentFactory;
 import com.example.shareiceboxms.models.helpers.DoubleDatePickerDialog;
+import com.example.shareiceboxms.models.helpers.MyDialog;
 import com.example.shareiceboxms.models.helpers.SecondToDate;
 import com.example.shareiceboxms.models.http.JsonUtil;
 import com.example.shareiceboxms.models.http.OkHttpUtil;
@@ -30,6 +34,7 @@ import com.example.shareiceboxms.views.fragments.BaseFragment;
 import org.json.JSONException;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Map;
 
@@ -38,12 +43,14 @@ import java.util.Map;
  */
 
 public class CreateAccountFragment extends BaseFragment {
+    private static String TAG = "CreateAccountFragment";
     private View containerView;
     private Button createAccountSubmit;
     private ImageView drawerIcon, saoma;
     private RelativeLayout selectTime;
     private TextView timeSelector, title;
     private DoubleDatePickerDialog datePickerDialog;
+    private Dialog dialog;
     HomeActivity homeActivity;
     private String[] time;
 
@@ -53,6 +60,7 @@ public class CreateAccountFragment extends BaseFragment {
         if (containerView == null) {
             containerView = super.onCreateView(inflater, container, FragmentFactory.getInstance().putLayoutId(R.layout.fragment_create_account));
             initViews();
+            initLisenner();
             initDatas();
         }
         return containerView;
@@ -65,10 +73,14 @@ public class CreateAccountFragment extends BaseFragment {
         selectTime = (RelativeLayout) containerView.findViewById(R.id.selectTime);
         timeSelector = (TextView) containerView.findViewById(R.id.timeSelector);
         title = (TextView) containerView.findViewById(R.id.title);
+
+    }
+
+    private void initLisenner() {
+        createAccountSubmit.setOnClickListener(this);
         drawerIcon.setOnClickListener(this);
         selectTime.setOnClickListener(this);
         saoma.setOnClickListener(this);
-        title.setText("创建结算工单");
     }
 
     private void initDatas() {
@@ -76,17 +88,27 @@ public class CreateAccountFragment extends BaseFragment {
         datePickerDialog = new DoubleDatePickerDialog(getContext(), 0, this
                 , Calendar.getInstance().get(Calendar.YEAR), Calendar.getInstance().get(Calendar.MONTH)
                 , Calendar.getInstance().get(Calendar.DATE), true);
+        title.setText("创建结算工单");
+        dialog = MyDialog.loadDialog(homeActivity);
     }
 
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.createAccountSubmit:
-                //提交数据
-                Map<String, Object> params = RequestParamsContants.getInstance().getCreateJieSuanParams();
-                params.put("createTime", RequestParamsContants.getInstance().getSelectTime(time));
-                TradeCreateJieSuanTask task = new TradeCreateJieSuanTask(params);
-                task.execute();
+                if (TextUtils.equals(timeSelector.getText().toString(), "")) {
+                    Toast.makeText(getContext(), "时间范围必须选择", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                ArrayList<ItemPerson> agentIDs = (ArrayList<ItemPerson>) FragmentFactory.getInstance().getSavedBundle().getSerializable("CREATE_AGENTS_ACCOUNT");
+                for (int i = 0; i < agentIDs.size(); i++) {
+                    //提交数据
+                    Map<String, Object> params = RequestParamsContants.getInstance().getCreateJieSuanParams();
+                    params.put("agentID", agentIDs.get(i).userID);
+                    params.put("createTime", RequestParamsContants.getInstance().getSelectTime(time));
+                    TradeCreateJieSuanTask task = new TradeCreateJieSuanTask(params);
+                    task.execute();
+                }
                 break;
             case R.id.selectTime:
                 //弹出时间选择框
@@ -113,7 +135,7 @@ public class CreateAccountFragment extends BaseFragment {
     private class TradeCreateJieSuanTask extends AsyncTask<Void, Void, Boolean> {
 
         private String response;
-        private String err = "net_work_err";
+        private String err = "";
         private boolean isCommited = false;
         private Map<String, Object> params;
 
@@ -123,33 +145,45 @@ public class CreateAccountFragment extends BaseFragment {
 
         @Override
         protected void onPreExecute() {
+            if (dialog != null && !dialog.isShowing()) {
+                dialog.show();
+            }
         }
 
         @Override
         protected Boolean doInBackground(Void... params) {
             try {
-                Log.e("request params: ", JsonUtil.mapToJson(this.params));
-                response = OkHttpUtil.post(HttpRequstUrl.TRADE_TOTAL_URL, JsonUtil.mapToJson(this.params));
-                isCommited = (JsonDataParse.getInstance().getSingleObject(response.toString()) != null);
-                Log.e("response", response.toString());
+                Log.e(TAG, "request url: " + HttpRequstUrl.TRADE_CREATE_JIESUAN_URL);
+                Log.e(TAG, "request params: " + JsonUtil.mapToJson(this.params));
+                response = OkHttpUtil.post(HttpRequstUrl.TRADE_CREATE_JIESUAN_URL, JsonUtil.mapToJson(this.params));
+                Log.e(TAG, "response" + response);
+                if (response == null) {
+                    return false;
+                } else {
+                    err = JsonDataParse.getInstance().getErr(response);
+                    if ((!TextUtils.equals(err, "")) && !err.equals("null")) {
+                        return false;
+                    }
+                }
+                isCommited = JsonDataParse.getInstance().getTeleControlIsArrow(response);
                 return true;
             } catch (IOException e) {
                 err = RequstTips.getErrorMsg(e.getMessage());
-                Log.e("erro", e.toString());
             } catch (JSONException e) {
                 err = RequstTips.JSONException_Tip;
-                Log.e("erro", e.toString());
             }
             return false;
         }
 
         @Override
         protected void onPostExecute(final Boolean success) {
+            if (dialog != null && dialog.isShowing()) {
+                dialog.dismiss();
+            }
             if (success) {
                 Toast.makeText(homeActivity, "创建成功", Toast.LENGTH_SHORT).show();
             } else {
-                Toast.makeText(homeActivity, "创建失败，请重试！", Toast.LENGTH_SHORT).show();
-                Log.e("request error :", response + "");
+                Toast.makeText(homeActivity, "创建失败，请重试！" + err, Toast.LENGTH_SHORT).show();
             }
         }
 

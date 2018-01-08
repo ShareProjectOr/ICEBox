@@ -1,6 +1,7 @@
 package com.example.shareiceboxms.models.adapters;
 
 import android.content.Context;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -87,6 +88,9 @@ public class TradeRecordDetailAdapter extends BaseAdapter {
                         itemProductList.get(position).setChecked(isChecked);
                         if (isChecked && totalCheckedCount != getCount()) {
                             totalCheckedCount += 1;
+                            if (TextUtils.equals(product.soldPrise, "") || product.soldPrise.equals("null")) {
+                                product.soldPrise = "0";
+                            }
                             totalCheckedMoney += Float.parseFloat(product.soldPrise);
                             if (totalCheckedCount == getCount()) {
                                 isAllChecked = true;

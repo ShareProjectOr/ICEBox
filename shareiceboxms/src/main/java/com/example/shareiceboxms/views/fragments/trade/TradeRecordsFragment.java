@@ -161,7 +161,7 @@ public class TradeRecordsFragment extends BaseFragment implements LoadMoreHelper
 
     private Map<String, Object> getParams() {
         params = RequestParamsContants.getInstance().getTradeRecordsParams();
-        params.put("createTime", RequestParamsContants.getInstance().getSelectTime(SecondToDate.getDateParams(SecondToDate.TODAY_CODE)));
+//        params.put("createTime", RequestParamsContants.getInstance().getSelectTime(SecondToDate.getDateParams(SecondToDate.TODAY_CODE)));
         return params;
     }
 
@@ -299,6 +299,11 @@ public class TradeRecordsFragment extends BaseFragment implements LoadMoreHelper
                 response = OkHttpUtil.post(HttpRequstUrl.TRADE_RECORDS_URL, JsonUtil.mapToJson(this.params));
                 if (response == null) {
                     return false;
+                } else {
+                    err = JsonDataParse.getInstance().getErr(response);
+                    if ((!TextUtils.equals(err, "")) && !err.equals("null")) {
+                        return false;
+                    }
                 }
                 Log.e(TAG, "response :" + response);
                 tradeRecords = ItemTradeRecord.bindTradeRecordsList(JsonDataParse.getInstance().getArrayList(response.toString()));

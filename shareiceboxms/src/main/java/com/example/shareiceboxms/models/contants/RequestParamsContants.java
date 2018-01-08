@@ -50,8 +50,7 @@ public class RequestParamsContants {
    * */
     public Map<String, Object> getMachineListParams() {
         Map<String, Object> params = new HashMap<>();
-        params.put("userID",1 );//PerSonMessage.userId
-        params.put("appUserID",1 );//PerSonMessage.userId
+        params.put("appUserID",PerSonMessage.userId );
         params.put("keyword", "");
         params.put("p", 1);
         params.put("n", 4);
@@ -96,7 +95,6 @@ public class RequestParamsContants {
 * */
     public Map<String, Object> getMachineLightControlParams() {
         Map<String, Object> params = new HashMap<>();
-        params.put("userID", PerSonMessage.userId);
         params.put("appUserID", PerSonMessage.userId);
         params.put("checkCode", 1);
         params.put("machineID", FragmentFactory.getInstance().getSavedBundle().getInt("machineID"));
@@ -120,7 +118,6 @@ public class RequestParamsContants {
 * */
     public Map<String, Object> getMachineRestartParams() {
         Map<String, Object> params = new HashMap<>();
-        params.put("userID", PerSonMessage.userId);
         params.put("appUserID", PerSonMessage.userId);
         params.put("checkCode", 1);
         params.put("machineID", FragmentFactory.getInstance().getSavedBundle().getInt("machineID"));
@@ -132,7 +129,6 @@ public class RequestParamsContants {
 * */
     public Map<String, Object> getMachineCheckParams() {
         Map<String, Object> params = new HashMap<>();
-        params.put("userID", PerSonMessage.userId);
         params.put("appUserID", PerSonMessage.userId);
         params.put("checkCode", 1);
         params.put("machineID", FragmentFactory.getInstance().getSavedBundle().getInt("machineID"));
@@ -144,7 +140,6 @@ public class RequestParamsContants {
 * */
     public Map<String, Object> getMachineTempParams() {
         Map<String, Object> params = new HashMap<>();
-        params.put("userID", PerSonMessage.userId);
         params.put("appUserID", PerSonMessage.userId);
         params.put("checkCode", 1);
         params.put("machineID", FragmentFactory.getInstance().getSavedBundle().getInt("machineID"));
@@ -185,8 +180,7 @@ public class RequestParamsContants {
 * */
     public Map<String, Object> getTradeTotalParams() {
         Map<String, Object> params = new HashMap<>();
-//        params.put("userID", 1);
-        params.put("appUserID", 1);
+        params.put("appUserID", PerSonMessage.userId);
         params.put("checkCode", 1);
         params.put("companyID", FragmentFactory.getInstance().getSavedBundle().getInt("machineID"));
         params.put("searchTime", "");
@@ -218,7 +212,7 @@ public class RequestParamsContants {
 * */
     public Map<String, Object> getTradeRecordsParams() {
         Map<String, Object> params = new HashMap<>();
-//        params.put("userID", PerSonMessage.userId);
+
         params.put("appUserID", PerSonMessage.userId);
 //        params.put("checkCode", 1);
         params.put("tradeCode", "");
@@ -248,7 +242,6 @@ public class RequestParamsContants {
 * */
     public Map<String, Object> getTradeRecoredDetailProductParams() {
         Map<String, Object> params = new HashMap<>();
-//        params.put("userID", 1);
         params.put("appUserID", 29);//PerSonMessage.userId
         params.put("checkCode", 1);
         params.put("RFID", "");
@@ -279,7 +272,6 @@ public class RequestParamsContants {
 * */
     public Map<String, Object> getAccountsParams() {
         Map<String, Object> params = new HashMap<>();
-//        params.put("userID", 1);
         params.put("appUserID", PerSonMessage.userId);
         params.put("checkCode", 1);
         params.put("p", 1);
@@ -297,8 +289,7 @@ public class RequestParamsContants {
     * */
     public Map<String, Object> getAccountJieSuanParams() {
         Map<String, Object> params = new HashMap<>();
-//        params.put("userID", 1);
-        params.put("appUserID", 1);
+        params.put("appUserID", PerSonMessage.userId);
         params.put("checkCode", 1);
         params.put("p", 1);
         params.put("n", 6);
@@ -316,12 +307,48 @@ public class RequestParamsContants {
     * */
     public Map<String, Object> getCreateJieSuanParams() {
         Map<String, Object> params = new HashMap<>();
-//        params.put("userID", 1);
-        params.put("appUserID", 1);
+        params.put("appUserID", PerSonMessage.userId);
         params.put("checkCode", 1);
 //        params.put("agentID", "");
         params.put("createTime", null);
         return params;
     }
+    /*
+       * 批量退款
+       *   RFIDList:RFID-RFID-RFID,//String 单个或多个RFID组成的字符串
+      refundReason:'就是想退款',//String 退款原因
+      sessionID:'hua78ad78a7aasa809hn' ,//String (session ID)
+       * */
+    public Map<String, Object> getRefundParams() {
+        Map<String, Object> params = new HashMap<>();
+        params.put("appUserID", PerSonMessage.userId);
+        params.put("checkCode", 1);
+        params.put("RFIDList", null);
+        params.put("refundReason", null);
+        return params;
+    }
 
+    /*
+    * 获取旗下所有代理商
+    * keyword:'张',//String 关键词查询 包括姓名、手机号、公司
+    p:1,// Number 当前页码
+    n:12,//Number 当前页数数量
+    userType:0, //Number 用户角色，详情见用户角色状态代码
+    disable:0,//Number 是否被禁用，详情见用户禁用状态代码
+    companyID:4545454,//Number 公司ID
+    agentID: 0000, //Number 所属代理商ID
+  	address:'441502|四川省-绵阳市-涪城区|富乐路口凯德广场二期五楼',//String 用户所在 省-市-县-详细地址
+    sessionID:'hua78ad78a7aasa809hn' ,//String (session ID)
+    * */
+    public Map<String, Object> getAgentsParams() {
+        Map<String, Object> params = new HashMap<>();
+        params.put("appUserID", PerSonMessage.userId);
+        params.put("checkCode", 1);
+//        params.put("agentID", null);
+        params.put("userType", 2);
+        params.put("disable", 0);
+        params.put("p", 1);
+        params.put("n", 1000);
+        return params;
+    }
 }

@@ -47,18 +47,18 @@ public class FragmentFactory {
 
     public List<BaseFragment> getTradeChildFragments() {
         List<BaseFragment> mFragments = new ArrayList<>();
-//        mFragments.add(new TradeTotalFragment());
+        mFragments.add(new TradeTotalFragment());
         mFragments.add(new TradeRecordsFragment());
 
         switch (PerSonMessage.userType) {
             case Constants.SUPER_MANAGER://'系统管理员,运营商'
-//                mFragments.add(new TradeAccountFragment());
+                mFragments.add(new TradeAccountFragment());
                 break;
             case Constants.SYSTEM_MANAGER:
-//                mFragments.add(new TradeAccountFragment());
+                mFragments.add(new TradeAccountFragment());
                 break;
             case Constants.AGENT_MANAGER://'代理商'
-//                mFragments.add(new TradeAccountFragment());
+                mFragments.add(new TradeAccountFragment());
                 break;
             case Constants.MACHINE_MANAGER://'机器管理员'
                 break;

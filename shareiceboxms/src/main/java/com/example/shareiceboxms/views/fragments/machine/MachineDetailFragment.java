@@ -242,6 +242,11 @@ public class MachineDetailFragment extends BaseFragment implements SwipeRefreshL
                 response = OkHttpUtil.post(HttpRequstUrl.MACHINE_DETAIL_URL, JsonUtil.mapToJson(this.params));
                 if (response == null) {
                     return false;
+                } else {
+                    err = JsonDataParse.getInstance().getErr(response);
+                    if ((!TextUtils.equals(err, "")) && !err.equals("null")) {
+                        return false;
+                    }
                 }
                 JSONObject jsonObject = new JSONObject(response.toString());
                 JSONObject jsonD = jsonObject.getJSONObject("d");
