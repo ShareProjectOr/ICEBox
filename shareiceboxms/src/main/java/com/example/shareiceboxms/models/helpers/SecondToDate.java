@@ -74,6 +74,21 @@ public class SecondToDate {
         return dateShow[0] + " 至 " + dateShow[1];
     }
 
+    public static String getTimePart() {
+        String timePart;
+        Calendar rightNow = Calendar.getInstance();
+        int hour = rightNow.get(Calendar.HOUR_OF_DAY);
+        if (11 <= hour) {
+            if (14 <= hour) {
+                timePart = "下午好";
+            } else {
+                timePart = "中午好";
+            }
+        } else {
+            timePart = "上午好";
+        }
+        return timePart;
+    }
 
     /*
        *今天日期

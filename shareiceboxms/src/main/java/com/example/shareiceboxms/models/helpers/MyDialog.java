@@ -71,6 +71,7 @@ public class MyDialog {
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setContentView(R.layout.load_dialog_layout);
         Window window = dialog.getWindow();
+        assert window != null;
         WindowManager.LayoutParams lp = window.getAttributes();
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
             //6.0以下
@@ -78,7 +79,7 @@ public class MyDialog {
 
         }
         window.setTitle(null);
-        lp.alpha = 0.65f;
+        lp.alpha = 0.6f;
         window.setAttributes(lp);//设置透明度
         //设置圆矩背景，dialog是为矩形
         window.setBackgroundDrawable(ContextCompat.getDrawable(context, R.drawable.shape_loading_layout));
@@ -89,14 +90,13 @@ public class MyDialog {
     }
 
     public AlertDialog getMachineTeleControlDialog(String showMsg, final String url, final Map<String, Object> params) {
-        AlertDialog dialog = new AlertDialog.Builder(context).setMessage(showMsg).setPositiveButton("确定", new DialogInterface.OnClickListener() {
+        return new AlertDialog.Builder(context).setMessage(showMsg).setPositiveButton("确定", new DialogInterface.OnClickListener() {
             @Override
-            public void onClick(DialogInterface dialog, int which) {
+            public void onClick(DialogInterface dialog1, int which) {
                 TeleControlHelper.getInstance().setContext(context);
                 TeleControlHelper.getInstance().getDatas(url, params);
             }
         }).setNegativeButton("取消", null).create();
-        return dialog;
     }
 
     public void showDialog(Dialog dialog) {
@@ -165,7 +165,7 @@ public class MyDialog {
         }
         AlertDialog dialog;
         String[] agentNames = new String[agents.size()];
-        final List<ItemPerson> agentIds = new ArrayList<ItemPerson>();
+        final List<ItemPerson> agentIds = new ArrayList<>();
         for (int i = 0; i < agents.size(); i++) {
             ItemPerson person = agents.get(i);
             agentNames[i] = person.name;

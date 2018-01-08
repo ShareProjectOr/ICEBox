@@ -5,21 +5,15 @@ import android.app.Dialog;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.design.widget.AppBarLayout;
 import android.support.v4.app.Fragment;
-import android.support.v4.widget.NestedScrollView;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AbsListView;
 import android.widget.ImageView;
 import android.widget.ListView;
-import android.widget.ScrollView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.shareiceboxms.R;
@@ -32,7 +26,6 @@ import com.example.shareiceboxms.models.factories.FragmentFactory;
 import com.example.shareiceboxms.models.helpers.MyDialog;
 import com.example.shareiceboxms.models.http.JsonUtil;
 import com.example.shareiceboxms.models.http.OkHttpUtil;
-import com.example.shareiceboxms.models.widget.ListViewForScrollView;
 import com.example.shareiceboxms.views.activities.HomeActivity;
 import com.example.shareiceboxms.views.fragments.BaseFragment;
 
@@ -40,18 +33,14 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * A simple {@link Fragment} subclass.
  */
 public class UpLoadGoodsDetailsFragment extends BaseFragment {
     private View contentView;
-    private String recordID;
     private ImageView mDrawerIcon;
     private ImageView mSaoma;
-    private ListView mUpLoadDetailsGoodsList;
     private UpLoadDetailsGoodListAdapter mAdapter;
     private HomeActivity homeActivity;
     private SwipeRefreshLayout refreshLayout;
@@ -82,6 +71,7 @@ public class UpLoadGoodsDetailsFragment extends BaseFragment {
         new AsyncTask<Void, Void, Boolean>() {
             String respone;
             String err;
+
             @Override
             protected Boolean doInBackground(Void... params) {
                 try {
@@ -89,7 +79,7 @@ public class UpLoadGoodsDetailsFragment extends BaseFragment {
                     JSONObject jsonObject = new JSONObject(respone);
                     err = jsonObject.getString("err");
                     if (err.equals("") || err.equals("null")) {
-                        Log.e("uploadDetails",respone.toString());
+                        Log.e("uploadDetails", respone);
                         mAdapter.setJsonData(jsonObject.getJSONObject("d"));
                         return true;
                     }
@@ -119,7 +109,8 @@ public class UpLoadGoodsDetailsFragment extends BaseFragment {
         mAdapter = new UpLoadDetailsGoodListAdapter(getActivity());
         homeActivity = (HomeActivity) getActivity();
         refreshLayout = (SwipeRefreshLayout) contentView.findViewById(R.id.refreshLayout);
-        mUpLoadDetailsGoodsList = (ListView) contentView.findViewById(R.id.upLoadDetailsGoodsList);
+        refreshLayout.setColorSchemeColors(ContextCompat.getColor(getContext(), R.color.blue));
+        ListView mUpLoadDetailsGoodsList = (ListView) contentView.findViewById(R.id.upLoadDetailsGoodsList);
         mUpLoadDetailsGoodsList.setAdapter(mAdapter);
     }
 
@@ -137,9 +128,6 @@ public class UpLoadGoodsDetailsFragment extends BaseFragment {
 
     @Override
     public void onRefresh() {
-        if (refreshLayout.isRefreshing()) {
-            return;
-        }
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {

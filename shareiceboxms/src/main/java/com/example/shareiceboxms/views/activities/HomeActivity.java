@@ -45,6 +45,7 @@ import com.example.shareiceboxms.models.contants.Sql;
 import com.example.shareiceboxms.models.factories.FragmentFactory;
 import com.example.shareiceboxms.models.helpers.MyDialog;
 import com.example.shareiceboxms.models.helpers.NotifySnackbar;
+import com.example.shareiceboxms.models.helpers.SecondToDate;
 import com.example.shareiceboxms.models.http.JsonUtil;
 import com.example.shareiceboxms.models.http.OkHttpUtil;
 import com.example.shareiceboxms.models.http.mqtt.GetService;
@@ -80,6 +81,7 @@ public class HomeActivity extends BaseActivity
     private TextView notifyLayout;
     public BaseFragment curFragment = null;
     String curFragmentTag;
+    private TextView MnanagerNameAndTimePart;
     private OnBackPressListener mOnBackPressListener;
     private int currentHomePageNum = 0;
     private boolean showHomepage = true;
@@ -116,6 +118,7 @@ public class HomeActivity extends BaseActivity
         curFragment = new TradeFragment();
         switchFragment();
         setNotifySnackbar();
+        MnanagerNameAndTimePart.setText(SecondToDate.getTimePart());
     }
 
     private void initViews() {
@@ -126,6 +129,8 @@ public class HomeActivity extends BaseActivity
         notifyLayout = (TextView) findViewById(R.id.notify);
         drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         navigationView = (NavigationView) findViewById(R.id.nav_view);
+        View headerView = navigationView.getHeaderView(0);
+        MnanagerNameAndTimePart = (TextView) headerView.findViewById(R.id.managerNameAndTimepart);
         navigationView.setNavigationItemSelectedListener(this);
         navigationView.setItemTextColor(ContextCompat.getColorStateList(this, R.drawable.selector_text_color));
         navigationView.setItemIconTintList(ContextCompat.getColorStateList(this, R.drawable.selector_text_color));

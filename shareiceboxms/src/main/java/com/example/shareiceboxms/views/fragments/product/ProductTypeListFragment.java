@@ -136,8 +136,6 @@ public class ProductTypeListFragment extends BaseFragment implements TextWatcher
 
     @Override
     public void onRefresh() {
-        if (mRefreashLayout.isRefreshing())
-            return;
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {

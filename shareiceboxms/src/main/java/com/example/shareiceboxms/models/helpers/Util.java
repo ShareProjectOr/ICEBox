@@ -8,14 +8,14 @@ import android.content.Context;
  */
 public class Util {
 	/**
-	 * �õ��豸��Ļ�Ŀ��
+	 * 获取手机屏幕宽度
 	 */
 	public static int getScreenWidth(Context context) {
 		return context.getResources().getDisplayMetrics().widthPixels;
 	}
 
 	/**
-	 * �õ��豸��Ļ�ĸ߶�
+	 * �获取手机屏幕高度
 	 */
 	public static int getScreenHeight(Context context) {
 		return context.getResources().getDisplayMetrics().heightPixels;
