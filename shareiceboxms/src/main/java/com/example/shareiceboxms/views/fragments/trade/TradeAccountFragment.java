@@ -53,7 +53,7 @@ import java.util.Map;
  * 服务费结算（运营商）
  */
 
-public class TradeAccountFragment extends BaseFragment implements LoadMoreHelper.LoadMoreListener {
+public class TradeAccountFragment extends BaseFragment implements LoadMoreHelper.LoadMoreListener, CreateAccountFragment.CreateAccountLisenner {
     private static String TAG = "TradeAccountFragment";
     private View containerView;
     private Button createAccount;
@@ -71,6 +71,8 @@ public class TradeAccountFragment extends BaseFragment implements LoadMoreHelper
     private int curPage, requestNum, totalNum, totalPage, curType;
     private Dialog dialog;
     TradeAccountFragment tradeAccountFragment;
+    BaseFragment createAccountFragment;
+    CreateAccountFragment.CreateAccountLisenner createAccountLisenner;
 
 
     @Nullable
@@ -98,6 +100,7 @@ public class TradeAccountFragment extends BaseFragment implements LoadMoreHelper
         }
         accountType.setOnClickListener(this);
         accountRefresh.setOnRefreshListener(this);
+        createAccountLisenner = this;
         accountRefresh.setColorSchemeColors(ContextCompat.getColor(getContext(), R.color.blue));
     }
 
@@ -140,8 +143,16 @@ public class TradeAccountFragment extends BaseFragment implements LoadMoreHelper
     }
 
     public void addFrameFragment(BaseFragment fragment) {
+        createAccountFragment = fragment;
         TradeFragment tradeFragment = (TradeFragment) getParentFragment();
         tradeFragment.addFrameLayout(fragment);
+    }
+
+    public void removeFragment() {
+        if (createAccountFragment != null) {
+            TradeFragment tradeFragment = (TradeFragment) getParentFragment();
+            tradeFragment.OnBackDown();
+        }
     }
 
     private void initPage() {
@@ -174,11 +185,10 @@ public class TradeAccountFragment extends BaseFragment implements LoadMoreHelper
                 GetAgentsToCreateAccountHelper.getInstance().setGetAgentsLisenner(new GetAgentsToCreateAccountHelper.GetAgentsLisenner() {
                     @Override
                     public void getAgents(List<ItemPerson> agents) {
-                        MyDialog.getAgentsDialog(homeActivity, agents, tradeAccountFragment).show();
+                        MyDialog.getAgentsDialog(homeActivity, agents, tradeAccountFragment, createAccountLisenner).show();
                     }
                 });
                 GetAgentsToCreateAccountHelper.getInstance().getDatas();
-//                addFrameFragment(new CreateAccountFragment());
                 break;
             default:
                 break;
@@ -244,6 +254,16 @@ public class TradeAccountFragment extends BaseFragment implements LoadMoreHelper
             getDatas(params);
         }
         adapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void createSuccess(boolean success, String err) {
+        if (success) {
+            Toast.makeText(homeActivity, "创建成功", Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(homeActivity, "创建失败，请重试！" + err, Toast.LENGTH_SHORT).show();
+        }
+        removeFragment();
     }
 
 

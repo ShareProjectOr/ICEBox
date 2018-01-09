@@ -18,6 +18,7 @@ import android.widget.Toast;
 
 import com.example.shareiceboxms.R;
 import com.example.shareiceboxms.models.beans.ItemPerson;
+import com.example.shareiceboxms.models.beans.trade.ItemTradeAccount;
 import com.example.shareiceboxms.models.contants.HttpRequstUrl;
 import com.example.shareiceboxms.models.contants.JsonDataParse;
 import com.example.shareiceboxms.models.contants.RequestParamsContants;
@@ -52,6 +53,8 @@ public class CreateAccountFragment extends BaseFragment {
     private DoubleDatePickerDialog datePickerDialog;
     private Dialog dialog;
     HomeActivity homeActivity;
+    CreateAccountLisenner createAccountLisenner;
+
     private String[] time;
 
     @Nullable
@@ -90,6 +93,10 @@ public class CreateAccountFragment extends BaseFragment {
                 , Calendar.getInstance().get(Calendar.DATE), true);
         title.setText("创建结算工单");
         dialog = MyDialog.loadDialog(homeActivity);
+    }
+
+    public void setCreateAccountLisenner(CreateAccountLisenner createAccountLisenner) {
+        this.createAccountLisenner = createAccountLisenner;
     }
 
     @Override
@@ -136,7 +143,7 @@ public class CreateAccountFragment extends BaseFragment {
 
         private String response;
         private String err = "";
-        private boolean isCommited = false;
+        private ItemTradeAccount itemTradeAccount;
         private Map<String, Object> params;
 
         TradeCreateJieSuanTask(Map<String, Object> params) {
@@ -165,7 +172,7 @@ public class CreateAccountFragment extends BaseFragment {
                         return false;
                     }
                 }
-                isCommited = JsonDataParse.getInstance().getTeleControlIsArrow(response);
+                itemTradeAccount = ItemTradeAccount.bindTradeAccount(JsonDataParse.getInstance().getSingleObject(response));
                 return true;
             } catch (IOException e) {
                 if (dialog != null && dialog.isShowing()) {
@@ -186,11 +193,18 @@ public class CreateAccountFragment extends BaseFragment {
             if (dialog != null && dialog.isShowing()) {
                 dialog.dismiss();
             }
-            if (success) {
+            if (createAccountLisenner != null) {
+                createAccountLisenner.createSuccess(success, err);
+            }
+           /* if (success) {
                 Toast.makeText(homeActivity, "创建成功", Toast.LENGTH_SHORT).show();
             } else {
                 Toast.makeText(homeActivity, "创建失败，请重试！" + err, Toast.LENGTH_SHORT).show();
-            }
+            }*/
         }
+    }
+
+    public interface CreateAccountLisenner {
+        void createSuccess(boolean success, String err);
     }
 }

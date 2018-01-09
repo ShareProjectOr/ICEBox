@@ -157,15 +157,14 @@ public class MyDialog {
         });
         return dialog;
     }
-
-    public static AlertDialog getAgentsDialog(final HomeActivity activity, final List<ItemPerson> agents, final TradeAccountFragment tradeAccountFragment) {
+    public static AlertDialog getAgentsDialog(final HomeActivity activity, final List<ItemPerson> agents, final TradeAccountFragment tradeAccountFragment, final CreateAccountFragment.CreateAccountLisenner createAccountLisenner) {
         if (agents == null || agents.size() <= 0) {
             Toast.makeText(activity, "没有代理商，无法创建工单", Toast.LENGTH_SHORT).show();
             return null;
         }
         AlertDialog dialog;
         String[] agentNames = new String[agents.size()];
-        final List<ItemPerson> agentIds = new ArrayList<>();
+        final List<ItemPerson> agentIds = new ArrayList<ItemPerson>();
         for (int i = 0; i < agents.size(); i++) {
             ItemPerson person = agents.get(i);
             agentNames[i] = person.name;
@@ -178,12 +177,14 @@ public class MyDialog {
                 agentIds.add(agents.get(which));
             }
         });
+        final CreateAccountFragment fragment = new CreateAccountFragment();
+        fragment.setCreateAccountLisenner(createAccountLisenner);
         builder.setNeutralButton("全选", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 FragmentFactory.getInstance().getSavedBundle().putSerializable("CREATE_AGENTS_ACCOUNT", (Serializable) agents);
                 dialog.dismiss();
-                tradeAccountFragment.addFrameFragment(new CreateAccountFragment());
+                tradeAccountFragment.addFrameFragment(fragment);
             }
         });
         builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
@@ -196,7 +197,7 @@ public class MyDialog {
             public void onClick(DialogInterface dialog, int which) {
                 FragmentFactory.getInstance().getSavedBundle().putSerializable("CREATE_AGENTS_ACCOUNT", (Serializable) agentIds);
                 dialog.dismiss();
-                tradeAccountFragment.addFrameFragment(new CreateAccountFragment());
+                tradeAccountFragment.addFrameFragment(fragment);
             }
         });
         //创建一个复选框对话框

@@ -82,7 +82,7 @@ public class GetAgentsToCreateAccountHelper {
         @Override
         protected Boolean doInBackground(Void... params) {
             try {
-                Log.e(TAG, " request url: " + HttpRequstUrl.TRADE_REFUND_URL);
+                Log.e(TAG, " request url: " + HttpRequstUrl.USER_LIST);
                 Log.e(TAG, "request params: " + JsonUtil.mapToJson(this.params));
                 response = OkHttpUtil.post(HttpRequstUrl.USER_LIST, JsonUtil.mapToJson(this.params));
                 Log.e(TAG, "response:" + response);

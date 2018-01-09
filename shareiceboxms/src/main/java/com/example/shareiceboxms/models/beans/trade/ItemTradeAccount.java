@@ -179,4 +179,82 @@ public class ItemTradeAccount implements Serializable {
         }
         return itemTradeAccounts;
     }
+
+    public static ItemTradeAccount bindTradeAccount(JSONObject item) throws JSONException {
+        ItemTradeAccount itemTradeAccount = new ItemTradeAccount();
+        try {
+
+            if (item.has("divideID") && !item.get("divideID").equals(null))
+                itemTradeAccount.divideID = item.getInt("divideID");
+
+            if (item.has("createTime") && !item.get("createTime").equals(null))
+                itemTradeAccount.createTime = item.getString("createTime");
+
+            if (item.has("checkTime") && !item.get("checkTime").equals(null))
+                itemTradeAccount.checkTime = item.getString("checkTime");
+
+            if (item.has("configTime") && !item.get("configTime").equals(null))
+                itemTradeAccount.configTime = item.getString("configTime");
+
+            if (item.has("configTransferTime") && !item.get("configTransferTime").equals(null))
+                itemTradeAccount.configTransferTime = item.getString("configTransferTime");
+
+            if (item.has("recheckTime") && !item.get("recheckTime").equals(null))
+                itemTradeAccount.recheckTime = item.getString("recheckTime");
+
+            if (item.has("cancelTime") && !item.get("cancelTime").equals(null))
+                itemTradeAccount.cancelTime = item.getString("cancelTime");
+
+            if (item.has("startTime") && !item.get("startTime").equals(null))
+                itemTradeAccount.startTime = item.getString("startTime");
+
+            if (item.has("endTime") && !item.get("endTime").equals(null))
+                itemTradeAccount.endTime = item.getString("endTime");
+
+            if (item.has("divideState") && !item.get("divideState").equals(null))
+                itemTradeAccount.divideState = item.getInt("divideState");
+
+            if (item.has("divideNum") && !item.get("divideNum").equals(null))
+                itemTradeAccount.divideNum = item.getInt("divideNum");
+
+            if (item.has("divideMoney") && !item.get("divideMoney").equals(null))
+                itemTradeAccount.divideMoney = item.getString("divideMoney");
+
+            if (item.has("offsetMoney") && !item.get("offsetMoney").equals(null))
+                itemTradeAccount.offsetMoney = item.getString("offsetMoney");
+
+            if (item.has("actualPayment") && !item.get("actualPayment").equals(null))
+                itemTradeAccount.actualPayment = item.getString("actualPayment");
+
+            if (item.has("actualPayment") && !item.get("actualPayment").equals(null))
+                itemTradeAccount.divideType = item.getInt("divideType");
+
+            if (item.has("creator") && !item.get("creator").equals(null))
+                itemTradeAccount.creator = ItemPerson.bindPerson(item.getJSONObject("creator"));
+
+            if (item.has("checker") && !item.get("checker").equals(null))
+                itemTradeAccount.checker = ItemPerson.bindPerson(item.getJSONObject("checker"));
+
+            if (item.has("configer") && !item.get("configer").equals(null))
+                itemTradeAccount.configer = ItemPerson.bindPerson(item.getJSONObject("configer"));
+
+            if (item.has("configTransfer") && !item.get("configTransfer").equals(null))
+                itemTradeAccount.configTransfer = ItemPerson.bindPerson(item.getJSONObject("configTransfer"));
+
+            if (item.has("rechecker") && !item.get("rechecker").equals(null))
+                itemTradeAccount.rechecker = ItemPerson.bindPerson(item.getJSONObject("rechecker"));
+
+            if (item.has("canceler") && !item.get("canceler").equals(null))
+                itemTradeAccount.canceler = ItemPerson.bindPerson(item.getJSONObject("canceler"));
+
+            if (item.has("agent") && !item.get("agent").equals(null))
+                itemTradeAccount.agent = ItemPerson.bindPerson(item.getJSONObject("agent"));
+
+            if (item.has("company") && !item.get("company").equals(null))
+                itemTradeAccount.company = ItemCompany.bindCompanyFull(item.getJSONObject("company"));
+        } catch (JSONException e) {
+            Log.e("ItemTradeAccounts", e.toString());
+        }
+        return itemTradeAccount;
+    }
 }

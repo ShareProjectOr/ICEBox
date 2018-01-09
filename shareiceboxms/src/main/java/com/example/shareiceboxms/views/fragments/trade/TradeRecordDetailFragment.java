@@ -54,7 +54,7 @@ public class TradeRecordDetailFragment extends BaseFragment implements RecordDet
     private android.support.design.widget.TabLayout productTabLayout;
     private CheckBox allProductCB;
     private com.example.shareiceboxms.models.widget.ListViewForScrollView productList;
-    private LinearLayout refundMoreLayout;
+    private LinearLayout refundMoreLayout, coorLayout;
 
     private TextView tradeTime, totalMoney, payState, machineNameAddr, customerId, tradeNo;
     private ImageView payIcon;
@@ -92,6 +92,7 @@ public class TradeRecordDetailFragment extends BaseFragment implements RecordDet
         allProductCB = (CheckBox) containerView.findViewById(R.id.allProductCB);
         productList = (com.example.shareiceboxms.models.widget.ListViewForScrollView) containerView.findViewById(R.id.productList);
         refundMoreLayout = (LinearLayout) containerView.findViewById(R.id.refundMoreLayout);
+        coorLayout = (LinearLayout) containerView.findViewById(R.id.coorLayout);
 
         tradeTime = (TextView) containerView.findViewById(R.id.tradeTime);
         totalMoney = (TextView) containerView.findViewById(R.id.totalMoney);
@@ -146,6 +147,11 @@ public class TradeRecordDetailFragment extends BaseFragment implements RecordDet
                             allProductCB.setVisibility(View.VISIBLE);
                             adapter.setRefundProductSelected(false);
                             adapter.setItemProductList(itemBuyProducts);
+                            if (itemBuyProducts.size() <= 0) {
+                                coorLayout.setVisibility(View.GONE);
+                            } else {
+                                coorLayout.setVisibility(View.VISIBLE);
+                            }
                         }
                         break;
                     case 1:
@@ -287,6 +293,11 @@ public class TradeRecordDetailFragment extends BaseFragment implements RecordDet
             } else {
                 itemRefundProducts.add(itemProduct);
             }
+        }
+        if (itemBuyProducts.size() <= 0) {
+            coorLayout.setVisibility(View.GONE);
+        } else {
+            coorLayout.setVisibility(View.VISIBLE);
         }
         adapter.setItemProductList(curTabSelect == 0 ? itemBuyProducts : itemRefundProducts);
         adapter.notifyDataSetChanged();
