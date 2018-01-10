@@ -5,18 +5,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.TextView;
 
 import com.example.shareiceboxms.R;
-import com.example.shareiceboxms.models.ItemCloseDoorGoods;
-import com.example.shareiceboxms.models.beans.PerSonMessage;
-import com.example.shareiceboxms.models.beans.product.ItemSellProduct;
-import com.example.shareiceboxms.models.contants.Constants;
-import com.example.shareiceboxms.views.fragments.trade.TradeRecordDetailFragment;
+import com.example.shareiceboxms.models.beans.ItemCloseDoorGoods;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -25,7 +18,7 @@ import java.util.List;
 
 public class UpdateGoodsCompleteAdapter extends BaseAdapter {
     private Context context;
-    List<ItemCloseDoorGoods> datas;
+    private List<ItemCloseDoorGoods> datas;
 
     public UpdateGoodsCompleteAdapter(Context context, List<ItemCloseDoorGoods> datas) {
         this.context = context;
@@ -58,14 +51,16 @@ public class UpdateGoodsCompleteAdapter extends BaseAdapter {
             viewHolder = (ViewHolder) convertView.getTag();
         }
         //更新值
-
+        viewHolder.productName.setText(datas.get(position).goodsName);
+        viewHolder.productAddNum.setText(String.valueOf(datas.get(position).upLoadNum));
+        viewHolder.productSubNum.setText(String.valueOf(datas.get(position).unLoadNum));
         return convertView;
     }
 
     class ViewHolder {
-        public TextView productName;
-        public TextView productAddNum;
-        public TextView productSubNum;
+        TextView productName;
+        TextView productAddNum;
+        TextView productSubNum;
 
         public ViewHolder(View itemView) {
 

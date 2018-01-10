@@ -105,7 +105,6 @@ public class UpLoadRecordListData {
             @Override
             protected void onPostExecute(Boolean aBoolean) {
              //   dialog.dismiss();
-
                 if (!aBoolean) {
                     Toast.makeText(mActivty, error, Toast.LENGTH_LONG).show();
                 } else {

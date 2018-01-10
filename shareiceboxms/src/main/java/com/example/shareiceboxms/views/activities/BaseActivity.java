@@ -1,5 +1,6 @@
 package com.example.shareiceboxms.views.activities;
 
+import android.app.PendingIntent;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -18,9 +19,23 @@ import org.eclipse.paho.client.mqttv3.MqttMessage;
  */
 
 public class BaseActivity extends AppCompatActivity implements View.OnClickListener, MqttCallback {
+    private static BaseActivity mInstance;
+
     @Override
     public void onClick(View v) {
 
+    }
+
+    public static BaseActivity getInstance() {
+
+        if (mInstance == null) {
+
+            mInstance = new BaseActivity();
+        }
+        return mInstance;
+    }
+
+    public BaseActivity() {
     }
 
     public void jumpActivity(Class<?> activitycalss, Bundle intentData) {
@@ -43,14 +58,17 @@ public class BaseActivity extends AppCompatActivity implements View.OnClickListe
         GetService.getInstance().start();
     }
 
+    public static final String BROADCAST_ACTION = "topic";
+
     @Override
     public void messageArrived(String topic, MqttMessage message) throws Exception {
         System.out.println("接收消息主题 : " + topic);
         System.out.println("接收消息Qos : " + message.getQos());
         System.out.println("接收消息内容 : " + new String(message.getPayload()));
-//        if (NotifySnackbar.getSnackbar() != null) {
-//            NotifySnackbar.showNotify(new String(message.getPayload()));
-//        }
+      /*  Intent intent = new Intent(BROADCAST_ACTION);
+        intent.putExtra("topic", topic);
+        sendBroadcast(intent);*/
+
     }
 
     @Override
