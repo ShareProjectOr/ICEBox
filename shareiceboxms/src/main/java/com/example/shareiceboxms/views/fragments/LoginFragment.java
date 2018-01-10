@@ -27,6 +27,7 @@ import com.example.shareiceboxms.models.contants.RequstTips;
 import com.example.shareiceboxms.models.helpers.ProvenceAndCodeUtil;
 import com.example.shareiceboxms.models.http.JsonUtil;
 import com.example.shareiceboxms.models.http.OkHttpUtil;
+import com.example.shareiceboxms.presentors.LoginAnimPresentor;
 import com.example.shareiceboxms.views.activities.HomeActivity;
 import com.example.shareiceboxms.R;
 
@@ -46,7 +47,7 @@ import java.util.Map;
  * LYU Repair on 2017/12/15
  */
 
-public class LoginFragment extends BaseFragment {
+public class LoginFragment extends BaseFragment implements LoginAnimPresentor.LoginLisenner {
     private LoginActivity loginActivity;
     private View containerView;
     private EditText accountEdit, passEdit;
@@ -98,14 +99,6 @@ public class LoginFragment extends BaseFragment {
                 isPassEditFoucsed = hasFocus;
             }
         });
-        isRemember.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                loginBnt.setVisibility(View.VISIBLE);
-                passLayout.setVisibility(View.VISIBLE);
-
-            }
-        });
     }
 
     @Override
@@ -122,15 +115,10 @@ public class LoginFragment extends BaseFragment {
                     passEdit.requestFocus();
                     return;
                 }
-//                mAuthTask = new UserLoginTask(accountEdit.getText().toString(), passEdit.getText().toString());
-//                mAuthTask.execute();
-//                LoginAnimPresentor.loginAnim(editLayout, barLayout);
-//                loginBnt.setVisibility(View.GONE);
-//                passLayout.setVisibility(View.GONE);
-                Intent intent = new Intent();
-                intent.setClass(getActivity(), HomeActivity.class);
-                startActivity(intent);
-                getActivity().finish();
+
+                LoginAnimPresentor.loginAnim(editLayout, barLayout, this);
+                loginBnt.setVisibility(View.GONE);
+                passLayout.setVisibility(View.GONE);
                 break;
             case R.id.isClose:
                 accountEdit.setText("");
@@ -166,6 +154,12 @@ public class LoginFragment extends BaseFragment {
         }
     }
 
+    @Override
+    public void login() {
+        mAuthTask = new UserLoginTask(accountEdit.getText().toString(), passEdit.getText().toString());
+        mAuthTask.execute();
+    }
+
     //登录异步任务
     private class UserLoginTask extends AsyncTask<Void, Void, Boolean> {
 
@@ -195,7 +189,7 @@ public class LoginFragment extends BaseFragment {
                 Log.e("login_response", response);
                 userJson = new JSONObject(response);
                 err = userJson.getString("err");
-                Log.e("response",response.toString());
+                Log.e("response", response.toString());
                 if (err.equals("") || err.equals("null")) {
                     return true;
                 }
@@ -215,6 +209,9 @@ public class LoginFragment extends BaseFragment {
                 PerSonMessage.loginPassword = mPassword;
                 PerSonMessage.bindMessage(response);
             } else {
+                LoginAnimPresentor.loginAnimReverse(editLayout, barLayout);
+                loginBnt.setVisibility(View.VISIBLE);
+                passLayout.setVisibility(View.VISIBLE);
                 passEdit.setError(err);
                 passEdit.requestFocus();
             }

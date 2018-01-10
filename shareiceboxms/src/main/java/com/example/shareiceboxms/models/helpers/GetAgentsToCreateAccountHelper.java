@@ -57,7 +57,7 @@ public class GetAgentsToCreateAccountHelper {
 
     public void getDatas() {
         GetAgentsTask task = new GetAgentsTask(RequestParamsContants.getInstance().getAgentsParams(), activity);
-        task.execute();
+        task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
     }
 
     public class GetAgentsTask extends AsyncTask<Void, Void, Boolean> {

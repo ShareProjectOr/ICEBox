@@ -3,18 +3,23 @@ package com.example.shareiceboxms.models.helpers;
 import android.content.Context;
 import android.support.v4.content.ContextCompat;
 import android.text.Editable;
+import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.shareiceboxms.R;
 import com.example.shareiceboxms.models.contants.RequestParamsContants;
+import com.example.shareiceboxms.views.activities.BaseActivity;
 import com.example.shareiceboxms.views.fragments.trade.TradeAccountDetailFragment;
 
 import java.util.Map;
+import java.util.StringTokenizer;
 
 /**
  * Created by WH on 2017/12/27.
@@ -22,7 +27,7 @@ import java.util.Map;
 
 public class PageHelper implements View.OnClickListener {
     private View view;
-    private Context context;
+    private BaseActivity context;
     private TradeAccountDetailFragment fragment;
     private TextView homePage;
     private TextView lastPage;
@@ -35,8 +40,10 @@ public class PageHelper implements View.OnClickListener {
     private static int SHOW_PAGE = 5;//总共显示5页
     private int totalPageText = 1, totalCountText = 0;
     private boolean isChongdiRefund;
+    private String cacheRecoredPage = "1";
+    private String cacheRefundPage = "1";
 
-    public PageHelper(Context context, TradeAccountDetailFragment fragment, View view) {
+    public PageHelper(BaseActivity context, TradeAccountDetailFragment fragment, View view) {
         this.context = context;
         this.fragment = fragment;
         this.view = view;
@@ -47,7 +54,6 @@ public class PageHelper implements View.OnClickListener {
 
         homePage = (TextView) view.findViewById(R.id.homePage);
         lastPage = (TextView) view.findViewById(R.id.lastPage);
-//        pageItem = (LinearLayout) view.findViewById(R.id.pageItem);
         nextPage = (TextView) view.findViewById(R.id.nextPage);
         totalPageCount = (TextView) view.findViewById(R.id.totalPageCount);
         totalCount = (TextView) view.findViewById(R.id.totalCount);
@@ -57,32 +63,26 @@ public class PageHelper implements View.OnClickListener {
         lastPage.setOnClickListener(this);
         nextPage.setOnClickListener(this);
         intent.setOnClickListener(this);
-        page.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                if (s.length() <= 0) {
-                    page.setText("1");
-                }
-            }
-        });
     }
 
     private void bindDatas() {
         totalPageCount.setText(totalPageText + "");
         totalCount.setText(totalCountText + "");
+        if (isChongdiRefund) {
+            page.setText(cacheRefundPage);
+        } else {
+            page.setText(cacheRecoredPage);
+        }
+
     }
 
+    /*
+    * tab切换时调用
+    * */
     public void setTotalText(int totalPageText, int totalCountText) {
+        if (totalPageText == 0) {
+            totalPageText = 1;
+        }
         this.totalPageText = totalPageText;
         this.totalCountText = totalCountText;
         bindDatas();
@@ -93,10 +93,11 @@ public class PageHelper implements View.OnClickListener {
         isChongdiRefund = chongdiRefund;
     }
 
+
     public void initTextColor() {
-        if (totalPageText > 1) {
-            nextPage.setTextColor(ContextCompat.getColor(context, R.color.blue));
-        }
+        changeIfOverLimit();
+        int curPage = Integer.parseInt(page.getText().toString());
+        changeTextColor(curPage);
     }
 
     @Override
@@ -104,20 +105,19 @@ public class PageHelper implements View.OnClickListener {
         if (totalPageText == 0 || totalCountText == 0) {
             return;
         }
-        Map<String, Object> params = RequestParamsContants.getInstance().getTradeRecordsParams();
+        changeIfOverLimit();
         switch (v.getId()) {
             case R.id.homePage:
                 if (page.getText().toString().equals("1")) {
                     return;
                 }
+                if (page.getText().toString().isEmpty()) {
+                    page.setText("1");
+                }
                 lastPage.setTextColor(ContextCompat.getColor(context, R.color.gray_light_deep));
                 initTextColor();
                 page.setText("1");
-                if (!isChongdiRefund) {
-                    fragment.getRecorDatas(params);
-                } else {
-                    fragment.getChongdiDatas(Integer.parseInt(page.getText().toString()), 6);
-                }
+                loadPageDatas();
 
                 break;
             case R.id.lastPage:
@@ -125,53 +125,73 @@ public class PageHelper implements View.OnClickListener {
                 if (curPage == 1) {
                     return;
                 }
-                if (curPage - 1 == 1) {
-                    lastPage.setTextColor(ContextCompat.getColor(context, R.color.gray_light_deep));
-                }
-                if (curPage == totalPageText) {
-                    nextPage.setTextColor(ContextCompat.getColor(context, R.color.blue));
-                }
-                page.setText(curPage - 1);
-                params.put("p", Integer.parseInt(page.getText().toString()));
-                if (!isChongdiRefund) {
-                    fragment.getRecorDatas(params);
-                } else {
-                    fragment.getChongdiDatas(Integer.parseInt(page.getText().toString()), 6);
-                }
+                page.setText(String.valueOf(curPage - 1));
+                changeTextColor(Integer.parseInt(page.getText().toString()));
+                loadPageDatas();
                 break;
             case R.id.nextPage:
                 int curPage1 = Integer.valueOf(page.getText().toString());
                 if (curPage1 == totalPageText) {
                     return;
+                } else if (curPage1 > totalPageText) {
+
                 }
-                if (curPage1 + 1 == totalPageText) {
-                    nextPage.setTextColor(ContextCompat.getColor(context, R.color.gray_light_deep));
-                }
-                if (curPage1 == 1) {
-                    lastPage.setTextColor(ContextCompat.getColor(context, R.color.blue));
-                }
-                page.setText(curPage1 + 1);
-                params.put("p", Integer.parseInt(page.getText().toString()));
-                if (!isChongdiRefund) {
-                    fragment.getRecorDatas(params);
-                } else {
-                    fragment.getChongdiDatas(Integer.parseInt(page.getText().toString()), 6);
-                }
+                page.setText(String.valueOf(curPage1 + 1));
+                changeTextColor(Integer.parseInt(page.getText().toString()));
+                loadPageDatas();
                 break;
             case R.id.intent:
+                if (page.getText().toString().isEmpty()) {
+                    page.setText("1");
+                }
                 if (Integer.parseInt(page.getText().toString()) > totalPageText) {
                     page.setText(totalPageText + "");
                 }
-                if (page.getText().toString().equals("0")) {
-                    page.setText("1");
-                }
-                params.put("p", Integer.parseInt(page.getText().toString()));
-                if (!isChongdiRefund) {
-                    fragment.getRecorDatas(params);
-                } else {
-                    fragment.getChongdiDatas(Integer.parseInt(page.getText().toString()), 6);
-                }
+                loadPageDatas();
                 break;
+        }
+    }
+
+    /*
+    * 根据页数加载数据
+    * */
+    private void loadPageDatas() {
+        if (!isChongdiRefund) {
+            cacheRecoredPage = page.getText().toString();
+            fragment.getRecorDatas(Integer.parseInt(cacheRecoredPage));
+        } else {
+            cacheRefundPage = page.getText().toString();
+            fragment.getChongdiDatas(Integer.parseInt(cacheRefundPage), 6);
+        }
+    }
+
+    private void changeTextColor(int page) {
+        if (page <= 1) {
+            lastPage.setTextColor(ContextCompat.getColor(context, R.color.gray_light_deep));
+            homePage.setTextColor(ContextCompat.getColor(context, R.color.gray_light_deep));
+        } else {
+            lastPage.setTextColor(ContextCompat.getColor(context, R.color.blue));
+            homePage.setTextColor(ContextCompat.getColor(context, R.color.blue));
+        }
+        if (page < totalPageText) {
+            if (page > 1) {
+                lastPage.setTextColor(ContextCompat.getColor(context, R.color.blue));
+            }
+            nextPage.setTextColor(ContextCompat.getColor(context, R.color.blue));
+
+        } else if (page == totalPageText) {
+            nextPage.setTextColor(ContextCompat.getColor(context, R.color.gray_light_deep));
+        }
+    }
+
+    private void changeIfOverLimit() {
+        Map<String, Object> params = RequestParamsContants.getInstance().getTradeRecordsParams();
+        if (page.getText().toString().isEmpty()) {
+            page.setText("1");
+            loadPageDatas();
+        } else if (Integer.parseInt(page.getText().toString()) > totalPageText) {
+            page.setText(String.valueOf(totalPageText));
+            loadPageDatas();
         }
     }
 }

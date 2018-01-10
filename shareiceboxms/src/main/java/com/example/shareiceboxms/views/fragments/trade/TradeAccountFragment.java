@@ -108,14 +108,6 @@ public class TradeAccountFragment extends BaseFragment implements LoadMoreHelper
         homeActivity = (HomeActivity) getActivity();
         itemTradeAccounts = new ArrayList<>();
         tradeAccountFragment = this;
-/*
-        itemTradeAccounts.add(new ItemTradeAccount());
-        itemTradeAccounts.add(new ItemTradeAccount());
-        itemTradeAccounts.add(new ItemTradeAccount());
-        itemTradeAccounts.add(new ItemTradeAccount());
-        itemTradeAccounts.add(null);*/
-
-
         mTilePopup = MenuPop.CreateMenuPop(getContext(), accountType, Constants.TradeAccountStateTitle);
         dialog = MyDialog.loadDialog(getContext());
         RecyclerView tradeaccountList = (android.support.v7.widget.RecyclerView) containerView.findViewById(R.id.tradeaccountList);
@@ -139,7 +131,7 @@ public class TradeAccountFragment extends BaseFragment implements LoadMoreHelper
 
     private void getDatas(Map<String, Object> params) {
         TradeAccountsTask task = new TradeAccountsTask(params);
-        task.execute();
+        task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
     }
 
     public void addFrameFragment(BaseFragment fragment) {
@@ -151,7 +143,7 @@ public class TradeAccountFragment extends BaseFragment implements LoadMoreHelper
     public void removeFragment() {
         if (createAccountFragment != null) {
             TradeFragment tradeFragment = (TradeFragment) getParentFragment();
-            tradeFragment.OnBackDown();
+            tradeFragment.removeFrame(createAccountFragment);
         }
     }
 
@@ -247,13 +239,14 @@ public class TradeAccountFragment extends BaseFragment implements LoadMoreHelper
         //拉取数据
         if (itemTradeAccounts.size() < totalNum && curPage < totalPage) {
             Map<String, Object> params = getParams();
-            if (mTilePopup.getSelectedItemPosition() != 0) {//如果是全部就不设置
+            if (mTilePopup.getSelectedItemPosition() > 0) {//如果是全部就不设置
                 params.put("divideState", mTilePopup.getSelectedItemPosition() - 1);
             }
             params.put("p", curPage + 1);
             getDatas(params);
+            adapter.notifyDataSetChanged();
         }
-        adapter.notifyDataSetChanged();
+
     }
 
     @Override

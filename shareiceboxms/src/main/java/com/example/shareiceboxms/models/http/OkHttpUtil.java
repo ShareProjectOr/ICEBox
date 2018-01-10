@@ -2,6 +2,7 @@ package com.example.shareiceboxms.models.http;
 
 import android.util.Log;
 
+import com.squareup.okhttp.Call;
 import com.squareup.okhttp.Callback;
 import com.squareup.okhttp.FormEncodingBuilder;
 import com.squareup.okhttp.MediaType;
@@ -23,10 +24,18 @@ import java.util.concurrent.TimeUnit;
  */
 
 public class OkHttpUtil {
+    private static OkHttpUtil instance;
     private static final OkHttpClient mOkHttpClient = new OkHttpClient();
 
     static {
-        mOkHttpClient.setConnectTimeout(20, TimeUnit.SECONDS);
+        mOkHttpClient.setConnectTimeout(15, TimeUnit.SECONDS);
+    }
+
+    public static OkHttpUtil getInstance() {
+        if (instance == null) {
+            instance = new OkHttpUtil();
+        }
+        return instance;
     }
 
     /**
@@ -123,12 +132,13 @@ public class OkHttpUtil {
     public static final MediaType JSON = MediaType.parse("application/json; charset=utf-8");
 
     public static String post(String url, String json) throws IOException {
-        OkHttpClient okHttpClient = new OkHttpClient();
-        okHttpClient.setConnectTimeout(20, TimeUnit.SECONDS);
+//        OkHttpClient okHttpClient = new OkHttpClient();
+//        okHttpClient.setConnectTimeout(20, TimeUnit.SECONDS);
         RequestBody requestBody = RequestBody.create(JSON, json);
 
         Request request = new Request.Builder().url(url).addHeader("content-type", "application/json;charset:utf-8").post(requestBody).build();
-        Response response = okHttpClient.newCall(request).execute();//mOkHttpClient
+        Call call = mOkHttpClient.newCall(request);
+        Response response = mOkHttpClient.newCall(request).execute();//mOkHttpClient
         if (response.isSuccessful()) {
             return response.body().string();
         } else {

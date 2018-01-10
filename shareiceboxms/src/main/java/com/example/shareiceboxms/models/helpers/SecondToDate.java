@@ -1,6 +1,7 @@
 package com.example.shareiceboxms.models.helpers;
 
 import android.text.TextUtils;
+import android.util.Log;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -69,8 +70,8 @@ public class SecondToDate {
 
     public static String getDateUiShow(String[] time) {
         String[] dateShow = new String[2];
-        dateShow[0] = time[0].replace(" 00:00", "");
-        dateShow[1] = time[1].replace(" 23:59", "");
+        dateShow[0] = time[0].replace(" 00:00:00", "");
+        dateShow[1] = time[1].replace(" 23:59:59", "");
         return dateShow[0] + " 至 " + dateShow[1];
     }
 
@@ -96,7 +97,7 @@ public class SecondToDate {
     public static String[] getDay() {
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
         Date date = new Date(System.currentTimeMillis());
-        return new String[]{formatter.format(date) + " 00:00", formatter.format(date) + " 23:59"};
+        return new String[]{formatter.format(date) + " 00:00:00", formatter.format(date) + " 23:59:59"};
     }
 
     /*
@@ -112,7 +113,7 @@ public class SecondToDate {
         int year = ca.get(Calendar.YEAR);
         int month = ca.get(Calendar.MONTH) + 1;
         int date = ca.get(Calendar.DAY_OF_MONTH);
-        return year + "-" + month + "-" + date + " 00:00";
+        return year + "-" + month + "-" + date + " 00:00:00";
     }
 
     /*
@@ -128,7 +129,7 @@ public class SecondToDate {
         int year = ca.get(Calendar.YEAR);
         int month = ca.get(Calendar.MONTH) + 1;
         int date = ca.get(Calendar.DAY_OF_MONTH);
-        return year + "-" + month + "-" + date + " 00:00";
+        return year + "-" + month + "-" + date + " 00:00:00";
     }
 
     /*
@@ -144,7 +145,7 @@ public class SecondToDate {
         int year = ca.get(Calendar.YEAR);
         int month = ca.get(Calendar.MONTH) + 1;
         int date = ca.get(Calendar.DAY_OF_MONTH);
-        return year + "-" + month + "-" + date + " 00:00";
+        return year + "-" + month + "-" + date + " 00:00:00";
     }
 
     /*
@@ -220,7 +221,7 @@ public class SecondToDate {
         String timeStr = "";
         String[] time = SecondToDate.formatLongToTimeStr(
                 SecondToDate.getSubOfDates(SecondToDate.getDateOfString(startTime)
-                        , SecondToDate.getDateOfString(endTime)));
+                        , SecondToDate.getDateOfString(endTime)) / 1000);
         if (!time[0].equals("0")) {
             timeStr += time[0] + "天";
         }

@@ -69,7 +69,6 @@ public class MachineFragment extends BaseFragment implements HomeActivity.OnBack
     private Dialog dialog;
     private BaseFragment curFrameFragment;
     private HomeActivity homeActivity;
-    private MachineListTask machineListTask;
     private boolean isSearchClick = false;
 
 
@@ -158,16 +157,8 @@ public class MachineFragment extends BaseFragment implements HomeActivity.OnBack
     }
 
     private void getDatas(Map<String, Object> params) {
-        if (machineListTask == null) {
-            machineListTask = new MachineListTask(params);
-            //        machineListTask.execute();
-            machineListTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-            return;
-        }
-//        machineListTask.onPostExecute(false);
-        machineListTask = null;
-        System.gc();
-        getDatas(params);
+        MachineListTask machineListTask = new MachineListTask(params);
+        machineListTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
     }
 
     /*
@@ -351,11 +342,6 @@ public class MachineFragment extends BaseFragment implements HomeActivity.OnBack
 
                 }
             }
-        }
-
-        @Override
-        protected void onCancelled() {
-            machineListTask = null;
         }
     }
 }

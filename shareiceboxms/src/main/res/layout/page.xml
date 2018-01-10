@@ -17,8 +17,8 @@
             android:layout_height="wrap_content"
             android:layout_alignParentStart="true"
             android:layout_alignParentTop="true"
-            android:padding="3dp"
             android:layout_centerVertical="true"
+            android:padding="3dp"
             android:text="首页" />
 
         <TextView
@@ -45,6 +45,7 @@
                 android:layout_height="wrap_content"
                 android:background="@drawable/shape_edit_focused"
                 android:gravity="center_horizontal"
+                android:inputType="number"
                 android:padding="3dp"
                 android:text="1" />
 

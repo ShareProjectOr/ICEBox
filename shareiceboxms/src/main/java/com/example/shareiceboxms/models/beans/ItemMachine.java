@@ -72,35 +72,96 @@ public class ItemMachine {
             for (int i = 0; i < list.length(); i++) {
                 JSONObject item = (JSONObject) list.get(i);
                 ItemMachine itemMachine = new ItemMachine();
-                itemMachine.loginitude = item.getDouble("loginitude");
-                itemMachine.doorState = item.getInt("doorState");
-                itemMachine.latitude = item.getDouble("latitude");
-                itemMachine.activationState = item.getInt("activationState");
-                itemMachine.clientVersion = item.getString("clientVersion");
-                itemMachine.activationState = item.getInt("activationState");
-                itemMachine.deviationTemperature = item.getString("deviationTemperature");
-                itemMachine.lockState = item.getInt("lockState");
-                itemMachine.machineName = item.getString("machineName");
-                itemMachine.machineID = item.getInt("machineID");
-                itemMachine.powerState = item.getInt("powerState");
-                itemMachine.targetTemperature = item.getString("targetTemperature");
-                itemMachine.machineTemperature = item.getString("machineTemperature");
-                itemMachine.sensorState = item.getInt("sensorState");
-                itemMachine.machineCode = item.getString("machineCode");
-                itemMachine.factoryTime = item.getString("factoryTime");
-                itemMachine.updateTime = item.getString("updateTime");
-                itemMachine.networkState = item.getInt("networkState");
-                itemMachine.machineAddress = item.getString("machineAddress");
-                itemMachine.refrigeratorState = item.getInt("refrigeratorState");
-                itemMachine.qrCode = item.getString("qrCode");//qRCode
-                itemMachine.breakTime = item.getString("breakTime");
-                itemMachine.lightState = item.getInt("lightState");
-                itemMachine.activatedTime = item.getString("activatedTime");
-                itemMachine.driverVersion = item.getString("driverVersion");
-                itemMachine.blowerState = item.getInt("blowerState");
-                itemMachine.faultState = item.getInt("faultState");
-                itemMachine.productionTime = item.getString("productionTime");
+                if (item.has("loginitude") && !item.get("loginitude").equals(null)) {
+                    itemMachine.loginitude = item.getDouble("loginitude");
+                }
+                if (item.has("doorState") && !item.get("doorState").equals(null)) {
+                    itemMachine.doorState = item.getInt("doorState");
+                }
 
+                if (item.has("latitude") && !item.get("latitude").equals(null)) {
+                    itemMachine.latitude = item.getDouble("latitude");
+                }
+                if (item.has("activationState") && !item.get("activationState").equals(null)) {
+                    itemMachine.activationState = item.getInt("activationState");
+                }
+                if (item.has("clientVersion") && !item.get("clientVersion").equals(null)) {
+                    itemMachine.clientVersion = item.getString("clientVersion");
+                }
+                if (item.has("activationState") && !item.get("activationState").equals(null)) {
+                    itemMachine.activationState = item.getInt("activationState");
+                }
+                if (item.has("deviationTemperature") && !item.get("deviationTemperature").equals(null)) {
+                    itemMachine.deviationTemperature = item.getString("deviationTemperature");
+                }
+                if (item.has("lockState") && !item.get("lockState").equals(null)) {
+                    itemMachine.lockState = item.getInt("lockState");
+                }
+                if (item.has("machineName") && !item.get("machineName").equals(null)) {
+                    itemMachine.machineName = item.getString("machineName");
+                }
+
+                if (item.has("machineID") && !item.get("machineID").equals(null)) {
+                    itemMachine.machineID = item.getInt("machineID");
+                }
+                if (item.has("powerState") && !item.get("powerState").equals(null)) {
+                    itemMachine.powerState = item.getInt("powerState");
+                }
+
+                if (item.has("targetTemperature") && !item.get("targetTemperature").equals(null)) {
+                    itemMachine.targetTemperature = item.getString("targetTemperature");
+                }
+
+                if (item.has("machineTemperature") && !item.get("machineTemperature").equals(null)) {
+                    itemMachine.machineTemperature = item.getString("machineTemperature");
+                }
+                if (item.has("sensorState") && !item.get("sensorState").equals(null)) {
+                    itemMachine.sensorState = item.getInt("sensorState");
+                }
+                if (item.has("machineCode") && !item.get("machineCode").equals(null)) {
+                    itemMachine.machineCode = item.getString("machineCode");
+                }
+                if (item.has("factoryTime") && !item.get("factoryTime").equals(null)) {
+                    itemMachine.factoryTime = item.getString("factoryTime");
+                }
+                if (item.has("updateTime") && !item.get("updateTime").equals(null)) {
+                    itemMachine.updateTime = item.getString("updateTime");
+                }
+
+                if (item.has("networkState") && !item.get("networkState").equals(null)) {
+                    itemMachine.networkState = item.getInt("networkState");
+                }
+
+                if (item.has("machineAddress") && !item.get("machineAddress").equals(null)) {
+                    itemMachine.machineAddress = item.getString("machineAddress");
+                }
+                if (item.has("refrigeratorState") && !item.get("refrigeratorState").equals(null)) {
+                    itemMachine.refrigeratorState = item.getInt("refrigeratorState");
+                }
+                if (item.has("qrCode") && !item.get("qrCode").equals(null)) {
+                    itemMachine.qrCode = item.getString("qrCode");
+                }
+                if (item.has("breakTime") && !item.get("breakTime").equals(null)) {
+                    itemMachine.breakTime = item.getString("breakTime");
+                }
+                if (item.has("lightState") && !item.get("lightState").equals(null)) {
+                    itemMachine.lightState = item.getInt("lightState");
+                }
+                if (item.has("activatedTime") && !item.get("activatedTime").equals(null)) {
+                    itemMachine.activatedTime = item.getString("activatedTime");
+                }
+                if (item.has("driverVersion") && !item.get("driverVersion").equals(null)) {
+                    itemMachine.driverVersion = item.getString("driverVersion");
+                }
+                if (item.has("blowerState") && !item.get("blowerState").equals(null)) {
+                    itemMachine.blowerState = item.getInt("blowerState");
+                }
+                if (item.has("faultState") && !item.get("faultState").equals(null)) {
+                    itemMachine.faultState = item.getInt("faultState");
+                }
+                if (item.has("productionTime") && !item.get("productionTime").equals(null)) {
+                    itemMachine.productionTime = item.getString("productionTime");
+                }
 
                 if (!item.get("manager").equals(null)) {
                     itemMachine.itemManager = ItemPerson.bindPerson(item.getJSONObject("manager"));
@@ -111,7 +172,6 @@ public class ItemMachine {
                 if (!item.get("company").equals(null)) {
                     itemMachine.itemCompany = ItemCompany.bindCompanyFull(item.getJSONObject("company"));
                 }
-
                 itemMachines.add(itemMachine);
             }
         } catch (JSONException e) {
@@ -126,33 +186,93 @@ public class ItemMachine {
             if (item.has("loginitude") && !item.get("loginitude").equals(null)) {
                 itemMachine.loginitude = item.getDouble("loginitude");
             }
-            itemMachine.doorState = item.getInt("doorState");
-            itemMachine.latitude = item.getDouble("latitude");
-            itemMachine.activationState = item.getInt("activationState");
-            itemMachine.clientVersion = item.getString("clientVersion");
-            itemMachine.activationState = item.getInt("activationState");
-            itemMachine.deviationTemperature = item.getString("deviationTemperature");
-            itemMachine.lockState = item.getInt("lockState");
-            itemMachine.machineName = item.getString("machineName");
-            itemMachine.machineID = item.getInt("machineID");
-            itemMachine.powerState = item.getInt("powerState");
-            itemMachine.targetTemperature = item.getString("targetTemperature");
-            itemMachine.machineTemperature = item.getString("machineTemperature");
-            itemMachine.sensorState = item.getInt("sensorState");
-            itemMachine.machineCode = item.getString("machineCode");
-            itemMachine.factoryTime = item.getString("factoryTime");
-            itemMachine.updateTime = item.getString("updateTime");
-            itemMachine.networkState = item.getInt("networkState");
-            itemMachine.machineAddress = item.getString("machineAddress");
-            itemMachine.refrigeratorState = item.getInt("refrigeratorState");
-            itemMachine.qrCode = item.getString("qrCode");
-            itemMachine.breakTime = item.getString("breakTime");
-            itemMachine.lightState = item.getInt("lightState");
-            itemMachine.activatedTime = item.getString("activatedTime");
-            itemMachine.driverVersion = item.getString("driverVersion");
-            itemMachine.blowerState = item.getInt("blowerState");
-            itemMachine.faultState = item.getInt("faultState");
-            itemMachine.productionTime = item.getString("productionTime");
+            if (item.has("doorState") && !item.get("doorState").equals(null)) {
+                itemMachine.doorState = item.getInt("doorState");
+            }
+
+            if (item.has("latitude") && !item.get("latitude").equals(null)) {
+                itemMachine.latitude = item.getDouble("latitude");
+            }
+            if (item.has("activationState") && !item.get("activationState").equals(null)) {
+                itemMachine.activationState = item.getInt("activationState");
+            }
+            if (item.has("clientVersion") && !item.get("clientVersion").equals(null)) {
+                itemMachine.clientVersion = item.getString("clientVersion");
+            }
+            if (item.has("activationState") && !item.get("activationState").equals(null)) {
+                itemMachine.activationState = item.getInt("activationState");
+            }
+            if (item.has("deviationTemperature") && !item.get("deviationTemperature").equals(null)) {
+                itemMachine.deviationTemperature = item.getString("deviationTemperature");
+            }
+            if (item.has("lockState") && !item.get("lockState").equals(null)) {
+                itemMachine.lockState = item.getInt("lockState");
+            }
+            if (item.has("machineName") && !item.get("machineName").equals(null)) {
+                itemMachine.machineName = item.getString("machineName");
+            }
+
+            if (item.has("machineID") && !item.get("machineID").equals(null)) {
+                itemMachine.machineID = item.getInt("machineID");
+            }
+            if (item.has("powerState") && !item.get("powerState").equals(null)) {
+                itemMachine.powerState = item.getInt("powerState");
+            }
+
+            if (item.has("targetTemperature") && !item.get("targetTemperature").equals(null)) {
+                itemMachine.targetTemperature = item.getString("targetTemperature");
+            }
+
+            if (item.has("machineTemperature") && !item.get("machineTemperature").equals(null)) {
+                itemMachine.machineTemperature = item.getString("machineTemperature");
+            }
+            if (item.has("sensorState") && !item.get("sensorState").equals(null)) {
+                itemMachine.sensorState = item.getInt("sensorState");
+            }
+            if (item.has("machineCode") && !item.get("machineCode").equals(null)) {
+                itemMachine.machineCode = item.getString("machineCode");
+            }
+            if (item.has("factoryTime") && !item.get("factoryTime").equals(null)) {
+                itemMachine.factoryTime = item.getString("factoryTime");
+            }
+            if (item.has("updateTime") && !item.get("updateTime").equals(null)) {
+                itemMachine.updateTime = item.getString("updateTime");
+            }
+
+            if (item.has("networkState") && !item.get("networkState").equals(null)) {
+                itemMachine.networkState = item.getInt("networkState");
+            }
+
+            if (item.has("machineAddress") && !item.get("machineAddress").equals(null)) {
+                itemMachine.machineAddress = item.getString("machineAddress");
+            }
+            if (item.has("refrigeratorState") && !item.get("refrigeratorState").equals(null)) {
+                itemMachine.refrigeratorState = item.getInt("refrigeratorState");
+            }
+            if (item.has("qrCode") && !item.get("qrCode").equals(null)) {
+                itemMachine.qrCode = item.getString("qrCode");
+            }
+            if (item.has("breakTime") && !item.get("breakTime").equals(null)) {
+                itemMachine.breakTime = item.getString("breakTime");
+            }
+            if (item.has("lightState") && !item.get("lightState").equals(null)) {
+                itemMachine.lightState = item.getInt("lightState");
+            }
+            if (item.has("activatedTime") && !item.get("activatedTime").equals(null)) {
+                itemMachine.activatedTime = item.getString("activatedTime");
+            }
+            if (item.has("driverVersion") && !item.get("driverVersion").equals(null)) {
+                itemMachine.driverVersion = item.getString("driverVersion");
+            }
+            if (item.has("blowerState") && !item.get("blowerState").equals(null)) {
+                itemMachine.blowerState = item.getInt("blowerState");
+            }
+            if (item.has("faultState") && !item.get("faultState").equals(null)) {
+                itemMachine.faultState = item.getInt("faultState");
+            }
+            if (item.has("productionTime") && !item.get("productionTime").equals(null)) {
+                itemMachine.productionTime = item.getString("productionTime");
+            }
 
             if (!item.get("manager").equals(null)) {
                 itemMachine.itemManager = ItemPerson.bindPerson(item.getJSONObject("manager"));
@@ -176,6 +296,7 @@ public class ItemMachine {
   	machineCode:'788ss' ,//String 机器码，机器唯一识别编码
     machineAddress:'441502|四川省-绵阳市-涪城区|富乐路口凯德广场二期五楼',//String 机器安装地址省-市-县-详细地址
     * */
+
     public static ItemMachine bindMachineNotFull(JSONObject item) throws JSONException {
         ItemMachine itemMachine = new ItemMachine();
         try {

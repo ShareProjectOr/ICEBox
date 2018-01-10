@@ -34,6 +34,8 @@ import com.example.shareiceboxms.models.helpers.SecondToDate;
 import com.example.shareiceboxms.models.http.JsonUtil;
 import com.example.shareiceboxms.models.http.OkHttpUtil;
 import com.example.shareiceboxms.views.fragments.BaseFragment;
+import com.example.shareiceboxms.views.fragments.machine.MachineFragment;
+import com.squareup.okhttp.Call;
 
 import org.json.JSONException;
 
@@ -47,6 +49,7 @@ import java.util.Map;
  */
 
 public class TradeTotalFragment extends BaseFragment {
+    private static String TAG = "TradeTotalFragment";
     private View containerView;
     private TextView timeSelector;
     private RadioGroup dateGroup;
@@ -134,9 +137,6 @@ public class TradeTotalFragment extends BaseFragment {
 
     @Override
     public void onRefresh() {
-//        if (refreshLayout.isRefreshing()) {
-//            return;
-//        }
         time = SecondToDate.getDateParams(SecondToDate.TODAY_CODE);
         timeSelector.setText(SecondToDate.getDateUiShow(time));
         getDatas();
@@ -153,6 +153,14 @@ public class TradeTotalFragment extends BaseFragment {
     }
 
     @Override
+    public void onDestroy() {
+        if (dialog != null) {
+            dialog = null;
+        }
+        super.onDestroy();
+    }
+
+    @Override
     public String[] onDateSet(DatePicker startDatePicker, int startYear, int startMonthOfYear, int startDayOfMonth, DatePicker endDatePicker, int endYear, int endMonthOfYear, int endDayOfMonth) {
         time = super.onDateSet(startDatePicker, startYear, startMonthOfYear, startDayOfMonth, endDatePicker, endYear, endMonthOfYear, endDayOfMonth);
         timeSelector.setText(SecondToDate.getDateUiShow(time));
@@ -164,7 +172,7 @@ public class TradeTotalFragment extends BaseFragment {
     private class TradeTotalTask extends AsyncTask<Void, Void, Boolean> {
 
         private String response;
-        private String err = "net_work_err";
+        private String err = "";
         private ItemTradeTotal tradeTotal;
         private Map<String, Object> params;
 
@@ -183,8 +191,10 @@ public class TradeTotalFragment extends BaseFragment {
         @Override
         protected Boolean doInBackground(Void... params) {
             try {
-                Log.e("request params: ", JsonUtil.mapToJson(this.params));
+                Log.e(TAG, "request URL: " + HttpRequstUrl.TRADE_TOTAL_URL);
+                Log.e(TAG, "request params: " + JsonUtil.mapToJson(this.params));
                 response = OkHttpUtil.post(HttpRequstUrl.TRADE_TOTAL_URL, JsonUtil.mapToJson(this.params));
+                Log.e(TAG, "response" + response.toString());
                 if (response == null) {
                     return false;
                 } else {
@@ -194,21 +204,19 @@ public class TradeTotalFragment extends BaseFragment {
                     }
                 }
                 tradeTotal = ItemTradeTotal.bindTradeTotal(JsonDataParse.getInstance().getSingleObject(response.toString()));
-                Log.e("response", response.toString());
+
                 return true;
             } catch (IOException e) {
                 if (dialog != null && dialog.isShowing()) {
                     dialog.dismiss();
                 }
                 err = RequstTips.getErrorMsg(e.getMessage());
-                Log.e("erro", e.toString());
             } catch (JSONException e) {
                 if (dialog != null && dialog.isShowing()) {
                     dialog.dismiss();
                 }
 
                 err = RequstTips.JSONException_Tip;
-                Log.e("erro", e.toString());
             }
             return false;
         }
@@ -223,13 +231,7 @@ public class TradeTotalFragment extends BaseFragment {
                 itemTradeTotal = tradeTotal;
                 adapter.notifyDataSetChanged();
             } else {
-                Log.e("request error :", response + "");
             }
-        }
-
-        @Override
-        protected void onCancelled() {
-            super.onCancelled();
         }
     }
 

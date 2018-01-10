@@ -28,7 +28,7 @@ import com.example.shareiceboxms.views.fragments.trade.TradeAccountDetailFragmen
 
 public class BaseFragment extends Fragment implements View.OnClickListener,
         SwipeRefreshLayout.OnRefreshListener, DoubleDatePickerDialog.OnDateSetListener,
-        HomeActivity.OnBackPressListener, LoadMoreHelper.LoadMoreListener, AdapterView.OnItemClickListener{
+        HomeActivity.OnBackPressListener, LoadMoreHelper.LoadMoreListener, AdapterView.OnItemClickListener {
     public static BaseFragment curFragment;
     public static TradeAccountDetailFragment tradeAccountDetailFragment;
 
@@ -95,8 +95,8 @@ public class BaseFragment extends Fragment implements View.OnClickListener,
         if (endDay.length() < 2) {
             endDay = "0" + endDay;
         }
-        String startTime = startYear + "-" + startMonth + "-" + startDay + " 00:00";
-        String endTime = endYear + "-" + endMonth + "-" + endDay + " 23:59";
+        String startTime = startYear + "-" + startMonth + "-" + startDay + " 00:00:00";
+        String endTime = endYear + "-" + endMonth + "-" + endDay + " 23:59:59";
         return new String[]{startTime, endTime};
     }
 

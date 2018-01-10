@@ -229,7 +229,7 @@ public class TradeRecordDetailFragment extends BaseFragment implements RecordDet
 
     private void getDatas() {
         TradeRecordDetailTask task = new TradeRecordDetailTask(RequestParamsContants.getInstance().getTradeRecoredDetailParams());
-        task.execute();
+        task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
     }
 
     public void getProductDatas() {

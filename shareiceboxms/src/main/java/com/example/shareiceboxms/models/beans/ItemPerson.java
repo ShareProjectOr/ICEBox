@@ -16,7 +16,7 @@ import java.util.List;
  * Created by WH on 2017/12/18.
  */
 
-public class ItemPerson implements Serializable{
+public class ItemPerson implements Serializable {
     /*    userID:788,//Number 用户编号（ID） 主键
         name:'刘江东', //String 用户ID
         email:'jiangdong.liu@chanaghong.com',//String 邮箱
@@ -56,7 +56,10 @@ public class ItemPerson implements Serializable{
 //            JSONObject jsonObject = new JSONObject(response);
             itemPerson.disable = response.getInt("disable");
             itemPerson.name = response.getString("name");
-            itemPerson.tel = response.getString("tel");
+            if (response.has("tel") && !response.get("tel").equals(null)) {
+                itemPerson.tel = response.getString("tel");
+            }
+
             if (response.get("userType").equals(null)) {
                 itemPerson.userType = response.getInt("userType");
             }
@@ -88,7 +91,7 @@ public class ItemPerson implements Serializable{
             if (response.has("machine") && !response.get("name").equals(null)) {
                 itemPerson.name = response.getString("name");
             }
-            if (response.get("tel").equals(null)) {
+            if (response.has("tel") && !response.get("tel").equals(null)) {
                 itemPerson.tel = response.getString("tel");
             }
 

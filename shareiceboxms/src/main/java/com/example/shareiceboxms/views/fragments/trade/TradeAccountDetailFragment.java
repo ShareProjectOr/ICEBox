@@ -26,9 +26,9 @@ import com.example.shareiceboxms.models.contants.JsonDataParse;
 import com.example.shareiceboxms.models.contants.RequestParamsContants;
 import com.example.shareiceboxms.models.contants.RequstTips;
 import com.example.shareiceboxms.models.factories.FragmentFactory;
+import com.example.shareiceboxms.models.helpers.MyDialog;
 import com.example.shareiceboxms.models.helpers.PageHelper;
 import com.example.shareiceboxms.models.helpers.RefundChongdiHelper;
-import com.example.shareiceboxms.models.helpers.RefundMoreHelper;
 import com.example.shareiceboxms.models.helpers.SecondToDate;
 import com.example.shareiceboxms.models.http.JsonUtil;
 import com.example.shareiceboxms.models.http.OkHttpUtil;
@@ -115,48 +115,42 @@ public class TradeAccountDetailFragment extends BaseFragment {
 
     private void initDatas() {
         homeActivity = (HomeActivity) getActivity();
+        dialog = MyDialog.loadDialog(homeActivity);
         itemTradeAccount = (ItemTradeAccount) FragmentFactory.getInstance().getSavedBundle().getSerializable("ItemTradeAccount");
         itemBuyProducts = new ArrayList<>();
         itemRefundProducts = new ArrayList<>();
-        itemBuyProducts.add(new ItemTradeRecord());
-        itemBuyProducts.add(new ItemTradeRecord());
-        itemBuyProducts.add(new ItemTradeRecord());
-        itemBuyProducts.add(new ItemTradeRecord());
-        itemBuyProducts.add(new ItemTradeRecord());
 
+        pageHelper = new PageHelper(homeActivity, this, pageLayout);
 
-        pageHelper = new PageHelper(getContext(), this, pageLayout);
-        accountTabLayout.setTabMode(TabLayout.MODE_FIXED);
-        for (int i = 0; i < Constants.TradeRecordDetailTitle.length; i++) {
-            TabLayout.Tab tab = accountTabLayout.newTab();
-            //设置拉取到的数据在标题中
-            tab.setText(Constants.TradeAccountDetailTitle[i]);
-            accountTabLayout.addTab(tab);
-        }
         adapter = new TradeAccountDetailAdapter(getContext(), this);
         adapter.setItemAccountList(itemBuyProducts);
-        accountList.setAdapter(adapter);
+        accountTabLayout.setTabMode(TabLayout.MODE_FIXED);
         accountTabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
                 curTab = tab.getPosition();
-                if (tab.getPosition() == 0) {
-                    moneyTitle.setText("交易金额");
-                    timeTitle.setText("交易时间");
-                    adapter.setRefundList(false);
-                    adapter.setItemAccountList(itemBuyProducts);
-                    pageHelper.setTotalText(totalPage, totalNum);
-                    pageHelper.setChongdiRefund(false);
-                } else {
-                    moneyTitle.setText("应退金额");
-                    timeTitle.setText("退回时间");
-                    adapter.setRefundList(true);
-                    adapter.setItemChongdiAccountList(itemRefundProducts);
-                    if (itemRefundProducts.size() <= 0) {
-                        getChongdiDatas(1, 6);
-                    }
-                    pageHelper.setTotalText(RefundChongdiHelper.getInstance().totalPage, RefundChongdiHelper.getInstance().totalNum);
-                    pageHelper.setChongdiRefund(true);
+                switch (curTab) {
+                    case 0:
+                        moneyTitle.setText("交易金额");
+                        timeTitle.setText("交易时间");
+                        adapter.setRefundList(false);
+                        adapter.setItemAccountList(itemBuyProducts);
+                        pageHelper.setChongdiRefund(false);
+                        pageHelper.setTotalText(totalPage, totalNum);
+                        break;
+                    case 1:
+                        moneyTitle.setText("应退金额");
+                        timeTitle.setText("退回时间");
+                        adapter.setRefundList(true);
+                        adapter.setItemChongdiAccountList(itemRefundProducts);
+                        if (itemRefundProducts.size() <= 0) {
+                            getChongdiDatas(1, 6);
+                        }
+                        pageHelper.setChongdiRefund(true);
+                        pageHelper.setTotalText(RefundChongdiHelper.getInstance().totalPage, RefundChongdiHelper.getInstance().totalNum);
+                        break;
+                    default:
+                        break;
                 }
             }
 
@@ -170,43 +164,45 @@ public class TradeAccountDetailFragment extends BaseFragment {
 
             }
         });
+        for (int i = 0; i < Constants.TradeRecordDetailTitle.length; i++) {
+            TabLayout.Tab tab = accountTabLayout.newTab();
+            //设置拉取到的数据在标题中
+            tab.setText(Constants.TradeAccountDetailTitle[i]);
+            accountTabLayout.addTab(tab);
+        }
+        accountList.setAdapter(adapter);
+
         title.setText("结算工单详情");
-        init();
-        getRecorDatas(getParams());
+        getRecorDatas(1);
+        try {
+            init();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
     }
 
-    public void getChongdiDatas(int page, int requestNum) {
-        Map<String, Object> params = RequestParamsContants.getInstance().getRefundOfChongdiParams();
-        params.put("divideID", itemTradeAccount.divideID);
-        params.put("p", page);
-        RefundChongdiHelper.getInstance().setContext(homeActivity);
-        RefundChongdiHelper.getInstance().setAdapter(adapter);
-        RefundChongdiHelper.getInstance().setItemRefundProducts(itemRefundProducts);
-        RefundChongdiHelper.getInstance().setItemTradeAccount(itemTradeAccount);
-        RefundChongdiHelper.getInstance().getDatas(params);
-    }
-
-    private void init() {
+    private void init() throws ParseException {
         if (itemTradeAccount == null) return;
         jiesuanMoney.setText(itemTradeAccount.divideMoney);
         switch (itemTradeAccount.divideState) {
             case 0://待审核状态时显示工单创建时间
-                jiesuanTime.setText(itemTradeAccount.createTime);
+                jiesuanTime.setText(SecondToDate.getStrOfDate(SecondToDate.getDateOfString(itemTradeAccount.createTime)));
                 break;
             case 1://待确认-审核时间
-                jiesuanTime.setText(itemTradeAccount.checkTime);
+                jiesuanTime.setText(SecondToDate.getStrOfDate(SecondToDate.getDateOfString(itemTradeAccount.checkTime)));
                 break;
             case 2://待转账-确认时间
-                jiesuanTime.setText(itemTradeAccount.configTime);
+                jiesuanTime.setText(SecondToDate.getStrOfDate(SecondToDate.getDateOfString(itemTradeAccount.configTime)));
                 break;
             case 3://待复审-转账确认时间
-                jiesuanTime.setText(itemTradeAccount.configTransferTime);
+                jiesuanTime.setText(SecondToDate.getStrOfDate(SecondToDate.getDateOfString(itemTradeAccount.configTransferTime)));
                 break;
             case 4://复审完成-复审完成时间
-                jiesuanTime.setText(itemTradeAccount.recheckTime);
+                jiesuanTime.setText(SecondToDate.getStrOfDate(SecondToDate.getDateOfString(itemTradeAccount.recheckTime)));
                 break;
             case 5://背撤销-撤销时间
-                jiesuanTime.setText(itemTradeAccount.cancelTime);
+                jiesuanTime.setText(SecondToDate.getStrOfDate(SecondToDate.getDateOfString(itemTradeAccount.cancelTime)));
                 break;
         }
         jiesuanState.setText(Constants.TradeAccountStateTitle[itemTradeAccount.divideState + 1]);
@@ -235,9 +231,23 @@ public class TradeAccountDetailFragment extends BaseFragment {
 
     }
 
-    public void getRecorDatas(Map<String, Object> params) {
+    public void getRecorDatas(int page) {
+        Map<String, Object> params = getParams();
+        params.put("p", page);
+
         TradeRecordsTask task = new TradeRecordsTask(params);
-        task.execute();
+        task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+    }
+
+    public void getChongdiDatas(int page, int requestNum) {
+        Map<String, Object> params = RequestParamsContants.getInstance().getRefundOfChongdiParams();
+        params.put("divideID", itemTradeAccount.divideID);
+        params.put("p", page);
+        RefundChongdiHelper.getInstance().setContext(homeActivity);
+        RefundChongdiHelper.getInstance().setAdapter(adapter);
+        RefundChongdiHelper.getInstance().setItemRefundProducts(itemRefundProducts);
+        RefundChongdiHelper.getInstance().setItemTradeAccount(itemTradeAccount);
+        RefundChongdiHelper.getInstance().getDatas(params);
     }
 
     @Override
@@ -270,7 +280,7 @@ public class TradeAccountDetailFragment extends BaseFragment {
 
         @Override
         protected void onPreExecute() {
-            if (dialog != null) {
+            if (dialog != null && !dialog.isShowing()) {
                 dialog.show();
             }
         }
@@ -316,7 +326,7 @@ public class TradeAccountDetailFragment extends BaseFragment {
             if (success) {
                 if (dialog != null) {
                     dialog.dismiss();
-                    dialog = null;//第一次弹出dialog后，后续加载不在弹出
+//                    dialog = null;//第一次弹出dialog后，后续加载不在弹出
                 }
                 itemBuyProducts.clear();
                 itemBuyProducts.addAll(tradeRecords);

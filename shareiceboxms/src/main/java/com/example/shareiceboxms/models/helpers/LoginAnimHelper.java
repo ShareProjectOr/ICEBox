@@ -11,6 +11,8 @@ import android.view.ViewGroup;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.LinearLayout;
 
+import com.example.shareiceboxms.presentors.LoginAnimPresentor;
+
 /**
  * Created by WH on 2017/11/28.
  */
@@ -18,10 +20,15 @@ import android.widget.LinearLayout;
 public class LoginAnimHelper {
     public static int LOGIN_ANIM = 0;
     public static int LOGIN_ANIM_REVERSE = 1;
+    public LoginAnimPresentor.LoginLisenner loginLisenner;
+
+    public void setLoginLisenner(LoginAnimPresentor.LoginLisenner loginLisenner) {
+        this.loginLisenner = loginLisenner;
+    }
 
     /*
-   * 登录时输入框动画
-   * */
+       * 登录时输入框动画
+       * */
     public void loginEditAnim(final int mode, final View editLayout, final View loginLoading) {
         float startMargin = 0;
         float endMargin = 150f;
@@ -69,6 +76,9 @@ public class LoginAnimHelper {
                     editLayout.setVisibility(View.INVISIBLE);
                     loginLoading.setAlpha(1f);
                     loginBarAnim(loginLoading);
+                    if (loginLisenner != null) {
+                        loginLisenner.login();
+                    }
                 }
             }
 
@@ -94,7 +104,31 @@ public class LoginAnimHelper {
         ObjectAnimator animator = ObjectAnimator.ofPropertyValuesHolder(loginLoading, xValuesHolder, yValuesHolder);
         animator.setInterpolator(new JellyInterpolator());
         animator.setDuration(300);
+        animator.addListener(new Animator.AnimatorListener() {
+            @Override
+            public void onAnimationStart(Animator animation) {
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animator animation) {
+//                if (loginLisenner != null) {
+//                    loginLisenner.login();
+//                }
+            }
+
+            @Override
+            public void onAnimationCancel(Animator animation) {
+
+            }
+
+            @Override
+            public void onAnimationRepeat(Animator animation) {
+
+            }
+        });
         animator.start();
+
     }
 
     /*

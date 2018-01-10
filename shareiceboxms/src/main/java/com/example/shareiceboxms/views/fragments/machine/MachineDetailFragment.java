@@ -146,7 +146,7 @@ public class MachineDetailFragment extends BaseFragment implements SwipeRefreshL
 
     private void getDatas() {
         MachineDetailTask machineListTask = new MachineDetailTask(RequestParamsContants.getInstance().getMachineDetailParams());
-        machineListTask.execute();
+        machineListTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
     }
 
     public Dialog getDialog() {

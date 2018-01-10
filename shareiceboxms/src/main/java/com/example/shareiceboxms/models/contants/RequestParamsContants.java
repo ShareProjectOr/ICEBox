@@ -218,10 +218,10 @@ public class RequestParamsContants {
         params.put("tradeCode", "");
 //        params.put("payState", "");
         params.put("createTime", null);
-        params.put("divideID", "");
+        params.put("settlementID", "");
         params.put("machineID", "");
         params.put("consumerID", "");
-        params.put("n", 6);
+        params.put("n", 1);
         params.put("p", 1);
         return params;
     }
@@ -257,7 +257,7 @@ public class RequestParamsContants {
     }
 
     /*
-* 服务费结算请求参数，针对运营商
+* 服务费结算请求参数，针对运营商    结算工单列表
 * {
   agentID:8787878745,//Number 代理商ID
   createTime:[ //Array 时间区间
@@ -275,27 +275,14 @@ public class RequestParamsContants {
         params.put("appUserID", PerSonMessage.userId);
         params.put("checkCode", 1);
         params.put("p", 1);
-        params.put("n", 6);
+        params.put("n", 2);
         if (PerSonMessage.userType == Constants.AGENT_MANAGER) {
             params.put("agentID", PerSonMessage.userId);
         }
         params.put("createTime", null);
-        params.put("divideState", "");
         return params;
     }
 
-    /*
-    * 工单结算交易记录,工单冲抵的应退记录
-    * */
-    public Map<String, Object> getAccountJieSuanParams() {
-        Map<String, Object> params = new HashMap<>();
-        params.put("appUserID", PerSonMessage.userId);
-        params.put("checkCode", 1);
-        params.put("p", 1);
-        params.put("n", 6);
-        params.put("divideID", "");
-        return params;
-    }
 
     /*
     * 创建结算工单
@@ -359,7 +346,7 @@ public class RequestParamsContants {
     public Map<String, Object> getRefundOfChongdiParams() {
         Map<String, Object> params = new HashMap<>();
         params.put("appUserID", PerSonMessage.userId);
-        params.put("divideID", "");
+        params.put("settlementID", "");
         params.put("p", 1);
         params.put("n", 6);
         params.put("checkCode", 1);

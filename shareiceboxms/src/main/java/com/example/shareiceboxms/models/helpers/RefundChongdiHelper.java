@@ -18,6 +18,7 @@ import com.example.shareiceboxms.models.contants.RequstTips;
 import com.example.shareiceboxms.models.http.JsonUtil;
 import com.example.shareiceboxms.models.http.OkHttpUtil;
 import com.example.shareiceboxms.views.activities.HomeActivity;
+import com.example.shareiceboxms.views.fragments.trade.TradeAccountFragment;
 import com.example.shareiceboxms.views.fragments.trade.TradeRecordDetailFragment;
 import com.google.gson.internal.LinkedHashTreeMap;
 
@@ -68,7 +69,7 @@ public class RefundChongdiHelper {
 
     public void getDatas(Map<String, Object> params) {
         RefundChongdiTask task = new RefundChongdiTask(params, activity);
-        task.execute();
+        task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
     }
 
     public class RefundChongdiTask extends AsyncTask<Void, Void, Boolean> {

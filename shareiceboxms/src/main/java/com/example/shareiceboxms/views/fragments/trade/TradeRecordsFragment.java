@@ -167,7 +167,7 @@ public class TradeRecordsFragment extends BaseFragment implements LoadMoreHelper
 
     private void getDatas(final Map<String, Object> params) {
         TradeRecordsTask task = new TradeRecordsTask(params);
-        task.execute();
+        task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
     }
 
     /*
@@ -360,5 +360,6 @@ public class TradeRecordsFragment extends BaseFragment implements LoadMoreHelper
                 }
             }
         }
+
     }
 }
