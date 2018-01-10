@@ -250,14 +250,24 @@ public class TradeRecordsFragment extends BaseFragment implements LoadMoreHelper
         Log.d("-----totalPage-----", "----loadMore---" + totalPage);
         //拉取数据
         if (itemTradeRecords.size() < totalNum && curPage < totalPage) {
-            Map<String, Object> params = getParams();
-            if (mTilePopup.getSelectedItemPosition() != 0) {//如果是全部就不设置
-                params.put("payState", mTilePopup.getSelectedItemPosition() == 1 ? 1 : 0);
-            }
+//            Map<String, Object> params = getParams();
+//            if (mTilePopup.getSelectedItemPosition() != 0) {//如果是全部就不设置
+//                params.put("payState", mTilePopup.getSelectedItemPosition() == 1 ? 1 : 0);
+//            }
+//            params.put("payState", mTilePopup.getSelectedItemPosition() == 1 ? 1 : 0);
             params.put("createTime", RequestParamsContants.getInstance().getSelectTime(time));
             params.put("p", curPage + 1);
             getDatas(params);
         }
+    }
+
+    @Override
+    public void clearDates() {
+        params.put("createTime", null);
+        initPage();
+        itemTradeRecords.clear();
+        timeSelector.setText("");
+        getDatas(params);
     }
 
     @Override

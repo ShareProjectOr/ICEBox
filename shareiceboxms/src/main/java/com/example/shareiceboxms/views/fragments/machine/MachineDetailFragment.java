@@ -207,9 +207,7 @@ public class MachineDetailFragment extends BaseFragment implements SwipeRefreshL
 
     @Override
     public void onRefresh() {
-        if (refresh.isRefreshing()) {
-            return;
-        }
+      
         if (curTabPosition == 2) {
             machineItemAddView.refreshStockProduct(true);
         }

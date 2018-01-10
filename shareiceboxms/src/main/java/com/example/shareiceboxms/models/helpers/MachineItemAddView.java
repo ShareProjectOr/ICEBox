@@ -241,8 +241,12 @@ public class MachineItemAddView {
 
         @Override
         public void onClick(View v) {
-            int TargetTemp = Integer.parseInt(targetTemp.getText().toString());
-            int OffSetTemp = Integer.parseInt(offsetTemp.getText().toString());
+            float TargetTempfloat = Float.parseFloat(targetTemp.getText().toString());
+            float OffSetTempfloat = Float.parseFloat(offsetTemp.getText().toString());
+            int TargetTemp = (int) TargetTempfloat;
+            int OffSetTemp = (int) OffSetTempfloat;
+           /* int TargetTemp = Integer.parseInt(targetTemp.getText().toString());
+            int OffSetTemp = Integer.parseInt(offsetTemp.getText().toString());*/
             switch (v.getId()) {
                 case R.id.addTargetTemp:
                     if (TargetTemp >= Constants.MAX_TARGET_TEMP) {

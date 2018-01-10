@@ -2,9 +2,11 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/ICEBox.iml" filepath="$PROJECT_DIR$/ICEBox.iml" />
       <module fileurl="file://$PROJECT_DIR$/MyShareProject.iml" filepath="$PROJECT_DIR$/MyShareProject.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
       <module fileurl="file://$PROJECT_DIR$/shareiceboxms/shareiceboxms.iml" filepath="$PROJECT_DIR$/shareiceboxms/shareiceboxms.iml" />
+      <module fileurl="file://$PROJECT_DIR$/zxing/zxing.iml" filepath="$PROJECT_DIR$/zxing/zxing.iml" />
     </modules>
   </component>
 </project>

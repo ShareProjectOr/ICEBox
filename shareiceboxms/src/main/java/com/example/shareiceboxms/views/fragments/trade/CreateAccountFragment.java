@@ -4,14 +4,17 @@ import android.app.Dialog;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -54,7 +57,7 @@ public class CreateAccountFragment extends BaseFragment {
     private Dialog dialog;
     HomeActivity homeActivity;
     CreateAccountLisenner createAccountLisenner;
-
+    private LinearLayout mLinearLayout;
     private String[] time;
 
     @Nullable
@@ -76,6 +79,7 @@ public class CreateAccountFragment extends BaseFragment {
         selectTime = (RelativeLayout) containerView.findViewById(R.id.selectTime);
         timeSelector = (TextView) containerView.findViewById(R.id.timeSelector);
         title = (TextView) containerView.findViewById(R.id.title);
+        mLinearLayout = (LinearLayout) containerView.findViewById(R.id.contentView);
 
     }
 
@@ -113,7 +117,7 @@ public class CreateAccountFragment extends BaseFragment {
                     Map<String, Object> params = RequestParamsContants.getInstance().getCreateJieSuanParams();
                     params.put("agentID", agentIDs.get(i).userID);
                     params.put("createTime", RequestParamsContants.getInstance().getSelectTime(time));
-                    TradeCreateJieSuanTask task = new TradeCreateJieSuanTask(params);
+                    TradeCreateJieSuanTask task = new TradeCreateJieSuanTask(params, agentIDs.get(i).name);
                     task.execute();
                 }
                 break;
@@ -145,9 +149,11 @@ public class CreateAccountFragment extends BaseFragment {
         private String err = "";
         private ItemTradeAccount itemTradeAccount;
         private Map<String, Object> params;
+        private String agentName;
 
-        TradeCreateJieSuanTask(Map<String, Object> params) {
+        TradeCreateJieSuanTask(Map<String, Object> params, String name) {
             this.params = params;
+            this.agentName = name;
         }
 
         @Override
@@ -193,14 +199,25 @@ public class CreateAccountFragment extends BaseFragment {
             if (dialog != null && dialog.isShowing()) {
                 dialog.dismiss();
             }
-            if (createAccountLisenner != null) {
+          /*  if (createAccountLisenner != null) {
                 createAccountLisenner.createSuccess(success, err);
-            }
-           /* if (success) {
-                Toast.makeText(homeActivity, "创建成功", Toast.LENGTH_SHORT).show();
-            } else {
-                Toast.makeText(homeActivity, "创建失败，请重试！" + err, Toast.LENGTH_SHORT).show();
             }*/
+            TextView textView = new TextView(getActivity());
+            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+            params.gravity = Gravity.START;
+            //   textView.setGravity(Gravity.CENTER);
+            params.topMargin = 5;
+            params.bottomMargin = 5;
+            textView.setLayoutParams(params);
+
+            if (success) {
+                textView.setTextColor(ContextCompat.getColor(getActivity(), R.color.sucessgreen));
+                textView.setText(agentName + ": 创建成功");
+            } else {
+                textView.setTextColor(ContextCompat.getColor(getActivity(), R.color.red));
+                textView.setText(agentName + ": 创建失败，请重试！" + err);
+            }
+            mLinearLayout.addView(textView);
         }
     }
 

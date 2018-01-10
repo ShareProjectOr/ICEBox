@@ -8,11 +8,12 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
+import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.Looper;
+import android.os.Message;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
@@ -24,14 +25,11 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.NotificationCompat;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.Window;
-import android.view.WindowManager;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -44,11 +42,9 @@ import com.example.shareiceboxms.models.contants.RequstTips;
 import com.example.shareiceboxms.models.contants.Sql;
 import com.example.shareiceboxms.models.factories.FragmentFactory;
 import com.example.shareiceboxms.models.helpers.MyDialog;
-import com.example.shareiceboxms.models.helpers.NotifySnackbar;
 import com.example.shareiceboxms.models.helpers.SecondToDate;
 import com.example.shareiceboxms.models.http.JsonUtil;
 import com.example.shareiceboxms.models.http.OkHttpUtil;
-import com.example.shareiceboxms.models.http.mqtt.GetService;
 import com.example.shareiceboxms.models.http.mqtt.MqttService;
 import com.example.shareiceboxms.views.fragments.AboutFragment;
 import com.example.shareiceboxms.views.fragments.BaseFragment;
@@ -56,18 +52,17 @@ import com.example.shareiceboxms.views.fragments.ChangePasswordFragment;
 import com.example.shareiceboxms.views.fragments.CloseDoorFragment;
 import com.example.shareiceboxms.views.fragments.OpenDoorFailFragment;
 import com.example.shareiceboxms.views.fragments.OpenDoorSuccessFragment;
+import com.example.shareiceboxms.views.fragments.OpeningDoorFragment;
 import com.example.shareiceboxms.views.fragments.PerSonFragment;
 import com.example.shareiceboxms.views.fragments.exception.ExceptionFragment;
 import com.example.shareiceboxms.views.fragments.machine.MachineFragment;
 import com.example.shareiceboxms.views.fragments.product.ProductFragment;
-import com.example.shareiceboxms.views.fragments.OpeningDoorFragment;
 import com.example.shareiceboxms.views.fragments.trade.TradeFragment;
 
 import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.zackratos.ultimatebar.UltimateBar;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -78,30 +73,109 @@ public class HomeActivity extends BaseActivity
     DrawerLayout drawer;
     NavigationView navigationView;
     private TabLayout tabLayout;
-    private TextView notifyLayout;
     public BaseFragment curFragment = null;
-    String curFragmentTag;
     private TextView MnanagerNameAndTimePart;
     private OnBackPressListener mOnBackPressListener;
     private int currentHomePageNum = 0;
     private boolean showHomepage = true;
     private final int SCANNIN_GREQUEST_CODE = 1;
-    private static final int CAMERA_OK = 517;
+    private static final int CAMERA_OK = 0X01;
     private long lastBackClicked;
-    public static final String BROADCAST_ACTION = "com.example.shareiceboxms";
+    public static final String BROADCAST_ACTION_NOTIFIY = "com.example.shareiceboxms.notify";
+    private NotificationBroadcastReceiver mNotificationBroadcastReceiver;
+    private NotificationManager mNotificationManager;
+    private NotificationCompat.Builder mBuilder;
+    private static HomeActivity mInstance;
+    private static Handler handler;
+    private int LastDoorState;
+
+    public static HomeActivity getInstance() {
+
+        if (mInstance == null) {
+
+            mInstance = new HomeActivity();
+        }
+        return mInstance;
+    }
+
+    public HomeActivity() {
+
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
-
-//        setImmersiveStateBar();
         //SaveUserMessager();
         initViews();
         initData();
         initListener();
+        initHandler();
+
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
         startMqttService();
     }
+
+
+    private void initHandler() {
+        handler = new Handler() {
+            @Override
+            public void handleMessage(Message msg) {
+                Log.d("----handleMessage---", "';;;;;");
+                JSONObject object = (JSONObject) msg.obj;
+                try {
+                    String tymsgType = object.getString("msgType");
+                    switch (tymsgType) {
+                        case "01"://门开关通知
+                            if (object.getInt("doorState") == 1) {//已开门
+                                LastDoorState = 1;
+                                if (!(curFragment instanceof OpenDoorSuccessFragment)) {
+                                    curFragment = new OpenDoorSuccessFragment();
+                                    showHomepage = false;
+                                    switchFragment();
+                                }
+                            } else if (object.getInt("doorState") == 0) {//关门,上货成功
+
+                                if (!(curFragment instanceof CloseDoorFragment) && LastDoorState == 1) {
+                                    FragmentFactory.getInstance().getSavedBundle().putString("callbackMsg", object.toString());
+                                    curFragment = new CloseDoorFragment();
+                                    showHomepage = false;
+                                    switchFragment();
+                                    LastDoorState = 0;
+                                } else {
+                                    if (!(curFragment instanceof OpenDoorFailFragment)) {//开门失败
+                                        curFragment = new OpenDoorFailFragment();
+                                        showHomepage = false;
+                                        switchFragment();
+                                        LastDoorState = 0;
+                                    }
+                                }
+                            } else {
+                                if (!(curFragment instanceof OpenDoorFailFragment)) {//开门失败
+                                    curFragment = new OpenDoorFailFragment();
+                                    showHomepage = false;
+                                    LastDoorState = 0;
+                                    switchFragment();
+                                }
+                            }
+                            break;
+                        case "02"://机器故障通知
+                            mNotificationManager.notify(1, mBuilder.build());
+                            break;
+                    }
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                super.handleMessage(msg);
+            }
+        };
+    }
+
 
     private void initListener() {
         tabLayout.addOnTabSelectedListener(this);
@@ -121,12 +195,28 @@ public class HomeActivity extends BaseActivity
         MnanagerNameAndTimePart.setText(SecondToDate.getTimePart());
     }
 
+
     private void initViews() {
-        mBroadcastReceiver = new NotificationBroadcastReceiver();
-        IntentFilter intentFilter = new IntentFilter();
-        intentFilter.addAction(BROADCAST_ACTION);
-        registerReceiver(mBroadcastReceiver, intentFilter);
-        notifyLayout = (TextView) findViewById(R.id.notify);
+        mNotificationBroadcastReceiver = new NotificationBroadcastReceiver();
+        IntentFilter intentFilterNotify = new IntentFilter(BROADCAST_ACTION_NOTIFIY);
+        registerReceiver(mNotificationBroadcastReceiver, intentFilterNotify);
+        mNotificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+        mBuilder = new NotificationCompat.Builder(HomeActivity.this);
+
+        mBuilder.setContentTitle("通知")
+                //设置通知栏标题
+                .setContentText("有机器发生了故障!!!") //设置通知栏显示内容
+                .setContentIntent(getDefalutIntent(1)) //设置通知栏点击意图
+//  .setNumber(number) //设置通知集合的数量
+                //  .setTicker("故障通知来啦!") //通知首次出现在通知栏，带上升动画效果的
+                .setWhen(System.currentTimeMillis())//通知产生的时间，会在通知信息里显示，一般是系统获取到的时间
+                .setPriority(Notification.PRIORITY_DEFAULT) //设置该通知优先级
+//  .setAutoCancel(true)//设置这个标志当用户单击面板就可以让通知将自动取消
+                .setOngoing(false)//ture，设置他为一个正在进行的通知。他们通常是用来表示一个后台任务,用户积极参与(如播放音乐)或以某种方式正在等待,因此占用设备(如一个文件下载,同步操作,主动网络连接)
+                .setDefaults(Notification.DEFAULT_ALL)//向通知添加声音、闪灯和振动效果的最简单、最一致的方式是使用当前的用户默认设置，使用defaults属性，可以组合
+                //Notification.DEFAULT_ALL  Notification.DEFAULT_SOUND 添加声音 // requires VIBRATE permission
+                .setSmallIcon(R.mipmap.push_icon)
+                .setLargeIcon(BitmapFactory.decodeResource(this.getResources(), R.drawable.push_icon));//设置通知小ICON
         drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         navigationView = (NavigationView) findViewById(R.id.nav_view);
         View headerView = navigationView.getHeaderView(0);
@@ -148,10 +238,6 @@ public class HomeActivity extends BaseActivity
     public void startMqttService() {
         Intent intent = new Intent(this, MqttService.class);
         startService(intent);
-    }
-
-    public DrawerLayout getDrawer() {
-        return drawer;
     }
 
     @Override
@@ -263,14 +349,6 @@ public class HomeActivity extends BaseActivity
     }
 
     /*
-    * 设置全透明状态栏
-    * /*/
-    private void setImmersiveStateBar() {
-        UltimateBar ultimateBar = new UltimateBar(this);
-        ultimateBar.setImmersionBar();
-    }
-
-    /*
     * 切换fragment
     * */
     public void switchFragment() {
@@ -337,15 +415,10 @@ public class HomeActivity extends BaseActivity
             case SCANNIN_GREQUEST_CODE:
                 if (resultCode == RESULT_OK) {
                     String result = data.getStringExtra("QR_CODE");
-                    // TODO 获取结果，做逻辑操作
                     Toast.makeText(getApplication(), result, Toast.LENGTH_LONG).show();
-                    //    requestOpenDoor(result);
-                    //  mMachineCode.setText(result);
-                    //    tvResult.setText(result);
-
+                    requestOpenDoor(result);
                 } else {
                     Toast.makeText(getApplication(), "无法获取扫描结果", Toast.LENGTH_LONG).show();
-                    //  new AlertView("提示", "无法获取扫描结果", null, new String[]{"确定"}, null, getActivity(), AlertView.Style.Alert, null).show();
                 }
                 break;
 
@@ -356,9 +429,9 @@ public class HomeActivity extends BaseActivity
         String qrString[] = QRCode.split("\\?");
         String headerString[] = qrString[1].split("\\&");
         String machineCodeArray[] = new String[2];
-        for (int i = 0; i < headerString.length; i++) {
-            if (headerString[i].contains("state=")) {
-                machineCodeArray = headerString[i].split("\\=");
+        for (String aHeaderString : headerString) {
+            if (aHeaderString.contains("state=")) {
+                machineCodeArray = aHeaderString.split("\\=");
                 break;
             }
         }
@@ -366,10 +439,10 @@ public class HomeActivity extends BaseActivity
         String machineCode = machineCodeArray[1];
         Log.e("machineCode", machineCode);
         final Map<String, Object> body = new HashMap<>();
-        body.put("machineCode", "121231");
+        body.put("machineCode", machineCode);
         body.put("userID", 0);
         body.put("QRCode", QRCode);
-        body.put("password", "123456");
+        body.put("password", PerSonMessage.loginPassword);
         new AsyncTask<Void, Void, Boolean>() {
             String err;
 
@@ -380,15 +453,7 @@ public class HomeActivity extends BaseActivity
                     Log.e("openResponse", response + "##");
                     JSONObject object = new JSONObject(response);
                     err = object.getString("err");
-                    if (err.equals("") || err.equals("null")) {
-                        if (object.getBoolean("d")) {
-                            return true;
-                        } else {
-                            return false;
-                        }
-                    } else {
-                        return false;
-                    }
+                    return (err.equals("") || err.equals("null")) && object.getBoolean("d");
 
                 } catch (IOException e) {
                     err = RequstTips.getErrorMsg(e.getMessage());
@@ -409,7 +474,6 @@ public class HomeActivity extends BaseActivity
                         switchFragment();
                     }
                 } else {
-                    // Log.e("openErr",err.toString()+"##");
                     Toast.makeText(getApplication(), err, Toast.LENGTH_SHORT).show();
                 }
             }
@@ -481,13 +545,11 @@ public class HomeActivity extends BaseActivity
         //  NotifySnackbar.addNotifySnackbar(this, notifyLayout);
     }
 
+    @SuppressWarnings("ConstantConditions")
     public void selectedException() {
         tabLayout.getTabAt(2).select();
     }
 
-    public void showNotify(String msg) {
-        //    NotifySnackbar.showNotify(msg);
-    }
 
     @Override
     public void onTabSelected(TabLayout.Tab tab) {
@@ -542,71 +604,20 @@ public class HomeActivity extends BaseActivity
     }
 
     @Override
-    public void messageArrived(final String s, MqttMessage mqttMessage) throws Exception {
-        if (!s.isEmpty()) {
-            final JSONObject object = new JSONObject(s);
-            String tymsgType = object.getString("msgType");
-            Handler handler = new Handler(Looper.getMainLooper());
-            switch (tymsgType) {
-                case "01"://上下货推送
+    public void messageArrived(final String s, final MqttMessage mqttMessage) throws Exception {
+        Log.e("push", "recevied_push" + new String(mqttMessage.getPayload()));
+        JSONObject object = new JSONObject(new String(mqttMessage.getPayload()));
+        Message msg = new Message();
+        msg.obj = object;
+        handler.sendMessage(msg);
 
-                    handler.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            try {
-                                if (object.getInt("doorState") == 1) {//已开门
-                                    if (!(curFragment instanceof OpenDoorSuccessFragment)) {
-                                        curFragment = new OpenDoorSuccessFragment();
-                                        showHomepage = false;
-                                        switchFragment();
-                                    }
-                                } else if (object.getInt("doorState") == 0) {//关门,上货成功
-                                    if (!(curFragment instanceof CloseDoorFragment)) {
-                                        FragmentFactory.getInstance().getSavedBundle().putString("callbackMsg", s);
-                                        curFragment = new CloseDoorFragment();
-                                        showHomepage = false;
-                                        switchFragment();
-                                    }
-                                } else {
-                                    if (!(curFragment instanceof OpenDoorFailFragment)) {//开门失败
-                                        curFragment = new OpenDoorFailFragment();
-                                        showHomepage = false;
-                                        switchFragment();
-                                    }
-                                }
-                            } catch (JSONException e) {
-                                e.printStackTrace();
-                            }
-
-                        }
-                    });
-
-                    break;
-                case "02"://故障推送
-                    NotificationManager mNotificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-                    NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this);
-                    mBuilder.setContentTitle("通知")//设置通知栏标题
-                            .setContentText("有机器发生了故障!!!") //设置通知栏显示内容</span>
-                            .setContentIntent(getDefalutIntent(Notification.FLAG_AUTO_CANCEL)) //设置通知栏点击意图
-//  .setNumber(number) //设置通知集合的数量
-                            .setTicker("故障通知来啦!") //通知首次出现在通知栏，带上升动画效果的
-                            .setWhen(System.currentTimeMillis())//通知产生的时间，会在通知信息里显示，一般是系统获取到的时间
-                            .setPriority(Notification.PRIORITY_DEFAULT) //设置该通知优先级
-//  .setAutoCancel(true)//设置这个标志当用户单击面板就可以让通知将自动取消
-                            .setOngoing(false)//ture，设置他为一个正在进行的通知。他们通常是用来表示一个后台任务,用户积极参与(如播放音乐)或以某种方式正在等待,因此占用设备(如一个文件下载,同步操作,主动网络连接)
-                            .setDefaults(Notification.DEFAULT_VIBRATE)//向通知添加声音、闪灯和振动效果的最简单、最一致的方式是使用当前的用户默认设置，使用defaults属性，可以组合
-                            //Notification.DEFAULT_ALL  Notification.DEFAULT_SOUND 添加声音 // requires VIBRATE permission
-                            .setSmallIcon(R.mipmap.logo);//设置通知小ICON
-                    mNotificationManager.notify(1, mBuilder.build());//id固定为1 为了只显示一个推送通知
-                    break;
-            }
-        }
     }
+
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        unregisterReceiver(mBroadcastReceiver);//销毁广播
+        unregisterReceiver(mNotificationBroadcastReceiver);//销毁广播
     }
 
     @Override
@@ -615,25 +626,24 @@ public class HomeActivity extends BaseActivity
     }
 
     public PendingIntent getDefalutIntent(int flags) {
-        Intent intent = new Intent(BROADCAST_ACTION);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, intent, flags);
-        return pendingIntent;
+        Intent intent = new Intent(BROADCAST_ACTION_NOTIFIY);
+        return PendingIntent.getBroadcast(this, 0, intent, flags);
     }
 
-    private BroadcastReceiver mBroadcastReceiver;
 
     class NotificationBroadcastReceiver extends BroadcastReceiver {
 
         @Override
         public void onReceive(Context context, Intent intent) {
+
+
             //接收notification点击事件
             if (!(curFragment instanceof ExceptionFragment)) {
                 curFragment = new ExceptionFragment();
             }
-            tabLayout.getTabAt(2).select();
+            selectedException();
             showHomepage = true;
             switchFragment();
         }
     }
-
 }

@@ -1,38 +1,29 @@
 package com.example.shareiceboxms.views.fragments;
 
 
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
 
 import com.example.shareiceboxms.R;
-import com.example.shareiceboxms.models.ItemCloseDoorGoods;
+import com.example.shareiceboxms.models.beans.ItemCloseDoorGoods;
 import com.example.shareiceboxms.models.adapters.UpdateGoodsCompleteAdapter;
-import com.example.shareiceboxms.models.beans.trade.ItemTradeTotal;
-import com.example.shareiceboxms.models.contants.HttpRequstUrl;
-import com.example.shareiceboxms.models.contants.JsonDataParse;
-import com.example.shareiceboxms.models.contants.RequstTips;
 import com.example.shareiceboxms.models.factories.FragmentFactory;
-import com.example.shareiceboxms.models.http.JsonUtil;
-import com.example.shareiceboxms.models.http.OkHttpUtil;
 import com.example.shareiceboxms.models.widget.ListViewForScrollView;
 import com.example.shareiceboxms.views.activities.HomeActivity;
 
+import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -70,16 +61,28 @@ public class CloseDoorFragment extends BaseFragment {
         homeActivity = (HomeActivity) getActivity();
         datas = new ArrayList<>();
         String value = FragmentFactory.getInstance().getSavedBundle().getString("callbackMsg");
-        if (!TextUtils.equals(value, "")) {
-//            datas =
+        try {
+            JSONObject object = new JSONObject(value);
+            JSONArray array = object.getJSONArray("goodsList");
+            for (int i = 0; i < array.length(); i++) {
+                JSONObject jsonObject = (JSONObject) array.opt(i);
+                ItemCloseDoorGoods item = new ItemCloseDoorGoods();
+                item.bindData(jsonObject);
+                datas.add(new ItemCloseDoorGoods());
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
         }
+      /*  if (!TextUtils.equals(value, "")) {
+//            datas =
+        }*/
+      /*  datas.add(new ItemCloseDoorGoods());
         datas.add(new ItemCloseDoorGoods());
         datas.add(new ItemCloseDoorGoods());
         datas.add(new ItemCloseDoorGoods());
         datas.add(new ItemCloseDoorGoods());
         datas.add(new ItemCloseDoorGoods());
-        datas.add(new ItemCloseDoorGoods());
-        datas.add(new ItemCloseDoorGoods());
+        datas.add(new ItemCloseDoorGoods());*/
         adapter = new UpdateGoodsCompleteAdapter(getContext(), datas);
         productUpdateList.setAdapter(adapter);
         ListViewForScrollView.setListViewHeightBasedOnChildren(productUpdateList, closeDoorLayout);

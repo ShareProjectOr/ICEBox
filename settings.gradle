@@ -1,1 +1,1 @@
-include ':app', ':shareiceboxms'
+include ':app', ':shareiceboxms','zxing'
