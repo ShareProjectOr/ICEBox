@@ -52,6 +52,14 @@ public class ConstanceMethod {
         edit.apply();
     }
 
+    //修改是否登陆
+    public static void addHasDetailsMsg(Context context, String msgTag) {
+        SharedPreferences preferences = getSharedPreferences(context, "Msg");//context.getSharedPreferences("ShowWelcome", Context.MODE_PRIVATE);
+        SharedPreferences.Editor edit = preferences.edit();
+        edit.putString("msgTag", msgTag);
+        edit.apply();
+    }
+
     public static SharedPreferences getSharedPreferences(Context context, String name) {
         SharedPreferences mPreferences = context.getSharedPreferences(name, Context.MODE_PRIVATE);
         return mPreferences;

@@ -13,7 +13,7 @@ public class ItemException {
     public String exceptionCode;
     public String happenTime;
     public String dealTime;
-    public int dealMethod;
+    public String dealMethod;
     public String remark;
     public int machineID;
     public String machineName;
@@ -27,7 +27,7 @@ public class ItemException {
             exceptionCode = json.getString("exceptionCode");
             happenTime = json.getString("happenTime");
             dealTime = json.getString("dealTime");
-            dealMethod = json.getInt("dealMethod");
+            dealMethod = json.getString("dealMethod");
             remark = json.getString("remark");
             machineID = json.getJSONObject("machine").getInt("machineID");
             machineName = json.getJSONObject("machine").getString("machineName");

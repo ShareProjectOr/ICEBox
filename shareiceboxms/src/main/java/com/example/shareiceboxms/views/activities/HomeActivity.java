@@ -87,7 +87,8 @@ public class HomeActivity extends BaseActivity
     private NotificationCompat.Builder mBuilder;
     private static HomeActivity mInstance;
     private static Handler handler;
-    private int LastDoorState;
+    private int LastDoorState;//0初始状态,1开门状态,2上货完成关门,3开门失败状态
+    private boolean isRequestOpen = false;
 
     public static HomeActivity getInstance() {
 
@@ -128,43 +129,49 @@ public class HomeActivity extends BaseActivity
                 Log.d("----handleMessage---", "';;;;;");
                 JSONObject object = (JSONObject) msg.obj;
                 try {
+                  /*  if (object.getString("msgTag").equals(ConstanceMethod.getSharedPreferences(HomeActivity.this, "Msg").getString("msgTag", ""))) {
+                        //如果消息标记和本地储存的消息标记一致，则任务是已经处理了的消息，不再处理
+                        return;
+                    }*/
                     String tymsgType = object.getString("msgType");
                     switch (tymsgType) {
                         case "01"://门开关通知
+                         /*   if (!isRequestOpen) {
+                                return;
+                            }*/
+                            ConstanceMethod.addHasDetailsMsg(HomeActivity.this, object.getString("msgTag"));
                             if (object.getInt("doorState") == 1) {//已开门
                                 LastDoorState = 1;
+                                Log.e("doorState", "1");
                                 if (!(curFragment instanceof OpenDoorSuccessFragment)) {
                                     curFragment = new OpenDoorSuccessFragment();
                                     showHomepage = false;
                                     switchFragment();
                                 }
                             } else if (object.getInt("doorState") == 0) {//关门,上货成功
-
-                                if (!(curFragment instanceof CloseDoorFragment) && LastDoorState == 1) {
+                                Log.e("doorState", "2");
+                                if (!(curFragment instanceof CloseDoorFragment) && LastDoorState == 1) {//上次的门状态必须为开门，此次收到关门才认为是上货成功
                                     FragmentFactory.getInstance().getSavedBundle().putString("callbackMsg", object.toString());
                                     curFragment = new CloseDoorFragment();
                                     showHomepage = false;
+                                    isRequestOpen = false;
                                     switchFragment();
-                                    LastDoorState = 0;
-                                } else {
-                                    if (!(curFragment instanceof OpenDoorFailFragment)) {//开门失败
-                                        curFragment = new OpenDoorFailFragment();
-                                        showHomepage = false;
-                                        switchFragment();
-                                        LastDoorState = 0;
-                                    }
-                                }
-                            } else {
-                                if (!(curFragment instanceof OpenDoorFailFragment)) {//开门失败
+                                    LastDoorState = 1;//上货成功后将门状态置为上货完成状态
+                                } else if (!(curFragment instanceof OpenDoorFailFragment) && LastDoorState == 0) {
+
+                                    //收到的门状态为关门,且上一状态为初始状态则认为是失败
                                     curFragment = new OpenDoorFailFragment();
                                     showHomepage = false;
-                                    LastDoorState = 0;
+                                    isRequestOpen = false;
                                     switchFragment();
+                                    LastDoorState = 3;
+
                                 }
                             }
                             break;
                         case "02"://机器故障通知
                             mNotificationManager.notify(1, mBuilder.build());
+                            ConstanceMethod.addHasDetailsMsg(HomeActivity.this, object.getString("msgTag"));
                             break;
                     }
 
@@ -249,11 +256,13 @@ public class HomeActivity extends BaseActivity
             if (showHomepage) {
                 mOnBackPressListener.OnBackDown();
             } else {
+                LastDoorState = 0;
                 showHomepage = true;
                 getCurFragment();
                 switchFragment();
                 navigationView.setCheckedItem(R.id.icon_home);
                 tabLayout.setVisibility(View.VISIBLE);
+
             }
 
 //            super.onBackPressed();
@@ -383,8 +392,17 @@ public class HomeActivity extends BaseActivity
 
     //记录登录状态
     private void SaveUserMessager() {
-        ConstanceMethod.isFirstLogin(this, false);
-        DoSql();
+        if (FragmentFactory.getInstance().getSavedBundle().getBoolean("remember")) {//登录界面选择记录密码则执行保存信息等操作
+            ConstanceMethod.isFirstLogin(this, false);
+            DoSql();
+        } else {//登录界面为勾选记住密码则执行清空保存信息等操作
+            Sql sql = new Sql(this);
+            if (sql.getAllCotacts().size() != 0) {
+                sql.deleteAllContact(sql.getAllCotacts().size());
+            }
+            ConstanceMethod.isFirstLogin(this, true);
+        }
+
     }
 
     public void finishActivity() {
@@ -426,7 +444,7 @@ public class HomeActivity extends BaseActivity
     }
 
     private void requestOpenDoor(final String QRCode) {
-        String qrString[] = QRCode.split("\\?");
+       /* String qrString[] = QRCode.split("\\?");
         String headerString[] = qrString[1].split("\\&");
         String machineCodeArray[] = new String[2];
         for (String aHeaderString : headerString) {
@@ -435,14 +453,14 @@ public class HomeActivity extends BaseActivity
                 break;
             }
         }
-
-        String machineCode = machineCodeArray[1];
-        Log.e("machineCode", machineCode);
+*/
+        // String machineCode = machineCodeArray[1];
+        Log.e("machineCode", "121231");
         final Map<String, Object> body = new HashMap<>();
-        body.put("machineCode", machineCode);
+        body.put("machineCode", "121231");
         body.put("userID", 0);
         body.put("QRCode", QRCode);
-        body.put("password", PerSonMessage.loginPassword);
+        body.put("password", "123456");
         new AsyncTask<Void, Void, Boolean>() {
             String err;
 
@@ -466,6 +484,7 @@ public class HomeActivity extends BaseActivity
 
             @Override
             protected void onPostExecute(Boolean aBoolean) {
+                isRequestOpen = aBoolean;
                 if (aBoolean) {
                     if (!(curFragment instanceof OpeningDoorFragment)) {
                         FragmentFactory.getInstance().getSavedBundle().putString("QRCode", QRCode);

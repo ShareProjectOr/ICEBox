@@ -245,6 +245,24 @@ public class ExceptionFragment extends BaseFragment implements CompoundButton.On
             postbody.put("n", pageNum);
             postbody.put("p", currentPage + 1);
             postbody.put("appUserID", PerSonMessage.userId);
+            postbody.put("isDeal", isDetail);
+            switch (PerSonMessage.role) {
+                case "3":
+                    postbody.put("managerID", PerSonMessage.userId);
+                    break;
+                case "2":
+                    postbody.put("agentID", PerSonMessage.userId);
+                    break;
+                default:
+                    break;
+
+            }
+            if (exceptionLeve != null && exceptionLeve != 2) {
+                postbody.put("exceptionLevel", exceptionLeve);
+            } else {
+                postbody.put("exceptionLevel", null);
+            }
+            postbody.put("happenTime", RequestParamsContants.getInstance().getSelectTime(happenTime));
             contentprovider.getData(HttpRequstUrl.EXCEPTION_LIST_URL, postbody, false);
 
         } else {

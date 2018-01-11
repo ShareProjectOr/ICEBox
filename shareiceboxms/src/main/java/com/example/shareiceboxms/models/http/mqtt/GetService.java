@@ -27,7 +27,7 @@ public class GetService {
     }
 
     public void start() {
-        Log.d("-----------------", "------------------------------------------");
+        Log.d("连接中", ".......");
         init();
     }
 
@@ -55,7 +55,7 @@ public class GetService {
             client.connect(options);
             // 订阅消息
             int[] Qos = {2};
-            String[] topic1 = {"T-M-" + PerSonMessage.userId};
+            String[] topic1 = {"T-M-20"};
             client.subscribe(topic1, Qos);
 
         } catch (Exception e) {

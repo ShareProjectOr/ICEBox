@@ -29,4 +29,9 @@ public class MqttService extends IntentService{
         Log.d("11111222222222222222", "222222222222222222222222222222");
         new GetService().start();
     }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+    }
 }

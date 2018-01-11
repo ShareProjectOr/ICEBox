@@ -3,9 +3,11 @@ package com.example.shareiceboxms.views.activities;
 import android.app.PendingIntent;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.widget.Toast;
 
 import com.example.shareiceboxms.models.helpers.NotifySnackbar;
 import com.example.shareiceboxms.models.http.mqtt.GetService;
@@ -20,6 +22,7 @@ import org.eclipse.paho.client.mqttv3.MqttMessage;
 
 public class BaseActivity extends AppCompatActivity implements View.OnClickListener, MqttCallback {
     private static BaseActivity mInstance;
+    private static Handler handler;
 
     @Override
     public void onClick(View v) {
@@ -54,8 +57,15 @@ public class BaseActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public void connectionLost(Throwable throwable) {
         // 连接丢失后，一般在这里面进行重连
-        System.out.println("连接断开，可以做重连");
-        GetService.getInstance().start();
+        handler = new Handler();
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                Toast.makeText(getApplication(), "啊哦!消息服务断开了,正在为您重连...", Toast.LENGTH_SHORT).show();
+                GetService.getInstance().start();
+            }
+        });
+
     }
 
     public static final String BROADCAST_ACTION = "topic";
