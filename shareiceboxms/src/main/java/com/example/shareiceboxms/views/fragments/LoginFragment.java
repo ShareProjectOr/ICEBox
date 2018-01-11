@@ -99,6 +99,12 @@ public class LoginFragment extends BaseFragment implements LoginAnimPresentor.Lo
                 isPassEditFoucsed = hasFocus;
             }
         });
+        isRemember.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                FragmentFactory.getInstance().getSavedBundle().putBoolean("remember", isChecked);
+            }
+        });
     }
 
     @Override
@@ -117,8 +123,8 @@ public class LoginFragment extends BaseFragment implements LoginAnimPresentor.Lo
                 }
 
                 LoginAnimPresentor.loginAnim(editLayout, barLayout, this);
-                loginBnt.setVisibility(View.GONE);
-                passLayout.setVisibility(View.GONE);
+                loginBnt.setVisibility(View.INVISIBLE);
+                passLayout.setVisibility(View.INVISIBLE);
                 break;
             case R.id.isClose:
                 accountEdit.setText("");

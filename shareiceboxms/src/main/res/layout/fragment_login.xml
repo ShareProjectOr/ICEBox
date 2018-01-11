@@ -136,7 +136,8 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
-                        android:indeterminateTint="@color/blue" />
+                        android:indeterminateTint="@color/blue"
+                        android:indeterminateTintMode="src_atop" />
                 </LinearLayout>
             </RelativeLayout>
 
@@ -195,7 +196,6 @@
 
             </RelativeLayout>
         </LinearLayout>
-
 
 
         <TextView

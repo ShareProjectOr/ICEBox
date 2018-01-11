@@ -221,7 +221,7 @@ public class MachineFragment extends BaseFragment implements HomeActivity.OnBack
         totalPage = totalNum / requestNum + (totalNum % requestNum > 0 ? 1 : 0);
         Log.d("-----totalPage-----", "----loadMore---" + totalPage);
         //拉取数据
-        if (itemMachines.size() < totalNum && curPage < totalPage) {
+        if (curPage < totalPage) {
             Map<String, Object> params = getParams();
             params.put("p", curPage + 1);
             getDatas(params);
@@ -266,6 +266,7 @@ public class MachineFragment extends BaseFragment implements HomeActivity.OnBack
 
         MachineListTask(Map<String, Object> params) {
             this.params = params;
+            machines = new ArrayList<>();
         }
 
         @Override
@@ -329,8 +330,12 @@ public class MachineFragment extends BaseFragment implements HomeActivity.OnBack
                         itemMachines.remove(itemMachines.size() - 1);
                     }
                 }
+                if (machines.size() <= 0) {
+                    Toast.makeText(homeActivity, "没有数据啦！", Toast.LENGTH_SHORT).show();
+                    return;
+                }
                 itemMachines.addAll(machines);
-                if (itemMachines.size() < totalNum) {
+                if (curPage < totalPage) {
                     itemMachines.add(null);
                     setCanLoad();
                 }

@@ -75,11 +75,11 @@ public class TradeRecordsFragment extends BaseFragment implements LoadMoreHelper
     private DoubleDatePickerDialog datePickerDialog;
     private ListPopupWindow mTilePopup;
     private HomeActivity homeActivity;
-    private Map<String, Object> params;
     private String[] time;
     private Dialog dialog;
     private int curPage, requestNum, totalNum, totalPage;
     private boolean searchClicked = false;
+    private String payState = "";
 
     @Nullable
     @Override
@@ -116,11 +116,8 @@ public class TradeRecordsFragment extends BaseFragment implements LoadMoreHelper
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 if (tradeNo.getText().toString().length() <= 0 && searchClicked) {
-                    if (params.containsKey("tradeCode")) {
-                        params.remove("tradeCode");
-                    }
-                    itemTradeRecords.clear();
-                    getDatas(params);
+                    clearDatas();
+                    getDatas(getParams());
                     searchClicked = false;
                 }
             }
@@ -134,7 +131,6 @@ public class TradeRecordsFragment extends BaseFragment implements LoadMoreHelper
 
     private void initDatas() {
         itemTradeRecords = new ArrayList<>();
-        params = new HashMap<>();
         homeActivity = (HomeActivity) getActivity();
         datePickerDialog = new DoubleDatePickerDialog(getContext(), 0, this
                 , Calendar.getInstance().get(Calendar.YEAR), Calendar.getInstance().get(Calendar.MONTH)
@@ -151,7 +147,7 @@ public class TradeRecordsFragment extends BaseFragment implements LoadMoreHelper
         loadMoreHelper = new LoadMoreHelper().setContext(getContext()).setAdapter(adapter)
                 .setLoadMoreListenner(this)
                 .bindScrollListener(tradeRecordList)
-                .setVisibleThreshold(1);
+                .setVisibleThreshold(0);
         time = RequestParamsContants.getInstance().getTimeSelectorParams();
         time = SecondToDate.getDateParams(SecondToDate.TODAY_CODE);
         timeSelector.setText(SecondToDate.getDateUiShow(time));
@@ -160,9 +156,20 @@ public class TradeRecordsFragment extends BaseFragment implements LoadMoreHelper
     }
 
     private Map<String, Object> getParams() {
-        params = RequestParamsContants.getInstance().getTradeRecordsParams();
-//        params.put("createTime", RequestParamsContants.getInstance().getSelectTime(SecondToDate.getDateParams(SecondToDate.TODAY_CODE)));
+        Map<String, Object> params = RequestParamsContants.getInstance().getTradeRecordsParams();
+        params.put("payState", payState);
+        params.put("createTime", RequestParamsContants.getInstance().getSelectTime(time));
+        params.put("tradeCode", tradeNo.getText().toString());
+        time[0] = "2017-12-15 00:00:00";
         return params;
+    }
+
+    private void clearDatas() {
+        if (itemTradeRecords != null) {
+            itemTradeRecords.clear();
+            initPage();
+            adapter.notifyDataSetChanged();
+        }
     }
 
     private void getDatas(final Map<String, Object> params) {
@@ -184,8 +191,8 @@ public class TradeRecordsFragment extends BaseFragment implements LoadMoreHelper
         switch (v.getId()) {
             case R.id.tradeSearch:
                 //模糊查询订单号
-                params.put("tradeCode", tradeNo.getText().toString());
-                getDatas(params);
+                clearDatas();
+                getDatas(getParams());
                 searchClicked = true;
                 break;
             case R.id.tradeType:
@@ -205,6 +212,8 @@ public class TradeRecordsFragment extends BaseFragment implements LoadMoreHelper
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         tradeTypeText.setText(Constants.TradeStateTitle[position]);
         mTilePopup.setSelection(tradeTypeText.getText().toString().length());
+        clearDatas();
+        Map<String, Object> params = getParams();
         switch (position) {
             case 0://
                 if (params.containsKey("payState")) {
@@ -212,25 +221,22 @@ public class TradeRecordsFragment extends BaseFragment implements LoadMoreHelper
                 }
                 break;
             case 1://已支付
+                payState = "1";
                 params.put("payState", 1);
                 break;
             case 2://未支付
+                payState = "0";
                 params.put("payState", 0);
                 break;
         }
-        itemTradeRecords.clear();
         getDatas(params);
         mTilePopup.dismiss();
     }
 
     @Override
     public void onRefresh() {
-        if (itemTradeRecords != null) {
-            itemTradeRecords.clear();
-            initPage();
-            adapter.notifyDataSetChanged();
-        }
-        getDatas(params);
+        clearDatas();
+        getDatas(getParams());
         recordRefresh.setRefreshing(false);
     }
 
@@ -247,26 +253,27 @@ public class TradeRecordsFragment extends BaseFragment implements LoadMoreHelper
 
     @Override
     public void loadMore(RecyclerView.Adapter<RecyclerView.ViewHolder> adapter, RecyclerView recyclerView) {
-        Log.d("-----totalPage-----", "----loadMore---" + totalPage);
+        Log.d(TAG, curPage + "----loadMore---" + totalPage);
+        Log.d(TAG, itemTradeRecords.size() + "----loadMore---" + totalNum);
         //拉取数据
-        if (itemTradeRecords.size() < totalNum && curPage < totalPage) {
-//            Map<String, Object> params = getParams();
-//            if (mTilePopup.getSelectedItemPosition() != 0) {//如果是全部就不设置
-//                params.put("payState", mTilePopup.getSelectedItemPosition() == 1 ? 1 : 0);
-//            }
-//            params.put("payState", mTilePopup.getSelectedItemPosition() == 1 ? 1 : 0);
-            params.put("createTime", RequestParamsContants.getInstance().getSelectTime(time));
+        if (curPage < totalPage) {
+            Map<String, Object> params = getParams();
+            time[0] = "2017-12-15 00:00:00";
             params.put("p", curPage + 1);
             getDatas(params);
+        } else {
+            if (itemTradeRecords.size() >= 1 && itemTradeRecords.get(itemTradeRecords.size() - 1) == null) {
+                itemTradeRecords.remove(itemTradeRecords.size() - 1);
+            }
         }
     }
 
     @Override
     public void clearDates() {
-        params.put("createTime", null);
-        initPage();
-        itemTradeRecords.clear();
         timeSelector.setText("");
+        clearDatas();
+        Map<String, Object> params = getParams();
+        params.put("createTime", null);
         getDatas(params);
     }
 
@@ -274,8 +281,10 @@ public class TradeRecordsFragment extends BaseFragment implements LoadMoreHelper
     public String[] onDateSet(DatePicker startDatePicker, int startYear, int startMonthOfYear, int startDayOfMonth, DatePicker endDatePicker, int endYear, int endMonthOfYear, int endDayOfMonth) {
         time = super.onDateSet(startDatePicker, startYear, startMonthOfYear, startDayOfMonth, endDatePicker, endYear, endMonthOfYear, endDayOfMonth);
         timeSelector.setText(SecondToDate.getDateUiShow(time));
+        clearDatas();
+        Map<String, Object> params = getParams();
+        time[0] = "2017-12-15 00:00:00";
         params.put("createTime", RequestParamsContants.getInstance().getSelectTime(time));
-        itemTradeRecords.clear();
         getDatas(params);
 
         return null;
@@ -316,7 +325,7 @@ public class TradeRecordsFragment extends BaseFragment implements LoadMoreHelper
                     }
                 }
                 Log.e(TAG, "response :" + response);
-                tradeRecords = ItemTradeRecord.bindTradeRecordsList(JsonDataParse.getInstance().getArrayList(response.toString()));
+                tradeRecords = ItemTradeRecord.bindTradeRecordsList(JsonDataParse.getInstance().getArrayList(response));
                 totalNum = JsonDataParse.getInstance().getTotalNum();
                 curPage = JsonDataParse.getInstance().getCurPage();
                 requestNum = JsonDataParse.getInstance().getRequestNum();
@@ -349,7 +358,7 @@ public class TradeRecordsFragment extends BaseFragment implements LoadMoreHelper
                     }
                 }
                 itemTradeRecords.addAll(tradeRecords);
-                if (itemTradeRecords.size() < totalNum) {
+                if (curPage < totalPage) {
                     itemTradeRecords.add(null);
                     setCanLoad();
                 }

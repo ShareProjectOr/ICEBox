@@ -53,26 +53,54 @@ public class ItemPerson implements Serializable {
     public static ItemPerson bindPersonFull(JSONObject response) throws JSONException {
         ItemPerson itemPerson = new ItemPerson();
         try {
-//            JSONObject jsonObject = new JSONObject(response);
-            itemPerson.disable = response.getInt("disable");
-            itemPerson.name = response.getString("name");
+            if (response.has("disable") && !response.get("disable").equals(null)) {
+                itemPerson.disable = response.getInt("disable");
+            }
+
+            if (response.has("name") && !response.get("name").equals(null)) {
+                itemPerson.name = response.getString("name");
+            }
             if (response.has("tel") && !response.get("tel").equals(null)) {
                 itemPerson.tel = response.getString("tel");
             }
-
-            if (response.get("userType").equals(null)) {
+            if (response.has("userType") && !response.get("userType").equals(null)) {
                 itemPerson.userType = response.getInt("userType");
             }
-            itemPerson.userID = response.getInt("userID");
-            itemPerson.email = response.getString("email");
-            itemPerson.loginAccount = response.getString("loginAccount");
-            itemPerson.role = response.getString("role");
-            itemPerson.address = response.getString("address");
-            itemPerson.lastLoginTime = response.getString("lastLoginTime");
-            itemPerson.loginIP = response.getString("loginIP");
-            itemPerson.idCard = response.getString("idCard");
-            itemPerson.company = ItemCompany.bindCompanyFull(response.getJSONObject("company"));
-            itemPerson.agent = ItemPerson.bindPerson(response.getJSONObject("agent"));
+            if (response.has("email") && !response.get("email").equals(null)) {
+                itemPerson.email = response.getString("email");
+            }
+            if (response.has("loginAccount") && !response.get("loginAccount").equals(null)) {
+                itemPerson.loginAccount = response.getString("loginAccount");
+            }
+
+            if (response.has("role") && !response.get("role").equals(null)) {
+                itemPerson.role = response.getString("role");
+            }
+
+            if (response.has("address") && !response.get("address").equals(null)) {
+                itemPerson.address = response.getString("address");
+            }
+            if (response.has("lastLoginTime") && !response.get("lastLoginTime").equals(null)) {
+                itemPerson.lastLoginTime = response.getString("lastLoginTime");
+            }
+            if (response.has("loginIP") && !response.get("loginIP").equals(null)) {
+                itemPerson.loginIP = response.getString("loginIP");
+            }
+
+            if (response.has("idCard") && !response.get("idCard").equals(null)) {
+                itemPerson.idCard = response.getString("idCard");
+            }
+            if (response.has("company") && !response.get("company").equals(null)) {
+                itemPerson.company = ItemCompany.bindCompanyFull(response.getJSONObject("company"));
+            }
+            if (response.has("agent") && !response.get("agent").equals(null)) {
+                itemPerson.agent = ItemPerson.bindPerson(response.getJSONObject("agent"));
+            }
+
+            if (response.has("userID") && !response.get("userID").equals(null)) {
+                itemPerson.userID = response.getInt("userID");
+            }
+
 
         } catch (JSONException e) {
             Log.e("ItemPerson", e.toString());
@@ -86,20 +114,27 @@ public class ItemPerson implements Serializable {
     public static ItemPerson bindPerson(JSONObject response) throws JSONException {
         ItemPerson itemPerson = new ItemPerson();
         try {
+            if (response.has("disable") && !response.get("disable").equals(null)) {
+                itemPerson.disable = response.getInt("disable");
+            }
 
-            itemPerson.disable = response.getInt("disable");
-            if (response.has("machine") && !response.get("name").equals(null)) {
+            if (response.has("name") && !response.get("name").equals(null)) {
                 itemPerson.name = response.getString("name");
             }
             if (response.has("tel") && !response.get("tel").equals(null)) {
                 itemPerson.tel = response.getString("tel");
             }
-
-            if (response.get("userType").equals(null)) {
+            if (response.has("userType") && !response.get("userType").equals(null)) {
                 itemPerson.userType = response.getInt("userType");
             }
-            itemPerson.userID = response.getInt("userID");
-            itemPerson.email = response.getString("email");
+            if (response.has("email") && !response.get("email").equals(null)) {
+                itemPerson.email = response.getString("email");
+            }
+            if (response.has("userID") && !response.get("userID").equals(null)) {
+                itemPerson.userID = response.getInt("userID");
+            }
+
+
         } catch (JSONException e) {
             Log.e("ItemPerson", e.toString());
         }

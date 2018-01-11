@@ -103,8 +103,8 @@ public class ItemTradeAccount implements Serializable {
             for (int i = 0; i < list.length(); i++) {
                 JSONObject item = (JSONObject) list.get(i);
                 ItemTradeAccount itemTradeAccount = new ItemTradeAccount();
-                if (item.has("divideID") && !item.get("divideID").equals(null))
-                    itemTradeAccount.divideID = item.getInt("divideID");
+                if (item.has("settlementID") && !item.get("settlementID").equals(null))
+                    itemTradeAccount.divideID = item.getInt("settlementID");
 
                 if (item.has("createTime") && !item.get("createTime").equals(null))
                     itemTradeAccount.createTime = item.getString("createTime");
@@ -130,8 +130,8 @@ public class ItemTradeAccount implements Serializable {
                 if (item.has("endTime") && !item.get("endTime").equals(null))
                     itemTradeAccount.endTime = item.getString("endTime");
 
-                if (item.has("divideState") && !item.get("divideState").equals(null))
-                    itemTradeAccount.divideState = item.getInt("divideState");
+                if (item.has("settlementState") && !item.get("settlementState").equals(null))
+                    itemTradeAccount.divideState = item.getInt("settlementState");
 
                 if (item.has("divideNum") && !item.get("divideNum").equals(null))
                     itemTradeAccount.divideNum = item.getInt("divideNum");

@@ -2,6 +2,7 @@ package com.example.shareiceboxms.models.adapters;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -65,30 +66,55 @@ public class TradeAccountListAdapter extends RecyclerView.Adapter<RecyclerView.V
             switch (itemTradeAccount.divideState) {
                 case 0://待审核状态时显示工单创建时间
                     ((ViewHolder) holder).totalAccountTime.setText(itemTradeAccount.createTime);
+//                        if (itemTradeAccount.createTime != null && !TextUtils.equals(itemTradeAccount.createTime, ""))
+//                            ((ViewHolder) holder).timePeriod.setText(SecondToDate.getStrOfDate(SecondToDate.getDateOfString(itemTradeAccount.createTime)));
+//                            ((ViewHolder) holder).totalAccountTime.setText(SecondToDate.getStrOfDate(SecondToDate.getDateOfString(itemTradeAccount.createTime)));
+
                     break;
                 case 1://待确认-审核时间
                     ((ViewHolder) holder).totalAccountTime.setText(itemTradeAccount.checkTime);
+                    ((ViewHolder) holder).timePeriod.setText(itemTradeAccount.createTime + "至" + itemTradeAccount.checkTime);
+//                        if (itemTradeAccount.checkTime != null && !TextUtils.equals(itemTradeAccount.checkTime, ""))
+//                            ((ViewHolder) holder).totalAccountTime.setText(SecondToDate.getStrOfDate(SecondToDate.getDateOfString(itemTradeAccount.checkTime)));
+//                        ((ViewHolder) holder).timePeriod.setText(SecondToDate.getStrOfDate(SecondToDate.getDateOfString(itemTradeAccount.createTime))
+//                                +"至"+SecondToDate.getStrOfDate(SecondToDate.getDateOfString(itemTradeAccount.checkTime)));
                     break;
                 case 2://待转账-确认时间
                     ((ViewHolder) holder).totalAccountTime.setText(itemTradeAccount.configTime);
+                    ((ViewHolder) holder).timePeriod.setText(itemTradeAccount.createTime + "至" + itemTradeAccount.configTime);
+//                        if (itemTradeAccount.configTime != null && !TextUtils.equals(itemTradeAccount.configTime, ""))
+//                            ((ViewHolder) holder).totalAccountTime.setText(SecondToDate.getStrOfDate(SecondToDate.getDateOfString(itemTradeAccount.configTime)));
+//                        ((ViewHolder) holder).timePeriod.setText(SecondToDate.getStrOfDate(SecondToDate.getDateOfString(itemTradeAccount.createTime))
+//                                + "至" + SecondToDate.getStrOfDate(SecondToDate.getDateOfString(itemTradeAccount.configTime)));
                     break;
                 case 3://待复审-转账确认时间
                     ((ViewHolder) holder).totalAccountTime.setText(itemTradeAccount.configTransferTime);
+                    ((ViewHolder) holder).timePeriod.setText(itemTradeAccount.createTime + "至" + itemTradeAccount.configTransferTime);
+                       /* if (itemTradeAccount.configTransferTime != null && !TextUtils.equals(itemTradeAccount.configTransferTime, ""))
+                            ((ViewHolder) holder).totalAccountTime.setText(SecondToDate.getStrOfDate(SecondToDate.getDateOfString(itemTradeAccount.configTransferTime)));
+                        ((ViewHolder) holder).timePeriod.setText(SecondToDate.getStrOfDate(SecondToDate.getDateOfString(itemTradeAccount.createTime))
+                                + "至" + SecondToDate.getStrOfDate(SecondToDate.getDateOfString(itemTradeAccount.configTransferTime)));*/
                     break;
                 case 4://复审完成-复审完成时间
                     ((ViewHolder) holder).totalAccountTime.setText(itemTradeAccount.recheckTime);
+                    ((ViewHolder) holder).timePeriod.setText(itemTradeAccount.createTime + "至" + itemTradeAccount.recheckTime);
+                       /* if (itemTradeAccount.recheckTime != null && !TextUtils.equals(itemTradeAccount.recheckTime, ""))
+                            ((ViewHolder) holder).totalAccountTime.setText(SecondToDate.getStrOfDate(SecondToDate.getDateOfString(itemTradeAccount.recheckTime)));
+                        ((ViewHolder) holder).timePeriod.setText(SecondToDate.getStrOfDate(SecondToDate.getDateOfString(itemTradeAccount.createTime))
+                                + "至" + SecondToDate.getStrOfDate(SecondToDate.getDateOfString(itemTradeAccount.recheckTime)));*/
                     break;
                 case 5://背撤销-撤销时间
                     ((ViewHolder) holder).totalAccountTime.setText(itemTradeAccount.cancelTime);
+                    ((ViewHolder) holder).timePeriod.setText(itemTradeAccount.createTime + "至" + itemTradeAccount.cancelTime);
+
+                       /* if (itemTradeAccount.cancelTime != null && !TextUtils.equals(itemTradeAccount.cancelTime, ""))
+                            ((ViewHolder) holder).totalAccountTime.setText(SecondToDate.getStrOfDate(SecondToDate.getDateOfString(itemTradeAccount.cancelTime)));
+                        ((ViewHolder) holder).timePeriod.setText(SecondToDate.getStrOfDate(SecondToDate.getDateOfString(itemTradeAccount.createTime))
+                                + "至" + SecondToDate.getStrOfDate(SecondToDate.getDateOfString(itemTradeAccount.cancelTime)));*/
                     break;
             }
             ((ViewHolder) holder).accountMoney.setText(itemTradeAccount.divideMoney);
             ((ViewHolder) holder).accountState.setText(Constants.TradeAccountStateTitle[itemTradeAccount.divideState + 1]);
-            try {
-                ((ViewHolder) holder).timePeriod.setText(SecondToDate.getSubString(itemTradeAccount.startTime, itemTradeAccount.endTime));
-            } catch (ParseException e) {
-                e.printStackTrace();
-            }
         } else if (holder instanceof LoadingHolder) {
             if (holder != null) {
             }

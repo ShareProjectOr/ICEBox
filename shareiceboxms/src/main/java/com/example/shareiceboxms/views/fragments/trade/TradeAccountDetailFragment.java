@@ -17,6 +17,7 @@ import android.widget.Toast;
 
 import com.example.shareiceboxms.R;
 import com.example.shareiceboxms.models.adapters.TradeAccountDetailAdapter;
+import com.example.shareiceboxms.models.adapters.TradeAccountListAdapter;
 import com.example.shareiceboxms.models.beans.trade.ItemChongdiRefundRecord;
 import com.example.shareiceboxms.models.beans.trade.ItemTradeAccount;
 import com.example.shareiceboxms.models.beans.trade.ItemTradeRecord;
@@ -185,32 +186,33 @@ public class TradeAccountDetailFragment extends BaseFragment {
     private void init() throws ParseException {
         if (itemTradeAccount == null) return;
         jiesuanMoney.setText(itemTradeAccount.divideMoney);
+
         switch (itemTradeAccount.divideState) {
             case 0://待审核状态时显示工单创建时间
-                jiesuanTime.setText(SecondToDate.getStrOfDate(SecondToDate.getDateOfString(itemTradeAccount.createTime)));
+                jiesuanTime.setText(itemTradeAccount.createTime);
                 break;
             case 1://待确认-审核时间
-                jiesuanTime.setText(SecondToDate.getStrOfDate(SecondToDate.getDateOfString(itemTradeAccount.checkTime)));
+                jiesuanTime.setText(itemTradeAccount.checkTime);
+                jiesuanTimePeriod.setText(itemTradeAccount.createTime + "至" + itemTradeAccount.checkTime);
                 break;
             case 2://待转账-确认时间
-                jiesuanTime.setText(SecondToDate.getStrOfDate(SecondToDate.getDateOfString(itemTradeAccount.configTime)));
+                jiesuanTime.setText(itemTradeAccount.configTime);
+                jiesuanTimePeriod.setText(itemTradeAccount.createTime + "至" + itemTradeAccount.configTime);
                 break;
             case 3://待复审-转账确认时间
-                jiesuanTime.setText(SecondToDate.getStrOfDate(SecondToDate.getDateOfString(itemTradeAccount.configTransferTime)));
+                jiesuanTime.setText(itemTradeAccount.configTransferTime);
+                jiesuanTimePeriod.setText(itemTradeAccount.createTime + "至" + itemTradeAccount.configTransferTime);
                 break;
             case 4://复审完成-复审完成时间
-                jiesuanTime.setText(SecondToDate.getStrOfDate(SecondToDate.getDateOfString(itemTradeAccount.recheckTime)));
+                jiesuanTime.setText(itemTradeAccount.recheckTime);
+                jiesuanTimePeriod.setText(itemTradeAccount.createTime + "至" + itemTradeAccount.recheckTime);
                 break;
             case 5://背撤销-撤销时间
-                jiesuanTime.setText(SecondToDate.getStrOfDate(SecondToDate.getDateOfString(itemTradeAccount.cancelTime)));
+                jiesuanTime.setText(itemTradeAccount.cancelTime);
+                jiesuanTimePeriod.setText(itemTradeAccount.createTime + "至" + itemTradeAccount.cancelTime);
                 break;
         }
         jiesuanState.setText(Constants.TradeAccountStateTitle[itemTradeAccount.divideState + 1]);
-        try {
-            jiesuanTimePeriod.setText(SecondToDate.getSubString(itemTradeAccount.startTime, itemTradeAccount.endTime));
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
         chongdiRefundMoney.setText(itemTradeAccount.offsetMoney);
         realMoney.setText(itemTradeAccount.actualPayment);
 
@@ -218,7 +220,7 @@ public class TradeAccountDetailFragment extends BaseFragment {
 
     private Map<String, Object> getParams() {
         Map<String, Object> params = RequestParamsContants.getInstance().getTradeRecordsParams();
-        params.put("divideID", itemTradeAccount.divideID);
+        params.put("settlementID", itemTradeAccount.divideID);
         return params;
     }
 
@@ -241,7 +243,7 @@ public class TradeAccountDetailFragment extends BaseFragment {
 
     public void getChongdiDatas(int page, int requestNum) {
         Map<String, Object> params = RequestParamsContants.getInstance().getRefundOfChongdiParams();
-        params.put("divideID", itemTradeAccount.divideID);
+        params.put("settlementID", itemTradeAccount.divideID);
         params.put("p", page);
         RefundChongdiHelper.getInstance().setContext(homeActivity);
         RefundChongdiHelper.getInstance().setAdapter(adapter);

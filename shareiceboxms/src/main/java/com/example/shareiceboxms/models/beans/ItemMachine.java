@@ -163,13 +163,14 @@ public class ItemMachine {
                     itemMachine.productionTime = item.getString("productionTime");
                 }
 
-                if (!item.get("manager").equals(null)) {
+                if (item.has("manager") && !item.get("manager").equals(null)) {
                     itemMachine.itemManager = ItemPerson.bindPerson(item.getJSONObject("manager"));
                 }
-                if (!item.get("agent").equals(null)) {
+
+                if (item.has("agent") && !item.get("agent").equals(null)) {
                     itemMachine.itemAgent = ItemPerson.bindPerson(item.getJSONObject("agent"));
                 }
-                if (!item.get("company").equals(null)) {
+                if (item.has("company") && !item.get("company").equals(null)) {
                     itemMachine.itemCompany = ItemCompany.bindCompanyFull(item.getJSONObject("company"));
                 }
                 itemMachines.add(itemMachine);
@@ -273,14 +274,14 @@ public class ItemMachine {
             if (item.has("productionTime") && !item.get("productionTime").equals(null)) {
                 itemMachine.productionTime = item.getString("productionTime");
             }
-
-            if (!item.get("manager").equals(null)) {
+            if (item.has("manager") && !item.get("manager").equals(null)) {
                 itemMachine.itemManager = ItemPerson.bindPerson(item.getJSONObject("manager"));
             }
-            if (!item.get("agent").equals(null)) {
+
+            if (item.has("agent") && !item.get("agent").equals(null)) {
                 itemMachine.itemAgent = ItemPerson.bindPerson(item.getJSONObject("agent"));
             }
-            if (!item.get("company").equals(null)) {
+            if (item.has("company") && !item.get("company").equals(null)) {
                 itemMachine.itemCompany = ItemCompany.bindCompanyFull(item.getJSONObject("company"));
             }
         } catch (JSONException e) {

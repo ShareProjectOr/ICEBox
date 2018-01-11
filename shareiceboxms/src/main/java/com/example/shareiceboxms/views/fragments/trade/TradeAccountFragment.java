@@ -69,6 +69,7 @@ public class TradeAccountFragment extends BaseFragment implements LoadMoreHelper
     private ListPopupWindow mTilePopup;
     HomeActivity homeActivity;
     private int curPage, requestNum, totalNum, totalPage, curType;
+    private String settlementState;
     private Dialog dialog;
     TradeAccountFragment tradeAccountFragment;
     BaseFragment createAccountFragment;
@@ -125,6 +126,7 @@ public class TradeAccountFragment extends BaseFragment implements LoadMoreHelper
 
     private Map<String, Object> getParams() {
         Map<String, Object> params = RequestParamsContants.getInstance().getAccountsParams();
+        params.put("settlementState", settlementState);
 //        params.put("createTime", RequestParamsContants.getInstance().getSelectTime(SecondToDate.getDateParams(SecondToDate.TODAY_CODE)));
         return params;
     }
@@ -190,32 +192,15 @@ public class TradeAccountFragment extends BaseFragment implements LoadMoreHelper
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         accountTypeText.setText(Constants.TradeAccountStateTitle[position]);
+        clearDatas();
         Map<String, Object> params = getParams();
-        switch (position) {
-            case 0:
-                if (params.containsKey("divideState")) {
-                    params.remove("divideState");
-                }
-                break;
-            case 1:
-                params.put("divideState", 0);
-                break;
-            case 2:
-                params.put("divideState", 1);
-                break;
-            case 3:
-                params.put("divideState", 2);
-                break;
-            case 4:
-                params.put("divideState", 3);
-                break;
-            case 5:
-                params.put("divideState", 4);
-                break;
-            case 6:
-                params.put("divideState", 5);
-                break;
+        if (position >= 1) {
+            settlementState = String.valueOf(position - 1);
+        } else {
+            settlementState = "";
         }
+
+        params.put("settlementState", settlementState);
         getDatas(params);
         mTilePopup.dismiss();
     }
@@ -223,13 +208,17 @@ public class TradeAccountFragment extends BaseFragment implements LoadMoreHelper
     @Override
     public void onRefresh() {
         //联网刷新数据
+        clearDatas();
+        getDatas(getParams());
+        accountRefresh.setRefreshing(false);
+    }
+
+    private void clearDatas() {
         if (itemTradeAccounts != null) {
             itemTradeAccounts.clear();
             initPage();
             loadMoreHelper.getAdapter().notifyDataSetChanged();
         }
-        getDatas(getParams());
-        accountRefresh.setRefreshing(false);
     }
 
 
@@ -237,14 +226,13 @@ public class TradeAccountFragment extends BaseFragment implements LoadMoreHelper
     public void loadMore(RecyclerView.Adapter<RecyclerView.ViewHolder> adapter, RecyclerView recyclerView) {
         Log.d("-----totalPage-----", "----loadMore---" + totalPage);
         //拉取数据
-        if (itemTradeAccounts.size() < totalNum && curPage < totalPage) {
+        if (curPage < totalPage) {
             Map<String, Object> params = getParams();
             if (mTilePopup.getSelectedItemPosition() > 0) {//如果是全部就不设置
                 params.put("divideState", mTilePopup.getSelectedItemPosition() - 1);
             }
             params.put("p", curPage + 1);
             getDatas(params);
-            adapter.notifyDataSetChanged();
         }
 
     }
