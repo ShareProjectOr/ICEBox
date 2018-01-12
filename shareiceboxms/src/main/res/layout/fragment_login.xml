@@ -181,7 +181,7 @@
                     android:layout_alignParentStart="true"
                     android:layout_alignParentTop="true"
                     android:buttonTint="@color/blue"
-                    android:checked="true"
+                    android:checked="false"
                     android:text="记住密码"
                     android:textSize="15sp" />
 

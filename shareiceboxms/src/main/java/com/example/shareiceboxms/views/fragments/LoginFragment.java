@@ -21,6 +21,7 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 
 import com.bumptech.glide.Glide;
+import com.example.shareiceboxms.models.contants.ConstanceMethod;
 import com.example.shareiceboxms.models.contants.HttpRequstUrl;
 import com.example.shareiceboxms.models.beans.PerSonMessage;
 import com.example.shareiceboxms.models.contants.RequstTips;
@@ -60,6 +61,7 @@ public class LoginFragment extends BaseFragment implements LoginAnimPresentor.Lo
     private boolean isSeeClicked = false;
     private boolean isPassEditFoucsed = false;
     private UserLoginTask mAuthTask = null;
+    private boolean remember = true;
 
     @Nullable
     @Override
@@ -74,7 +76,7 @@ public class LoginFragment extends BaseFragment implements LoginAnimPresentor.Lo
          /*
             * 解析地址
             * */
-        loginActivity.parseAddress();
+        //  loginActivity.parseAddress();
         //   Glide.with(this).load(R.drawable.opening).into(imageView);
     }
 
@@ -85,6 +87,8 @@ public class LoginFragment extends BaseFragment implements LoginAnimPresentor.Lo
         passEdit = (EditText) containerView.findViewById(R.id.passEdit);
         isSee = (ImageView) containerView.findViewById(R.id.isSee);
         isRemember = (CheckBox) containerView.findViewById(R.id.isRemember);
+        isRemember.setChecked(true);
+        FragmentFactory.getInstance().getSavedBundle().putBoolean("remember", remember);
         loginBnt = (Button) containerView.findViewById(R.id.login);
         loginBar = (ProgressBar) containerView.findViewById(R.id.loginBar);
         editLayout = (LinearLayout) containerView.findViewById(R.id.editLayout);
@@ -102,7 +106,8 @@ public class LoginFragment extends BaseFragment implements LoginAnimPresentor.Lo
         isRemember.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                FragmentFactory.getInstance().getSavedBundle().putBoolean("remember", isChecked);
+                remember = isChecked;
+//                FragmentFactory.getInstance().getSavedBundle().putBoolean("remember", remember);
             }
         });
     }

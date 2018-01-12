@@ -73,7 +73,7 @@ public class WelcomeFragment extends BaseFragment {
             /*
             * 解析地址
             * */
-            loginActivity.parseAddress();
+            // loginActivity.parseAddress();
             hasLogined();
         } else {
             isNotLogined();
@@ -147,8 +147,11 @@ public class WelcomeFragment extends BaseFragment {
             } catch (IOException e) {
                 Log.e("response", e + "");
                 err = RequstTips.getErrorMsg(e.getMessage());
+                return false;
             } catch (JSONException e) {
+
                 err = RequstTips.JSONException_Tip;
+                return false;
             }
             return false;
         }

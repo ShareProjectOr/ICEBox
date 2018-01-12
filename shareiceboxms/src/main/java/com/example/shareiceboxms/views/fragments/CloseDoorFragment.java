@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
+import android.widget.Toast;
 
 import com.example.shareiceboxms.R;
 import com.example.shareiceboxms.models.beans.ItemCloseDoorGoods;
@@ -63,13 +64,19 @@ public class CloseDoorFragment extends BaseFragment {
         String value = FragmentFactory.getInstance().getSavedBundle().getString("callbackMsg");
         try {
             JSONObject object = new JSONObject(value);
-            JSONArray array = object.getJSONArray("goodsList");
-            for (int i = 0; i < array.length(); i++) {
-                JSONObject jsonObject = (JSONObject) array.opt(i);
-                ItemCloseDoorGoods item = new ItemCloseDoorGoods();
-                item.bindData(jsonObject);
-                datas.add(new ItemCloseDoorGoods());
+            if (object.has("goodsList")) {
+                JSONArray array = object.getJSONArray("goodsList");
+                for (int i = 0; i < array.length(); i++) {
+                    JSONObject jsonObject = (JSONObject) array.opt(i);
+                    ItemCloseDoorGoods item = new ItemCloseDoorGoods();
+                    item.bindData(jsonObject);
+                    datas.add(new ItemCloseDoorGoods());
+                }
+            } else {
+                Toast.makeText(getActivity(), "未检测到任何标签变化,请确认您是否上下货", Toast.LENGTH_LONG).show();
             }
+
+
         } catch (JSONException e) {
             e.printStackTrace();
         }

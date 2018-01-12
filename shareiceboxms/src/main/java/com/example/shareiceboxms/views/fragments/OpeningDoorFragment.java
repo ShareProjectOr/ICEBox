@@ -49,12 +49,12 @@ public class OpeningDoorFragment extends BaseFragment {
         mShowgif = (GifImageView) content.findViewById(R.id.showgif);
         QRCode = FragmentFactory.getInstance().getSavedBundle().getString("QRCode");
 
-        //  Glide.with(this).load(R.drawable.opening).asGif().fitCenter().diskCacheStrategy(DiskCacheStrategy.SOURCE).into(mShowgif);
+      /*  //  Glide.with(this).load(R.drawable.opening).asGif().fitCenter().diskCacheStrategy(DiskCacheStrategy.SOURCE).into(mShowgif);
         if (Build.VERSION.SDK_INT >= 21) {
             //5.0以上
             mShowtext.setTextColor(Color.BLUE);
             mShowtext.setTextSize(2);
             mShowtext.init("Opening", -1);
-        }
+        }*/
     }
 }

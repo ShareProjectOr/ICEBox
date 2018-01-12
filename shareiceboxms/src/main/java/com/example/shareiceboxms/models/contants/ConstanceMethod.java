@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 
-import java.math.BigDecimal;
 import java.util.Calendar;
 
 /**
@@ -53,10 +52,10 @@ public class ConstanceMethod {
     }
 
     //修改是否登陆
-    public static void addHasDetailsMsg(Context context, String msgTag) {
+    public static void addHasDealMsg(Context context, Long msgTag) {
         SharedPreferences preferences = getSharedPreferences(context, "Msg");//context.getSharedPreferences("ShowWelcome", Context.MODE_PRIVATE);
         SharedPreferences.Editor edit = preferences.edit();
-        edit.putString("msgTag", msgTag);
+        edit.putLong("msgTag", msgTag);
         edit.apply();
     }
 

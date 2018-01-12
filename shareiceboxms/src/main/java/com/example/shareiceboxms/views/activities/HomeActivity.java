@@ -107,7 +107,7 @@ public class HomeActivity extends BaseActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
-        //SaveUserMessager();
+        SaveUserMessager();
         initViews();
         initData();
         initListener();
@@ -129,35 +129,40 @@ public class HomeActivity extends BaseActivity
                 Log.d("----handleMessage---", "';;;;;");
                 JSONObject object = (JSONObject) msg.obj;
                 try {
-                  /*  if (object.getString("msgTag").equals(ConstanceMethod.getSharedPreferences(HomeActivity.this, "Msg").getString("msgTag", ""))) {
+                    Log.e("push", object.toString() + "time:" + SecondToDate.getDateToString(Long.parseLong(object.getString("createTime"))));
+                    long recevermsgTime = Long.parseLong(object.getString("createTime"));
+                    long savemsgTime = ConstanceMethod.getSharedPreferences(HomeActivity.this, "Msg").getLong("msgTag", 0);
+                    Log.e("time", "savemsgTime:" + savemsgTime + "----recevermsgTime:" + recevermsgTime+"----"+(recevermsgTime <= savemsgTime));
+                    if (recevermsgTime <= savemsgTime) {
                         //如果消息标记和本地储存的消息标记一致，则任务是已经处理了的消息，不再处理
                         return;
-                    }*/
+                    }
                     String tymsgType = object.getString("msgType");
                     switch (tymsgType) {
                         case "01"://门开关通知
-                         /*   if (!isRequestOpen) {
+                            if (!isRequestOpen) {
                                 return;
-                            }*/
-                            ConstanceMethod.addHasDetailsMsg(HomeActivity.this, object.getString("msgTag"));
+                            }
+                            Log.e("push", object.toString() + "time:" + SecondToDate.getDateToString(Long.parseLong(object.getString("createTime"))));
+                            ConstanceMethod.addHasDealMsg(HomeActivity.this, Long.parseLong(object.getString("createTime")));
                             if (object.getInt("doorState") == 1) {//已开门
                                 LastDoorState = 1;
                                 Log.e("doorState", "1");
-                                if (!(curFragment instanceof OpenDoorSuccessFragment)) {
+                                if (curFragment instanceof OpeningDoorFragment) {
                                     curFragment = new OpenDoorSuccessFragment();
                                     showHomepage = false;
                                     switchFragment();
                                 }
                             } else if (object.getInt("doorState") == 0) {//关门,上货成功
-                                Log.e("doorState", "2");
-                                if (!(curFragment instanceof CloseDoorFragment) && LastDoorState == 1) {//上次的门状态必须为开门，此次收到关门才认为是上货成功
+
+                                if (curFragment instanceof OpenDoorSuccessFragment || LastDoorState == 1) {//上次的门状态必须为开门，此次收到关门才认为是上货成功
                                     FragmentFactory.getInstance().getSavedBundle().putString("callbackMsg", object.toString());
                                     curFragment = new CloseDoorFragment();
                                     showHomepage = false;
                                     isRequestOpen = false;
                                     switchFragment();
-                                    LastDoorState = 1;//上货成功后将门状态置为上货完成状态
-                                } else if (!(curFragment instanceof OpenDoorFailFragment) && LastDoorState == 0) {
+                                    LastDoorState = 0;//上货成功后将门状态置为上货完成状态
+                                } else if (curFragment instanceof OpeningDoorFragment) {
 
                                     //收到的门状态为关门,且上一状态为初始状态则认为是失败
                                     curFragment = new OpenDoorFailFragment();
@@ -170,8 +175,8 @@ public class HomeActivity extends BaseActivity
                             }
                             break;
                         case "02"://机器故障通知
+                            ConstanceMethod.addHasDealMsg(HomeActivity.this, Long.parseLong(object.getString("createTime")));
                             mNotificationManager.notify(1, mBuilder.build());
-                            ConstanceMethod.addHasDetailsMsg(HomeActivity.this, object.getString("msgTag"));
                             break;
                     }
 
@@ -253,6 +258,9 @@ public class HomeActivity extends BaseActivity
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
+            if (curFragment instanceof OpeningDoorFragment) {
+                return;
+            }
             if (showHomepage) {
                 mOnBackPressListener.OnBackDown();
             } else {
@@ -392,6 +400,7 @@ public class HomeActivity extends BaseActivity
 
     //记录登录状态
     private void SaveUserMessager() {
+
         if (FragmentFactory.getInstance().getSavedBundle().getBoolean("remember")) {//登录界面选择记录密码则执行保存信息等操作
             ConstanceMethod.isFirstLogin(this, false);
             DoSql();
@@ -444,7 +453,7 @@ public class HomeActivity extends BaseActivity
     }
 
     private void requestOpenDoor(final String QRCode) {
-       /* String qrString[] = QRCode.split("\\?");
+     /*   String qrString[] = QRCode.split("\\?");
         String headerString[] = qrString[1].split("\\&");
         String machineCodeArray[] = new String[2];
         for (String aHeaderString : headerString) {
@@ -453,11 +462,10 @@ public class HomeActivity extends BaseActivity
                 break;
             }
         }
-*/
-        // String machineCode = machineCodeArray[1];
+       String machineCode = machineCodeArray[1];*/
         Log.e("machineCode", "121231");
         final Map<String, Object> body = new HashMap<>();
-        body.put("machineCode", "121231");
+        body.put("machineCode", "20180111092200001");
         body.put("userID", 0);
         body.put("QRCode", QRCode);
         body.put("password", "123456");
@@ -484,17 +492,19 @@ public class HomeActivity extends BaseActivity
 
             @Override
             protected void onPostExecute(Boolean aBoolean) {
-                isRequestOpen = aBoolean;
+
                 if (aBoolean) {
-                    if (!(curFragment instanceof OpeningDoorFragment)) {
-                        FragmentFactory.getInstance().getSavedBundle().putString("QRCode", QRCode);
-                        curFragment = new OpeningDoorFragment();
-                        showHomepage = false;
-                        switchFragment();
-                    }
-                } else {
-                    Toast.makeText(getApplication(), err, Toast.LENGTH_SHORT).show();
+                    isRequestOpen = true;
+                    //我觉得这个地方不要判断
+//                    if (!(curFragment instanceof OpeningDoorFragment)) {
+                    FragmentFactory.getInstance().getSavedBundle().putString("QRCode", QRCode);
+                    curFragment = new OpeningDoorFragment();
+                    showHomepage = false;
+                    switchFragment();
                 }
+//                } else {
+//                    Toast.makeText(getApplication(), err, Toast.LENGTH_SHORT).show();
+//                }
             }
         }.execute();
     }
@@ -624,7 +634,7 @@ public class HomeActivity extends BaseActivity
 
     @Override
     public void messageArrived(final String s, final MqttMessage mqttMessage) throws Exception {
-        Log.e("push", "recevied_push" + new String(mqttMessage.getPayload()));
+        //  Log.e("push", "recevied_push" + new String(mqttMessage.getPayload()));
         JSONObject object = new JSONObject(new String(mqttMessage.getPayload()));
         Message msg = new Message();
         msg.obj = object;

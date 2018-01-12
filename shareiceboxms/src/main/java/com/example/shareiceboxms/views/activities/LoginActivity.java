@@ -18,12 +18,8 @@ public class LoginActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         initViews();
-        welcome();
-        if (PerSonMessage.isexcit) {
-            login();
-        } else {
-            welcome();
-        }
+    //    welcome();
+
     }
 
     private void welcome() {
@@ -44,7 +40,11 @@ public class LoginActivity extends BaseActivity {
     }
 
     private void initViews() {
-
+        if (PerSonMessage.isexcit) {
+            login();
+        } else {
+            welcome();
+        }
     }
 
     /*

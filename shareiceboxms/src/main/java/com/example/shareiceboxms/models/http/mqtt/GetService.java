@@ -13,7 +13,7 @@ import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
 
 public class GetService {
     public static GetService instance;
-    public static final String HOST = "tcp://192.168.4.106:61613";//tcp://127.0.0.1:61613
+    public static final String HOST = "tcp://192.168.1.110:61613";//tcp://127.0.0.1:61613
     private static MqttClient client;
     private MqttConnectOptions options;
     private String userName = "admin";
@@ -55,7 +55,7 @@ public class GetService {
             client.connect(options);
             // 订阅消息
             int[] Qos = {2};
-            String[] topic1 = {"T-M-20"};
+            String[] topic1 = {"T-M-0"};
             client.subscribe(topic1, Qos);
 
         } catch (Exception e) {
