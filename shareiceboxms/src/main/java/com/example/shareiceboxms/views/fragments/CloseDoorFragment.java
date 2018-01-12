@@ -4,6 +4,7 @@ package com.example.shareiceboxms.views.fragments;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -62,6 +63,7 @@ public class CloseDoorFragment extends BaseFragment {
         homeActivity = (HomeActivity) getActivity();
         datas = new ArrayList<>();
         String value = FragmentFactory.getInstance().getSavedBundle().getString("callbackMsg");
+        Log.i("读取的value", "value=" + value);
         try {
             JSONObject object = new JSONObject(value);
             if (object.has("goodsList")) {
@@ -70,7 +72,8 @@ public class CloseDoorFragment extends BaseFragment {
                     JSONObject jsonObject = (JSONObject) array.opt(i);
                     ItemCloseDoorGoods item = new ItemCloseDoorGoods();
                     item.bindData(jsonObject);
-                    datas.add(new ItemCloseDoorGoods());
+                    datas.add(item);
+
                 }
             } else {
                 Toast.makeText(getActivity(), "未检测到任何标签变化,请确认您是否上下货", Toast.LENGTH_LONG).show();
@@ -80,16 +83,6 @@ public class CloseDoorFragment extends BaseFragment {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-      /*  if (!TextUtils.equals(value, "")) {
-//            datas =
-        }*/
-      /*  datas.add(new ItemCloseDoorGoods());
-        datas.add(new ItemCloseDoorGoods());
-        datas.add(new ItemCloseDoorGoods());
-        datas.add(new ItemCloseDoorGoods());
-        datas.add(new ItemCloseDoorGoods());
-        datas.add(new ItemCloseDoorGoods());
-        datas.add(new ItemCloseDoorGoods());*/
         adapter = new UpdateGoodsCompleteAdapter(getContext(), datas);
         productUpdateList.setAdapter(adapter);
         ListViewForScrollView.setListViewHeightBasedOnChildren(productUpdateList, closeDoorLayout);

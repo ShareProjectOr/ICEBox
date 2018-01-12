@@ -13,7 +13,7 @@ public class ItemCloseDoorGoods {
     public int unLoadNum;
 
     public void bindData(JSONObject object) throws JSONException {
-        goodsName = object.getString("goodsNum");
+        goodsName = object.getString("goodsName");
         unLoadNum = object.getInt("unLoadNum");
         upLoadNum = object.getInt("upLoadNum");
     }

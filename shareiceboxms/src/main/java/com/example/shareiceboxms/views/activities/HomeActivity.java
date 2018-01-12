@@ -132,19 +132,22 @@ public class HomeActivity extends BaseActivity
                     Log.e("push", object.toString() + "time:" + SecondToDate.getDateToString(Long.parseLong(object.getString("createTime"))));
                     long recevermsgTime = Long.parseLong(object.getString("createTime"));
                     long savemsgTime = ConstanceMethod.getSharedPreferences(HomeActivity.this, "Msg").getLong("msgTag", 0);
-                    Log.e("time", "savemsgTime:" + savemsgTime + "----recevermsgTime:" + recevermsgTime+"----"+(recevermsgTime <= savemsgTime));
+                    Log.e("time", "savemsgTime:" + savemsgTime + "----recevermsgTime:" + recevermsgTime + "----" + (recevermsgTime <= savemsgTime));
                     if (recevermsgTime <= savemsgTime) {
                         //如果消息标记和本地储存的消息标记一致，则任务是已经处理了的消息，不再处理
                         return;
                     }
+
                     String tymsgType = object.getString("msgType");
+                    ConstanceMethod.addHasDealMsg(HomeActivity.this, Long.parseLong(object.getString("createTime")));
                     switch (tymsgType) {
+
                         case "01"://门开关通知
+
                             if (!isRequestOpen) {
                                 return;
                             }
                             Log.e("push", object.toString() + "time:" + SecondToDate.getDateToString(Long.parseLong(object.getString("createTime"))));
-                            ConstanceMethod.addHasDealMsg(HomeActivity.this, Long.parseLong(object.getString("createTime")));
                             if (object.getInt("doorState") == 1) {//已开门
                                 LastDoorState = 1;
                                 Log.e("doorState", "1");
@@ -155,13 +158,25 @@ public class HomeActivity extends BaseActivity
                                 }
                             } else if (object.getInt("doorState") == 0) {//关门,上货成功
 
-                                if (curFragment instanceof OpenDoorSuccessFragment || LastDoorState == 1) {//上次的门状态必须为开门，此次收到关门才认为是上货成功
-                                    FragmentFactory.getInstance().getSavedBundle().putString("callbackMsg", object.toString());
-                                    curFragment = new CloseDoorFragment();
-                                    showHomepage = false;
-                                    isRequestOpen = false;
+                                if (curFragment instanceof OpenDoorSuccessFragment || LastDoorState == 1) {
+                                    //上次的门状态必须为开门，此次收到关门才认为是关锁成功，
+                                    // 但并不一定会收到上下货数据，最.
+                                    getCurFragment();
+                                    showHomepage = true;//
                                     switchFragment();
-                                    LastDoorState = 0;//上货成功后将门状态置为上货完成状态
+                                    LastDoorState = 2;//上货成功后将门状态置为关门状态
+                                    // isRequestOpen = false;
+                                    Toast.makeText(getApplication(), "关门成功...", Toast.LENGTH_LONG).show();
+
+                                } else if (LastDoorState == 2) {//上一次为关门状态后,又收到关门推送,就判断有没有上下货记录有则跳转到上下货页面
+                                    if (object.has("goodsList")) {
+                                        FragmentFactory.getInstance().getSavedBundle().putString("callbackMsg", object.toString());
+                                        curFragment = new CloseDoorFragment();
+                                        showHomepage = false;
+                                        isRequestOpen = false;
+                                        switchFragment();
+                                        LastDoorState = 0;
+                                    }
                                 } else if (curFragment instanceof OpeningDoorFragment) {
 
                                     //收到的门状态为关门,且上一状态为初始状态则认为是失败
@@ -175,7 +190,7 @@ public class HomeActivity extends BaseActivity
                             }
                             break;
                         case "02"://机器故障通知
-                            ConstanceMethod.addHasDealMsg(HomeActivity.this, Long.parseLong(object.getString("createTime")));
+                            //  ConstanceMethod.addHasDealMsg(HomeActivity.this, Long.parseLong(object.getString("createTime")));
                             mNotificationManager.notify(1, mBuilder.build());
                             break;
                     }
@@ -442,7 +457,7 @@ public class HomeActivity extends BaseActivity
             case SCANNIN_GREQUEST_CODE:
                 if (resultCode == RESULT_OK) {
                     String result = data.getStringExtra("QR_CODE");
-                    Toast.makeText(getApplication(), result, Toast.LENGTH_LONG).show();
+                    //Toast.makeText(getApplication(), result, Toast.LENGTH_LONG).show();
                     requestOpenDoor(result);
                 } else {
                     Toast.makeText(getApplication(), "无法获取扫描结果", Toast.LENGTH_LONG).show();
