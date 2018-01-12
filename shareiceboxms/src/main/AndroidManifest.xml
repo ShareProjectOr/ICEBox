@@ -44,8 +44,7 @@
 
         <activity
             android:name=".views.activities.HomeActivity"
-            android:launchMode="singleInstance">
-        </activity>
+            android:launchMode="singleTask"></activity>
         <activity android:name=".views.activities.ModifyPriceActivity" />
         <activity android:name=".views.activities.CaptureActivity"></activity>
         <activity android:name=".views.activities.OpenDoorSuccessActivity"></activity>

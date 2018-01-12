@@ -8,9 +8,10 @@ public interface HttpRequstUrl {
     String HOST_URL = "http://192.168.1.110:8082/";//李坤明
     String HOST_URL_1 = "http://192.168.1.110:8082/";//李志灏
     String HOST_URL_2 = "http://192.168.4.224:8082/";//刘建成
+    String HOST_URL_3 = "http://192.168.1.110:8082/";//刘建成
     //  String HOST_URL = "http://202.98.157.25/fridgesManage_server/";+
 
-    String LOGIN_URL = HOST_URL_1 + "base/login";
+    String LOGIN_URL = HOST_URL_3 + "base/login";
 
     /*
     * 获取所有用户
