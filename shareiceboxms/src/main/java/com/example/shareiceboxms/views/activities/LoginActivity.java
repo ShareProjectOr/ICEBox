@@ -7,6 +7,7 @@ import android.support.v4.app.FragmentTransaction;
 import com.example.shareiceboxms.R;
 import com.example.shareiceboxms.models.beans.PerSonMessage;
 import com.example.shareiceboxms.models.helpers.ProvenceAndCodeUtil;
+import com.example.shareiceboxms.models.helpers.WindowManagerHelper;
 import com.example.shareiceboxms.views.fragments.LoginFragment;
 import com.example.shareiceboxms.views.fragments.WelcomeFragment;
 
@@ -17,8 +18,9 @@ public class LoginActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+
         initViews();
-    //    welcome();
+        //    welcome();
 
     }
 

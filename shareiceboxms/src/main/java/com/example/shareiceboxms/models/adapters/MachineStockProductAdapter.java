@@ -1,6 +1,7 @@
 package com.example.shareiceboxms.models.adapters;
 
 import android.content.Context;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -63,8 +64,10 @@ public class MachineStockProductAdapter extends BaseAdapter {
         viewHolder.productName.setText(itemProducts.get(position).goodsName);
         viewHolder.productPrice.setText(itemProducts.get(position).price + "");
         viewHolder.productSpecPrice.setText(itemProducts.get(position).activityPrice + "");
-        String[] secondToDate = SecondToDate.formatLongToTimeStr(Long.valueOf(itemProducts.get(position).residueStorageTime));
-        viewHolder.timeLimit.setText(secondToDate[0] + "天" + secondToDate[1] + "时" + secondToDate[2] + "分" + secondToDate[3] + "秒");
+        if (itemProducts.get(position).residueStorageTime != null) {
+            String[] secondToDate = SecondToDate.formatLongToTimeStr(Long.valueOf(itemProducts.get(position).residueStorageTime));
+            viewHolder.timeLimit.setText(secondToDate[0] + "天" + secondToDate[1] + "时" + secondToDate[2] + "分" + secondToDate[3] + "秒");
+        }
         return convertView;
     }
 

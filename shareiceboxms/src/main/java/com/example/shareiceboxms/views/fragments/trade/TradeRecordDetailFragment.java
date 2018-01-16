@@ -209,7 +209,9 @@ public class TradeRecordDetailFragment extends BaseFragment implements RecordDet
         payState.setText(itemTradeRecord.payState == 0 ? Constants.TradeStateTitle[2] : Constants.TradeStateTitle[1]);
         payState.setTextColor(ContextCompat.getColor(getContext(), Constants.TreadIsPayCOLOR[itemTradeRecord.payState]));
         machineNameAddr.setText(itemTradeRecord.machine.machineAddress);
-        customerId.setText(itemTradeRecord.consumer.userID + "");
+        if (itemTradeRecord.consumer != null) {
+            customerId.setText(itemTradeRecord.consumer.userID + "");
+        }
         tradeNo.setText(itemTradeRecord.tradeCode);
         jiesuanMoney.setText(itemTradeRecord.settlementMoney);
         jiesuanReal.setText(itemTradeRecord.realSettlementMoney);

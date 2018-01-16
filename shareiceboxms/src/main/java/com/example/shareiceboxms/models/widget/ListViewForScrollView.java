@@ -113,6 +113,7 @@ public class ListViewForScrollView extends ListView {// implements NestedScrolli
         listViewHeight = listView.getMeasuredHeight();
         Log.d("-------------", "-------listView.size=" + listView.getMeasuredHeight());
         Log.d("-------------", "-------listView.LinearLayout.size=" + listView.getLayoutParams().height);
+        Log.d("-------------", "-------listViewHeight=" + listViewHeight);
     }
 
     /**

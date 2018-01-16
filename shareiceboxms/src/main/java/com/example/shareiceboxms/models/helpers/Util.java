@@ -57,7 +57,6 @@ public class Util {
         Log.d("--isSoftShowing--", "" + (screenHeight - rect.bottom - getSoftButtonsBarHeight(activity)));
         return screenHeight - rect.bottom - getSoftButtonsBarHeight(activity) != 0;
     }
-
     /*
     * 底部虚拟按键栏的高度 
     * */
@@ -74,6 +73,5 @@ public class Util {
         } else {
             return 0;
         }
-
     }
 }

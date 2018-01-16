@@ -79,7 +79,9 @@ public class TradeRecordsFragment extends BaseFragment implements LoadMoreHelper
     private Dialog dialog;
     private int curPage, requestNum, totalNum, totalPage;
     private boolean searchClicked = false;
+    private boolean isFirstLoad = true;
     private String payState = "";
+
 
     @Nullable
     @Override
@@ -137,9 +139,7 @@ public class TradeRecordsFragment extends BaseFragment implements LoadMoreHelper
                 , Calendar.getInstance().get(Calendar.DATE), true);
         mTilePopup = MenuPop.CreateMenuPop(getContext(), tradeType, Constants.TradeStateTitle);
         mTilePopup.setOnItemClickListener(this);
-        if (FragmentFactory.getInstance().getTradeChildFragments().size() == 1) {
-            dialog = MyDialog.loadDialog(getContext());
-        }
+        dialog = MyDialog.loadDialog(getContext());
         RecyclerView tradeRecordList = (android.support.v7.widget.RecyclerView) containerView.findViewById(R.id.tradeRecordList);
         adapter = new TradeRecordListAdapter(getContext(), itemTradeRecords, this);
         new MyViewFactory(getContext()).BuildRecyclerViewRule(tradeRecordList,
@@ -305,7 +305,13 @@ public class TradeRecordsFragment extends BaseFragment implements LoadMoreHelper
 
         @Override
         protected void onPreExecute() {
-            if (dialog != null) {
+            /*
+            * 如果是第一次加载，不显示dialog
+            * */
+            if (isFirstLoad) {
+                return;
+            }
+            if (dialog != null && !dialog.isShowing()) {
                 dialog.show();
             }
         }
@@ -347,6 +353,7 @@ public class TradeRecordsFragment extends BaseFragment implements LoadMoreHelper
 
         @Override
         protected void onPostExecute(final Boolean success) {
+            isFirstLoad = false;
             if (dialog != null) {
                 dialog.dismiss();
 //                dialog = null;//第一次弹出dialog后，后续加载不在弹出

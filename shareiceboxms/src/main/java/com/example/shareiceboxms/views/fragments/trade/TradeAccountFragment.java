@@ -71,6 +71,7 @@ public class TradeAccountFragment extends BaseFragment implements LoadMoreHelper
     private int curPage, requestNum, totalNum, totalPage, curType;
     private String settlementState;
     private Dialog dialog;
+    private boolean isFirstLoad = true;
     TradeAccountFragment tradeAccountFragment;
     BaseFragment createAccountFragment;
     CreateAccountFragment.CreateAccountLisenner createAccountLisenner;
@@ -263,6 +264,12 @@ public class TradeAccountFragment extends BaseFragment implements LoadMoreHelper
 
         @Override
         protected void onPreExecute() {
+              /*
+            * 如果是第一次加载，不显示dialog
+            * */
+            if (isFirstLoad) {
+                return;
+            }
             if (dialog != null) {
                 dialog.show();
             }
@@ -306,6 +313,7 @@ public class TradeAccountFragment extends BaseFragment implements LoadMoreHelper
 
         @Override
         protected void onPostExecute(final Boolean success) {
+            isFirstLoad = false;
             if (success) {
                 if (dialog != null) {
                     dialog.dismiss();

@@ -3,11 +3,19 @@ package com.example.shareiceboxms.models.helpers;
 import android.app.Dialog;
 import android.content.Context;
 import android.os.AsyncTask;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
+import android.view.Gravity;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ScrollView;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.shareiceboxms.R;
 import com.example.shareiceboxms.models.adapters.MachineStockProductAdapter;
 import com.example.shareiceboxms.models.beans.ItemMachine;
 import com.example.shareiceboxms.models.beans.product.ItemStockProduct;
@@ -38,6 +46,7 @@ public class MachineItemAddViewHelper {
     private Context context;
     private ListView listView;
     private ScrollView scrollView;
+    private LinearLayout linearLayout;
 
     public MachineItemAddViewHelper(List<ItemStockProduct> itemProducts, MachineStockProductAdapter adapter, ItemMachine itemMachine) {
         this.itemProducts = itemProducts;
@@ -102,6 +111,10 @@ public class MachineItemAddViewHelper {
     public void setView(ListView listView, ScrollView scrollView) {
         this.listView = listView;
         this.scrollView = scrollView;
+    }
+
+    public void setLinearLayout(LinearLayout layout) {
+        this.linearLayout = layout;
     }
 
     /**
@@ -170,8 +183,25 @@ public class MachineItemAddViewHelper {
             if (success) {
                 dialog.dismiss();
                 itemProducts.addAll(products);
-                adapter.notifyDataSetChanged();
-                ListViewForScrollView.setListViewHeightBasedOnChildren(listView, scrollView);
+                //   adapter.notifyDataSetChanged();
+                // ListViewForScrollView.setListViewHeightBasedOnChildren(listView, scrollView);
+                for (int i = 0; i < itemProducts.size(); i++) {
+
+                    View view = LayoutInflater.from(context).inflate(R.layout.machine_detail_prod_list_item, linearLayout, false);
+                    TextView productName = (TextView) view.findViewById(R.id.productName);
+                    TextView productPrice = (TextView) view.findViewById(R.id.productPrice);
+                    TextView productSpecPrice = (TextView) view.findViewById(R.id.productSpecPrice);
+                    TextView timeLimit = (TextView) view.findViewById(R.id.timeLimit);
+                    productName.setText(itemProducts.get(i).goodsName);
+                    productPrice.setText(itemProducts.get(i).price + "");
+                    productSpecPrice.setText(itemProducts.get(i).activityPrice + "");
+                    if (itemProducts.get(i).residueStorageTime != null) {
+                        String[] secondToDate = SecondToDate.formatLongToTimeStr(Long.valueOf(itemProducts.get(i).residueStorageTime));
+                        timeLimit.setText(secondToDate[0] + "天" + secondToDate[1] + "时" + secondToDate[2] + "分" + secondToDate[3] + "秒");
+                    }
+                    linearLayout.addView(view);
+                }
+
             } else {
                 Log.e("request error :", response + "");
                 if (context != null)

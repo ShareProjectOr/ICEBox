@@ -12,6 +12,7 @@ import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.NonNull;
@@ -43,6 +44,7 @@ import com.example.shareiceboxms.models.contants.Sql;
 import com.example.shareiceboxms.models.factories.FragmentFactory;
 import com.example.shareiceboxms.models.helpers.MyDialog;
 import com.example.shareiceboxms.models.helpers.SecondToDate;
+import com.example.shareiceboxms.models.helpers.WindowManagerHelper;
 import com.example.shareiceboxms.models.http.JsonUtil;
 import com.example.shareiceboxms.models.http.OkHttpUtil;
 import com.example.shareiceboxms.models.http.mqtt.MqttService;
@@ -112,7 +114,6 @@ public class HomeActivity extends BaseActivity
         initData();
         initListener();
         initHandler();
-
     }
 
     @Override
@@ -135,6 +136,14 @@ public class HomeActivity extends BaseActivity
                     Log.e("time", "savemsgTime:" + savemsgTime + "----recevermsgTime:" + recevermsgTime + "----" + (recevermsgTime <= savemsgTime));
                     if (recevermsgTime <= savemsgTime) {
                         //如果消息标记和本地储存的消息标记一致，则任务是已经处理了的消息，不再处理
+
+
+                        /*
+                        * 开门页面时，让app后台运行，门关闭后，点开app，开锁中页面一直显示
+                        * */
+                        if (LastDoorState != 0) {
+                            onBackPressed();
+                        }
                         return;
                     }
 
@@ -357,6 +366,26 @@ public class HomeActivity extends BaseActivity
         return true;
     }
 
+    /*
+    * 需要注意的是，只有在Android 4.4及以上系统才支持沉浸式模式
+    *
+    * 最标准的沉浸式模式
+    * */
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        super.onWindowFocusChanged(hasFocus);
+//        if (hasFocus && Build.VERSION.SDK_INT >= 19) {
+//            View decorView = getWindow().getDecorView();
+//            decorView.setSystemUiVisibility(
+//                    View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+//                            | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+//                            | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+//                            | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+//                            | View.SYSTEM_UI_FLAG_FULLSCREEN
+//                            | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
+//        }
+    }
+
     public void getCurFragment() {
         switch (currentHomePageNum) {
             case 0:
@@ -392,7 +421,7 @@ public class HomeActivity extends BaseActivity
         FragmentManager fm = getSupportFragmentManager();
         FragmentTransaction ft = fm.beginTransaction();
         ft.replace(R.id.home_tab_frame, curFragment);
-        ft.commit();
+        ft.commitAllowingStateLoss();
         BaseFragment.curFragment = curFragment;
     }
 

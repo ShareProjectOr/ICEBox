@@ -114,12 +114,12 @@ public class LoginFragment extends BaseFragment implements LoginAnimPresentor.Lo
         switch (v.getId()) {
             case R.id.login:
                 if (accountEdit.getText().toString().isEmpty()) {
-                    accountEdit.setError("用户名不能为空");
+                    accountEdit.setError("用户名不能为空",null);
                     accountEdit.requestFocus();
                     return;
                 }
                 if (passEdit.getText().toString().isEmpty()) {
-                    passEdit.setError("密码不能为空");
+                    passEdit.setError("密码不能为空",null);
                     passEdit.requestFocus();
                     return;
                 }
@@ -220,7 +220,7 @@ public class LoginFragment extends BaseFragment implements LoginAnimPresentor.Lo
                 LoginAnimPresentor.loginAnimReverse(editLayout, barLayout);
                 loginBnt.setVisibility(View.VISIBLE);
                 passLayout.setVisibility(View.VISIBLE);
-                passEdit.setError(err);
+                passEdit.setError(err,null);
                 passEdit.requestFocus();
             }
         }

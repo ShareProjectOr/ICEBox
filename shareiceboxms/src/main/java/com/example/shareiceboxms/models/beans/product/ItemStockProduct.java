@@ -27,7 +27,7 @@ public class ItemStockProduct {
     public String inputTime;
     public String bindingTime;
     public String exhibitTime;
-    public Integer residueStorageTime;
+    public Integer residueStorageTime = 0;
     /*
     * 保存机器实例，可以获得agent,manager,company
     * */

@@ -1,6 +1,7 @@
 package com.example.shareiceboxms.models.helpers;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -114,7 +115,7 @@ public class MachineItemAddView {
 
     public void addStockProductView(LinearLayout parentView, ItemMachine itemMachine, ScrollView scrollView) {
         if (stockProductView == null || teleControlHolder == null) {
-            stockProductView = LayoutInflater.from(context).inflate(R.layout.machine_detail_prod_list, null, false);
+            stockProductView = LayoutInflater.from(context).inflate(R.layout.machine_detail_prod_list, parentView,false);
             stockProductsHolder = new StockProductsHolder(stockProductView, itemMachine, scrollView);
             machineItemAddViewHelper.getDatas(RequestParamsContants.getInstance().getMachineStockProductParams());
         }
@@ -353,6 +354,7 @@ public class MachineItemAddView {
     class StockProductsHolder {
         public ScrollView scrollView;
         public ListView stockProductList;
+        public LinearLayout addViewLayout;
         public MachineStockProductAdapter adapter;
         public List<ItemStockProduct> itemProducts;
         public boolean isLoading = false;
@@ -360,17 +362,18 @@ public class MachineItemAddView {
         public StockProductsHolder(View itemView, final ItemMachine itemMachine, final ScrollView scrollView) {
             itemProducts = new ArrayList<ItemStockProduct>();
             this.scrollView = scrollView;
-            stockProductList = (ListView) itemView.findViewById(R.id.productList);
+//            stockProductList = (ListViewForScrollView) itemView.findViewById(R.id.productList);
+            addViewLayout = (LinearLayout) itemView.findViewById(R.id.addViewLayout);
             adapter = new MachineStockProductAdapter(context, this.itemProducts);
             machineItemAddViewHelper = new MachineItemAddViewHelper(this.itemProducts, adapter, itemMachine);
-            machineItemAddViewHelper.setView(stockProductList, scrollView);
+//            machineItemAddViewHelper.setView(stockProductList, scrollView);
+            machineItemAddViewHelper.setLinearLayout(addViewLayout);
             machineItemAddViewHelper.setContext(context);
-            stockProductList.setAdapter(adapter);
+//            stockProductList.setAdapter(adapter);
             scrollView.setOnTouchListener(new View.OnTouchListener() {
                 @Override
                 public boolean onTouch(View v, MotionEvent event) {
-                    if (scrollView.getChildAt(0).getHeight() == scrollView.getHeight() +
-                            scrollView.getScrollY() - scrollView.getPaddingTop() - scrollView.getPaddingBottom()) {
+                    if (scrollView.getChildAt(0).getHeight() == scrollView.getHeight() + scrollView.getScrollY() - scrollView.getPaddingTop() - scrollView.getPaddingBottom()) {//
                         if (!isLoading) {
                             isLoading = true;
                         } else {
@@ -380,8 +383,6 @@ public class MachineItemAddView {
                             Map<String, Object> params = RequestParamsContants.getInstance().getMachineStockProductParams();
                             params.put("p", machineItemAddViewHelper.getCurPage() + 1);
                             machineItemAddViewHelper.getDatas(params);
-                            adapter.notifyDataSetChanged();
-                            ListViewForScrollView.setListViewHeightBasedOnChildren(stockProductList, scrollView);
                         } else {
                             Toast.makeText(context, "偷偷告诉你,数据已经全部加载...", Toast.LENGTH_SHORT).show();
                         }
