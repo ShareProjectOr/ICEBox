@@ -48,6 +48,34 @@ public class SecondToDate {
     }
 
     /*
+    * 将时间差转换为天数，为了设置跨度为1年
+    * */
+    public static boolean formatDay(Long seconds) {
+        int daySecond = 24 * 60 * 60;
+        int day = seconds.intValue() / daySecond;
+        if (day <= 365) {
+            return true;
+        }
+        return false;
+    }
+
+    /*
+    * 将日期补0
+    * */
+    public static String autoAddZero(int year, int month, int day) {
+        String startMonth = String.valueOf(month + 1);
+        String startDay = String.valueOf(day);
+        if (startMonth.length() < 2) {
+            startMonth = "0" + startMonth;
+        }
+        if (startDay.length() < 2) {
+            startDay = "0" + startDay;
+        }
+        String time = year + "-" + startMonth + "-" + startDay;
+        return time;
+    }
+
+    /*
     * 获取日期数组参数
     * */
     public static String[] getDateParams(int code) {

@@ -23,7 +23,9 @@ import android.widget.Toast;
 import com.example.shareiceboxms.R;
 
 import java.lang.reflect.Field;
+import java.text.ParseException;
 import java.util.Calendar;
+import java.util.Date;
 
 /**
  * A simple dialog containing an {@link DatePicker}.
@@ -53,7 +55,7 @@ public class DoubleDatePickerDialog extends AlertDialog implements OnClickListen
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.starttimeTitle:
-                Log.d("witch","宽度"+mDatePicker_end.getWidth());
+                Log.d("witch", "宽度" + mDatePicker_end.getWidth());
                 mScroller.smoothScrollTo(mDatePicker_end.getWidth(), 0);
                 break;
             case R.id.endtimeTitle:
@@ -163,21 +165,39 @@ public class DoubleDatePickerDialog extends AlertDialog implements OnClickListen
         // 如果是“取 消”按钮，则返回，如果是“确 定”按钮，则往下执行
         if (which == BUTTON_POSITIVE) {
             Calendar c = Calendar.getInstance();
-            if (mDatePicker_start.getYear() > c.get(Calendar.YEAR) || mDatePicker_start.getYear() < c.get(Calendar.YEAR)) {
-                Toast.makeText(getContext(), "只能查看今年数据", Toast.LENGTH_SHORT).show();
-                return;
+//            if (mDatePicker_start.getYear() > c.get(Calendar.YEAR) || mDatePicker_start.getYear() < c.get(Calendar.YEAR)) {
+//                Toast.makeText(getContext(), "只能查看今年数据", Toast.LENGTH_SHORT).show();
+//                return;
+//            }
+
+            try {
+                Date startDate = SecondToDate.getDateOfString(SecondToDate.autoAddZero(mDatePicker_start.getYear(), mDatePicker_start.getMonth(), mDatePicker_start.getDayOfMonth()) + " 00:00:00");
+                Date endDate = SecondToDate.getDateOfString(SecondToDate.autoAddZero(mDatePicker_end.getYear(), mDatePicker_end.getMonth(), mDatePicker_end.getDayOfMonth()) + " 23:59:59");
+                Log.d("------startDate---------", startDate.toString());
+              /*
+              * 跨度小于等于1年
+              * */
+                if (!SecondToDate.formatDay(SecondToDate.getSubOfDates(startDate, endDate) / 1000)) {
+                    Toast.makeText(getContext(), "只能查看一年内的数据", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+            } catch (ParseException e) {
+                e.printStackTrace();
             }
+/*
             if (mDatePicker_end.getYear() > c.get(Calendar.YEAR) || mDatePicker_end.getYear() < c.get(Calendar.YEAR)) {
                 Toast.makeText(getContext(), "只能查看今年数据", Toast.LENGTH_SHORT).show();
                 return;
-            }
-            if (mDatePicker_start.getMonth() > mDatePicker_end.getMonth()) {
-                Toast.makeText(getContext(), "开始日期不能大于结束日期", Toast.LENGTH_SHORT).show();
-                return;
-            } else {
-                if (mDatePicker_end.getMonth() == mDatePicker_start.getMonth() && mDatePicker_start.getDayOfMonth() > mDatePicker_end.getDayOfMonth()) {
+            }*/
+            if (mDatePicker_start.getYear() == mDatePicker_end.getYear()) {
+                if (mDatePicker_start.getYear() == mDatePicker_end.getYear() && mDatePicker_start.getMonth() > mDatePicker_end.getMonth()) {
                     Toast.makeText(getContext(), "开始日期不能大于结束日期", Toast.LENGTH_SHORT).show();
                     return;
+                } else {
+                    if (mDatePicker_end.getMonth() == mDatePicker_start.getMonth() && mDatePicker_start.getDayOfMonth() > mDatePicker_end.getDayOfMonth()) {
+                        Toast.makeText(getContext(), "开始日期不能大于结束日期", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
                 }
             }
             tryNotifyDateSet();

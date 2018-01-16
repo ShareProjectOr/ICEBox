@@ -206,6 +206,11 @@ public class TradeRecordDetailFragment extends BaseFragment implements RecordDet
         }
         tradeTime.setText(itemTradeRecord.closingTime);
         totalMoney.setText(itemTradeRecord.tradeMoney);
+        if (itemTradeRecord.payTime != null && !TextUtils.equals(itemTradeRecord.payTime, "")) {
+            itemTradeRecord.payState = 1;
+        } else {
+            itemTradeRecord.payState = 0;
+        }
         payState.setText(itemTradeRecord.payState == 0 ? Constants.TradeStateTitle[2] : Constants.TradeStateTitle[1]);
         payState.setTextColor(ContextCompat.getColor(getContext(), Constants.TreadIsPayCOLOR[itemTradeRecord.payState]));
         machineNameAddr.setText(itemTradeRecord.machine.machineAddress);

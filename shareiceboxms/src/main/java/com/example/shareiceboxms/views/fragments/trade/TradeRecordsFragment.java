@@ -160,7 +160,6 @@ public class TradeRecordsFragment extends BaseFragment implements LoadMoreHelper
         params.put("payState", payState);
         params.put("createTime", RequestParamsContants.getInstance().getSelectTime(time));
         params.put("tradeCode", tradeNo.getText().toString());
-        time[0] = "2017-12-15 00:00:00";
         return params;
     }
 
@@ -283,7 +282,6 @@ public class TradeRecordsFragment extends BaseFragment implements LoadMoreHelper
         timeSelector.setText(SecondToDate.getDateUiShow(time));
         clearDatas();
         Map<String, Object> params = getParams();
-        time[0] = "2017-12-15 00:00:00";
         params.put("createTime", RequestParamsContants.getInstance().getSelectTime(time));
         getDatas(params);
 

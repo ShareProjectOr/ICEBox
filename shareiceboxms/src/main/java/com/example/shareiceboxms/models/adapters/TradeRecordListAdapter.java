@@ -73,6 +73,14 @@ public class TradeRecordListAdapter extends RecyclerView.Adapter<RecyclerView.Vi
             } catch (ParseException e) {
                 e.printStackTrace();
             }
+             /*
+            * 后台没有这个状态了，自己设置
+            * */
+            if (itemTradeRecord.payTime != null && !TextUtils.equals(itemTradeRecord.payTime, "")) {
+                itemTradeRecord.payState = 1;
+            } else {
+                itemTradeRecord.payState = 0;
+            }
             ((ViewHolder) holder).payState.setText(itemTradeRecord.payState == 0 ? Constants.TradeStateTitle[2] : Constants.TradeStateTitle[1]);
             ((ViewHolder) holder).payState.setTextColor(ContextCompat.getColor(context, Constants.TreadIsPayCOLOR[itemTradeRecord.payState]));
             if (itemTradeRecord.machine != null)
