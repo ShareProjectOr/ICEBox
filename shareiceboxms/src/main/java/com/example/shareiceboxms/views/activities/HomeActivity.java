@@ -72,6 +72,10 @@ import java.util.Map;
 
 public class HomeActivity extends BaseActivity
         implements NavigationView.OnNavigationItemSelectedListener, TabLayout.OnTabSelectedListener {
+    public static int DEFAULT = 0;
+    public static int OPENING_DOOR = 1;
+    public static int OPEN_LOCK_SUCCESS = 2;
+    public static int OPEN_LOCK_FAILED = 3;
     DrawerLayout drawer;
     NavigationView navigationView;
     private TabLayout tabLayout;
@@ -89,7 +93,7 @@ public class HomeActivity extends BaseActivity
     private NotificationCompat.Builder mBuilder;
     private static HomeActivity mInstance;
     private static Handler handler;
-    private int LastDoorState;//0初始状态,1开门状态,2上货完成关门,3开门失败状态
+    private int LastDoorState = DEFAULT;//0初始状态,1开门状态,2上货完成关门,3开门失败状态
     private boolean isRequestOpen = false;
 
     public static HomeActivity getInstance() {
@@ -141,9 +145,9 @@ public class HomeActivity extends BaseActivity
                         /*
                         * 开门页面时，让app后台运行，门关闭后，点开app，开锁中页面一直显示
                         * */
-                        if (LastDoorState != 0) {
-                            onBackPressed();
-                        }
+//                        if (LastDoorState != DEFAULT) {
+//                            onBackPressed();
+//                        }
                         return;
                     }
 
@@ -158,42 +162,63 @@ public class HomeActivity extends BaseActivity
                             }
                             Log.e("push", object.toString() + "time:" + SecondToDate.getDateToString(Long.parseLong(object.getString("createTime"))));
                             if (object.getInt("doorState") == 1) {//已开门
-                                LastDoorState = 1;
                                 Log.e("doorState", "1");
-                                if (curFragment instanceof OpeningDoorFragment) {
+                                if (curFragment instanceof OpeningDoorFragment || LastDoorState == OPENING_DOOR) {
                                     curFragment = new OpenDoorSuccessFragment();
                                     showHomepage = false;
                                     switchFragment();
+                                    LastDoorState = OPEN_LOCK_SUCCESS;
                                 }
                             } else if (object.getInt("doorState") == 0) {//关门,上货成功
 
-                                if (curFragment instanceof OpenDoorSuccessFragment || LastDoorState == 1) {
-                                    //上次的门状态必须为开门，此次收到关门才认为是关锁成功，
+                                if (curFragment instanceof OpenDoorSuccessFragment || LastDoorState == OPEN_LOCK_SUCCESS) {
+                                 /*   //上次的门状态必须为开门，此次收到关门才认为是关锁成功，
                                     // 但并不一定会收到上下货数据，最.
                                     getCurFragment();
                                     showHomepage = true;//
                                     switchFragment();
-                                    LastDoorState = 2;//上货成功后将门状态置为关门状态
-                                    // isRequestOpen = false;
-                                    Toast.makeText(getApplication(), "关门成功...", Toast.LENGTH_LONG).show();
-
-                                } else if (LastDoorState == 2) {//上一次为关门状态后,又收到关门推送,就判断有没有上下货记录有则跳转到上下货页面
+                                    LastDoorState = CLOSE_DOOR;//上货成功后将门状态置为关门状态
+                                    // isRequestOpen = false;*/
+                                    LastDoorState = DEFAULT;
                                     if (object.has("goodsList")) {
                                         FragmentFactory.getInstance().getSavedBundle().putString("callbackMsg", object.toString());
                                         curFragment = new CloseDoorFragment();
                                         showHomepage = false;
                                         isRequestOpen = false;
                                         switchFragment();
-                                        LastDoorState = 0;
+                                        Toast.makeText(getApplication(), "关门成功，", Toast.LENGTH_LONG).show();
+                                        return;
+                                    } else {
+                                        //上次的门状态必须为开门，此次收到关门才认为是关锁成功，
+                                        // 但并不一定会收到上下货数据，最.
+                                        onBackPressed();
+                                        Toast.makeText(getApplication(), "关门成功，没有上下货", Toast.LENGTH_LONG).show();
+                                        // isRequestOpen = false;
+                                        return;
                                     }
-                                } else if (curFragment instanceof OpeningDoorFragment) {
+
+
+//                                    Toast.makeText(getApplication(), "关门成功...", Toast.LENGTH_LONG).show();
+//
+                                }
+                         /*       else if (LastDoorState == CLOSE_DOOR) {//上一次为关门状态后,又收到关门推送,就判断有没有上下货记录有则跳转到上下货页面
+                                    if (object.has("goodsList")) {
+                                        FragmentFactory.getInstance().getSavedBundle().putString("callbackMsg", object.toString());
+                                        curFragment = new CloseDoorFragment();
+                                        showHomepage = false;
+                                        isRequestOpen = false;
+                                        switchFragment();
+                                        LastDoorState = DEFAULT;
+                                    }
+                                }*/
+                                else if (curFragment instanceof OpeningDoorFragment) {
 
                                     //收到的门状态为关门,且上一状态为初始状态则认为是失败
                                     curFragment = new OpenDoorFailFragment();
                                     showHomepage = false;
                                     isRequestOpen = false;
                                     switchFragment();
-                                    LastDoorState = 3;
+                                    LastDoorState = OPEN_LOCK_FAILED;
 
                                 }
                             }
@@ -282,13 +307,23 @@ public class HomeActivity extends BaseActivity
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
+            /*
+            * 强制开门中时不能按返回按钮
+            * */
             if (curFragment instanceof OpeningDoorFragment) {
                 return;
             }
             if (showHomepage) {
                 mOnBackPressListener.OnBackDown();
             } else {
-                LastDoorState = 0;
+                /*
+                * 当用户返回开锁成功返回首页后，不改变门状态，让它同样能跳转到上下货页面
+                * */
+                if (curFragment instanceof OpenDoorSuccessFragment || LastDoorState == OPEN_LOCK_SUCCESS) {
+
+                } else {
+                    LastDoorState = DEFAULT;
+                }
                 showHomepage = true;
                 getCurFragment();
                 switchFragment();
@@ -543,6 +578,7 @@ public class HomeActivity extends BaseActivity
 //                    if (!(curFragment instanceof OpeningDoorFragment)) {
                     FragmentFactory.getInstance().getSavedBundle().putString("QRCode", QRCode);
                     curFragment = new OpeningDoorFragment();
+                    LastDoorState = OPENING_DOOR;
                     showHomepage = false;
                     switchFragment();
                 }
