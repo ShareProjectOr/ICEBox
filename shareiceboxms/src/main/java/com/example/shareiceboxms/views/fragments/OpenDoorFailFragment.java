@@ -6,6 +6,7 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 
 import com.example.shareiceboxms.R;
 import com.example.shareiceboxms.models.factories.FragmentFactory;
@@ -19,6 +20,7 @@ public class OpenDoorFailFragment extends BaseFragment {
 
     private View containerView;
     private HomeActivity mHomeAcyivity;
+    private Button backHome;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -33,9 +35,16 @@ public class OpenDoorFailFragment extends BaseFragment {
 
     private void bindViews() {
         mHomeAcyivity = (HomeActivity) getActivity();
+        backHome = (Button) containerView.findViewById(R.id.backhome);
+        backHome.setOnClickListener(this);
     }
 
-    public void backhome(View v) {
-        mHomeAcyivity.onBackPressed();
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.backhome:
+                mHomeAcyivity.onBackPressed();
+                break;
+        }
     }
 }
