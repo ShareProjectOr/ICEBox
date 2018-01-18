@@ -18,7 +18,7 @@ public interface Constants {
     String[] TabTitles = {"交易", "机器", "异常", "商品"};
     int[] TabIcons = {R.drawable.selector_trade, R.drawable.selector_machine,
             R.drawable.selector_exception, R.drawable.selector_product};
-    String[] TradeTabTitles = {"交易统计", "交易记录", "工单结算"};
+    String[] TradeTabTitles = {"财务明细", "交易记录", "工单结算"};
     /*
     * 交易统计
     * */
@@ -53,7 +53,7 @@ public interface Constants {
    * 机器管理
    * */
     String[] MachineItemOperator = {"状态监控", "远程控制", "库存商品"};
-    String[] MachineFaultState = {"正常", "异常"};
+    String[] MachineFaultState = {"机器正常", "机器异常"};
     int[] MachineStateColor = {R.color.red, R.color.sucessgreen,};
     String[] MachineRunState = {"无异常 待机中", "", "", ""};//机器运行状态
     String[] MachineDoorSate = {"关闭", "开启"};//机器门状态
@@ -63,6 +63,6 @@ public interface Constants {
     String[] MachineRefrigeratorState = {"异常", "正常"};//机器制冷状态
     String[] MachineSensorState = {"关闭", "开启"};//机器传感器
 
-    String[] MachineOnLineState = {"离线", "在线"};
+    String[] MachineOnLineState = {"网络离线", "网络在线"};
 
 }

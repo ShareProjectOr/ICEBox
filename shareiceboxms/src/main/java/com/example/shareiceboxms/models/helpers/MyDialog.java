@@ -157,6 +157,10 @@ public class MyDialog {
         });
         return dialog;
     }
+
+    /*
+    * 获取代理商数据
+    * */
     public static AlertDialog getAgentsDialog(final HomeActivity activity, final List<ItemPerson> agents, final TradeAccountFragment tradeAccountFragment, final CreateAccountFragment.CreateAccountLisenner createAccountLisenner) {
         if (agents == null || agents.size() <= 0) {
             Toast.makeText(activity, "没有代理商，无法创建工单", Toast.LENGTH_SHORT).show();

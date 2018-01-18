@@ -354,7 +354,7 @@ public class TradeRecordsFragment extends BaseFragment implements LoadMoreHelper
             isFirstLoad = false;
             if (dialog != null) {
                 dialog.dismiss();
-//                dialog = null;//第一次弹出dialog后，后续加载不在弹出
+                dialog = null;//第一次弹出dialog后，后续加载不在弹出
             }
             if (success) {
                 if (itemTradeRecords.size() > 0) {

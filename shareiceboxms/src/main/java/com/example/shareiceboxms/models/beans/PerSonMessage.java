@@ -6,6 +6,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by Administrator on 2017/12/18.
@@ -37,6 +39,9 @@ public class PerSonMessage {
         agent:{用户精简版},//机器管理员对象*/
     public static ItemPerson agent;
     public static ItemCompany company;
+
+
+    public static List<ItemPerson> childPerson = new ArrayList<>();
 
     public static void bindMessage(String userJson) {
         try {

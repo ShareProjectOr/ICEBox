@@ -17,11 +17,11 @@
             android:layout_width="match_parent"
             android:layout_height="40dp"
             android:layout_marginTop="10dp"
-            android:orientation="vertical">
+            android:orientation="horizontal">
 
             <RadioGroup
                 android:id="@+id/dateGroup"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:orientation="horizontal">
 
@@ -65,17 +65,41 @@
                     android:text="本年"
                     android:textColor="@drawable/selector_trade_text_color" />
             </RadioGroup>
+
+            <Button
+                android:id="@+id/choosePerson"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:background="@drawable/selector_trade_date"
+                android:text="筛选" />
         </LinearLayout>
 
         <android.support.v4.widget.SwipeRefreshLayout
             android:id="@+id/refresh"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/tradeTotalList"
+            android:layout_height="wrap_content">
+            <!--官方配套牵引scrollView-->
+            <android.support.v4.widget.NestedScrollView
                 android:layout_width="match_parent"
-                android:layout_height="match_parent" />
+                android:layout_height="wrap_content">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
+
+                    <include layout="@layout/trade_total_list_1" />
+
+                    <include layout="@layout/trade_total_list_2" />
+
+                    <include layout="@layout/trade_total_list_3" />
+
+                    <include layout="@layout/trade_total_list_4" />
+
+
+                </LinearLayout>
+            </android.support.v4.widget.NestedScrollView>
+
         </android.support.v4.widget.SwipeRefreshLayout>
 
     </LinearLayout>

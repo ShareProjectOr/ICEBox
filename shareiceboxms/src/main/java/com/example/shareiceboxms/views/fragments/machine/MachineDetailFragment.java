@@ -165,17 +165,8 @@ public class MachineDetailFragment extends BaseFragment implements SwipeRefreshL
         isException.setTextColor(ContextCompat.getColor(homeActivity, itemMachine.faultState == 0 ? Constants.MachineStateColor[1] : Constants.MachineStateColor[0]));
         managerName.setText(itemMachine.itemManager.name);
         machienCode.setText(itemMachine.machineCode);
-        switch (curTabPosition) {
-            case 0:
-                machineItemAddView.updateStateControlUi(itemMachine);
-                break;
-            case 1:
-                machineItemAddView.updateTeleControlUi(itemMachine);
-                break;
-            case 2:
-                break;
-        }
-
+        FragmentFactory.getInstance().getSavedBundle().putBoolean("isFirstUpdate", true);
+        machineItemAddView.updateStateControlUi(itemMachine);
     }
 
     /*
@@ -207,7 +198,7 @@ public class MachineDetailFragment extends BaseFragment implements SwipeRefreshL
 
     @Override
     public void onRefresh() {
-      
+
         if (curTabPosition == 2) {
             machineItemAddView.refreshStockProduct(true);
         }

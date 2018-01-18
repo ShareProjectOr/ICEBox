@@ -145,8 +145,8 @@ public class ItemTradeAccount implements Serializable {
                 if (item.has("actualPayment") && !item.get("actualPayment").equals(null))
                     itemTradeAccount.actualPayment = item.getString("actualPayment");
 
-                if (item.has("actualPayment") && !item.get("actualPayment").equals(null))
-                    itemTradeAccount.divideType = item.getInt("divideType");
+                if (item.has("createType") && !item.get("createType").equals(null))
+                    itemTradeAccount.divideType = item.getInt("createType");
 
                 if (item.has("creator") && !item.get("creator").equals(null))
                     itemTradeAccount.creator = ItemPerson.bindPerson(item.getJSONObject("creator"));

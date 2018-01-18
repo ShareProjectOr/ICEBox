@@ -7,40 +7,42 @@ import android.support.annotation.IdRes;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.shareiceboxms.R;
-import com.example.shareiceboxms.models.adapters.TradeTotalListAdapter;
+import com.example.shareiceboxms.models.beans.ItemPerson;
+import com.example.shareiceboxms.models.beans.PerSonMessage;
 import com.example.shareiceboxms.models.beans.trade.ItemTradeTotal;
+import com.example.shareiceboxms.models.contants.Constants;
 import com.example.shareiceboxms.models.contants.HttpRequstUrl;
 import com.example.shareiceboxms.models.contants.JsonDataParse;
 import com.example.shareiceboxms.models.contants.RequestParamsContants;
 import com.example.shareiceboxms.models.contants.RequstTips;
 import com.example.shareiceboxms.models.factories.FragmentFactory;
 import com.example.shareiceboxms.models.helpers.DoubleDatePickerDialog;
+import com.example.shareiceboxms.models.helpers.GetAgentsToCreateAccountHelper;
 import com.example.shareiceboxms.models.helpers.MyDialog;
 import com.example.shareiceboxms.models.helpers.SecondToDate;
 import com.example.shareiceboxms.models.http.JsonUtil;
 import com.example.shareiceboxms.models.http.OkHttpUtil;
+import com.example.shareiceboxms.models.widget.ChoosePopupWindow;
+import com.example.shareiceboxms.views.activities.HomeActivity;
 import com.example.shareiceboxms.views.fragments.BaseFragment;
-import com.example.shareiceboxms.views.fragments.machine.MachineFragment;
-import com.squareup.okhttp.Call;
 
 import org.json.JSONException;
 
 import java.io.IOException;
 import java.util.Calendar;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -51,11 +53,20 @@ import java.util.Map;
 public class TradeTotalFragment extends BaseFragment {
     private static String TAG = "TradeTotalFragment";
     private View containerView;
+    private HomeActivity activity;
     private TextView timeSelector;
+    private TextView totalMoneyNum, hasPayNum, notPayNum;
+
+    private TextView totalMoneyNum_2, hasPayNum_2, notPayNum_2;
+
+    private TextView totalMoneyNum_3, hasPayNum_3, notPayNum_3;
+
+    private TextView totalMoneyNum_4, hasPayNum_4, notPayNum_4;
+
+
+    private Button choosePerson;
     private RadioGroup dateGroup;
-    private RecyclerView tradeTotalList;
     private RelativeLayout selectTime;
-    private TradeTotalListAdapter adapter;
     private SwipeRefreshLayout refreshLayout;
     private ItemTradeTotal itemTradeTotal;
     private Dialog dialog;
@@ -76,10 +87,27 @@ public class TradeTotalFragment extends BaseFragment {
 
     private void initViews() {
         selectTime = (RelativeLayout) containerView.findViewById(R.id.selectTime);
+        choosePerson = (Button) containerView.findViewById(R.id.choosePerson);
         timeSelector = (TextView) containerView.findViewById(R.id.timeSelector);
-        tradeTotalList = (RecyclerView) containerView.findViewById(R.id.tradeTotalList);
         refreshLayout = (SwipeRefreshLayout) containerView.findViewById(R.id.refresh);
         dateGroup = (RadioGroup) containerView.findViewById(R.id.dateGroup);
+
+        totalMoneyNum = (TextView) containerView.findViewById(R.id.totalMoneyNum);
+        hasPayNum = (TextView) containerView.findViewById(R.id.hasPayNum);
+        notPayNum = (TextView) containerView.findViewById(R.id.notPayNum);
+
+        totalMoneyNum_2 = (TextView) containerView.findViewById(R.id.totalMoneyNum_2);
+        hasPayNum_2 = (TextView) containerView.findViewById(R.id.hasPayNum_2);
+        notPayNum_2 = (TextView) containerView.findViewById(R.id.notPayNum_2);
+
+        totalMoneyNum_3 = (TextView) containerView.findViewById(R.id.totalMoneyNum_3);
+        hasPayNum_3 = (TextView) containerView.findViewById(R.id.hasPayNum_3);
+        notPayNum_3 = (TextView) containerView.findViewById(R.id.notPayNum_3);
+
+        totalMoneyNum_4 = (TextView) containerView.findViewById(R.id.totalMoneyNum_4);
+        hasPayNum_4 = (TextView) containerView.findViewById(R.id.hasPayNum_4);
+        notPayNum_4 = (TextView) containerView.findViewById(R.id.notPayNum_4);
+
 
         selectTime.setOnClickListener(this);
 
@@ -106,18 +134,15 @@ public class TradeTotalFragment extends BaseFragment {
             }
         });
         refreshLayout.setOnRefreshListener(this);
+        choosePerson.setOnClickListener(this);
         refreshLayout.setColorSchemeColors(ContextCompat.getColor(getContext(), R.color.blue));
     }
 
     private void initDatas() {
+        activity = (HomeActivity) getActivity();
         time = RequestParamsContants.getInstance().getTimeSelectorParams();
         dialog = MyDialog.loadDialog(getContext());
-        tradeTotalList.setHasFixedSize(true);
-        LinearLayoutManager mLayoutManager = new LinearLayoutManager(getContext());
-        tradeTotalList.setLayoutManager(mLayoutManager);
         itemTradeTotal = new ItemTradeTotal();
-        adapter = new TradeTotalListAdapter(getContext(), itemTradeTotal);
-        tradeTotalList.setAdapter(adapter);
         datePickerDialog = new DoubleDatePickerDialog(getContext(), 0, this
                 , Calendar.getInstance().get(Calendar.YEAR), Calendar.getInstance().get(Calendar.MONTH)
                 , Calendar.getInstance().get(Calendar.DATE), true);
@@ -135,6 +160,7 @@ public class TradeTotalFragment extends BaseFragment {
         task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
     }
 
+
     @Override
     public void onRefresh() {
         time = SecondToDate.getDateParams(SecondToDate.TODAY_CODE);
@@ -148,6 +174,28 @@ public class TradeTotalFragment extends BaseFragment {
         switch (v.getId()) {
             case R.id.selectTime:
                 datePickerDialog.show();
+                break;
+            case R.id.choosePerson:
+                if (PerSonMessage.childPerson.size() <= 0) {
+                    GetAgentsToCreateAccountHelper.getInstance().setContext(activity);
+                    GetAgentsToCreateAccountHelper.getInstance().setGetAgentsLisenner(new GetAgentsToCreateAccountHelper.GetAgentsLisenner() {
+                        @Override
+                        public void getAgents(List<ItemPerson> agents) {
+                            if (PerSonMessage.childPerson != null) {
+                                PerSonMessage.childPerson.clear();
+                                PerSonMessage.childPerson.addAll(agents);
+                                Log.d("------agents---------", agents.size() + "");
+                                ChoosePopupWindow.setAdapter(PerSonMessage.childPerson, activity);
+                                ChoosePopupWindow.getAdapter().notifyDataSetChanged();
+                                ChoosePopupWindow.showPopFormBottom(containerView, activity);
+                            }
+                        }
+                    });
+                    GetAgentsToCreateAccountHelper.getInstance().getDatas();
+                } else {
+                    ChoosePopupWindow.showPopFormBottom(containerView, activity);
+                }
+
                 break;
         }
     }
@@ -166,6 +214,24 @@ public class TradeTotalFragment extends BaseFragment {
         timeSelector.setText(SecondToDate.getDateUiShow(time));
         getDatas();
         return null;
+    }
+
+    private void updateUi() {
+
+        totalMoneyNum.setText(itemTradeTotal.totalMoney);
+        hasPayNum.setText(itemTradeTotal.totalMoney);
+        notPayNum.setText(itemTradeTotal.totalMoney);
+        if (PerSonMessage.userType >= Constants.MACHINE_MANAGER) {
+            totalMoneyNum_2.setText(itemTradeTotal.totalMoney);
+            hasPayNum_2.setText(itemTradeTotal.totalMoney);
+            notPayNum_2.setText(itemTradeTotal.totalMoney);
+        }
+        totalMoneyNum_3.setText(itemTradeTotal.totalMoney);
+        hasPayNum_3.setText(itemTradeTotal.totalMoney);
+        notPayNum_3.setText(itemTradeTotal.totalMoney);
+        totalMoneyNum_4.setText(itemTradeTotal.totalMoney);
+        hasPayNum_4.setText(itemTradeTotal.totalMoney);
+        notPayNum_4.setText(itemTradeTotal.totalMoney);
     }
 
     //获取交易统计异步任务
@@ -215,7 +281,6 @@ public class TradeTotalFragment extends BaseFragment {
                 if (dialog != null && dialog.isShowing()) {
                     dialog.dismiss();
                 }
-
                 err = RequstTips.JSONException_Tip;
             }
             return false;
@@ -229,7 +294,7 @@ public class TradeTotalFragment extends BaseFragment {
             }
             if (success) {
                 itemTradeTotal = tradeTotal;
-                adapter.notifyDataSetChanged();
+                updateUi();
             } else {
             }
         }

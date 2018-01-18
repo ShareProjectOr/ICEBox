@@ -221,7 +221,7 @@ public class RequestParamsContants {
         params.put("settlementID", "");
         params.put("machineID", "");
         params.put("consumerID", "");
-        params.put("n", 1);
+        params.put("n", 6);
         params.put("p", 1);
         return params;
     }

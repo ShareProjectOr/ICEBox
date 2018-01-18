@@ -3,6 +3,7 @@ package com.example.shareiceboxms.models.http.mqtt;
 import android.util.Log;
 
 import com.example.shareiceboxms.models.beans.PerSonMessage;
+import com.example.shareiceboxms.models.contants.HttpRequstUrl;
 import com.example.shareiceboxms.views.activities.BaseActivity;
 import com.example.shareiceboxms.views.activities.HomeActivity;
 
@@ -13,7 +14,7 @@ import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
 
 public class GetService {
     public static GetService instance;
-    public static final String HOST = "tcp://192.168.5.101:61613";//tcp://127.0.0.1:61613
+    public static final String HOST = "tcp://" + HttpRequstUrl.IP + ":61616";//tcp://127.0.0.1:61613
     private static MqttClient client;
     private MqttConnectOptions options;
     private String userName = "admin";

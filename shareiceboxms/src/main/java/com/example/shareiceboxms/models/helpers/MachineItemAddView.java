@@ -24,6 +24,7 @@ import com.example.shareiceboxms.models.beans.product.ItemStockProduct;
 import com.example.shareiceboxms.models.contants.Constants;
 import com.example.shareiceboxms.models.contants.HttpRequstUrl;
 import com.example.shareiceboxms.models.contants.RequestParamsContants;
+import com.example.shareiceboxms.models.factories.FragmentFactory;
 import com.example.shareiceboxms.models.widget.ListViewForScrollView;
 
 import java.util.ArrayList;
@@ -46,6 +47,7 @@ public class MachineItemAddView {
     private boolean isTempChanged = false;
     private String targetTemp;
     private String offsetTemp;
+    public static boolean isLockStateUpdate = true;
 
     public MachineItemAddView(Context context) {
         this.context = context;
@@ -101,7 +103,9 @@ public class MachineItemAddView {
     public void updateTeleControlUi(ItemMachine itemMachine) {
         teleControlHolder.targetTemp.setText(itemMachine.targetTemperature);
         teleControlHolder.offsetTemp.setText(itemMachine.deviationTemperature);
-        teleControlHolder.lockSwitch.setChecked(itemMachine.lightState == 0 ? false : true);
+        if (isLockStateUpdate) {
+            teleControlHolder.lockSwitch.setChecked(itemMachine.lightState == 0 ? false : true);
+        }
         if (!itemMachine.targetTemperature.equals("")) {
             float tartgetTemp = Float.parseFloat(itemMachine.targetTemperature.replace("℃", "").trim());
             teleControlHolder.tempSeekbar.setProgress((int) tartgetTemp);
@@ -115,7 +119,7 @@ public class MachineItemAddView {
 
     public void addStockProductView(LinearLayout parentView, ItemMachine itemMachine, ScrollView scrollView) {
         if (stockProductView == null || teleControlHolder == null) {
-            stockProductView = LayoutInflater.from(context).inflate(R.layout.machine_detail_prod_list, parentView,false);
+            stockProductView = LayoutInflater.from(context).inflate(R.layout.machine_detail_prod_list, parentView, false);
             stockProductsHolder = new StockProductsHolder(stockProductView, itemMachine, scrollView);
             machineItemAddViewHelper.getDatas(RequestParamsContants.getInstance().getMachineStockProductParams());
         }
@@ -301,7 +305,7 @@ public class MachineItemAddView {
                             , HttpRequstUrl.MACHINE_Check_URL, RequestParamsContants.getInstance().getMachineCheckParams()));
                     break;
             }
-            tempSeekbar.setProgress(Integer.parseInt(targetTemp.getText().toString()));
+            tempSeekbar.setProgress((int) Float.parseFloat(targetTemp.getText().toString()));
             offSetTempSeekbar.setProgress(Integer.parseInt(offsetTemp.getText().toString()));
             saveTemp(targetTemp, offsetTemp);
         }

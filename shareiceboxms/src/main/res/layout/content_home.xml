@@ -31,19 +31,4 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_above="@id/tablayout"></FrameLayout>
-
-    <android.support.design.widget.CoordinatorLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_marginLeft="20dp"
-        android:layout_marginRight="20dp"
-        android:layout_marginTop="40dp">
-
-        <TextView
-            android:id="@+id/notify"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentTop="true" />
-    </android.support.design.widget.CoordinatorLayout>
 </RelativeLayout>

@@ -139,9 +139,9 @@ public class SecondToDate {
         ca.clear(Calendar.MILLISECOND);
         ca.set(Calendar.DAY_OF_WEEK, ca.getFirstDayOfWeek());
         int year = ca.get(Calendar.YEAR);
-        int month = ca.get(Calendar.MONTH) + 1;
+        int month = ca.get(Calendar.MONTH);
         int date = ca.get(Calendar.DAY_OF_MONTH);
-        return year + "-" + month + "-" + date + " 00:00:00";
+        return autoAddZero(year, month, date) + " 00:00:00";
     }
 
     /*
@@ -155,9 +155,9 @@ public class SecondToDate {
         ca.clear(Calendar.MILLISECOND);
         ca.set(Calendar.DAY_OF_MONTH, 1);
         int year = ca.get(Calendar.YEAR);
-        int month = ca.get(Calendar.MONTH) + 1;
+        int month = ca.get(Calendar.MONTH);
         int date = ca.get(Calendar.DAY_OF_MONTH);
-        return year + "-" + month + "-" + date + " 00:00:00";
+        return autoAddZero(year, month, date) + " 00:00:00";
     }
 
     /*
@@ -171,9 +171,9 @@ public class SecondToDate {
         ca.clear(Calendar.MILLISECOND);
         ca.set(Calendar.DAY_OF_YEAR, 1);
         int year = ca.get(Calendar.YEAR);
-        int month = ca.get(Calendar.MONTH) + 1;
+        int month = ca.get(Calendar.MONTH);
         int date = ca.get(Calendar.DAY_OF_MONTH);
-        return year + "-" + month + "-" + date + " 00:00:00";
+        return autoAddZero(year, month, date) + " 00:00:00";
     }
 
     /*

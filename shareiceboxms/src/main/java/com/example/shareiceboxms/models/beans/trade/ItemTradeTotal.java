@@ -10,24 +10,24 @@ import org.json.JSONObject;
  */
 
 public class ItemTradeTotal {
-    public float totalMoney;
-    public float unreceiveMoney;
-//    public float receiveMoney;
-    public float receiveMoney;
-    public float serviceCharge;
-    public float refundMoney;
-    public float realRefundMoney;
-    public float refundServiceCharge;
-    public float alipayPoundage;
-    public float wechatPoundage;
-    public float incomeMoney;
-    public float settledMoney;
-    public float unsettleMoney;
-    public float offsetedMoney;
-    public float unoffsetMoney;
-    public float paidMoney;
-    public float unpayMoney;
-    public float serviceMoney;
+    public String totalMoney;
+    public String unreceiveMoney;
+    //    public float receiveMoney;
+    public String receiveMoney;
+    public String serviceCharge;
+    public String refundMoney;
+    public String realRefundMoney;
+    public String refundServiceCharge;
+    public String alipayPoundage;
+    public String wechatPoundage;
+    public String incomeMoney;
+    public String settledMoney;
+    public String unsettleMoney;
+    public String offsetedMoney;
+    public String unoffsetMoney;
+    public String paidMoney;
+    public String unpayMoney;
+    public String serviceMoney;
 
     //    totalMoney:1500.00,//Number 交易总金额
 //    unreceiveMoney:400.00,//Number 未收到的交易总额
@@ -50,24 +50,24 @@ public class ItemTradeTotal {
     public static ItemTradeTotal bindTradeTotal(JSONObject item) throws JSONException {
         ItemTradeTotal itemTradeTotal = new ItemTradeTotal();
         try {
-            itemTradeTotal.totalMoney = Float.parseFloat(item.getString("unreceiveMoney"));
-            itemTradeTotal.unreceiveMoney = Float.parseFloat(item.getString("unreceiveMoney"));
-            itemTradeTotal.receiveMoney = Float.parseFloat(item.getString("receiveMoney"));
-            itemTradeTotal.receiveMoney = Float.parseFloat(item.getString("receiveMoney"));
-            itemTradeTotal.serviceCharge = Float.parseFloat(item.getString("serviceCharge"));
-            itemTradeTotal.refundMoney = Float.parseFloat(item.getString("refundMoney"));
-            itemTradeTotal.realRefundMoney = Float.parseFloat(item.getString("realRefundMoney"));
-            itemTradeTotal.refundServiceCharge = Float.parseFloat(item.getString("refundServiceCharge"));
-            itemTradeTotal.alipayPoundage = Float.parseFloat(item.getString("alipayPoundage"));
-            itemTradeTotal.wechatPoundage = Float.parseFloat(item.getString("wechatPoundage"));
-            itemTradeTotal.incomeMoney = Float.parseFloat(item.getString("incomeMoney"));
-            itemTradeTotal.settledMoney = Float.parseFloat(item.getString("settledMoney"));
-            itemTradeTotal.unsettleMoney = Float.parseFloat(item.getString("unsettleMoney"));
-            itemTradeTotal.offsetedMoney = Float.parseFloat(item.getString("offsetedMoney"));
-            itemTradeTotal.unoffsetMoney = Float.parseFloat(item.getString("unoffsetMoney"));
-            itemTradeTotal.paidMoney = Float.parseFloat(item.getString("paidMoney"));
-            itemTradeTotal.unpayMoney = Float.parseFloat(item.getString("unpayMoney"));
-            itemTradeTotal.serviceMoney = Float.parseFloat(item.getString("serviceMoney"));
+            itemTradeTotal.totalMoney = item.getString("unreceiveMoney");
+            itemTradeTotal.unreceiveMoney = item.getString("unreceiveMoney");
+            itemTradeTotal.receiveMoney = item.getString("receiveMoney");
+            itemTradeTotal.receiveMoney = item.getString("receiveMoney");
+            itemTradeTotal.serviceCharge = item.getString("serviceCharge");
+            itemTradeTotal.refundMoney = item.getString("refundMoney");
+            itemTradeTotal.realRefundMoney = item.getString("realRefundMoney");
+            itemTradeTotal.refundServiceCharge = item.getString("refundServiceCharge");
+            itemTradeTotal.alipayPoundage = item.getString("alipayPoundage");
+            itemTradeTotal.wechatPoundage = item.getString("wechatPoundage");
+            itemTradeTotal.incomeMoney = item.getString("incomeMoney");
+            itemTradeTotal.settledMoney = item.getString("settledMoney");
+            itemTradeTotal.unsettleMoney = item.getString("unsettleMoney");
+            itemTradeTotal.offsetedMoney = item.getString("offsetedMoney");
+            itemTradeTotal.unoffsetMoney = item.getString("unoffsetMoney");
+            itemTradeTotal.paidMoney = item.getString("paidMoney");
+            itemTradeTotal.unpayMoney = item.getString("unpayMoney");
+            itemTradeTotal.serviceMoney = item.getString("serviceMoney");
         } catch (JSONException e) {
             Log.e("ItemTradeTotal", e.toString());
         }

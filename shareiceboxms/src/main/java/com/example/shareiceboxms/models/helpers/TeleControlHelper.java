@@ -3,11 +3,13 @@ package com.example.shareiceboxms.models.helpers;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
+import android.widget.Switch;
 import android.widget.Toast;
 
 import com.example.shareiceboxms.models.beans.ItemMachine;
 import com.example.shareiceboxms.models.contants.HttpRequstUrl;
 import com.example.shareiceboxms.models.contants.JsonDataParse;
+import com.example.shareiceboxms.models.factories.FragmentFactory;
 import com.example.shareiceboxms.models.http.JsonUtil;
 import com.example.shareiceboxms.models.http.OkHttpUtil;
 
@@ -28,6 +30,7 @@ import java.util.Map;
 public class TeleControlHelper {
     private static TeleControlHelper instance;
     private Context context;
+    private boolean isAllow = false;
 
     public static synchronized TeleControlHelper getInstance() {
         if (instance == null) {
@@ -54,7 +57,6 @@ public class TeleControlHelper {
         private String err = "net_work_err";
         private Map<String, Object> params;
         private String url;
-        private boolean isAllow = false;
 
 
         public MachineTeleControlTask(String url, Map<String, Object> params) {
@@ -90,6 +92,7 @@ public class TeleControlHelper {
                 } else {
                     if (isAllow) {
                         Toast.makeText(context, "操作成功", Toast.LENGTH_SHORT).show();
+                        MachineItemAddView.isLockStateUpdate = false;
                     } else {
                         Toast.makeText(context, "操作失败，请重试！", Toast.LENGTH_SHORT).show();
                     }
@@ -101,4 +104,7 @@ public class TeleControlHelper {
         }
     }
 
+    public interface OpearteLisenner {
+        void isSuccess(boolean isSuccess);
+    }
 }
