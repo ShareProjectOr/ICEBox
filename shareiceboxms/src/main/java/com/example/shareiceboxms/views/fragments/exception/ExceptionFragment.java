@@ -92,6 +92,7 @@ public class ExceptionFragment extends BaseFragment implements CompoundButton.On
         showPop.setOnClickListener(this);
         chooseIsDetails.setOnCheckedChangeListener(this);
         selectTimeLayout.setOnClickListener(this);
+        exceptionTypeLayout.setOnClickListener(this);
         if (!mRefreshLayout.isRefreshing()) {
             mRefreshLayout.setOnRefreshListener(this);
         }
@@ -139,13 +140,16 @@ public class ExceptionFragment extends BaseFragment implements CompoundButton.On
                 homeActivity.clickIconToOpenDrawer();
                 break;
             case R.id.showpup:
-                mTilePopup.show();
+
                 break;
             case R.id.selectTime:
                 datePickerDialog.show();
                 break;
             case R.id.saoma:
                 homeActivity.openSaoma();
+                break;
+            case R.id.exception_type_layout:
+                mTilePopup.show();
                 break;
         }
     }

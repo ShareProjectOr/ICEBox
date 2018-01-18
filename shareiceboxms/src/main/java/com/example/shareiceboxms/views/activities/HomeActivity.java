@@ -5,10 +5,13 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -25,6 +28,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.NotificationCompat;
 import android.util.Log;
 import android.view.Gravity;
@@ -61,6 +65,7 @@ import com.example.shareiceboxms.views.fragments.machine.MachineFragment;
 import com.example.shareiceboxms.views.fragments.product.ProductFragment;
 import com.example.shareiceboxms.views.fragments.trade.TradeFragment;
 
+import org.apache.http.HttpException;
 import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.json.JSONException;
@@ -389,6 +394,7 @@ public class HomeActivity extends BaseActivity
                 }
                 break;
             case R.id.icon_update:
+
              /*   curFragment = new TradeFragment();
                 tabLayout.setVisibility(View.GONE);
                 showHomepage = false;*/
@@ -402,6 +408,101 @@ public class HomeActivity extends BaseActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+
+    public String getVersion() {
+        try {
+            PackageManager manager = this.getPackageManager();
+            PackageInfo info = manager.getPackageInfo(this.getPackageName(), 0);
+            return info.versionName;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "";
+        }
+    }
+
+    private void checktheupdata() {
+        final Map<String, Object> body = new HashMap<>();
+        body.put("version", getVersion());
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    String response = OkHttpUtil.post(HttpRequstUrl.GET_APP_VERSION_URL, JsonUtil.mapToJson(body));
+
+                    try {
+                        final JSONObject object = new JSONObject(response);
+                        if (!getVersion().equals(object.getJSONObject("d").getString("version"))) {
+                            HomeActivity.this.runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    new AlertDialog.Builder(HomeActivity.this).setTitle("版本更新").setMessage("检测到有新版本,建议您更新")
+                                            .setNegativeButton("暂不更新", null).setPositiveButton("立即更新", new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            Intent intent = new Intent();
+                                            intent.setAction("android.intent.action.VIEW");
+                                            Uri content_url = null;
+                                            try {
+                                                content_url = Uri.parse(object.getJSONObject("d").getString("fileUrl"));
+                                            } catch (JSONException e) {
+                                                Toast.makeText(getApplication(), "获取下载地址错误...,更新失败", Toast.LENGTH_LONG).show();
+                                            }
+                                            intent.setData(content_url);
+                                            startActivity(intent);
+                                        }
+                                    }).create().show();
+                                }
+                            });
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+
+
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
+
+       /* HttpUtils http = new HttpUtils();
+        http.configCurrentHttpCacheExpiry(4000);
+        http.send(com.lidroid.xutils.http.client.HttpRequest.HttpMethod.POST, Constance.GET_APP_VERSION_URL, params, new RequestCallBack<String>() {
+            @Override
+            public void onSuccess(ResponseInfo<String> responseInfo) {
+                try {
+                    Log.e("SSS", "SS" + responseInfo.result);
+                    final JSONObject object = new JSONObject(responseInfo.result);
+
+                    if (!getVersion().equals(object.getJSONObject("d").getString("version"))) {
+                        new AlertView("提示", "检测到最新版本,是否更新?", "暂时不用", new String[]{"确定"}, null, HomeActivity.this, AlertView.Style.Alert, new OnItemClickListener() {
+                            @Override
+                            public void onItemClick(Object o, int position) {
+                                if (position == 0) {
+                                    Intent intent = new Intent();
+                                    intent.setAction("android.intent.action.VIEW");
+                                    Uri content_url = null;
+                                    try {
+                                        content_url = Uri.parse(object.getJSONObject("d").getString("fileUrl"));
+                                    } catch (JSONException e) {
+                                        Toast.makeText(getApplication(), "获取下载地址错误...", Toast.LENGTH_LONG).show();
+                                    }
+                                    intent.setData(content_url);
+                                    startActivity(intent);
+                                }
+                            }
+                        }).setCancelable(true).show();
+                    }
+                } catch (JSONException ignored) {
+                }
+            }
+
+            @Override
+            public void onFailure(HttpException e, String s) {
+            }
+        });*/
     }
 
     /*

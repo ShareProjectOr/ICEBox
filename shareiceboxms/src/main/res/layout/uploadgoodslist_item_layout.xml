@@ -26,7 +26,7 @@
                 android:layout_weight="1"
                 android:text="操作耗时:"
                 android:textColor="@color/black"
-                android:textSize="16sp"
+                android:textSize="15sp"
                 android:textStyle="bold" />
 
             <TextView
@@ -36,7 +36,7 @@
                 android:layout_marginRight="10dp"
                 android:layout_marginTop="20dp"
                 android:text="2016-06-16  14:03"
-                android:textSize="16sp" />
+                android:textSize="14sp" />
         </LinearLayout>
 
         <LinearLayout
@@ -74,7 +74,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="50dp"
-                android:text="上"
+                android:text="下"
                 android:textSize="16sp" />
 
             <TextView

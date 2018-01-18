@@ -133,7 +133,7 @@ public class UpLoadGoodsRecordFragment extends BaseFragment {
         Map<String, Object> map = new HashMap<>();
         map.put("n", pageNum);
         map.put("p", currentPage);
-        map.put("appUserID",29);
+        map.put("appUserID", PerSonMessage.userId);
         //  map.put("userID", PerSonMessage.userId);
         map.put("operationTime", RequestParamsContants.getInstance().getSelectTime(operationTime));
         contentProvider.getData(HttpRequstUrl.UPLOAD_RECORD_LIST_URL, map, b);
@@ -162,8 +162,8 @@ public class UpLoadGoodsRecordFragment extends BaseFragment {
             map.put("n", pageNum);
             map.put("p", currentPage + 1);
             map.put("appUserID", PerSonMessage.userId);
-            map.put("operationTime", operationTime);
-            contentProvider.getData(HttpRequstUrl.EXCEPTION_LIST_URL, map, false);
+            map.put("operationTime", RequestParamsContants.getInstance().getSelectTime(operationTime));
+            contentProvider.getData(HttpRequstUrl.UPLOAD_RECORD_LIST_URL, map, false);
 
         } else {
             Toast.makeText(getActivity(), "偷偷告诉你,数据已全部加载完毕...", Toast.LENGTH_SHORT).show();

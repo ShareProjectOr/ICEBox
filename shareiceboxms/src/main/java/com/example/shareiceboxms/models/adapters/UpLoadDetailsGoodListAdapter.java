@@ -121,20 +121,27 @@ public class UpLoadDetailsGoodListAdapter extends BaseAdapter implements View.On
                     operationType.setOnClickListener(this);
                 }
                 if (mJson != null) {
+                    String timeString = "获取失败";
                     try {
                         Log.d("-----------------", mJson.getString("openingTime"));
-                        long oPentime = SecondToDate.dateToStamp(mJson.getString("openingTime"));
-                        long closeTime = SecondToDate.dateToStamp(mJson.getString("closingTime"));
-                        long Sendtime = closeTime - oPentime;
-                        String timeString = "获取失败";
-                        String[] mOperationTime = SecondToDate.formatLongToTimeStr(Sendtime / 1000);
-                        if (mOperationTime[1].equals("0")) {
-                            timeString = mOperationTime[2] + "分" + mOperationTime[3] + "秒";
-                        } else if (mOperationTime[0].equals("0")) {
-                            timeString = mOperationTime[1] + "时" + mOperationTime[2] + "分" + mOperationTime[3] + "秒";
+                        if (mJson.getString("openingTime").equals("null") || mJson.getString("closingTime").equals("null")) {
+                            timeString = "数据异常,获取失败...";
                         } else {
-                            timeString = mOperationTime[0] + "天" + mOperationTime[1] + "时" + mOperationTime[2] + "分" + mOperationTime[3] + "秒";
+                            long oPentime = SecondToDate.dateToStamp(mJson.getString("openingTime"));
+                            long closeTime = SecondToDate.dateToStamp(mJson.getString("closingTime"));
+                            long Sendtime = closeTime - oPentime;
+
+                            String[] mOperationTime = SecondToDate.formatLongToTimeStr(Sendtime / 1000);
+                            if (mOperationTime[1].equals("0")) {
+                                timeString = mOperationTime[2] + "分" + mOperationTime[3] + "秒";
+                            } else if (mOperationTime[0].equals("0")) {
+                                timeString = mOperationTime[1] + "时" + mOperationTime[2] + "分" + mOperationTime[3] + "秒";
+                            } else {
+                                timeString = mOperationTime[0] + "天" + mOperationTime[1] + "时" + mOperationTime[2] + "分" + mOperationTime[3] + "秒";
+                            }
                         }
+
+
                         String msg[] = {"操作耗时:" + timeString, "记录编号:" + mJson.getInt("recordID"),
                                 "机器名称:" + mJson.getJSONObject("machine").getString("machineName"), "机器编号:" + mJson.getJSONObject("machine").getString("machineCode"),
                                 "安装地址:" + mJson.getJSONObject("machine").getString("machineAddress")};

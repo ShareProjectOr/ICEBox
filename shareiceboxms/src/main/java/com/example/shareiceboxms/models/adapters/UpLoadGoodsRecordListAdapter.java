@@ -67,20 +67,33 @@ public class UpLoadGoodsRecordListAdapter extends RecyclerView.Adapter<RecyclerV
                 BodyViewHolder body = (BodyViewHolder) holder;
                 try {
                     long time = SecondToDate.dateToStamp(contentProvider.getItem(position).closingTime) - SecondToDate.dateToStamp(contentProvider.getItem(position).openingTime);
-                    String[] mOperationTime = SecondToDate.formatLongToTimeStr(time/1000);
+                    String[] mOperationTime = SecondToDate.formatLongToTimeStr(time / 1000);
                     if (mOperationTime[1].equals("0")) {
                         body.mOperationTime.setText("操作耗时:" + mOperationTime[2] + "分" + mOperationTime[3] + "秒");
                     } else {
                         body.mOperationTime.setText("操作耗时:" + mOperationTime[1] + "时" + mOperationTime[2] + "分" + mOperationTime[3] + "秒");
                     }
                 } catch (ParseException e) {
-                    body.mOperationTime.setText("操作耗时:获取失败");
+                    body.mOperationTime.setText("操作耗时:数据异常,解析失败");
                 }
 
+                if (contentProvider.getItem(position).openingTime.equals("null")) {
+                    body.mOperationDate.setText("数据异常,解析失败");
+                } else {
+                    body.mOperationDate.setText(contentProvider.getItem(position).openingTime);
+                }
 
-                body.mOperationDate.setText(contentProvider.getItem(position).openingTime);
-                body.mUpLoadNum.setText(contentProvider.getItem(position).UpLoadNum+"");
-                body.mDownLoadNum.setText(contentProvider.getItem(position).DownLoadNum+"");
+                if (contentProvider.getItem(position).UpLoadNum.equals("null")) {
+                    body.mUpLoadNum.setText("0");
+                } else {
+                    body.mUpLoadNum.setText(contentProvider.getItem(position).UpLoadNum);
+                }
+                if (contentProvider.getItem(position).DownLoadNum.equals("null")) {
+                    body.mDownLoadNum.setText("0");
+                } else {
+                    body.mDownLoadNum.setText(contentProvider.getItem(position).DownLoadNum);
+                }
+
                 body.mMachineName.setText(contentProvider.getItem(position).machineName);
                 body.mMachineAddr.setText("(" + contentProvider.getItem(position).machineAddress + ")");
                 body.mUpLoadCode.setText("记录编号" + contentProvider.getItem(position).recordID);

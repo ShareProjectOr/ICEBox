@@ -24,17 +24,16 @@ public class ItemUpload {
     public String machineName;
     public String machineCode;
     public String machineAddress;
-    public int DownLoadNum;
-    public int UpLoadNum;
+    public String DownLoadNum;
+    public String UpLoadNum;
 
     public void bindData(JSONObject object) throws JSONException {
         recordID = object.getInt("recordID");
         unlockTime = object.getString("unlockTime");
         openingTime = object.getString("openingTime");
         closingTime = object.getString("closingTime");
-
-        DownLoadNum = object.getInt("exhibitNum");
-        UpLoadNum = object.getInt("offShelfNum");
+        UpLoadNum  = object.getString("exhibitNum");
+        DownLoadNum  = object.getString("offShelfNum");
         JSONObject user = object.getJSONObject("operator");
         JSONObject machine = object.getJSONObject("machine");
         //    userID = user.getInt("userID");
