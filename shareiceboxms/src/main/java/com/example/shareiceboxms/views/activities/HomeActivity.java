@@ -467,42 +467,6 @@ public class HomeActivity extends BaseActivity
             }
         }).start();
 
-       /* HttpUtils http = new HttpUtils();
-        http.configCurrentHttpCacheExpiry(4000);
-        http.send(com.lidroid.xutils.http.client.HttpRequest.HttpMethod.POST, Constance.GET_APP_VERSION_URL, params, new RequestCallBack<String>() {
-            @Override
-            public void onSuccess(ResponseInfo<String> responseInfo) {
-                try {
-                    Log.e("SSS", "SS" + responseInfo.result);
-                    final JSONObject object = new JSONObject(responseInfo.result);
-
-                    if (!getVersion().equals(object.getJSONObject("d").getString("version"))) {
-                        new AlertView("提示", "检测到最新版本,是否更新?", "暂时不用", new String[]{"确定"}, null, HomeActivity.this, AlertView.Style.Alert, new OnItemClickListener() {
-                            @Override
-                            public void onItemClick(Object o, int position) {
-                                if (position == 0) {
-                                    Intent intent = new Intent();
-                                    intent.setAction("android.intent.action.VIEW");
-                                    Uri content_url = null;
-                                    try {
-                                        content_url = Uri.parse(object.getJSONObject("d").getString("fileUrl"));
-                                    } catch (JSONException e) {
-                                        Toast.makeText(getApplication(), "获取下载地址错误...", Toast.LENGTH_LONG).show();
-                                    }
-                                    intent.setData(content_url);
-                                    startActivity(intent);
-                                }
-                            }
-                        }).setCancelable(true).show();
-                    }
-                } catch (JSONException ignored) {
-                }
-            }
-
-            @Override
-            public void onFailure(HttpException e, String s) {
-            }
-        });*/
     }
 
     /*
