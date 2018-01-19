@@ -46,24 +46,25 @@ public class PerSonMessage {
     public static void bindMessage(String userJson) {
         try {
             userObject = new JSONObject(userJson);
+            JSONObject data = userObject.getJSONObject("d");
             userId = userObject.getInt("userID");
-            name = userObject.getJSONObject("d").getString("name");
-            email = userObject.getJSONObject("d").getString("email");
-            tel = userObject.getJSONObject("d").getString("tel");
-            userType = userObject.getJSONObject("d").getInt("userType");
-            disable = userObject.getJSONObject("d").getInt("disable");
+            name = data.getString("name");
+            email = data.getString("email");
+            tel = data.getString("tel");
+            userType =data.getInt("userType");
+            disable =data.getInt("disable");
             loginAccount = userObject.getString("loginAccount");
             role = userObject.getString("role");
-            address = userObject.getJSONObject("d").getString("address");
-            idCard = userObject.getJSONObject("d").getString("idCard");
-            lastLoginTime = userObject.getJSONObject("d").getString("lastLoginTime");
-            loginIP = userObject.getJSONObject("d").getString("loginIP");
+            address = data.getString("address");
+            idCard = data.getString("idCard");
+            lastLoginTime = data.getString("lastLoginTime");
+            loginIP = data.getString("loginIP");
 
-            if (userObject.has("agent") && !userObject.get("agent").equals(null)) {
-                agent = ItemPerson.bindPerson(userObject.getJSONObject("d").getJSONObject("agent"));
+            if (data.has("agent") && !data.get("agent").equals(null)) {
+                agent = ItemPerson.bindPerson(data.getJSONObject("agent"));
             }
-            if (userObject.has("company") && !userObject.get("company").equals(null)) {
-                company = ItemCompany.bindCompany(userObject.getJSONObject("d").getJSONObject("company"));
+            if (data.has("company") && !data.get("company").equals(null)) {
+                company = ItemCompany.bindCompany(data.getJSONObject("company"));
             }
             /*
             * 下面这些真是多余，但又用到了，不改

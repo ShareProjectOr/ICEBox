@@ -69,6 +69,7 @@ public class TradeTotalFragment extends BaseFragment {
     private RelativeLayout selectTime;
     private SwipeRefreshLayout refreshLayout;
     private ItemTradeTotal itemTradeTotal;
+    private TradeTotalFragment tradeTotalFragment;
     private Dialog dialog;
     private String[] time;
 
@@ -130,16 +131,22 @@ public class TradeTotalFragment extends BaseFragment {
                         break;
                 }
                 timeSelector.setText(SecondToDate.getDateUiShow(time));
-                getDatas();
+                getDatas(getParams());
             }
         });
         refreshLayout.setOnRefreshListener(this);
-        choosePerson.setOnClickListener(this);
+        if (PerSonMessage.userType <= Constants.SYSTEM_MANAGER) {
+            choosePerson.setOnClickListener(this);
+        } else {
+            choosePerson.setVisibility(View.GONE);
+        }
+
         refreshLayout.setColorSchemeColors(ContextCompat.getColor(getContext(), R.color.blue));
     }
 
     private void initDatas() {
         activity = (HomeActivity) getActivity();
+        tradeTotalFragment = this;
         time = RequestParamsContants.getInstance().getTimeSelectorParams();
         dialog = MyDialog.loadDialog(getContext());
         itemTradeTotal = new ItemTradeTotal();
@@ -149,14 +156,14 @@ public class TradeTotalFragment extends BaseFragment {
         dateGroup.check(R.id.todayDate);
     }
 
-    private Map<String, Object> getParams() {
+    public Map<String, Object> getParams() {
         Map<String, Object> params = RequestParamsContants.getInstance().getTradeTotalParams();
         params.put("searchTime", RequestParamsContants.getInstance().getSelectTime(time));
         return params;
     }
 
-    private void getDatas() {
-        TradeTotalTask task = new TradeTotalTask(getParams());
+    public void getDatas(Map<String, Object> params) {
+        TradeTotalTask task = new TradeTotalTask(params);
         task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
     }
 
@@ -165,7 +172,7 @@ public class TradeTotalFragment extends BaseFragment {
     public void onRefresh() {
         time = SecondToDate.getDateParams(SecondToDate.TODAY_CODE);
         timeSelector.setText(SecondToDate.getDateUiShow(time));
-        getDatas();
+        getDatas(getParams());
         refreshLayout.setRefreshing(false);//关闭刷新
     }
 
@@ -184,16 +191,15 @@ public class TradeTotalFragment extends BaseFragment {
                             if (PerSonMessage.childPerson != null) {
                                 PerSonMessage.childPerson.clear();
                                 PerSonMessage.childPerson.addAll(agents);
-                                Log.d("------agents---------", agents.size() + "");
                                 ChoosePopupWindow.setAdapter(PerSonMessage.childPerson, activity);
                                 ChoosePopupWindow.getAdapter().notifyDataSetChanged();
-                                ChoosePopupWindow.showPopFormBottom(containerView, activity);
+                                ChoosePopupWindow.showPopFormBottom(containerView, activity, tradeTotalFragment);
                             }
                         }
                     });
                     GetAgentsToCreateAccountHelper.getInstance().getDatas();
                 } else {
-                    ChoosePopupWindow.showPopFormBottom(containerView, activity);
+                    ChoosePopupWindow.showPopFormBottom(containerView, activity, tradeTotalFragment);
                 }
 
                 break;
@@ -212,7 +218,7 @@ public class TradeTotalFragment extends BaseFragment {
     public String[] onDateSet(DatePicker startDatePicker, int startYear, int startMonthOfYear, int startDayOfMonth, DatePicker endDatePicker, int endYear, int endMonthOfYear, int endDayOfMonth) {
         time = super.onDateSet(startDatePicker, startYear, startMonthOfYear, startDayOfMonth, endDatePicker, endYear, endMonthOfYear, endDayOfMonth);
         timeSelector.setText(SecondToDate.getDateUiShow(time));
-        getDatas();
+        getDatas(getParams());
         return null;
     }
 

@@ -2,6 +2,7 @@ package com.example.shareiceboxms.models.widget;
 
 import android.content.Context;
 import android.graphics.drawable.ColorDrawable;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -15,9 +16,13 @@ import android.widget.PopupWindow;
 import com.example.shareiceboxms.R;
 import com.example.shareiceboxms.models.adapters.ChoosePopupWindowAdapter;
 import com.example.shareiceboxms.models.beans.ItemPerson;
+import com.example.shareiceboxms.models.beans.PerSonMessage;
+import com.example.shareiceboxms.models.contants.Constants;
 import com.example.shareiceboxms.views.activities.HomeActivity;
+import com.example.shareiceboxms.views.fragments.trade.TradeTotalFragment;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by WH on 2018/1/17.
@@ -30,7 +35,7 @@ public class ChoosePopupWindow extends PopupWindow {
     private ListView listView;
     private static WindowManager.LayoutParams params;
 
-    public ChoosePopupWindow(Context context) {
+    public ChoosePopupWindow(Context context, final TradeTotalFragment tradeTotalFragment) {
         super(context);
         this.context = context;
         this.view = LayoutInflater.from(context).inflate(R.layout.choose_popup_window, null);
@@ -70,17 +75,30 @@ public class ChoosePopupWindow extends PopupWindow {
 
         // 设置弹出窗体显示时的动画，从底部向上弹出
         this.setAnimationStyle(R.style.choose_popup_anim);
-        listView.setAdapter(adapter);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
+                Log.d("----------------------", "onItemClick");
+                Map<String, Object> params = tradeTotalFragment.getParams();
+                switch (PerSonMessage.userType) {
+                    case Constants.AGENT_MANAGER:
+                        break;
+                    case Constants.MACHINE_MANAGER:
+                        break;
+                    case Constants.SYSTEM_MANAGER:
+                        params.put("userID", PerSonMessage.childPerson.get(position).userID);
+                        break;
+                }
+                tradeTotalFragment.getDatas(params);
+                dismiss();
             }
         });
+        listView.setAdapter(adapter);
+
     }
 
-    public static void showPopFormBottom(View view, final HomeActivity activity) {
-        ChoosePopupWindow choosePopupWindow = new ChoosePopupWindow(activity);
+    public static void showPopFormBottom(View view, final HomeActivity activity, TradeTotalFragment tradeTotalFragment) {
+        ChoosePopupWindow choosePopupWindow = new ChoosePopupWindow(activity, tradeTotalFragment);
 //        设置Popupwindow显示位置（从底部弹出）
         choosePopupWindow.showAtLocation(view, Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL, 0, 0);
         params = activity.getWindow().getAttributes();

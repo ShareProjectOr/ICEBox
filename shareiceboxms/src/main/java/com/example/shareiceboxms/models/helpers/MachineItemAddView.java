@@ -220,10 +220,12 @@ public class MachineItemAddView {
             shutDown = (RelativeLayout) itemView.findViewById(R.id.shutDown);
             check = (RelativeLayout) itemView.findViewById(R.id.check);
             lockSwitch = (Switch) itemView.findViewById(R.id.lockSwitch);
-            addTargetTemp.setOnClickListener(this);
+            /*addTargetTemp.setOnClickListener(this);
             subTargetTemp.setOnClickListener(this);
             addOffsetTemp.setOnClickListener(this);
-            subOffsetTemp.setOnClickListener(this);
+            subOffsetTemp.setOnClickListener(this);*/
+            offSetTempSeekbar.setEnabled(false);
+            tempSeekbar.setEnabled(false);
             restart.setOnClickListener(this);
             shutDown.setOnClickListener(this);
             check.setOnClickListener(this);
@@ -231,7 +233,6 @@ public class MachineItemAddView {
             tempSeekbar.setOnSeekBarChangeListener(this);
             tempSeekbar.setMax(Constants.MAX_TARGET_TEMP);
             offSetTempSeekbar.setMax(Constants.MAX_OFFSET_TEMP);
-
             lockSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {

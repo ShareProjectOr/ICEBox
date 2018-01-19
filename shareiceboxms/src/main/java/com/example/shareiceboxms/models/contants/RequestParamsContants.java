@@ -1,6 +1,7 @@
 package com.example.shareiceboxms.models.contants;
 
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.example.shareiceboxms.models.beans.PerSonMessage;
 import com.example.shareiceboxms.models.factories.FragmentFactory;
@@ -181,8 +182,20 @@ public class RequestParamsContants {
     public Map<String, Object> getTradeTotalParams() {
         Map<String, Object> params = new HashMap<>();
         params.put("appUserID", PerSonMessage.userId);
-        params.put("checkCode", 1);
-        params.put("companyID", FragmentFactory.getInstance().getSavedBundle().getInt("machineID"));
+        switch (PerSonMessage.userType) {
+            case Constants.AGENT_MANAGER:
+                if (PerSonMessage.company != null) {
+                    params.put("companyID", PerSonMessage.company.companyID);
+                }
+
+                break;
+            case Constants.MACHINE_MANAGER:
+                params.put("userID", PerSonMessage.userId);
+                break;
+            case Constants.SYSTEM_MANAGER:
+                params.put("companyID", "");
+                break;
+        }
         params.put("searchTime", "");
         return params;
     }

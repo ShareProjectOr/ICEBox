@@ -1,6 +1,7 @@
 package com.example.shareiceboxms.models.adapters;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -59,12 +60,6 @@ public class ChoosePopupWindowAdapter extends BaseAdapter {
 
         public ViewHolder(View itemView) {
             childName = (TextView) itemView.findViewById(R.id.childName);
-            childName.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-
-                }
-            });
         }
     }
 }
