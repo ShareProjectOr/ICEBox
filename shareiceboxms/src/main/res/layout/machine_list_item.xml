@@ -7,12 +7,13 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
+        android:layout_marginBottom="5dp"
+        android:layout_marginTop="5dp"
         android:background="@drawable/shape_trade_time">
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:layout_marginLeft="30dp"
             android:layout_marginRight="30dp"
             android:orientation="vertical">
@@ -22,7 +23,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:paddingTop="20dp"
-                android:text="订单金额" />
+                android:text="放置地址" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -35,7 +36,7 @@
                     android:layout_height="match_parent"
                     android:layout_weight="3"
                     android:gravity="center_vertical"
-                    android:text="0.00"
+                    android:text="请设置名称"
                     android:textColor="@color/black"
                     android:textSize="30sp" />
 
@@ -52,7 +53,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
-                        android:text="0.00"
+                        android:text="网络状态"
                         android:textColor="@color/black" />
 
                     <TextView
@@ -60,7 +61,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
-                        android:text="0.00"
+                        android:text="机器状态"
                         android:textColor="@color/black" />
                 </LinearLayout>
 
@@ -75,6 +76,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
+                android:paddingBottom="5dp"
                 android:paddingTop="10dp">
 
                 <TextView
@@ -87,7 +89,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:paddingStart="5dp"
-                    android:text="0.00" />
+                    android:text="无" />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -100,7 +102,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:paddingStart="5dp"
-                    android:text="0.00" />
+                    android:text="无" />
             </LinearLayout>
         </LinearLayout>
     </LinearLayout>

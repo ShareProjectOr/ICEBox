@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import com.example.shareiceboxms.R;
 import com.example.shareiceboxms.models.beans.ItemMachine;
+import com.example.shareiceboxms.models.contants.ConstanceMethod;
 import com.example.shareiceboxms.models.contants.Constants;
 import com.example.shareiceboxms.models.factories.FragmentFactory;
 import com.example.shareiceboxms.views.fragments.machine.MachineDetailFragment;
@@ -38,7 +39,7 @@ public class MachineListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         RecyclerView.ViewHolder viewHolder = null;
         if (viewType == VIEW_ITEM) {
-            viewHolder = new ItemViewHolder(LayoutInflater.from(context).inflate(R.layout.machine_list_item, null));//machine_list_item_layout
+            viewHolder = new ItemViewHolder(LayoutInflater.from(context).inflate(R.layout.machine_list_item, parent, false));//machine_list_item_layout
         } else if (viewType == VIEW_LOADING) {
             viewHolder = new LoadingHolder(LayoutInflater.from(context).inflate(R.layout.loading_more, null));
         }
@@ -57,9 +58,9 @@ public class MachineListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
                     ((ItemViewHolder) holder).isOnLine.setTextColor(ContextCompat.getColor(context, Constants.MachineStateColor[itemMachines.get(position).networkState]));
                     ((ItemViewHolder) holder).isException.setText(itemMachines.get(position).faultState == 0 ? Constants.MachineFaultState[0] : Constants.MachineFaultState[1]);
                     ((ItemViewHolder) holder).isException.setTextColor(ContextCompat.getColor(context, itemMachines.get(position).faultState == 0 ? Constants.MachineStateColor[1] : Constants.MachineStateColor[0]));
-                    if (itemMachines.get(position).itemManager!=null)
-                    ((ItemViewHolder) holder).managerName.setText(itemMachines.get(position).itemManager.name);
-                    ((ItemViewHolder) holder).machineAddr.setText(itemMachines.get(position).machineAddress);
+                    if (itemMachines.get(position).itemManager != null)
+                        ((ItemViewHolder) holder).managerName.setText(itemMachines.get(position).itemManager.name);
+                    ((ItemViewHolder) holder).machineAddr.setText(ConstanceMethod.getAddress(itemMachines.get(position).machineAddress));
                     holder.itemView.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {

@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.text.TextUtils;
 
 import java.util.Calendar;
 
@@ -76,5 +77,26 @@ public class ConstanceMethod {
     public static String getCurrentDate() {
         Calendar calendar = Calendar.getInstance();
         return calendar.get(Calendar.YEAR) + "." + calendar.get(Calendar.MONTH) + "." + calendar.get(Calendar.DAY_OF_MONTH);
+    }
+
+    static String noAddress = "未填写地址";
+
+    //处理服务器返回的地址
+    public static String getAddress(String address) {
+        if (TextUtils.equals(address, "") || TextUtils.equals(address, "null") || TextUtils.equals(address, "||")) {
+            return noAddress;
+        }
+        address = address.trim();
+        String[] addr = address.split("\\|");
+        if (addr.length == 3) {
+            if (TextUtils.equals(addr[1], "") && TextUtils.equals(addr[2], "")) {
+                return noAddress;
+            }
+            return addr[1] + " " + addr[2];
+        }
+        if (addr.length == 2) {
+            return addr[1];
+        }
+        return noAddress;
     }
 }

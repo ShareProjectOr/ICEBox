@@ -20,6 +20,7 @@ import android.widget.Toast;
 
 import com.example.shareiceboxms.R;
 import com.example.shareiceboxms.models.beans.ItemMachine;
+import com.example.shareiceboxms.models.contants.ConstanceMethod;
 import com.example.shareiceboxms.models.contants.Constants;
 import com.example.shareiceboxms.models.contants.HttpRequstUrl;
 import com.example.shareiceboxms.models.contants.JsonDataParse;
@@ -157,7 +158,7 @@ public class MachineDetailFragment extends BaseFragment implements SwipeRefreshL
             * 更新UI
             * */
     public void updateUi() {
-        machineAddr.setText(itemMachine.machineAddress);
+        machineAddr.setText(ConstanceMethod.getAddress(itemMachine.machineAddress));
         machineName.setText(itemMachine.machineName);
         isOnLine.setText(Constants.MachineOnLineState[itemMachine.networkState]);
         isOnLine.setTextColor(ContextCompat.getColor(homeActivity, Constants.MachineStateColor[itemMachine.networkState]));
