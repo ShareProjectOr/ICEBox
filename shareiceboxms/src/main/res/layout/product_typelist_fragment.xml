@@ -13,7 +13,7 @@
         <EditText
             android:id="@+id/machineSearchInput"
             android:layout_width="0dp"
-            android:layout_height="25dp"
+            android:layout_height="30dp"
             android:layout_margin="8dp"
             android:layout_weight="1"
             android:background="@drawable/selector_edit"
@@ -26,12 +26,12 @@
         <Button
             android:id="@+id/doSearch"
             android:layout_width="60dp"
-            android:layout_height="25dp"
+            android:layout_height="30dp"
             android:layout_margin="8dp"
             android:background="@drawable/shape_botton"
             android:text="搜索"
             android:textColor="@color/white"
-            android:textSize="18sp" />
+            android:textSize="15sp" />
     </LinearLayout>
 
     <android.support.v4.widget.SwipeRefreshLayout
