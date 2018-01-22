@@ -35,9 +35,9 @@ public interface HttpRequstUrl {
 
 
     String REPAIR_PASSWORD_URL = HOST_URL + "user/editPassword";
-    String PRODUCT_TYPE_LIST_URL = "http://192.168.4.211:8082/category/search";
-    String PRODUCT_TYPE_DETAIL_URL = "http://192.168.4.211:8082/category/get";
-    String EDIT_PRICE_UERL = "http://192.168.4.211:8082/category/editPrice";
+    String PRODUCT_TYPE_LIST_URL = HOST_URL + "/category/search";
+    String PRODUCT_TYPE_DETAIL_URL = HOST_URL + "/category/get";
+    String EDIT_PRICE_UERL = HOST_URL + "/category/editPrice";
     String EXCEPTION_LIST_URL = HOST_URL + "exception/search";
     String UPLOAD_RECORD_LIST_URL = HOST_URL + "goods/unloadRecord";
     String UPLOAD_RECORD_DETAILS_URL = HOST_URL + "goods/unloadDetail";

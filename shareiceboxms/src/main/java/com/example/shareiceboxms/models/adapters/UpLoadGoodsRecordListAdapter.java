@@ -95,7 +95,11 @@ public class UpLoadGoodsRecordListAdapter extends RecyclerView.Adapter<RecyclerV
                 }
 
                 body.mMachineName.setText(contentProvider.getItem(position).machineName);
-                body.mMachineAddr.setText("(" + contentProvider.getItem(position).machineAddress + ")");
+                String[] adressString = contentProvider.getItem(position).machineAddress.split("\\|");
+                if (adressString.length == 3) {
+                    body.mMachineAddr.setText("(" + adressString[1] + adressString[2] + ")");
+                }
+
                 body.mUpLoadCode.setText("记录编号" + contentProvider.getItem(position).recordID);
                 body.itemView.setOnClickListener(new View.OnClickListener() {
                     @Override

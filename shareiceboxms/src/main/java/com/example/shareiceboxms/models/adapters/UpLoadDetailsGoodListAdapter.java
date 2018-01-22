@@ -111,14 +111,28 @@ public class UpLoadDetailsGoodListAdapter extends BaseAdapter implements View.On
     public View getView(int position, View convertView, ViewGroup parent) {
         int type = getItemType(position);
         ViewHolder holder;
-
+        HeadViewHolder headviewHolder;
         switch (type) {
             case TYPE_HEAD_ITEM:
-
                 if (convertView == null) {
+
                     convertView = LayoutInflater.from(mContext).inflate(R.layout.upload_details_goodlist_itemheadlayout, null);
-                    TextView operationType = (TextView) convertView.findViewById(R.id.operationType);
-                    operationType.setOnClickListener(this);
+                    headviewHolder = new HeadViewHolder(convertView);
+                 //   headviewHolder.operationType = (TextView) convertView.findViewById(R.id.operationType);
+                    headviewHolder.operationType.setOnClickListener(this);
+                    convertView.setTag(headviewHolder);
+                }else {
+                    headviewHolder = (HeadViewHolder) convertView.getTag();
+                }
+
+                // operationType
+                switch (oprationType) {
+                    case 0:
+                        headviewHolder.operationType.setText("操作(上货)");
+                        break;
+                    default:
+                        headviewHolder.operationType.setText("操作(下货)");
+                        break;
                 }
                 if (mJson != null) {
                     String timeString = "获取失败";
@@ -196,6 +210,14 @@ public class UpLoadDetailsGoodListAdapter extends BaseAdapter implements View.On
                 changeOprationType();
                 this.notifyDataSetChanged();
                 break;
+        }
+    }
+
+    class HeadViewHolder {
+        TextView operationType;
+
+        public HeadViewHolder(View view) {
+            operationType = (TextView) view.findViewById(R.id.operationType);
         }
     }
 
