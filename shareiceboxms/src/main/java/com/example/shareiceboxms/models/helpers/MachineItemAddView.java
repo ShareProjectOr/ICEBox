@@ -318,8 +318,9 @@ public class MachineItemAddView {
             } else {
                 offsetTemp.setText(String.valueOf(progress));
             }
-            isTempChanged = true;
-            saveTemp(targetTemp, offsetTemp);
+            if (isTempChanged) {
+                saveTemp(targetTemp, offsetTemp);
+            }
         }
 
         @Override
@@ -329,7 +330,7 @@ public class MachineItemAddView {
 
         @Override
         public void onStopTrackingTouch(SeekBar seekBar) {
-
+            isTempChanged = true;
             if (seekBar == tempSeekbar) {
                 //向左滑动的进度小于最低目标温度时的处理
                 if (seekBar.getProgress() <= Constants.MIN_TARGET_TEMP) {
