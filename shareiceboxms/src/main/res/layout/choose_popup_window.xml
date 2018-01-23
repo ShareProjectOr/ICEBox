@@ -9,12 +9,17 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
         android:paddingBottom="10dp"
         android:paddingTop="10dp"
-        android:text="请选择要查看人员的财务明细" />
+        android:text="请选择要查看人员的财务明细"
+        android:textColor="@color/black"
+        android:textSize="15sp" />
 
     <ListView
         android:id="@+id/choosePersonList"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:divider="@color/white"
+        android:dividerHeight="0dp" />
 </LinearLayout>

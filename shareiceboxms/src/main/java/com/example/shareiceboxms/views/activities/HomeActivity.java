@@ -145,7 +145,7 @@ public class HomeActivity extends BaseActivity
                 Log.d("----handleMessage---", "';;;;;");
                 JSONObject object = (JSONObject) msg.obj;
                 try {
-                    Log.e("push", object.toString() + "time:" + SecondToDate.getDateToString(Long.parseLong(object.getString("createTime"))));
+                    Log.e("push", object.toString() + "------" + object.getString("createTime") + "----time:" + SecondToDate.getDateToString(Long.parseLong(object.getString("createTime"))));
                     long recevermsgTime = Long.parseLong(object.getString("createTime"));
                     long savemsgTime = ConstanceMethod.getSharedPreferences(HomeActivity.this, "Msg").getLong("msgTag", 0);
                     Log.e("time", "savemsgTime:" + savemsgTime + "----recevermsgTime:" + recevermsgTime + "----" + (recevermsgTime <= savemsgTime));
@@ -179,6 +179,8 @@ public class HomeActivity extends BaseActivity
                                     showHomepage = false;
                                     switchFragment();
                                     LastDoorState = OPEN_LOCK_SUCCESS;
+                                } else if (curFragment instanceof OpenDoorSuccessFragment || LastDoorState == OPEN_LOCK_SUCCESS) {
+                                    return;
                                 }
                             } else if (object.getInt("doorState") == 0) {//关门,上货成功
 
@@ -186,6 +188,7 @@ public class HomeActivity extends BaseActivity
                                 * 其实可以不添加的，之后看要不要删掉把
                                 * */
                                 if (curFragment instanceof OpeningDoorFragment || LastDoorState == OPENING_DOOR) {
+                                    Log.d("222222222222", "----------");
                                     //收到的门状态为关门,且上一状态为初始状态则认为是失败
                                     curFragment = new OpenDoorFailFragment();
                                     showHomepage = false;
@@ -220,20 +223,16 @@ public class HomeActivity extends BaseActivity
                                 } else {
                                     //上次的门状态必须为开门，此次收到关门才认为是关锁成功，
                                     // 但并不一定会收到上下货数据，最.
-                                    onBackPressed();
+//                                    onBackPressed();
+                                    getCurFragment();
+                                    showHomepage = true;
+                                    isRequestOpen = false;
+                                    switchFragment();
+                                    LastDoorState = DEFAULT;
                                     Toast.makeText(getApplication(), "关门成功，没有上下货", Toast.LENGTH_LONG).show();
                                     return;
                                 }
-                            } else if (curFragment instanceof OpeningDoorFragment) {
-
-                                //收到的门状态为关门,且上一状态为初始状态则认为是失败
-                                curFragment = new OpenDoorFailFragment();
-                                showHomepage = false;
-                                isRequestOpen = false;
-                                switchFragment();
-                                LastDoorState = OPEN_LOCK_FAILED;
                             }
-
                             break;
                     }
 
@@ -600,22 +599,27 @@ public class HomeActivity extends BaseActivity
     }
 
     private void requestOpenDoor(final String QRCode) {
-     /*   String qrString[] = QRCode.split("\\?");
-        String headerString[] = qrString[1].split("\\&");
+        String qrString[] = QRCode.split("machineCode=");
+      /*  String headerString[] = qrString[1].split("\\&");
         String machineCodeArray[] = new String[2];
         for (String aHeaderString : headerString) {
             if (aHeaderString.contains("state=")) {
                 machineCodeArray = aHeaderString.split("\\=");
                 break;
             }
+        }*/
+        Log.d("---------------------", qrString.toString());
+        if (qrString == null || qrString.length <= 1) {
+            Toast.makeText(this, "解析失败，请重新扫码", Toast.LENGTH_SHORT).show();
+            return;
         }
-       String machineCode = machineCodeArray[1];*/
-        Log.e("machineCode", "121231");
+        String machineCode = qrString[1];
+        Log.e("machineCode", machineCode);
         final Map<String, Object> body = new HashMap<>();
-        body.put("machineCode", "20180111092200001");
-        body.put("userID", 0);
+        body.put("machineCode", machineCode);
+        body.put("userID", PerSonMessage.userId);
         body.put("QRCode", QRCode);
-        body.put("password", "123456");
+        body.put("password", PerSonMessage.loginPassword);
         new AsyncTask<Void, Void, Boolean>() {
             String err;
 

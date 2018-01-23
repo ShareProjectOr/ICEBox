@@ -22,7 +22,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:paddingTop="20dp"
-                android:text="订单金额"
+                android:text="交易总金额"
                 android:textSize="18sp" />
 
             <TextView
@@ -64,7 +64,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="30dp"
-                    android:text="代扣款" />
+                    android:text="待扣款" />
 
                 <TextView
                     android:id="@+id/notPayNum"

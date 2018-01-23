@@ -22,18 +22,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:paddingTop="20dp"
-                android:text="交易退款金额"
+                android:text="结算金额"
                 android:textSize="18sp" />
 
-            <TextView
-                android:id="@+id/totalMoneyNum_3"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:paddingBottom="20dp"
-                android:paddingTop="10dp"
-                android:text="0.00"
-                android:textColor="@color/black"
-                android:textSize="30sp" />
 
             <View
                 android:layout_width="match_parent"
@@ -50,10 +41,10 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="实退金额" />
+                    android:text="已结算" />
 
                 <TextView
-                    android:id="@+id/hasPayNum_3"
+                    android:id="@+id/settledMoney"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="10dp"
@@ -64,10 +55,10 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="30dp"
-                    android:text="手续费" />
+                    android:text="待结算" />
 
                 <TextView
-                    android:id="@+id/notPayNum_3"
+                    android:id="@+id/unsettleMoney"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="10dp"

@@ -13,7 +13,6 @@ import java.util.List;
 
 /**
  * Created by WH on 2017/12/9.
- *
  */
 
 public class ItemProduct {
@@ -21,8 +20,8 @@ public class ItemProduct {
     public Integer goodsID;
     public Integer categoryID;
     public String goodsName;
-    public float price;
-    public float activityPrice;
+    public String price;
+    public String activityPrice;
     public String rfid;
     public String inputTime;
     public String bindingTime;
@@ -89,8 +88,8 @@ public class ItemProduct {
                 itemProduct.goodsID = item.getInt("goodsID");
                 itemProduct.categoryID = item.getInt("categoryID");
                 itemProduct.goodsName = item.getString("goodsName");
-                itemProduct.price = (float) item.getDouble("price");
-                itemProduct.activityPrice = (float) item.getDouble("activityPrice");
+                itemProduct.price = item.getString("price");
+                itemProduct.activityPrice = item.getString("activityPrice");
                 itemProduct.rfid = item.getString("rfid");
                 itemProduct.inputTime = item.getString("inputTime");
                 itemProduct.bindingTime = item.getString("bindingTime");

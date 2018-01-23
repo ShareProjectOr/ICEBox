@@ -21,8 +21,8 @@ public class ItemStockProduct {
     public Integer goodsID;
     public Integer categoryID;
     public String goodsName;
-    public float price;
-    public float activityPrice;
+    public String price;
+    public String activityPrice;
     public String rfid;
     public String inputTime;
     public String bindingTime;
@@ -42,8 +42,8 @@ public class ItemStockProduct {
                 itemProduct.goodsID = item.getInt("goodsID");
                 itemProduct.categoryID = item.getInt("categoryID");
                 itemProduct.goodsName = item.getString("goodsName");
-                itemProduct.price = (float) item.getDouble("price");
-                itemProduct.activityPrice = (float) item.getDouble("activityPrice");
+                itemProduct.price = item.getString("price");
+                itemProduct.activityPrice = item.getString("activityPrice");
                 itemProduct.rfid = item.getString("rfid");
                 itemProduct.inputTime = item.getString("inputTime");
                 itemProduct.bindingTime = item.getString("bindingTime");
@@ -55,7 +55,7 @@ public class ItemStockProduct {
                 itemProducts.add(itemProduct);
             }
         } catch (JSONException e) {
-            Log.e("ItemProduct", e.toString());
+            Log.e("ItemStockProduct", e.toString());
         }
         return itemProducts;
     }

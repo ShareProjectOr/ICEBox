@@ -71,12 +71,14 @@
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:background="@drawable/selector_trade_date"
-                android:text="筛选" />
+                android:text="我的" />
         </LinearLayout>
 
         <android.support.v4.widget.SwipeRefreshLayout
             android:id="@+id/refresh"
             android:layout_width="match_parent"
+            android:layout_marginTop="20dp"
+            android:layout_marginBottom="10dp"
             android:layout_height="wrap_content">
             <!--官方配套牵引scrollView-->
             <android.support.v4.widget.NestedScrollView
@@ -88,15 +90,48 @@
                     android:layout_height="match_parent"
                     android:orientation="vertical">
 
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/shape_trade_time"
+                        android:gravity="center_horizontal"
+                        android:orientation="horizontal"
+                        android:paddingBottom="10dp"
+                        android:paddingTop="10dp">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="净利润"
+                            android:textColor="@color/black" />
+
+                        <TextView
+                            android:id="@+id/incomeMoney"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="10dp"
+                            android:text="0.00"
+                            android:textColor="@color/whiteLight"
+                            android:textSize="20sp" />
+
+                    </LinearLayout>
+
                     <include layout="@layout/trade_total_list_1" />
 
                     <include layout="@layout/trade_total_list_2" />
 
                     <include layout="@layout/trade_total_list_3" />
 
-                    <include layout="@layout/trade_total_list_4" />
+                    <LinearLayout
+                        android:id="@+id/agentHas"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
 
+                        <include layout="@layout/trade_total_list_4" />
 
+                        <include layout="@layout/trade_total_list_5" />
+                    </LinearLayout>
                 </LinearLayout>
             </android.support.v4.widget.NestedScrollView>
 

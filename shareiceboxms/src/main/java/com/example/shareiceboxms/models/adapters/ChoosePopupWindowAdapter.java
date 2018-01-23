@@ -51,7 +51,11 @@ public class ChoosePopupWindowAdapter extends BaseAdapter {
         } else {
             holder = (ViewHolder) convertView.getTag();
         }
-        holder.childName.setText(persons.get(position).name);
+        if (persons.get(position) == null) {
+            holder.childName.setText("我的");
+        } else {
+            holder.childName.setText(persons.get(position).name);
+        }
         return convertView;
     }
 

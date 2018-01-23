@@ -6,6 +6,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -56,8 +57,11 @@ public class OpeningDoorFragment extends BaseFragment {
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                homeActivity.curFragment = new OpenDoorFailFragment();
-                homeActivity.switchFragment();
+                Log.d("111111111111", "----------");
+                if (homeActivity.curFragment instanceof OpeningDoorFragment) {
+                    homeActivity.curFragment = new OpenDoorFailFragment();
+                    homeActivity.switchFragment();
+                }
             }
         }, 30000);
       /*  //  Glide.with(this).load(R.drawable.opening).asGif().fitCenter().diskCacheStrategy(DiskCacheStrategy.SOURCE).into(mShowgif);

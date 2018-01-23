@@ -83,44 +83,44 @@ public class ItemSellProduct extends ItemProductBase {
             for (int i = 0; i < list.length(); i++) {
                 JSONObject item = (JSONObject) list.get(i);
                 ItemSellProduct itemProduct = new ItemSellProduct();
-                if (item.has("goodsID") && !item.get("goodsID").equals(null)) {
+                if (item.has("goodsID")) {
                     itemProduct.goodsID = item.getInt("goodsID");
                 }
-                if (item.has("categoryID") && !item.get("categoryID").equals(null)) {
+                if (item.has("categoryID")) {
                     itemProduct.categoryID = item.getInt("categoryID");
                 }
-                if (item.has("goodsName") && !item.get("goodsName").equals(null)) {
+                if (item.has("goodsName")) {//&& !item.get("goodsName").equals(null)
                     itemProduct.goodsName = item.getString("goodsName");
                 }
-                if (item.has("pirse") && !item.get("pirse").equals(null)) {
-                    itemProduct.pirse = (float) item.getDouble("pirse");
+                if (item.has("pirse")) {
+                    itemProduct.pirse = item.getString("pirse");
                 }
-                if (item.has("activityPrice") && !item.get("activityPrice").equals(null)) {
-                    itemProduct.activityPrice = (float) item.getDouble("activityPrice");
+                if (item.has("activityPrice")) {
+                    itemProduct.activityPrice = item.getString("activityPrice");
                 }
-                if (item.has("rfid") && !item.get("rfid").equals(null)) {
+                if (item.has("rfid")) {
                     itemProduct.rfid = item.getString("rfid");
                 }
-                if (item.has("inputTime") && !item.get("inputTime").equals(null)) {
+                if (item.has("inputTime")) {
                     itemProduct.inputTime = item.getString("inputTime");
                 }
-                if (item.has("bindingTime") && !item.get("bindingTime").equals(null)) {
+                if (item.has("bindingTime")) {
                     itemProduct.bindingTime = item.getString("bindingTime");
                 }
-                if (item.has("exhibitTime") && !item.get("exhibitTime").equals(null)) {
+                if (item.has("exhibitTime")) {
                     itemProduct.exhibitTime = item.getString("exhibitTime");
                 }
-                if (item.has("residueStorageTime") && !item.get("residueStorageTime").equals(null)) {
+                if (item.has("residueStorageTime")) {
                     itemProduct.residueStorageTime = item.getInt("residueStorageTime");
                 }
-                if (item.has("state") && !item.get("state").equals(null)) {
+                if (item.has("state")) {
                     itemProduct.state = item.getInt("state");
                 }
-                if (item.has("isRefund") && !item.get("isRefund").equals(null)) {
+                if (item.has("isRefund")) {
                     itemProduct.isRefund = item.getInt("isRefund");
                 }
 
-                if (item.has("soldPrise") ) {//&& !item.get("soldPrise").equals(null)
+                if (item.has("soldPrise")) {//&& !item.get("soldPrise").equals(null)
                     itemProduct.soldPrise = item.getString("soldPrise");
                 }
 

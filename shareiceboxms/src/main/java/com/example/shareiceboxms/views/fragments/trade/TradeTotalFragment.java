@@ -14,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.DatePicker;
+import android.widget.LinearLayout;
 import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -55,6 +56,7 @@ public class TradeTotalFragment extends BaseFragment {
     private View containerView;
     private HomeActivity activity;
     private TextView timeSelector;
+    private LinearLayout agentHas;
     private TextView totalMoneyNum, hasPayNum, notPayNum;
 
     private TextView totalMoneyNum_2, hasPayNum_2, notPayNum_2;
@@ -63,6 +65,7 @@ public class TradeTotalFragment extends BaseFragment {
 
     private TextView totalMoneyNum_4, hasPayNum_4, notPayNum_4;
 
+    private TextView settledMoney, unsettleMoney, incomeMoney;
 
     private Button choosePerson;
     private RadioGroup dateGroup;
@@ -72,6 +75,7 @@ public class TradeTotalFragment extends BaseFragment {
     private TradeTotalFragment tradeTotalFragment;
     private Dialog dialog;
     private String[] time;
+    private int companyID = -1;
 
     private DoubleDatePickerDialog datePickerDialog;
 
@@ -105,10 +109,18 @@ public class TradeTotalFragment extends BaseFragment {
         hasPayNum_3 = (TextView) containerView.findViewById(R.id.hasPayNum_3);
         notPayNum_3 = (TextView) containerView.findViewById(R.id.notPayNum_3);
 
-        totalMoneyNum_4 = (TextView) containerView.findViewById(R.id.totalMoneyNum_4);
         hasPayNum_4 = (TextView) containerView.findViewById(R.id.hasPayNum_4);
         notPayNum_4 = (TextView) containerView.findViewById(R.id.notPayNum_4);
 
+        settledMoney = (TextView) containerView.findViewById(R.id.settledMoney);
+        unsettleMoney = (TextView) containerView.findViewById(R.id.unsettleMoney);
+        incomeMoney = (TextView) containerView.findViewById(R.id.incomeMoney);
+
+        agentHas = (LinearLayout) containerView.findViewById(R.id.agentHas);
+
+        if (PerSonMessage.userType >= Constants.MACHINE_MANAGER) {
+            agentHas.setVisibility(View.GONE);
+        }
 
         selectTime.setOnClickListener(this);
 
@@ -159,6 +171,24 @@ public class TradeTotalFragment extends BaseFragment {
     public Map<String, Object> getParams() {
         Map<String, Object> params = RequestParamsContants.getInstance().getTradeTotalParams();
         params.put("searchTime", RequestParamsContants.getInstance().getSelectTime(time));
+        if (companyID >= 0) {
+            params.put("companyID", companyID);
+        } else {
+            params.remove("companyID");
+        }
+      /*  switch (PerSonMessage.userType) {
+            case Constants.AGENT_MANAGER:
+                if (PerSonMessage.company != null) {
+                    params.put("companyID", PerSonMessage.company.companyID);
+                }
+                break;
+            case Constants.MACHINE_MANAGER:
+                params.put("userID", PerSonMessage.userId);
+                break;
+            case Constants.SYSTEM_MANAGER:
+                params.put("companyID", "");
+                break;
+        }*/
         return params;
     }
 
@@ -167,11 +197,18 @@ public class TradeTotalFragment extends BaseFragment {
         task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
     }
 
+    public void switchAgentName(String name) {
+        choosePerson.setText(name);
+    }
+
+    public void setCompanyID(int companyID) {
+        this.companyID = companyID;
+    }
 
     @Override
     public void onRefresh() {
-        time = SecondToDate.getDateParams(SecondToDate.TODAY_CODE);
-        timeSelector.setText(SecondToDate.getDateUiShow(time));
+//        time = SecondToDate.getDateParams(SecondToDate.TODAY_CODE);
+//        timeSelector.setText(SecondToDate.getDateUiShow(time));
         getDatas(getParams());
         refreshLayout.setRefreshing(false);//关闭刷新
     }
@@ -190,6 +227,7 @@ public class TradeTotalFragment extends BaseFragment {
                         public void getAgents(List<ItemPerson> agents) {
                             if (PerSonMessage.childPerson != null) {
                                 PerSonMessage.childPerson.clear();
+                                PerSonMessage.childPerson.add(null);
                                 PerSonMessage.childPerson.addAll(agents);
                                 ChoosePopupWindow.setAdapter(PerSonMessage.childPerson, activity);
                                 ChoosePopupWindow.getAdapter().notifyDataSetChanged();
@@ -224,20 +262,51 @@ public class TradeTotalFragment extends BaseFragment {
 
     private void updateUi() {
 
+        //    totalMoney:1500.00,//Number 交易总金额
+        //    unreceiveMoney:400.00,//Number 未收到的交易总额
+        //    receiveMoney:1100.00,//Number 已收到的交易总额金额
+
+        //    serviceCharge:21,//Number 手续费
+        //    alipayPoundage:6.00,//Number 支付宝手续费
+        //    wechatPoundage:0.00,//Number 微信手续费
+
+        //    refundMoney:100.00,//Number  交易退款金额
+        //    realRefundMoney:45415.2,//Number 实退金额
+        //    refundServiceCharge:0.03,//Number 退回手续费
+
+
+        //    offsetedMoney:10.00,//Number 已冲抵金额
+        //    unoffsetMoney:29.76,//Number 待冲抵金额
+
+        //    settledMoney:300.00,//Number 已结算金额
+        //    unsettleMoney:534.96,//Number 待结算金额
+
+
+        //    incomeMoney:994.00,//Number 净利润
+
         totalMoneyNum.setText(itemTradeTotal.totalMoney);
-        hasPayNum.setText(itemTradeTotal.totalMoney);
-        notPayNum.setText(itemTradeTotal.totalMoney);
-        if (PerSonMessage.userType >= Constants.MACHINE_MANAGER) {
-            totalMoneyNum_2.setText(itemTradeTotal.totalMoney);
-            hasPayNum_2.setText(itemTradeTotal.totalMoney);
-            notPayNum_2.setText(itemTradeTotal.totalMoney);
+        hasPayNum.setText(itemTradeTotal.receiveMoney);
+        notPayNum.setText(itemTradeTotal.unreceiveMoney);
+
+        totalMoneyNum_2.setText(itemTradeTotal.serviceCharge);
+        hasPayNum_2.setText(itemTradeTotal.alipayPoundage);
+        notPayNum_2.setText(itemTradeTotal.wechatPoundage);
+
+        totalMoneyNum_3.setText(itemTradeTotal.refundMoney);
+        hasPayNum_3.setText(itemTradeTotal.realRefundMoney);
+        notPayNum_3.setText(itemTradeTotal.refundServiceCharge);
+
+        if (PerSonMessage.userType < Constants.MACHINE_MANAGER) {
+
+            hasPayNum_4.setText(itemTradeTotal.offsettedMoney);
+            notPayNum_4.setText(itemTradeTotal.unoffsetMoney);
+
+            settledMoney.setText(itemTradeTotal.settledMoney);
+            unsettleMoney.setText(itemTradeTotal.unsettleMoney);
         }
-        totalMoneyNum_3.setText(itemTradeTotal.totalMoney);
-        hasPayNum_3.setText(itemTradeTotal.totalMoney);
-        notPayNum_3.setText(itemTradeTotal.totalMoney);
-        totalMoneyNum_4.setText(itemTradeTotal.totalMoney);
-        hasPayNum_4.setText(itemTradeTotal.totalMoney);
-        notPayNum_4.setText(itemTradeTotal.totalMoney);
+
+
+        incomeMoney.setText(itemTradeTotal.incomeMoney);
     }
 
     //获取交易统计异步任务

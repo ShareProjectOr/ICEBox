@@ -34,6 +34,7 @@
         <!-- LoginActivity" -->
         <activity
             android:name=".views.activities.LoginActivity"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -44,11 +45,18 @@
 
         <activity
             android:name=".views.activities.HomeActivity"
-            android:launchMode="singleTask"></activity>
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait"></activity>
         <activity android:name=".views.activities.ModifyPriceActivity" />
-        <activity android:name=".views.activities.CaptureActivity"></activity>
-        <activity android:name=".views.activities.OpenDoorSuccessActivity"></activity>
-        <activity android:name=".views.activities.QrCodeActivity" />
+        <activity
+            android:name=".views.activities.CaptureActivity"
+            android:screenOrientation="portrait"></activity>
+        <activity
+            android:name=".views.activities.OpenDoorSuccessActivity"
+            android:screenOrientation="portrait"></activity>
+        <activity
+            android:name=".views.activities.QrCodeActivity"
+            android:screenOrientation="portrait" />
 
         <service android:name=".models.http.mqtt.MqttService" />
     </application>

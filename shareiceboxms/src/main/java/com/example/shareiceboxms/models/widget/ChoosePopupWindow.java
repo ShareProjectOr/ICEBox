@@ -79,16 +79,18 @@ public class ChoosePopupWindow extends PopupWindow {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Log.d("----------------------", "onItemClick");
-                Map<String, Object> params = tradeTotalFragment.getParams();
-                switch (PerSonMessage.userType) {
-                    case Constants.AGENT_MANAGER:
-                        break;
-                    case Constants.MACHINE_MANAGER:
-                        break;
-                    case Constants.SYSTEM_MANAGER:
-                        params.put("userID", PerSonMessage.childPerson.get(position).userID);
-                        break;
+                Map<String, Object> params = null;
+                ItemPerson itemPerson = PerSonMessage.childPerson.get(position);
+                if (itemPerson == null) {
+                    tradeTotalFragment.switchAgentName("我的");
+                    tradeTotalFragment.setCompanyID(-1);
+                } else {
+                    tradeTotalFragment.switchAgentName(itemPerson.name);
+                    if (itemPerson.company != null) {
+                        tradeTotalFragment.setCompanyID(itemPerson.company.companyID);
+                    }
                 }
+                params = tradeTotalFragment.getParams();
                 tradeTotalFragment.getDatas(params);
                 dismiss();
             }

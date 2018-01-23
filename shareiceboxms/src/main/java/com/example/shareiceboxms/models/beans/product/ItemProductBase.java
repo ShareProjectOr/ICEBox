@@ -23,8 +23,8 @@ public class ItemProductBase {
     public Integer goodsID;
     public Integer categoryID;
     public String goodsName;
-    public float pirse;
-    public float activityPrice;
+    public String pirse;
+    public String activityPrice;
     public String rfid;
     public String inputTime;
     public String bindingTime;

@@ -22,18 +22,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:paddingTop="20dp"
-                android:text="微信消费"
+                android:text="冲抵金额"
                 android:textSize="18sp" />
 
-            <TextView
-                android:id="@+id/totalMoneyNum_4"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:paddingBottom="20dp"
-                android:paddingTop="10dp"
-                android:text="0.00"
-                android:textColor="@color/black"
-                android:textSize="30sp" />
+
 
             <View
                 android:layout_width="match_parent"
@@ -50,7 +42,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="已支付" />
+                    android:text="已冲抵" />
 
                 <TextView
                     android:id="@+id/hasPayNum_4"
@@ -64,7 +56,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="30dp"
-                    android:text="待支付" />
+                    android:text="待冲抵" />
 
                 <TextView
                     android:id="@+id/notPayNum_4"

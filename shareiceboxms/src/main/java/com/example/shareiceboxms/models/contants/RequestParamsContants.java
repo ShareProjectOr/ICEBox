@@ -182,20 +182,6 @@ public class RequestParamsContants {
     public Map<String, Object> getTradeTotalParams() {
         Map<String, Object> params = new HashMap<>();
         params.put("appUserID", PerSonMessage.userId);
-        switch (PerSonMessage.userType) {
-            case Constants.AGENT_MANAGER:
-                if (PerSonMessage.company != null) {
-                    params.put("companyID", PerSonMessage.company.companyID);
-                }
-
-                break;
-            case Constants.MACHINE_MANAGER:
-                params.put("userID", PerSonMessage.userId);
-                break;
-            case Constants.SYSTEM_MANAGER:
-                params.put("companyID", "");
-                break;
-        }
         params.put("searchTime", "");
         return params;
     }
