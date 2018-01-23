@@ -393,7 +393,7 @@ public class HomeActivity extends BaseActivity
                 }
                 break;
             case R.id.icon_update:
-
+                checktheupdata();
              /*   curFragment = new TradeFragment();
                 tabLayout.setVisibility(View.GONE);
                 showHomepage = false;*/
@@ -424,49 +424,58 @@ public class HomeActivity extends BaseActivity
     private void checktheupdata() {
         final Map<String, Object> body = new HashMap<>();
         body.put("version", getVersion());
-        new Thread(new Runnable() {
+        new AsyncTask<Void, Void, Boolean>() {
+            String response;
+            String version;
+            String fileUrl;
+
             @Override
-            public void run() {
+            protected Boolean doInBackground(Void... params) {
                 try {
-                    String response = OkHttpUtil.post(HttpRequstUrl.GET_APP_VERSION_URL, JsonUtil.mapToJson(body));
-
-                    try {
-                        final JSONObject object = new JSONObject(response);
-                        if (!getVersion().equals(object.getJSONObject("d").getString("version"))) {
-                            HomeActivity.this.runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    new AlertDialog.Builder(HomeActivity.this).setTitle("版本更新").setMessage("检测到有新版本,建议您更新")
-                                            .setNegativeButton("暂不更新", null).setPositiveButton("立即更新", new DialogInterface.OnClickListener() {
-                                        @Override
-                                        public void onClick(DialogInterface dialog, int which) {
-                                            Intent intent = new Intent();
-                                            intent.setAction("android.intent.action.VIEW");
-                                            Uri content_url = null;
-                                            try {
-                                                content_url = Uri.parse(object.getJSONObject("d").getString("fileUrl"));
-                                            } catch (JSONException e) {
-                                                Toast.makeText(getApplication(), "获取下载地址错误...,更新失败", Toast.LENGTH_LONG).show();
-                                            }
-                                            intent.setData(content_url);
-                                            startActivity(intent);
-                                        }
-                                    }).create().show();
-                                }
-                            });
-                        }
-                    } catch (JSONException e) {
-                        e.printStackTrace();
+                    response = OkHttpUtil.post(HttpRequstUrl.GET_APP_VERSION_URL, JsonUtil.mapToJson(body));
+                    JSONObject object = new JSONObject(response);
+                    if (!object.getJSONObject("d").getString("version").equals("null")) {
+                        version = object.getJSONObject("d").getString("version");
+                        fileUrl = object.getJSONObject("d").getString("fileUrl");
+                        return true;
                     }
-
-
                 } catch (IOException e) {
+                    response = e.getMessage();
+                    e.printStackTrace();
+                } catch (JSONException e) {
+                    response = e.getMessage();
                     e.printStackTrace();
                 }
+                return false;
             }
-        }).start();
+
+            @Override
+            protected void onPostExecute(Boolean aBoolean) {
+                if (aBoolean) {
+                    if (!getVersion().equals(version)) {
+                        new AlertDialog.Builder(HomeActivity.this).setTitle("版本更新").setMessage("检测到有新版本,建议您更新")
+                                .setNegativeButton("暂不更新", null).setPositiveButton("立即更新", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                Intent intent = new Intent();
+                                intent.setAction("android.intent.action.VIEW");
+                                Uri content_url = Uri.parse(fileUrl);
+                                intent.setData(content_url);
+                                startActivity(intent);
+                            }
+                        }).create().show();
+                    } else {
+                        Toast.makeText(getApplication(), "当前已是最新版本...", Toast.LENGTH_LONG).show();
+                    }
+                } else {
+                    Toast.makeText(getApplication(), response, Toast.LENGTH_LONG).show();
+                }
+            }
+        }.execute();
+
 
     }
+
 
     /*
     * 需要注意的是，只有在Android 4.4及以上系统才支持沉浸式模式
