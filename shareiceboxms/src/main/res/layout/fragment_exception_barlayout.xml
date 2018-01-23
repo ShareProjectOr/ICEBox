@@ -114,10 +114,7 @@
 
                 android:gravity="center_vertical"
                 android:paddingLeft="3dp"
-                android:paddingRight="3dp"
-                android:thumb="@mipmap/swich_thumb_30px"
-                android:track="@color/gray_light_deep"
-                android:trackTint="@color/gray_light_deep" />
+                android:paddingRight="3dp" />
 
             <TextView
                 android:layout_width="wrap_content"

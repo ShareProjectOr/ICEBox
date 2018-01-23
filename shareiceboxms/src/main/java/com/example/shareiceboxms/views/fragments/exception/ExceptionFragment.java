@@ -1,6 +1,7 @@
 package com.example.shareiceboxms.views.fragments.exception;
 
 import android.content.Context;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
@@ -40,6 +41,7 @@ import com.example.shareiceboxms.models.helpers.DoubleDatePickerDialog;
 import com.example.shareiceboxms.models.helpers.LoadMoreHelper;
 import com.example.shareiceboxms.models.helpers.MenuPop;
 import com.example.shareiceboxms.models.helpers.TitlePopup;
+import com.example.shareiceboxms.models.helpers.Util;
 import com.example.shareiceboxms.views.activities.HomeActivity;
 import com.example.shareiceboxms.views.fragments.BaseFragment;
 
@@ -100,6 +102,14 @@ public class ExceptionFragment extends BaseFragment implements CompoundButton.On
     }
 
     private void initDatas() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            //5.0J及以上
+            chooseIsDetails.setThumbResource(R.mipmap.swich_thumb_30px);
+            chooseIsDetails.setTrackResource(R.color.gray_light_deep);
+        } else {
+            chooseIsDetails.setTextOn("已处理");
+            chooseIsDetails.setTextOff("未处理");
+        }
         homeActivity = (HomeActivity) mContext;
         homeActivity.setOnBackPressListener(this);
         new MyViewFactory(mContext).BuildRecyclerViewRule(exceptionList, new LinearLayoutManager(mContext), new DefaultItemAnimator(), true).setAdapter(mRecycleAdapter);
@@ -218,12 +228,18 @@ public class ExceptionFragment extends BaseFragment implements CompoundButton.On
     @Override
     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
         if (isChecked) {
-            chooseIsDetails.setBackground(ContextCompat.getDrawable(mContext, R.drawable.shape_switch_open));
-            chooseIsDetails.setTrackDrawable(ContextCompat.getDrawable(mContext, R.drawable.shape_switch_open));
+            if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP) {
+                chooseIsDetails.setBackground(ContextCompat.getDrawable(mContext, R.drawable.shape_switch_open));
+                chooseIsDetails.setTrackDrawable(ContextCompat.getDrawable(mContext, R.drawable.shape_switch_open));
+            }
+
             isDetail = 1;
         } else {
-            chooseIsDetails.setBackground(ContextCompat.getDrawable(mContext, R.drawable.shape_switch));
-            chooseIsDetails.setTrackDrawable(ContextCompat.getDrawable(mContext, R.drawable.shape_switch));
+            if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP) {
+                chooseIsDetails.setBackground(ContextCompat.getDrawable(mContext, R.drawable.shape_switch));
+                chooseIsDetails.setTrackDrawable(ContextCompat.getDrawable(mContext, R.drawable.shape_switch));
+            }
+
             isDetail = 0;
 
         }
