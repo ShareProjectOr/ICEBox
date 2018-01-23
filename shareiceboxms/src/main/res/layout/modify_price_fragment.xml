@@ -30,6 +30,7 @@
         android:layout_marginLeft="20dp"
         android:layout_marginRight="20dp"
         android:layout_marginTop="20dp"
+        android:inputType="numberDecimal"
         android:background="@drawable/shape_trade_time"
         android:textColorHint="@color/test_init_color" />
 
@@ -49,6 +50,7 @@
         android:layout_marginLeft="20dp"
         android:layout_marginRight="20dp"
         android:layout_marginTop="20dp"
+        android:inputType="numberDecimal"
         android:background="@drawable/shape_trade_time"
         android:textColorHint="@color/test_init_color" />
 

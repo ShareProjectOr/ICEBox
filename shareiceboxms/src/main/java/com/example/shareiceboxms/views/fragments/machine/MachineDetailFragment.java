@@ -97,6 +97,11 @@ public class MachineDetailFragment extends BaseFragment implements SwipeRefreshL
         title.setText("机器详情");
         drawerIcon.setOnClickListener(this);
         saoma.setOnClickListener(this);
+    }
+
+    private void initDatas() {
+        homeActivity = (HomeActivity) getActivity();
+        machineItemAddView = new MachineItemAddView(homeActivity);
         machineTabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
@@ -109,10 +114,12 @@ public class MachineDetailFragment extends BaseFragment implements SwipeRefreshL
                         }
                         break;
                     case 1:
+
                         machineItemAddView.addTeleControlView(itemLayout);
                         if (itemMachine != null) {
                             machineItemAddView.updateTeleControlUi(itemMachine);
                         }
+
                         break;
                     case 2:
                         refresh.setEnabled(true);
@@ -133,11 +140,6 @@ public class MachineDetailFragment extends BaseFragment implements SwipeRefreshL
 
             }
         });
-    }
-
-    private void initDatas() {
-        homeActivity = (HomeActivity) getActivity();
-        machineItemAddView = new MachineItemAddView(homeActivity);
         for (int i = 0; i < Constants.MachineItemOperator.length; i++) {
             machineTabLayout.addTab(machineTabLayout.newTab().setText(Constants.MachineItemOperator[i]));
         }

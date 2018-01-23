@@ -73,7 +73,12 @@ public class ProductListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
                 });
                 body.mProductName.setText(contentProvider.getItem(position).categoryName);
                 body.mPrice.setText("￥" + contentProvider.getItem(position).categoryPrice);
-                body.mSpecialPrice.setText("￥" + contentProvider.getItem(position).activityPrice);
+                if ( contentProvider.getItem(position).activityPrice.equals("null")){
+                    body.mSpecialPrice.setText("暂无特价");
+                }else {
+                    body.mSpecialPrice.setText("￥" + contentProvider.getItem(position).activityPrice);
+                }
+
                 body.mSelled.setText("" + contentProvider.getItem(position).soldOutNum);
                 body.mSelling.setText("" + contentProvider.getItem(position).salingNum);
                 body.mNotLoading.setText("" + contentProvider.getItem(position).noExhibitNum);

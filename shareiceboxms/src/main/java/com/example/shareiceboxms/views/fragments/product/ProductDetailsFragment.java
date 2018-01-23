@@ -119,7 +119,12 @@ public class ProductDetailsFragment extends BaseFragment {
                     mModifyPrice.setVisibility(View.VISIBLE);
                     mProductName.setText(itemProductType.categoryName);
                     mPrice.setText("￥" + itemProductType.categoryPrice);
-                    mSpecialPrice.setText("￥" + itemProductType.activityPrice);
+                    if (itemProductType.activityPrice.equals("null") || itemProductType.activityPrice.equals("")) {
+                        mSpecialPrice.setText("无");
+                    } else {
+                        mSpecialPrice.setText("￥" + itemProductType.activityPrice);
+                    }
+
                     mProductCode.setText(String.valueOf(itemProductType.categoryID));
                     String[] time = SecondToDate.formatLongToTimeStr(Long.parseLong(String.valueOf(itemProductType.storageTimeLimit)));
                     if (!time[0].equals("0")) {
@@ -138,7 +143,12 @@ public class ProductDetailsFragment extends BaseFragment {
 
                 /*   mSpoilageUpload.setText(itemProductType.breakNum +
                             "(" + String.valueOf(breakfloat * 100) + "%)");*/
-                    mSelledPriceTotal.setText(String.valueOf(itemProductType.soldOutPrice));
+                    if (String.valueOf(itemProductType.soldOutPrice).equals("null") || String.valueOf(itemProductType.soldOutPrice).equals("")) {
+                        mSelledPriceTotal.setText("0");
+                    } else {
+                        mSelledPriceTotal.setText(String.valueOf(itemProductType.soldOutPrice));
+                    }
+
                     mSelledNum.setText(String.valueOf(itemProductType.soldOutNum));
 
                 } else {
@@ -172,7 +182,12 @@ public class ProductDetailsFragment extends BaseFragment {
                 Bundle bundle = new Bundle();
                 bundle.putInt("categoryID", categoryID);
                 bundle.putString("categoryPrice", itemProductType.categoryPrice);
-                bundle.putString("activityPrice", itemProductType.activityPrice);
+                if (itemProductType.activityPrice.equals("null")) {
+                    bundle.putString("activityPrice", "");
+                } else {
+                    bundle.putString("activityPrice", itemProductType.activityPrice);
+                }
+
                 homeActivity.jumpActivity(ModifyPriceActivity.class, bundle);
                 break;
             case R.id.drawerIcon:

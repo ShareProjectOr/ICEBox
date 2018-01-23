@@ -21,13 +21,16 @@ import android.widget.Toast;
 
 import com.example.shareiceboxms.R;
 import com.example.shareiceboxms.models.beans.PerSonMessage;
+import com.example.shareiceboxms.models.contants.ConstanceMethod;
 import com.example.shareiceboxms.models.contants.HttpRequstUrl;
 import com.example.shareiceboxms.models.contants.RequstTips;
+import com.example.shareiceboxms.models.contants.Sql;
 import com.example.shareiceboxms.models.factories.FragmentFactory;
 import com.example.shareiceboxms.models.helpers.MyDialog;
 import com.example.shareiceboxms.models.http.JsonUtil;
 import com.example.shareiceboxms.models.http.OkHttpUtil;
 import com.example.shareiceboxms.views.activities.HomeActivity;
+import com.example.shareiceboxms.views.activities.LoginActivity;
 import com.google.gson.JsonObject;
 
 import org.json.JSONException;
@@ -194,7 +197,7 @@ public class ChangePasswordFragment extends BaseFragment implements View.OnFocus
                     JSONObject object = new JSONObject(response);
                     Log.e("response", response);
                     err = object.getString("err");
-                    if (object.getString("err").equals("")) {
+                    if (object.getString("err").equals("") || object.getString("err").equals("null")) {
                         //  Toast.makeText(getActivity(), "密码修改成功", Toast.LENGTH_LONG).show();
                         return true;
                         //  homeActivity.onBackPressed();
@@ -215,7 +218,12 @@ public class ChangePasswordFragment extends BaseFragment implements View.OnFocus
                 if (aBoolean) {
                     Toast.makeText(getActivity(), "密码修改成功", Toast.LENGTH_LONG).show();
                     PerSonMessage.loginPassword = mNewPassword.getText().toString();
-                    homeActivity.onBackPressed();
+                    Dosql();
+                    ConstanceMethod.isFirstLogin(getActivity(), true);
+                    PerSonMessage.isexcit = true;
+                    homeActivity.jumpActivity(LoginActivity.class, null);
+                    //清空缓存数据
+                    getActivity().finish();
                 } else {
                     Toast.makeText(getActivity(), err, Toast.LENGTH_LONG).show();
                 }
@@ -223,6 +231,11 @@ public class ChangePasswordFragment extends BaseFragment implements View.OnFocus
             }
         }.execute();
 
+    }
+
+    private void Dosql() {
+        Sql sql = new Sql(getActivity());
+        sql.deleteAllContact(sql.getAllCotacts().size());
     }
 
     @Override

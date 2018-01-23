@@ -80,8 +80,8 @@ public class ModifyPriceFragment extends BaseFragment {
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.commit:
-                if (mProductPrice.getText().toString().isEmpty() || mProductSpecPrice.getText().toString().isEmpty()) {
-                    Toast.makeText(getActivity(), "单价或活动价不能为0", Toast.LENGTH_LONG).show();
+                if (mProductPrice.getText().toString().isEmpty()) {
+                    Toast.makeText(getActivity(), "单价不能为0", Toast.LENGTH_LONG).show();
                     return;
                 }
                 changePrice();

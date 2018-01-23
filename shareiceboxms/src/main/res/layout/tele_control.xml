@@ -4,7 +4,6 @@
     android:layout_height="match_parent"
     android:layout_marginTop="5dp"
     android:background="@color/edit_box_gray"
-
     android:orientation="vertical">
 
     <TextView
@@ -324,9 +323,9 @@
                 android:layout_width="50dp"
                 android:layout_height="wrap_content"
                 android:background="@drawable/selector_switch_track"
-                android:gravity="center_vertical"
-                android:thumb="@null"
-                android:track="@null" />
+                android:gravity="center_vertical" />
+            <!-- android:thumb="@null"
+                android:track="@null"-->
 
             <TextView
                 android:layout_width="wrap_content"

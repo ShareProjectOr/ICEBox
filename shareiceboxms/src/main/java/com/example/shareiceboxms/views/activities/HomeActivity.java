@@ -142,10 +142,11 @@ public class HomeActivity extends BaseActivity
         handler = new Handler() {
             @Override
             public void handleMessage(Message msg) {
+
                 Log.d("----handleMessage---", "';;;;;");
                 JSONObject object = (JSONObject) msg.obj;
                 try {
-                    Log.e("push", object.toString() + "------" + object.getString("createTime") + "----time:" + SecondToDate.getDateToString(Long.parseLong(object.getString("createTime"))));
+//                    Log.e("push", object.toString() + "------" + object.getString("createTime") + "----time:" + SecondToDate.getDateToString(Long.parseLong(object.getString("createTime"))));
                     long recevermsgTime = Long.parseLong(object.getString("createTime"));
                     long savemsgTime = ConstanceMethod.getSharedPreferences(HomeActivity.this, "Msg").getLong("msgTag", 0);
                     Log.e("time", "savemsgTime:" + savemsgTime + "----recevermsgTime:" + recevermsgTime + "----" + (recevermsgTime <= savemsgTime));
@@ -556,7 +557,7 @@ public class HomeActivity extends BaseActivity
     //记录登录状态
     private void SaveUserMessager() {
 
-        if (FragmentFactory.getInstance().getSavedBundle().getBoolean("remember")) {//登录界面选择记录密码则执行保存信息等操作
+        if (!FragmentFactory.getInstance().getSavedBundle().getBoolean("remember")) {//登录界面选择记录密码则执行保存信息等操作
             ConstanceMethod.isFirstLogin(this, false);
             DoSql();
         } else {//登录界面为勾选记住密码则执行清空保存信息等操作
@@ -609,14 +610,7 @@ public class HomeActivity extends BaseActivity
 
     private void requestOpenDoor(final String QRCode) {
         String qrString[] = QRCode.split("machineCode=");
-      /*  String headerString[] = qrString[1].split("\\&");
-        String machineCodeArray[] = new String[2];
-        for (String aHeaderString : headerString) {
-            if (aHeaderString.contains("state=")) {
-                machineCodeArray = aHeaderString.split("\\=");
-                break;
-            }
-        }*/
+
         Log.d("---------------------", qrString.toString());
         if (qrString == null || qrString.length <= 1) {
             Toast.makeText(this, "解析失败，请重新扫码", Toast.LENGTH_SHORT).show();

@@ -85,7 +85,7 @@ public class MachineItemAddView {
 
     public void addTeleControlView(LinearLayout parentView) {
         if (teleCOntrolView == null || teleControlHolder == null) {
-            teleCOntrolView = LayoutInflater.from(context).inflate(R.layout.tele_control, null, false);
+            teleCOntrolView = LayoutInflater.from(context).inflate(R.layout.tele_control, parentView, false);
             teleControlHolder = new TeleControlHolder(teleCOntrolView);
         }
         //先添加View
@@ -112,7 +112,7 @@ public class MachineItemAddView {
         }
         if (!itemMachine.deviationTemperature.equals("")) {
             float offsetTemp = Float.parseFloat(itemMachine.deviationTemperature.replace("℃", "").trim());
-            teleControlHolder.offSetTempSeekbar.setProgress((int) offsetTemp);
+            teleControlHolder.subTempSeekbar.setProgress((int) offsetTemp);
         }
     }
 
@@ -197,11 +197,21 @@ public class MachineItemAddView {
     }
 
     class TeleControlHolder implements View.OnClickListener, SeekBar.OnSeekBarChangeListener {
-        public TextView targetTemp, offsetTemp;
-        public ImageView addTargetTemp, subTargetTemp, subOffsetTemp, addOffsetTemp;
-        public SeekBar tempSeekbar, offSetTempSeekbar;
-        public RelativeLayout restart, shutDown, check;
+        public TextView targetTemp;
+        public LinearLayout layout1;
+        public ImageView addTargetTemp;
+        public ImageView subTargetTemp;
+        public SeekBar tempSeekbar;
+        public TextView offsetTemp;
+        public LinearLayout layout2;
+        public ImageView addOffsetTemp;
+        public ImageView subOffsetTemp;
+        public SeekBar subTempSeekbar;
+        public RelativeLayout restart;
+        public RelativeLayout shutDown;
+        public RelativeLayout check;
         public Switch lockSwitch;
+
 
         public TeleControlHolder(View itemView) {
             targetTemp = (TextView) itemView.findViewById(R.id.targetTemp);
@@ -213,8 +223,8 @@ public class MachineItemAddView {
             offsetTemp = (TextView) itemView.findViewById(R.id.offsetTemp);
             subOffsetTemp = (ImageView) itemView.findViewById(R.id.subOffsetTemp);
             addOffsetTemp = (ImageView) itemView.findViewById(R.id.addOffsetTemp);
-            offSetTempSeekbar = (SeekBar) itemView.findViewById(R.id.subTempSeekbar);
-            offSetTempSeekbar.setProgress(Integer.parseInt(offsetTemp.getText().toString()));
+            subTempSeekbar = (SeekBar) itemView.findViewById(R.id.subTempSeekbar);
+            subTempSeekbar.setProgress(Integer.parseInt(offsetTemp.getText().toString()));
 
             restart = (RelativeLayout) itemView.findViewById(R.id.restart);
             shutDown = (RelativeLayout) itemView.findViewById(R.id.shutDown);
@@ -224,15 +234,15 @@ public class MachineItemAddView {
             subTargetTemp.setOnClickListener(this);
             addOffsetTemp.setOnClickListener(this);
             subOffsetTemp.setOnClickListener(this);*/
-            offSetTempSeekbar.setEnabled(false);
+            subTempSeekbar.setEnabled(false);
             tempSeekbar.setEnabled(false);
             restart.setOnClickListener(this);
             shutDown.setOnClickListener(this);
             check.setOnClickListener(this);
-            offSetTempSeekbar.setOnSeekBarChangeListener(this);
+            subTempSeekbar.setOnSeekBarChangeListener(this);
             tempSeekbar.setOnSeekBarChangeListener(this);
             tempSeekbar.setMax(Constants.MAX_TARGET_TEMP);
-            offSetTempSeekbar.setMax(Constants.MAX_OFFSET_TEMP);
+            subTempSeekbar.setMax(Constants.MAX_OFFSET_TEMP);
             lockSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -307,7 +317,7 @@ public class MachineItemAddView {
                     break;
             }
             tempSeekbar.setProgress((int) Float.parseFloat(targetTemp.getText().toString()));
-            offSetTempSeekbar.setProgress(Integer.parseInt(offsetTemp.getText().toString()));
+            subTempSeekbar.setProgress(Integer.parseInt(offsetTemp.getText().toString()));
             saveTemp(targetTemp, offsetTemp);
         }
 
