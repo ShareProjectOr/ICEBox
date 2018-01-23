@@ -82,8 +82,8 @@ public class ItemTradeAccount implements Serializable {
     public String endTime;
     public int divideState;
     public int divideNum;
-    public String divideMoney;
-    public String offsetMoney;
+    public String divideMoney = "0";
+    public String offsetMoney = "0";
     public String actualPayment;
     public int divideType;
 
@@ -136,8 +136,8 @@ public class ItemTradeAccount implements Serializable {
                 if (item.has("divideNum") && !item.get("divideNum").equals(null))
                     itemTradeAccount.divideNum = item.getInt("divideNum");
 
-                if (item.has("divideMoney") && !item.get("divideMoney").equals(null))
-                    itemTradeAccount.divideMoney = item.getString("divideMoney");
+                if (item.has("settlementMoney") && !item.get("settlementMoney").equals(null))
+                    itemTradeAccount.divideMoney = item.getString("settlementMoney");
 
                 if (item.has("offsetMoney") && !item.get("offsetMoney").equals(null))
                     itemTradeAccount.offsetMoney = item.getString("offsetMoney");

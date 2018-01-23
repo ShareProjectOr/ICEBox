@@ -194,7 +194,11 @@ public class MachineItemAddViewHelper {
                     TextView timeLimit = (TextView) view.findViewById(R.id.timeLimit);
                     productName.setText(itemProducts.get(i).goodsName);
                     productPrice.setText(itemProducts.get(i).price + "");
-                    productSpecPrice.setText(itemProducts.get(i).activityPrice + "");
+                    if ("".equals(itemProducts.get(i).activityPrice) || "null".equals(itemProducts.get(i).activityPrice)) {
+                        productSpecPrice.setText("无");
+                    } else {
+                        productSpecPrice.setText(itemProducts.get(i).activityPrice + "");
+                    }
                     if (itemProducts.get(i).residueStorageTime != null) {
                         String[] secondToDate = SecondToDate.formatLongToTimeStr(Long.valueOf(itemProducts.get(i).residueStorageTime));
                         timeLimit.setText(secondToDate[0] + "天" + secondToDate[1] + "时" + secondToDate[2] + "分" + secondToDate[3] + "秒");

@@ -211,6 +211,7 @@ public class MachineItemAddView {
         public RelativeLayout shutDown;
         public RelativeLayout check;
         public Switch lockSwitch;
+        private TextView on, off;
 
 
         public TeleControlHolder(View itemView) {
@@ -230,6 +231,22 @@ public class MachineItemAddView {
             shutDown = (RelativeLayout) itemView.findViewById(R.id.shutDown);
             check = (RelativeLayout) itemView.findViewById(R.id.check);
             lockSwitch = (Switch) itemView.findViewById(R.id.lockSwitch);
+
+            on = (TextView) itemView.findViewById(R.id.on);
+            off = (TextView) itemView.findViewById(R.id.off);
+
+            if (android.os.Build.VERSION.SDK_INT > android.os.Build.VERSION_CODES.KITKAT) {
+                //4.4以上
+                lockSwitch.setBackground(android.support.v4.content.ContextCompat.getDrawable(context, R.drawable.selector_switch_track));
+                lockSwitch.setTrackDrawable(null);
+                lockSwitch.setThumbDrawable(null);
+            } else {
+                on.setVisibility(View.GONE);
+                off.setVisibility(View.GONE);
+                lockSwitch.setTextOff("关");
+                lockSwitch.setTextOn("开");
+            }
+
             /*addTargetTemp.setOnClickListener(this);
             subTargetTemp.setOnClickListener(this);
             addOffsetTemp.setOnClickListener(this);
@@ -247,6 +264,7 @@ public class MachineItemAddView {
                 @Override
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                     Map<String, Object> params = RequestParamsContants.getInstance().getMachineLightControlParams();
+                    Log.d("--------------", isChecked + "");
                     params.put("isOpen", isChecked ? 1 : 0);
                     TeleControlHelper.getInstance().setContext(context);
                     TeleControlHelper.getInstance().getDatas(HttpRequstUrl.MACHINE_LightControl_URL, params);

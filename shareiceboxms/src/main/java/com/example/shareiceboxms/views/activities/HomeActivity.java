@@ -557,8 +557,10 @@ public class HomeActivity extends BaseActivity
     //记录登录状态
     private void SaveUserMessager() {
 
-        if (!FragmentFactory.getInstance().getSavedBundle().getBoolean("remember")) {//登录界面选择记录密码则执行保存信息等操作
-            ConstanceMethod.isFirstLogin(this, false);
+        if (ConstanceMethod.getSharedPreferences(this, "ShowWelcome").getBoolean("isRemember", false)) {//登录界面选择记录密码则执行保存信息等操作
+            if (ConstanceMethod.getSharedPreferences(this, "ShowWelcome").getBoolean("isFirst", true)) {
+                ConstanceMethod.isFirstLogin(this, false);
+            }
             DoSql();
         } else {//登录界面为勾选记住密码则执行清空保存信息等操作
             Sql sql = new Sql(this);
