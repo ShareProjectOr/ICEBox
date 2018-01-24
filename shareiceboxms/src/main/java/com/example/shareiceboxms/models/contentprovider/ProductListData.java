@@ -75,7 +75,7 @@ public class ProductListData {
                     currentPage = d.getInt("p");//请求成功则将页数加1
                     pagerNum = d.getInt("n");
                     JSONArray array = d.getJSONArray("list");
-                    Log.e("订单列表", "list" + d.toString());
+                    Log.e("上下货记录", "list" + d.toString());
                     for (int i = 0; i < array.length(); i++) {
                         JSONObject itemobject = (JSONObject) array.opt(i);
                         ItemProductType item = new ItemProductType();
@@ -106,7 +106,7 @@ public class ProductListData {
                 dialog.dismiss();
                 if (DataSet.size() == 0 && error.equals("")) {
                     //没有数据的情况
-                   Toast.makeText(mActivty, "暂无任何商品品类信息", Toast.LENGTH_LONG).show();
+                    Toast.makeText(mActivty, "暂无任何商品品类信息", Toast.LENGTH_LONG).show();
                 }
                 if (!aBoolean) {
                     Toast.makeText(mActivty, error, Toast.LENGTH_LONG).show();

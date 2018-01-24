@@ -110,14 +110,14 @@
                 android:layout_height="27dp"
                 android:layout_marginLeft="5dp"
                 android:layout_marginRight="5dp"
-                android:background="@drawable/shape_switch"
-
                 android:gravity="center_vertical"
                 android:paddingLeft="3dp"
                 android:paddingRight="3dp"
-                android:thumb="@mipmap/swich_thumb_30px"
-                android:track="@color/gray_light_deep"
-                android:trackTint="@color/gray_light_deep" />
+
+                 />
+            <!--
+             style="@style/widget_gender_switch"
+            -->
 
             <TextView
                 android:layout_width="wrap_content"

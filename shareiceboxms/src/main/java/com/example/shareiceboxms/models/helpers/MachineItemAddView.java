@@ -219,13 +219,13 @@ public class MachineItemAddView {
             addTargetTemp = (ImageView) itemView.findViewById(R.id.addTargetTemp);
             subTargetTemp = (ImageView) itemView.findViewById(R.id.subTargetTemp);
             tempSeekbar = (SeekBar) itemView.findViewById(R.id.tempSeekbar);
-            tempSeekbar.setProgress(Integer.parseInt(targetTemp.getText().toString()));//绑定进度
+            tempSeekbar.setProgress((int) Float.parseFloat(targetTemp.getText().toString()));//绑定进度
 
             offsetTemp = (TextView) itemView.findViewById(R.id.offsetTemp);
             subOffsetTemp = (ImageView) itemView.findViewById(R.id.subOffsetTemp);
             addOffsetTemp = (ImageView) itemView.findViewById(R.id.addOffsetTemp);
             subTempSeekbar = (SeekBar) itemView.findViewById(R.id.subTempSeekbar);
-            subTempSeekbar.setProgress(Integer.parseInt(offsetTemp.getText().toString()));
+            subTempSeekbar.setProgress((int) Float.parseFloat(offsetTemp.getText().toString()));
 
             restart = (RelativeLayout) itemView.findViewById(R.id.restart);
             shutDown = (RelativeLayout) itemView.findViewById(R.id.shutDown);
@@ -335,7 +335,7 @@ public class MachineItemAddView {
                     break;
             }
             tempSeekbar.setProgress((int) Float.parseFloat(targetTemp.getText().toString()));
-            subTempSeekbar.setProgress(Integer.parseInt(offsetTemp.getText().toString()));
+            subTempSeekbar.setProgress((int) Float.parseFloat(offsetTemp.getText().toString()));
             saveTemp(targetTemp, offsetTemp);
         }
 

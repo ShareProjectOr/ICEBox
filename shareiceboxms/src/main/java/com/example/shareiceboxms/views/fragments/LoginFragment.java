@@ -104,7 +104,6 @@ public class LoginFragment extends BaseFragment implements LoginAnimPresentor.Lo
         isRemember.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                Toast.makeText(loginActivity, isChecked+"", Toast.LENGTH_SHORT).show();
                 ConstanceMethod.isRemember(loginActivity,isChecked);
             }
         });

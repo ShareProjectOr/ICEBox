@@ -15,6 +15,7 @@ import com.example.shareiceboxms.models.contants.Constants;
 import com.example.shareiceboxms.models.contentprovider.ExceptionListData;
 import com.example.shareiceboxms.models.contentprovider.ProductListData;
 import com.example.shareiceboxms.models.helpers.ExceptionTypeUtils;
+import com.example.shareiceboxms.views.fragments.exception.ExceptionFragment;
 import com.example.shareiceboxms.views.fragments.product.ProductTypeListFragment;
 
 /**
@@ -28,9 +29,9 @@ public class ExceptionListAdapter extends RecyclerView.Adapter<RecyclerView.View
     private ExceptionListData contentProvider;
     public int isdetails = 0;
 
-    public ExceptionListAdapter(Activity mContext) {
+    public ExceptionListAdapter(Activity mContext, ExceptionFragment exceptionFragment) {
         this.mContext = mContext;
-        contentProvider = new ExceptionListData(this, mContext);
+        contentProvider = new ExceptionListData(this, mContext, exceptionFragment);
     }
 
     public ExceptionListData getContentProvider() {
@@ -66,7 +67,7 @@ public class ExceptionListAdapter extends RecyclerView.Adapter<RecyclerView.View
 
                 body.excetionType.setText(ExceptionTypeUtils.getExceptionTypeByCode(contentProvider.getItem(position).exceptionCode));
                 body.isDetailsTagIcon.setImageResource(Constants.ExceptionIsDetailsICON[isdetails]);
-                switch (isdetails){
+                switch (isdetails) {
                     case 0:
                         body.isDetailsTag.setText("未处理");
                         break;

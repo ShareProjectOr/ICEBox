@@ -2,6 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/white"
     android:orientation="vertical">
 
     <TextView
@@ -30,8 +31,8 @@
         android:layout_marginLeft="20dp"
         android:layout_marginRight="20dp"
         android:layout_marginTop="20dp"
-        android:inputType="numberDecimal"
         android:background="@drawable/shape_trade_time"
+        android:inputType="numberDecimal"
         android:textColorHint="@color/test_init_color" />
 
     <TextView
@@ -50,8 +51,8 @@
         android:layout_marginLeft="20dp"
         android:layout_marginRight="20dp"
         android:layout_marginTop="20dp"
-        android:inputType="numberDecimal"
         android:background="@drawable/shape_trade_time"
+        android:inputType="numberDecimal"
         android:textColorHint="@color/test_init_color" />
 
     <TextView

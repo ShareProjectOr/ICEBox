@@ -54,7 +54,8 @@ public class ProductFragment extends BaseFragment implements HomeActivity.OnBack
         drawerIcon = (ImageView) containerView.findViewById(R.id.drawerIcon);
         mSaoma = (ImageView) containerView.findViewById(R.id.saoma);
         tradeDetailLayout = (FrameLayout) containerView.findViewById(R.id.detailFrameLayout);
-        adapter = new ViewPagerAdapter(getChildFragmentManager(), FragmentFactory.getInstance().getProductChildFragments(), Constants.PRODUCT_VIEWPAGER_TITLE);
+        adapter = new ViewPagerAdapter(getChildFragmentManager(), FragmentFactory.getInstance().getProductChildFragments(),
+                FragmentFactory.getInstance().getProductChildFragments().size() > 1 ? Constants.PRODUCT_VIEWPAGER_TITLE : new String[]{"上下货记录"});
         viewPager.setAdapter(adapter);
         tabLayout.setupWithViewPager(viewPager);
     }

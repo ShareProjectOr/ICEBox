@@ -62,9 +62,11 @@ public class ModifyPriceFragment extends BaseFragment {
     }
 
     private void initDatas() {
+
         bundle = getActivity().getIntent().getExtras();
         mProductPrice.setText(bundle.getString("categoryPrice"));
         mProductSpecPrice.setText(bundle.getString("activityPrice"));
+        mProductName.setText(bundle.getString("productName"));
     }
 
     private void bindViews() {
