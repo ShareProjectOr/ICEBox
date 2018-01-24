@@ -104,17 +104,14 @@
                 android:text="未处理"
                 android:textColor="@color/test_init_color" />
 
-            <Switch
+            <Button
                 android:id="@+id/Is_details"
-                android:layout_width="wrap_content"
-                android:layout_height="27dp"
+                android:layout_width="60dp"
+                android:layout_height="40dp"
                 android:layout_marginLeft="5dp"
                 android:layout_marginRight="5dp"
-                android:gravity="center_vertical"
-                android:paddingLeft="3dp"
-                android:paddingRight="3dp"
-
-                 />
+                android:background="@drawable/selector_switch_track"
+                android:gravity="center_vertical" />
             <!--
              style="@style/widget_gender_switch"
             -->

@@ -15,6 +15,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.DatePicker;
 import android.widget.FrameLayout;
@@ -65,7 +66,7 @@ public class ExceptionFragment extends BaseFragment implements CompoundButton.On
     private TextView exceptionType;
     private TextView mTimeSelect;
     private ListPopupWindow mTilePopup;
-    private Switch chooseIsDetails;
+    private Button chooseIsDetails;
     private LinearLayout exceptionTypeLayout;
     private SwipeRefreshLayout mRefreshLayout;
     private RelativeLayout selectTimeLayout;
@@ -76,6 +77,7 @@ public class ExceptionFragment extends BaseFragment implements CompoundButton.On
     private int pageNum = 5;
     private int isDetail = 0;
     private String[] happenTime = null;
+    private boolean isOpen = false;
 
     @Nullable
     @Override
@@ -92,7 +94,7 @@ public class ExceptionFragment extends BaseFragment implements CompoundButton.On
     private void initListener() {
         drawerIcon.setOnClickListener(this);
         showPop.setOnClickListener(this);
-        chooseIsDetails.setOnCheckedChangeListener(this);
+        chooseIsDetails.setOnClickListener(this);
         selectTimeLayout.setOnClickListener(this);
         exceptionTypeLayout.setOnClickListener(this);
         if (!mRefreshLayout.isRefreshing()) {
@@ -109,11 +111,11 @@ public class ExceptionFragment extends BaseFragment implements CompoundButton.On
     private void initDatas() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             //5.0J及以上
-            chooseIsDetails.setThumbResource(R.mipmap.swich_thumb_30px);
-            chooseIsDetails.setTrackResource(R.color.gray_light_deep);
+          /*  chooseIsDetails.setThumbResource(R.mipmap.swich_thumb_30px);
+            chooseIsDetails.setTrackResource(R.color.gray_light_deep);*/
         } else {
-            chooseIsDetails.setTextOn(" ");
-            chooseIsDetails.setTextOff(" ");
+           /* chooseIsDetails.setTextOn(" ");
+            chooseIsDetails.setTextOff(" ");*/
         }
         homeActivity = (HomeActivity) mContext;
         homeActivity.setOnBackPressListener(this);
@@ -133,7 +135,7 @@ public class ExceptionFragment extends BaseFragment implements CompoundButton.On
         exceptionTypeLayout = (LinearLayout) containerView.findViewById(R.id.exception_type_layout);
         datePickerDialog = new DoubleDatePickerDialog(mContext, 0, this, c.get(Calendar.YEAR), c.get(Calendar.MONTH), c.get(Calendar.DATE), true);
         showPop = (ImageView) containerView.findViewById(R.id.showpup);
-        chooseIsDetails = (Switch) containerView.findViewById(R.id.Is_details);
+        chooseIsDetails = (Button) containerView.findViewById(R.id.Is_details);
         mRecycleAdapter = new ExceptionListAdapter(getActivity(), this);
         LoadMoreHelper loadMoreHelper = new LoadMoreHelper().setContext(getContext()).setAdapter(mRecycleAdapter)
                 .setLoadMoreListenner(this)
@@ -165,6 +167,20 @@ public class ExceptionFragment extends BaseFragment implements CompoundButton.On
                 break;
             case R.id.exception_type_layout:
                 mTilePopup.show();
+                break;
+            case R.id.Is_details:
+                if (isOpen) {
+                    isOpen = false;
+                    chooseIsDetails.setBackgroundResource(R.mipmap.switcher_off);
+                    isDetail = 0;
+                } else {
+                    isDetail = 1;
+                    isOpen = true;
+                    chooseIsDetails.setBackgroundResource(R.mipmap.switcher_on);
+                }
+                mRecycleAdapter.isdetails = isDetail;
+                currentPage = 1;
+                getDatas(true);
                 break;
         }
     }
@@ -234,21 +250,21 @@ public class ExceptionFragment extends BaseFragment implements CompoundButton.On
     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
         if (isChecked) {
             if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP) {
-                chooseIsDetails.setBackground(ContextCompat.getDrawable(mContext, R.drawable.shape_switch_open));
-                chooseIsDetails.setTrackDrawable(ContextCompat.getDrawable(mContext, R.drawable.shape_switch_open));
+             /*   chooseIsDetails.setBackground(ContextCompat.getDrawable(mContext, R.drawable.shape_switch_open));
+                chooseIsDetails.setTrackDrawable(ContextCompat.getDrawable(mContext, R.drawable.shape_switch_open));*/
             } else {
-                chooseIsDetails.setTextOn(" ");
-                chooseIsDetails.setTextOff(" ");
+           /*     chooseIsDetails.setTextOn(" ");
+                chooseIsDetails.setTextOff(" ");*/
             }
 
             isDetail = 1;
         } else {
             if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP) {
-                chooseIsDetails.setBackground(ContextCompat.getDrawable(mContext, R.drawable.shape_switch));
-                chooseIsDetails.setTrackDrawable(ContextCompat.getDrawable(mContext, R.drawable.shape_switch));
+             /*   chooseIsDetails.setBackground(ContextCompat.getDrawable(mContext, R.drawable.shape_switch));
+                chooseIsDetails.setTrackDrawable(ContextCompat.getDrawable(mContext, R.drawable.shape_switch));*/
             } else {
-                chooseIsDetails.setTextOn(" ");
-                chooseIsDetails.setTextOff(" ");
+               /* chooseIsDetails.setTextOn(" ");
+                chooseIsDetails.setTextOff(" ");*/
             }
 
             isDetail = 0;
