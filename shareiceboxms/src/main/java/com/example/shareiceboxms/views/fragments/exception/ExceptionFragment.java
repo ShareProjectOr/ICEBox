@@ -101,14 +101,19 @@ public class ExceptionFragment extends BaseFragment implements CompoundButton.On
         saoma.setOnClickListener(this);
     }
 
+
+    public void setCurrentPage(int currentPage) {
+        this.currentPage = currentPage;
+    }
+
     private void initDatas() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             //5.0J及以上
             chooseIsDetails.setThumbResource(R.mipmap.swich_thumb_30px);
             chooseIsDetails.setTrackResource(R.color.gray_light_deep);
         } else {
-            chooseIsDetails.setTextOn("已处理");
-            chooseIsDetails.setTextOff("未处理");
+            chooseIsDetails.setTextOn(" ");
+            chooseIsDetails.setTextOff(" ");
         }
         homeActivity = (HomeActivity) mContext;
         homeActivity.setOnBackPressListener(this);
@@ -129,7 +134,7 @@ public class ExceptionFragment extends BaseFragment implements CompoundButton.On
         datePickerDialog = new DoubleDatePickerDialog(mContext, 0, this, c.get(Calendar.YEAR), c.get(Calendar.MONTH), c.get(Calendar.DATE), true);
         showPop = (ImageView) containerView.findViewById(R.id.showpup);
         chooseIsDetails = (Switch) containerView.findViewById(R.id.Is_details);
-        mRecycleAdapter = new ExceptionListAdapter(getActivity());
+        mRecycleAdapter = new ExceptionListAdapter(getActivity(), this);
         LoadMoreHelper loadMoreHelper = new LoadMoreHelper().setContext(getContext()).setAdapter(mRecycleAdapter)
                 .setLoadMoreListenner(this)
                 .bindScrollListener(exceptionList)
@@ -231,6 +236,9 @@ public class ExceptionFragment extends BaseFragment implements CompoundButton.On
             if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP) {
                 chooseIsDetails.setBackground(ContextCompat.getDrawable(mContext, R.drawable.shape_switch_open));
                 chooseIsDetails.setTrackDrawable(ContextCompat.getDrawable(mContext, R.drawable.shape_switch_open));
+            } else {
+                chooseIsDetails.setTextOn(" ");
+                chooseIsDetails.setTextOff(" ");
             }
 
             isDetail = 1;
@@ -238,6 +246,9 @@ public class ExceptionFragment extends BaseFragment implements CompoundButton.On
             if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP) {
                 chooseIsDetails.setBackground(ContextCompat.getDrawable(mContext, R.drawable.shape_switch));
                 chooseIsDetails.setTrackDrawable(ContextCompat.getDrawable(mContext, R.drawable.shape_switch));
+            } else {
+                chooseIsDetails.setTextOn(" ");
+                chooseIsDetails.setTextOff(" ");
             }
 
             isDetail = 0;
@@ -282,9 +293,9 @@ public class ExceptionFragment extends BaseFragment implements CompoundButton.On
             } else {
                 postbody.put("exceptionLevel", null);
             }
+
             postbody.put("happenTime", RequestParamsContants.getInstance().getSelectTime(happenTime));
             contentprovider.getData(HttpRequstUrl.EXCEPTION_LIST_URL, postbody, false);
-
         } else {
             Toast.makeText(getActivity(), "偷偷告诉你,数据已全部加载完毕...", Toast.LENGTH_SHORT).show();
             return;

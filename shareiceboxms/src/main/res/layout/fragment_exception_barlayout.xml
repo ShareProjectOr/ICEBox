@@ -110,11 +110,14 @@
                 android:layout_height="27dp"
                 android:layout_marginLeft="5dp"
                 android:layout_marginRight="5dp"
-                android:background="@drawable/shape_switch"
-
                 android:gravity="center_vertical"
                 android:paddingLeft="3dp"
-                android:paddingRight="3dp" />
+                android:paddingRight="3dp"
+
+                 />
+            <!--
+             style="@style/widget_gender_switch"
+            -->
 
             <TextView
                 android:layout_width="wrap_content"

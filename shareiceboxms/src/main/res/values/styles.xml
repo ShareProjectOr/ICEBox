@@ -22,5 +22,14 @@
         <item name="android:windowEnterAnimation">@anim/pop_enter_anim</item>
         <item name="android:windowExitAnimation">@anim/pop_exit_anim</item>
     </style>
+    <style name="widget_gender_switch">
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:textOff">""</item><!-- 此设置不使用文字，只用背景图的状态来表示开关 -->
+        <item name="android:textOn">""</item>
+        <item name="android:thumb">@drawable/widget_gender_thumb</item><!--滑块图，改变选中状态来表示开关-->
+        <item name="android:thumbTextPadding">10dp</item><!-- 用来控制滑块和文字之间的间距来控制switch整体宽度 -->
+        <item name="android:track">@drawable/widget_gender_track</item><!--滑块轨道，改变选中状态来表示开关-->
+    </style>
 
 </resources>

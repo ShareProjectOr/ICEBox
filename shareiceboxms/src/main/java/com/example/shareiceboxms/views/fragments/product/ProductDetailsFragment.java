@@ -182,6 +182,7 @@ public class ProductDetailsFragment extends BaseFragment {
                 Bundle bundle = new Bundle();
                 bundle.putInt("categoryID", categoryID);
                 bundle.putString("categoryPrice", itemProductType.categoryPrice);
+                bundle.putString("productName", mProductName.getText().toString());
                 if (itemProductType.activityPrice.equals("null")) {
                     bundle.putString("activityPrice", "");
                 } else {

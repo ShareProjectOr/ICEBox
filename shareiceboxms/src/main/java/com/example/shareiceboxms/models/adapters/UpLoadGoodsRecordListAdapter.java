@@ -33,7 +33,7 @@ public class UpLoadGoodsRecordListAdapter extends RecyclerView.Adapter<RecyclerV
     public UpLoadGoodsRecordListAdapter(Activity mContext, UpLoadGoodsRecordFragment upLoadGoodsRecordFragment) {
         this.mContext = mContext;
         this.upLoadGoodsRecordFragment = upLoadGoodsRecordFragment;
-        contentProvider = new UpLoadRecordListData(this, mContext);
+        contentProvider = new UpLoadRecordListData(this, mContext,upLoadGoodsRecordFragment);
     }
 
     public UpLoadRecordListData getContentProvider() {

@@ -14,6 +14,8 @@ import com.example.shareiceboxms.models.helpers.LoadMoreHelper;
 import com.example.shareiceboxms.models.helpers.MyDialog;
 import com.example.shareiceboxms.models.http.JsonUtil;
 import com.example.shareiceboxms.models.http.OkHttpUtil;
+import com.example.shareiceboxms.views.fragments.product.UpLoadGoodsDetailsFragment;
+import com.example.shareiceboxms.views.fragments.product.UpLoadGoodsRecordFragment;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -34,17 +36,24 @@ public class UpLoadRecordListData {
     private List<ItemUpload> DataSet = new ArrayList<>();
     private int total = 0;
     private LoadMoreHelper mloadMoreHelper;
+    private UpLoadGoodsRecordFragment upLoadGoodsRecordFragment;
     private int currentPage;
     private int pagerNum = 1;
 
-    public UpLoadRecordListData(RecyclerView.Adapter mAdapter, Activity mActivty) {
+
+    public UpLoadRecordListData(RecyclerView.Adapter mAdapter, Activity mActivty, UpLoadGoodsRecordFragment upLoadGoodsRecordFragment) {
         this.mAdapter = mAdapter;
         this.mActivty = mActivty;
+        this.upLoadGoodsRecordFragment = upLoadGoodsRecordFragment;
     }
 
     public void setCanLoad(LoadMoreHelper mloadMoreHelper, int currentPage) {
         this.mloadMoreHelper = mloadMoreHelper;
-        this.currentPage = currentPage;
+//        this.currentPage = currentPage;
+    }
+
+    public int getCurrentPage() {
+        return currentPage;
     }
 
     public void getData(final String url, final Map<String, Object> body, final boolean refresh) {
@@ -73,6 +82,7 @@ public class UpLoadRecordListData {
                     JSONObject d = object.getJSONObject("d");
                     total = d.getInt("t");
                     currentPage = d.getInt("p");//请求成功则将页数加1
+                    upLoadGoodsRecordFragment.setCurrentPage(currentPage);
                     pagerNum = d.getInt("n");
                     JSONArray array = d.getJSONArray("list");
                     Log.e("上下货记录", "list" + d.toString());
@@ -104,7 +114,7 @@ public class UpLoadRecordListData {
 
             @Override
             protected void onPostExecute(Boolean aBoolean) {
-             //   dialog.dismiss();
+                //   dialog.dismiss();
                 if (!aBoolean) {
                     Toast.makeText(mActivty, error, Toast.LENGTH_LONG).show();
                 } else {

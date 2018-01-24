@@ -129,6 +129,10 @@ public class UpLoadGoodsRecordFragment extends BaseFragment {
         }, Constants.REFREASH_DELAYED_TIME);
     }
 
+    public void setCurrentPage(int currentPage) {
+        this.currentPage = currentPage;
+    }
+
     private void getDatas(boolean b) {
         Map<String, Object> map = new HashMap<>();
         map.put("n", pageNum);
@@ -156,7 +160,8 @@ public class UpLoadGoodsRecordFragment extends BaseFragment {
 
     @Override
     public void loadMore(RecyclerView.Adapter<RecyclerView.ViewHolder> adapter, RecyclerView recyclerView) {
-        Log.e("loadmore", "doing");
+        Log.e("loadmore", "doing" + "currentPage=" + currentPage + "最大页数=" + contentProvider.GetMaxPageAccount());
+
         if (currentPage < contentProvider.GetMaxPageAccount()) {
             Map<String, Object> map = new HashMap<>();
             map.put("n", pageNum);
@@ -164,7 +169,6 @@ public class UpLoadGoodsRecordFragment extends BaseFragment {
             map.put("appUserID", PerSonMessage.userId);
             map.put("operationTime", RequestParamsContants.getInstance().getSelectTime(operationTime));
             contentProvider.getData(HttpRequstUrl.UPLOAD_RECORD_LIST_URL, map, false);
-
         } else {
             Toast.makeText(getActivity(), "偷偷告诉你,数据已全部加载完毕...", Toast.LENGTH_SHORT).show();
         }
