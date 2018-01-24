@@ -106,6 +106,7 @@ public class HomeActivity extends BaseActivity
     private static Handler handler;
     private int LastDoorState = DEFAULT;//0初始状态,1开门状态,2上货完成关门,3开门失败状态
     private boolean isRequestOpen = false;
+    public String qrResult;//二维码扫描结果
 
     public static HomeActivity getInstance() {
 
@@ -196,6 +197,7 @@ public class HomeActivity extends BaseActivity
                                     isRequestOpen = false;
                                     switchFragment();
                                     LastDoorState = OPEN_LOCK_FAILED;
+                                    qrResult = "";
                                     return;
                                 }
                                 /*else{
@@ -228,6 +230,7 @@ public class HomeActivity extends BaseActivity
                                     getCurFragment();
                                     showHomepage = true;
                                     isRequestOpen = false;
+                                    qrResult = "";
                                     switchFragment();
                                     LastDoorState = DEFAULT;
                                     Toast.makeText(getApplication(), "关门成功，没有上下货", Toast.LENGTH_LONG).show();
@@ -599,9 +602,9 @@ public class HomeActivity extends BaseActivity
         switch (requestCode) {
             case SCANNIN_GREQUEST_CODE:
                 if (resultCode == RESULT_OK) {
-                    String result = data.getStringExtra("QR_CODE");
+                    qrResult = data.getStringExtra("QR_CODE");
                     //Toast.makeText(getApplication(), result, Toast.LENGTH_LONG).show();
-                    requestOpenDoor(result);
+                    requestOpenDoor(qrResult);
                 } else {
                     Toast.makeText(getApplication(), "无法获取扫描结果", Toast.LENGTH_LONG).show();
                 }
@@ -610,7 +613,11 @@ public class HomeActivity extends BaseActivity
         }
     }
 
-    private void requestOpenDoor(final String QRCode) {
+    public void requestOpenDoor(final String QRCode) {
+        if ("".equals(qrResult)) {
+            Toast.makeText(this, "解析失败，请重新扫码", Toast.LENGTH_SHORT).show();
+            return;
+        }
         String qrString[] = QRCode.split("machineCode=");
 
         Log.d("---------------------", qrString.toString());
@@ -658,10 +665,9 @@ public class HomeActivity extends BaseActivity
                     LastDoorState = OPENING_DOOR;
                     showHomepage = false;
                     switchFragment();
+                } else {
+                    Toast.makeText(getApplication(), err, Toast.LENGTH_SHORT).show();
                 }
-//                } else {
-//                    Toast.makeText(getApplication(), err, Toast.LENGTH_SHORT).show();
-//                }
             }
         }.execute();
     }

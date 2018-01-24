@@ -98,9 +98,10 @@ public class CloseDoorFragment extends BaseFragment {
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.addMore:
-                homeActivity.openSaoma();
+                homeActivity.requestOpenDoor(homeActivity.qrResult);
                 break;
             case R.id.sure:
+                homeActivity.qrResult = "";
                 homeActivity.onBackPressed();
                 break;
         }
