@@ -99,7 +99,16 @@ public class CustromSwitch extends View {
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-       //  canvas.drawRect();
+        if (isChecked) {
+            canvas.drawRect(getLeft(), getTop(), getRight(), getBottom(), CheckLargeRectF);
+            canvas.drawRect((getLeft() - 5) / 2, getTop() - 5, (getRight() - 5), getBottom() - 5, CheckSmailRectF);
+        } else {
+            canvas.drawRect(getLeft(), getTop(), getRight(), getBottom(), unCheckLargeRectF);
+            canvas.drawRect(getLeft() - 5, getTop() - 5, (getRight() - 5) / 2, getBottom() - 5, unCheckSmailRectF);
+        }
+
+
+        //  canvas.drawRect();
 
     }
 
