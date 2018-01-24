@@ -19,6 +19,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.example.shareiceboxms.models.contants.ConstanceMethod;
@@ -103,7 +104,8 @@ public class LoginFragment extends BaseFragment implements LoginAnimPresentor.Lo
         isRemember.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                FragmentFactory.getInstance().getSavedBundle().putBoolean("remember", isChecked);
+                Toast.makeText(loginActivity, isChecked+"", Toast.LENGTH_SHORT).show();
+                ConstanceMethod.isRemember(loginActivity,isChecked);
             }
         });
         isRemember.setChecked(true);

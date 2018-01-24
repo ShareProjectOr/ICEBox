@@ -52,6 +52,14 @@ public class ConstanceMethod {
         edit.apply();
     }
 
+    //修改是否登陆
+    public static void isRemember(Context context, boolean isRemember) {
+        SharedPreferences preferences = getSharedPreferences(context, "ShowWelcome");//context.getSharedPreferences("ShowWelcome", Context.MODE_PRIVATE);
+        SharedPreferences.Editor edit = preferences.edit();
+        edit.putBoolean("isRemember", isRemember);
+        edit.apply();
+    }
+
     //保存推送时间戳
     public static void addHasDealMsg(Context context, Long msgTag) {
         SharedPreferences preferences = getSharedPreferences(context, "Msg");//context.getSharedPreferences("ShowWelcome", Context.MODE_PRIVATE);

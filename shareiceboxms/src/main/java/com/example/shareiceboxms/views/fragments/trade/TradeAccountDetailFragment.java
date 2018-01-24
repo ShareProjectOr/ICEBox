@@ -187,29 +187,54 @@ public class TradeAccountDetailFragment extends BaseFragment {
         if (itemTradeAccount == null) return;
         jiesuanMoney.setText(itemTradeAccount.divideMoney);
 
+
         switch (itemTradeAccount.divideState) {
             case 0://待审核状态时显示工单创建时间
                 jiesuanTime.setText(itemTradeAccount.createTime);
                 break;
             case 1://待确认-审核时间
                 jiesuanTime.setText(itemTradeAccount.checkTime);
-                jiesuanTimePeriod.setText(itemTradeAccount.createTime + "至" + itemTradeAccount.checkTime);
+                if ("".equals(itemTradeAccount.checkTime) || "null".equals(itemTradeAccount.checkTime) || itemTradeAccount.checkTime == null) {
+                    jiesuanTimePeriod.setText(itemTradeAccount.createTime);
+                } else {
+                    jiesuanTimePeriod.setText(itemTradeAccount.createTime + "至" + itemTradeAccount.checkTime);
+                }
                 break;
             case 2://待转账-确认时间
                 jiesuanTime.setText(itemTradeAccount.configTime);
-                jiesuanTimePeriod.setText(itemTradeAccount.createTime + "至" + itemTradeAccount.configTime);
+                if ("".equals(itemTradeAccount.configTime) || "null".equals(itemTradeAccount.configTime) || itemTradeAccount.configTime == null) {
+                    jiesuanTimePeriod.setText(itemTradeAccount.createTime);
+                } else {
+                    jiesuanTimePeriod.setText(itemTradeAccount.createTime + "至" + itemTradeAccount.configTime);
+                }
                 break;
             case 3://待复审-转账确认时间
                 jiesuanTime.setText(itemTradeAccount.configTransferTime);
-                jiesuanTimePeriod.setText(itemTradeAccount.createTime + "至" + itemTradeAccount.configTransferTime);
+
+                if ("".equals(itemTradeAccount.configTransferTime) || "null".equals(itemTradeAccount.configTransferTime)|| itemTradeAccount.configTransferTime == null) {
+                    jiesuanTime.setText(itemTradeAccount.createTime);
+                } else {
+                    jiesuanTimePeriod.setText(itemTradeAccount.createTime + "至" + itemTradeAccount.configTransferTime);
+                }
                 break;
             case 4://复审完成-复审完成时间
                 jiesuanTime.setText(itemTradeAccount.recheckTime);
-                jiesuanTimePeriod.setText(itemTradeAccount.createTime + "至" + itemTradeAccount.recheckTime);
+
+
+                if ("".equals(itemTradeAccount.recheckTime) || "null".equals(itemTradeAccount.recheckTime)|| itemTradeAccount.recheckTime== null) {
+                    jiesuanTimePeriod.setText(itemTradeAccount.createTime);
+                } else {
+                    jiesuanTimePeriod.setText(itemTradeAccount.createTime + "至" + itemTradeAccount.recheckTime);
+                }
                 break;
             case 5://背撤销-撤销时间
                 jiesuanTime.setText(itemTradeAccount.cancelTime);
-                jiesuanTimePeriod.setText(itemTradeAccount.createTime + "至" + itemTradeAccount.cancelTime);
+
+                if ("".equals(itemTradeAccount.cancelTime) || "null".equals(itemTradeAccount.cancelTime)|| itemTradeAccount.cancelTime == null) {
+                    jiesuanTimePeriod.setText(itemTradeAccount.createTime);
+                } else {
+                    jiesuanTimePeriod.setText(itemTradeAccount.createTime + "至" + itemTradeAccount.cancelTime);
+                }
                 break;
         }
         jiesuanState.setText(Constants.TradeAccountStateTitle[itemTradeAccount.divideState + 1]);

@@ -56,7 +56,7 @@ public class GetService {
             client.connect(options);
             // 订阅消息
             int[] Qos = {2};
-            String[] topic1 = {"T-M-0"};
+            String[] topic1 = {"T-M-" + PerSonMessage.userId};
             client.subscribe(topic1, Qos);
 
         } catch (Exception e) {
