@@ -104,7 +104,13 @@ public class MachineItemAddView {
         teleControlHolder.targetTemp.setText(itemMachine.targetTemperature);
         teleControlHolder.offsetTemp.setText(itemMachine.deviationTemperature);
         if (isLockStateUpdate) {
-            teleControlHolder.lockSwitch.setChecked(itemMachine.lightState == 0 ? false : true);
+//            teleControlHolder.lockSwitch.setChecked(itemMachine.lightState == 0 ? false : true);
+            teleControlHolder.isChecked = itemMachine.lightState == 0 ? false : true;
+            if (teleControlHolder.isChecked) {
+                teleControlHolder.lockSwitch.setBackgroundResource(R.mipmap.switcher_on);
+            } else {
+                teleControlHolder.lockSwitch.setBackgroundResource(R.mipmap.switcher_off);
+            }
         }
         if (!itemMachine.targetTemperature.equals("")) {
             float tartgetTemp = Float.parseFloat(itemMachine.targetTemperature.replace("℃", "").trim());
@@ -198,20 +204,18 @@ public class MachineItemAddView {
 
     class TeleControlHolder implements View.OnClickListener, SeekBar.OnSeekBarChangeListener {
         public TextView targetTemp;
-        public LinearLayout layout1;
         public ImageView addTargetTemp;
         public ImageView subTargetTemp;
         public SeekBar tempSeekbar;
         public TextView offsetTemp;
-        public LinearLayout layout2;
         public ImageView addOffsetTemp;
         public ImageView subOffsetTemp;
         public SeekBar subTempSeekbar;
         public RelativeLayout restart;
         public RelativeLayout shutDown;
         public RelativeLayout check;
-        public Switch lockSwitch;
-        private TextView on, off;
+        public android.widget.Button lockSwitch;
+        private boolean isChecked = false;
 
 
         public TeleControlHolder(View itemView) {
@@ -230,12 +234,9 @@ public class MachineItemAddView {
             restart = (RelativeLayout) itemView.findViewById(R.id.restart);
             shutDown = (RelativeLayout) itemView.findViewById(R.id.shutDown);
             check = (RelativeLayout) itemView.findViewById(R.id.check);
-            lockSwitch = (Switch) itemView.findViewById(R.id.lockSwitch);
+            lockSwitch = (android.widget.Button) itemView.findViewById(R.id.lockSwitch);
 
-            on = (TextView) itemView.findViewById(R.id.on);
-            off = (TextView) itemView.findViewById(R.id.off);
-
-            if (android.os.Build.VERSION.SDK_INT > android.os.Build.VERSION_CODES.KITKAT) {
+           /* if (android.os.Build.VERSION.SDK_INT > android.os.Build.VERSION_CODES.KITKAT) {
                 //4.4以上
                 lockSwitch.setBackground(android.support.v4.content.ContextCompat.getDrawable(context, R.drawable.selector_switch_track));
                 lockSwitch.setTrackDrawable(null);
@@ -245,7 +246,7 @@ public class MachineItemAddView {
                 off.setVisibility(View.GONE);
                 lockSwitch.setTextOff("关");
                 lockSwitch.setTextOn("开");
-            }
+            }*/
 
             /*addTargetTemp.setOnClickListener(this);
             subTargetTemp.setOnClickListener(this);
@@ -256,11 +257,12 @@ public class MachineItemAddView {
             restart.setOnClickListener(this);
             shutDown.setOnClickListener(this);
             check.setOnClickListener(this);
+            lockSwitch.setOnClickListener(this);
             subTempSeekbar.setOnSeekBarChangeListener(this);
             tempSeekbar.setOnSeekBarChangeListener(this);
             tempSeekbar.setMax(Constants.MAX_TARGET_TEMP);
             subTempSeekbar.setMax(Constants.MAX_OFFSET_TEMP);
-            lockSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+/*            lockSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                     Map<String, Object> params = RequestParamsContants.getInstance().getMachineLightControlParams();
@@ -269,7 +271,7 @@ public class MachineItemAddView {
                     TeleControlHelper.getInstance().setContext(context);
                     TeleControlHelper.getInstance().getDatas(HttpRequstUrl.MACHINE_LightControl_URL, params);
                 }
-            });
+            });*/
 
         }
 
@@ -330,9 +332,23 @@ public class MachineItemAddView {
                     break;
                 case R.id.check:
                     MyDialog checkDialog = new MyDialog(context);
-                    checkDialog.showDialog(checkDialog.getMachineTeleControlDialog("确定要将机器关机吗？"
+                    checkDialog.showDialog(checkDialog.getMachineTeleControlDialog("确定要进行机器盘点吗？"
                             , HttpRequstUrl.MACHINE_Check_URL, RequestParamsContants.getInstance().getMachineCheckParams()));
                     break;
+                case R.id.lockSwitch:
+                    isChecked = !isChecked;
+                    if (isChecked) {
+                        teleControlHolder.lockSwitch.setBackgroundResource(R.mipmap.switcher_on);
+                    } else {
+                        teleControlHolder.lockSwitch.setBackgroundResource(R.mipmap.switcher_off);
+                    }
+                    Map<String, Object> params = RequestParamsContants.getInstance().getMachineLightControlParams();
+                    Log.d("--------------", isChecked + "");
+                    params.put("isOpen", isChecked ? 1 : 0);
+                    TeleControlHelper.getInstance().setContext(context);
+                    TeleControlHelper.getInstance().getDatas(HttpRequstUrl.MACHINE_LightControl_URL, params);
+                    break;
+
             }
             tempSeekbar.setProgress((int) Float.parseFloat(targetTemp.getText().toString()));
             subTempSeekbar.setProgress((int) Float.parseFloat(offsetTemp.getText().toString()));

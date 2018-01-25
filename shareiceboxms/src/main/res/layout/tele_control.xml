@@ -320,11 +320,11 @@
                 android:gravity="center_vertical"
                 android:text="开" />
 
-            <Switch
+            <Button
                 android:id="@+id/lockSwitch"
-                android:layout_width="wrap_content"
+                android:layout_width="60dp"
                 android:layout_height="wrap_content"
-                android:gravity="center_vertical" />
+                android:background="@mipmap/switcher_off" />
             <!--
                android:thumb="@null"
                 android:track="@null"-->
