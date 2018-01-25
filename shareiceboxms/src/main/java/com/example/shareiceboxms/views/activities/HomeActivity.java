@@ -294,8 +294,8 @@ public class HomeActivity extends BaseActivity
         View headerView = navigationView.getHeaderView(0);
         MnanagerNameAndTimePart = (TextView) headerView.findViewById(R.id.managerNameAndTimepart);
         navigationView.setNavigationItemSelectedListener(this);
-        navigationView.setItemTextColor(ContextCompat.getColorStateList(this, R.drawable.selector_text_color));
-        navigationView.setItemIconTintList(ContextCompat.getColorStateList(this, R.drawable.selector_text_color));
+        navigationView.setItemTextColor(ContextCompat.getColorStateList(this, R.color.selector_text_color));
+        navigationView.setItemIconTintList(ContextCompat.getColorStateList(this, R.color.selector_text_color));
         navigationView.setCheckedItem(R.id.icon_home);
         tabLayout = (TabLayout) findViewById(R.id.tablayout);
         tabLayout.setTabMode(TabLayout.MODE_FIXED);
