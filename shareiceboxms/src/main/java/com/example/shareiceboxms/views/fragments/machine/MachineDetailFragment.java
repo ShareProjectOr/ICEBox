@@ -168,7 +168,6 @@ public class MachineDetailFragment extends BaseFragment implements SwipeRefreshL
         isException.setTextColor(ContextCompat.getColor(homeActivity, itemMachine.faultState == 0 ? Constants.MachineStateColor[1] : Constants.MachineStateColor[0]));
         managerName.setText(itemMachine.itemManager.name);
         machienCode.setText(itemMachine.machineCode);
-        FragmentFactory.getInstance().getSavedBundle().putBoolean("isFirstUpdate", true);
         machineItemAddView.updateStateControlUi(itemMachine);
     }
 
@@ -206,6 +205,15 @@ public class MachineDetailFragment extends BaseFragment implements SwipeRefreshL
             machineItemAddView.refreshStockProduct(true);
         }
         refresh.setRefreshing(false);
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (machineItemAddView != null) {
+            machineItemAddView.isLockStateUpdate = true;
+            machineItemAddView = null;
+        }
     }
 
     //获取机器详情异步任务

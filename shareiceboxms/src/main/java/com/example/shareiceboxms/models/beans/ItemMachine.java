@@ -144,7 +144,7 @@ public class ItemMachine {
                 if (item.has("breakTime") && !item.get("breakTime").equals(null)) {
                     itemMachine.breakTime = item.getString("breakTime");
                 }
-                if (item.has("lightState") && !item.get("lightState").equals(null)) {
+                if (item.has("lightState")) {
                     itemMachine.lightState = item.getInt("lightState");
                 }
                 if (item.has("activatedTime") && !item.get("activatedTime").equals(null)) {

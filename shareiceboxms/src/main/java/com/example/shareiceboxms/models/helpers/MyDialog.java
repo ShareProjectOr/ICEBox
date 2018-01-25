@@ -89,8 +89,8 @@ public class MyDialog {
         return dialog;
     }
 
-    public AlertDialog getMachineTeleControlDialog(String showMsg, final String url, final Map<String, Object> params) {
-        return new AlertDialog.Builder(context).setMessage(showMsg).setPositiveButton("确定", new DialogInterface.OnClickListener() {
+    public AlertDialog getMachineTeleControlDialog(String title,String showMsg, final String url, final Map<String, Object> params) {
+        return new AlertDialog.Builder(context).setTitle(title).setMessage(showMsg).setPositiveButton("确定", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog1, int which) {
                 TeleControlHelper.getInstance().setContext(context);

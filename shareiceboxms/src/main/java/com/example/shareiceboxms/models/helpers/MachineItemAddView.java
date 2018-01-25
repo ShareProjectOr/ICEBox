@@ -47,6 +47,7 @@ public class MachineItemAddView {
     private boolean isTempChanged = false;
     private String targetTemp;
     private String offsetTemp;
+    private ItemMachine itemMachine;
     public static boolean isLockStateUpdate = true;
 
     public MachineItemAddView(Context context) {
@@ -101,16 +102,23 @@ public class MachineItemAddView {
     *更新状态远程控制的值
     * */
     public void updateTeleControlUi(ItemMachine itemMachine) {
+        Log.d("----------lightState------------", itemMachine.lightState + "");
+        this.itemMachine = itemMachine;
         teleControlHolder.targetTemp.setText(itemMachine.targetTemperature);
         teleControlHolder.offsetTemp.setText(itemMachine.deviationTemperature);
         if (isLockStateUpdate) {
 //            teleControlHolder.lockSwitch.setChecked(itemMachine.lightState == 0 ? false : true);
-            teleControlHolder.isChecked = itemMachine.lightState == 0 ? false : true;
-            if (teleControlHolder.isChecked) {
-                teleControlHolder.lockSwitch.setBackgroundResource(R.mipmap.switcher_on);
-            } else {
-                teleControlHolder.lockSwitch.setBackgroundResource(R.mipmap.switcher_off);
+            if (itemMachine.lightState == 0) {
+                teleControlHolder.isChecked = false;
+            } else if (itemMachine.lightState == 1) {
+                teleControlHolder.isChecked = true;
             }
+            isLockStateUpdate = false;
+        }
+        if (teleControlHolder.isChecked) {
+            teleControlHolder.lockSwitch.setBackgroundResource(R.mipmap.switcher_on);
+        } else {
+            teleControlHolder.lockSwitch.setBackgroundResource(R.mipmap.switcher_off);
         }
         if (!itemMachine.targetTemperature.equals("")) {
             float tartgetTemp = Float.parseFloat(itemMachine.targetTemperature.replace("℃", "").trim());
@@ -120,6 +128,7 @@ public class MachineItemAddView {
             float offsetTemp = Float.parseFloat(itemMachine.deviationTemperature.replace("℃", "").trim());
             teleControlHolder.subTempSeekbar.setProgress((int) offsetTemp);
         }
+
     }
 
 
@@ -321,19 +330,26 @@ public class MachineItemAddView {
                     isTempChanged = true;
                     break;
                 case R.id.restart:
-                    MyDialog restartDialog = new MyDialog(context);
-                    restartDialog.showDialog(restartDialog.getMachineTeleControlDialog("确定要重启机器吗？"
-                            , HttpRequstUrl.MACHINE_Restart_URL, RequestParamsContants.getInstance().getMachineRestartParams()));
+                    if (itemMachine != null) {
+                        MyDialog restartDialog = new MyDialog(context);
+                        restartDialog.showDialog(restartDialog.getMachineTeleControlDialog("重启", "机器名称：" + itemMachine.machineName
+                                , HttpRequstUrl.MACHINE_Restart_URL, RequestParamsContants.getInstance().getMachineRestartParams()));
+                    }
+
                     break;
                 case R.id.shutDown:
-                    MyDialog shutDownDialog = new MyDialog(context);
-                    shutDownDialog.showDialog(shutDownDialog.getMachineTeleControlDialog("确定要将机器关机吗？"
-                            , HttpRequstUrl.MACHINE_Shutdown_URL, RequestParamsContants.getInstance().getMachineShutdownParams()));
+                    if (itemMachine != null) {
+                        MyDialog shutDownDialog = new MyDialog(context);
+                        shutDownDialog.showDialog(shutDownDialog.getMachineTeleControlDialog("关机", "机器名称：" + itemMachine.machineName
+                                , HttpRequstUrl.MACHINE_Shutdown_URL, RequestParamsContants.getInstance().getMachineShutdownParams()));
+                    }
                     break;
                 case R.id.check:
-                    MyDialog checkDialog = new MyDialog(context);
-                    checkDialog.showDialog(checkDialog.getMachineTeleControlDialog("确定要进行机器盘点吗？"
-                            , HttpRequstUrl.MACHINE_Check_URL, RequestParamsContants.getInstance().getMachineCheckParams()));
+                    if (itemMachine != null) {
+                        MyDialog checkDialog = new MyDialog(context);
+                        checkDialog.showDialog(checkDialog.getMachineTeleControlDialog("盘点", "机器名称：" + itemMachine.machineName
+                                , HttpRequstUrl.MACHINE_Check_URL, RequestParamsContants.getInstance().getMachineCheckParams()));
+                    }
                     break;
                 case R.id.lockSwitch:
                     isChecked = !isChecked;
