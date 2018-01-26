@@ -21,6 +21,8 @@ import com.example.shareiceboxms.models.factories.FragmentFactory;
 import com.example.shareiceboxms.models.widget.PathTextView;
 import com.example.shareiceboxms.views.activities.HomeActivity;
 
+import org.xmlpull.v1.XmlPullParser;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -37,6 +39,8 @@ public class OpeningDoorFragment extends BaseFragment {
     private View content;
     private String QRCode;
     private HomeActivity homeActivity;
+    private Handler mHandler;
+    private timeCount mTimeCount;
 
     @Nullable
     @Override
@@ -54,22 +58,28 @@ public class OpeningDoorFragment extends BaseFragment {
         homeActivity = (HomeActivity) getActivity();
         QRCode = FragmentFactory.getInstance().getSavedBundle().getString("QRCode");
         //当前页面最多停留30S，如果30S后还收不到服务器的回馈，则认为其开门失败.
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                Log.d("111111111111", "----------");
-                if (homeActivity.curFragment instanceof OpeningDoorFragment) {
-                    homeActivity.curFragment = new OpenDoorFailFragment();
-                    homeActivity.switchFragment();
-                }
+        mHandler = new Handler();
+        mTimeCount = new timeCount();
+        mHandler.postDelayed(mTimeCount, 30000);
+
+    }
+
+    class timeCount implements Runnable {
+
+        @Override
+        public void run() {
+            if (homeActivity.curFragment instanceof OpeningDoorFragment) {
+                homeActivity.curFragment = new OpenDoorFailFragment();
+                homeActivity.switchFragment();
             }
-        }, 30000);
-      /*  //  Glide.with(this).load(R.drawable.opening).asGif().fitCenter().diskCacheStrategy(DiskCacheStrategy.SOURCE).into(mShowgif);
-        if (Build.VERSION.SDK_INT >= 21) {
-            //5.0以上
-            mShowtext.setTextColor(Color.BLUE);
-            mShowtext.setTextSize(2);
-            mShowtext.init("Opening", -1);
-        }*/
+        }
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (mTimeCount != null) {
+            mHandler.removeCallbacks(mTimeCount);
+        }
     }
 }

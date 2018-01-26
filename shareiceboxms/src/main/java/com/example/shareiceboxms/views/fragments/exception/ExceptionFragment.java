@@ -111,7 +111,10 @@ public class ExceptionFragment extends BaseFragment implements CompoundButton.On
     private void initDatas() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             //5.0J及以上
-          /*  chooseIsDetails.setThumbResource(R.mipmap.swich_thumb_30px);
+          /*  Switch test = new Switch(getActivity());
+            test.setThumbTintList(ContextCompat.getColorStateList(getActivity(), R.color.oncheck_switch_color2));//滑动块
+            test.setTrackTintList(ContextCompat.getColorStateList(getActivity(), R.color.oncheck_switch_color));*/
+            /*chooseIsDetails.setThumbResource(R.mipmap.swich_thumb_30px);
             chooseIsDetails.setTrackResource(R.color.gray_light_deep);*/
         } else {
            /* chooseIsDetails.setTextOn(" ");
