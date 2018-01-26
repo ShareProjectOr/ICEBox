@@ -204,7 +204,7 @@
             android:layout_alignParentBottom="true"
             android:layout_marginTop="124dp"
             android:gravity="center_horizontal"
-            android:text="copyright@2017 爱创智能技术研究所"
+            android:text="copyright@2017 四川爱创科技有限公司"
             android:textSize="12sp" />
     </LinearLayout>
 
