@@ -74,9 +74,6 @@ public class TradeRecordDetailAdapter extends BaseAdapter {
             viewHolder.checkbox.setChecked(itemProductList.get(position).isChecked());
             viewHolder.productName.setText(product.goodsName);
             viewHolder.productPrice.setText(product.soldPrise);
-
-            viewHolder.productName.setText("fsafd");
-            viewHolder.productPrice.setText("fdsafdafds");
             /*
             * 如果是机器管理员，不能操作退款
             * */

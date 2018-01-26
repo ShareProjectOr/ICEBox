@@ -241,7 +241,7 @@ public class RequestParamsContants {
 * */
     public Map<String, Object> getTradeRecoredDetailProductParams() {
         Map<String, Object> params = new HashMap<>();
-        params.put("appUserID", 29);//PerSonMessage.userId
+        params.put("appUserID", PerSonMessage.userId);
         params.put("checkCode", 1);
         params.put("RFID", "");
 //        params.put("categoryID", 0);

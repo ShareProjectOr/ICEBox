@@ -50,11 +50,11 @@ import java.util.Map;
 public class TradeRecordDetailFragment extends BaseFragment implements RecordDetailProductHelper.ProductResponseLisenner {
     private static String TAG = "TradeRecordDetailFragment";
     private View containerView;
-    private ScrollView scrollView;
+    private ScrollView scrollView, coorLayout;
     private android.support.design.widget.TabLayout productTabLayout;
     private CheckBox allProductCB;
     private com.example.shareiceboxms.models.widget.ListViewForScrollView productList;
-    private LinearLayout refundMoreLayout, coorLayout;
+    private LinearLayout refundMoreLayout;
 
     private TextView tradeTime, totalMoney, payState, machineNameAddr, customerId, tradeNo;
     private ImageView payIcon;
@@ -92,7 +92,7 @@ public class TradeRecordDetailFragment extends BaseFragment implements RecordDet
         allProductCB = (CheckBox) containerView.findViewById(R.id.allProductCB);
         productList = (com.example.shareiceboxms.models.widget.ListViewForScrollView) containerView.findViewById(R.id.productList);
         refundMoreLayout = (LinearLayout) containerView.findViewById(R.id.refundMoreLayout);
-        coorLayout = (LinearLayout) containerView.findViewById(R.id.coorLayout);
+        coorLayout = (ScrollView) containerView.findViewById(R.id.coorLayout);
 
         tradeTime = (TextView) containerView.findViewById(R.id.tradeTime);
         totalMoney = (TextView) containerView.findViewById(R.id.totalMoney);
@@ -131,9 +131,7 @@ public class TradeRecordDetailFragment extends BaseFragment implements RecordDet
             });
         } else {
             allProductCB.setVisibility(View.GONE);
-        }
-        if (PerSonMessage.userType == Constants.AGENT_MANAGER) {
-            refundMoreLayout.setVisibility(View.GONE);
+            coorLayout.setVisibility(View.GONE);
         }
         title.setText("交易详情");
         productTabLayout.setTabMode(TabLayout.MODE_FIXED);
@@ -144,7 +142,6 @@ public class TradeRecordDetailFragment extends BaseFragment implements RecordDet
                 switch (tab.getPosition()) {
                     case 0:
                         if (adapter != null) {
-                            allProductCB.setVisibility(View.VISIBLE);
                             adapter.setRefundProductSelected(false);
                             adapter.setItemProductList(itemBuyProducts);
                             if (itemBuyProducts.size() <= 0) {
@@ -152,11 +149,20 @@ public class TradeRecordDetailFragment extends BaseFragment implements RecordDet
                             } else {
                                 coorLayout.setVisibility(View.VISIBLE);
                             }
+                            if (PerSonMessage.userType < Constants.AGENT_MANAGER) {
+                                allProductCB.setVisibility(View.VISIBLE);
+                            } else {
+                                allProductCB.setVisibility(View.GONE);
+                                coorLayout.setVisibility(View.GONE);
+                            }
+
                         }
                         break;
                     case 1:
                         if (adapter != null) {
-                            allProductCB.setVisibility(View.GONE);
+                            if (PerSonMessage.userType < Constants.AGENT_MANAGER) {
+                                allProductCB.setVisibility(View.GONE);
+                            }
                             adapter.setRefundProductSelected(true);
                             adapter.setItemProductList(itemRefundProducts);
                         }
@@ -305,6 +311,12 @@ public class TradeRecordDetailFragment extends BaseFragment implements RecordDet
             coorLayout.setVisibility(View.GONE);
         } else {
             coorLayout.setVisibility(View.VISIBLE);
+        }
+        if (PerSonMessage.userType < Constants.AGENT_MANAGER) {
+            allProductCB.setVisibility(View.VISIBLE);
+        } else {
+            allProductCB.setVisibility(View.GONE);
+            coorLayout.setVisibility(View.GONE);
         }
         adapter.setItemProductList(curTabSelect == 0 ? itemBuyProducts : itemRefundProducts);
         adapter.notifyDataSetChanged();

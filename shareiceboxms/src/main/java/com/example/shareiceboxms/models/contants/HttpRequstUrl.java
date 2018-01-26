@@ -8,7 +8,7 @@ import android.os.Environment;
 
 public interface HttpRequstUrl {
     String IP = "10.4.68.82";
-    String LIZHIHAO = "192.168.5.110";
+    String LIZHIHAO = "192.168.1.112";
     String HOST_URL = "http://202.98.157.25/fridgesManage_server/";//外网服务器
 //        String HOST_URL = "http://" + LIZHIHAO + ":8082/";//李坤明
 //    String HOST_URL_1 = "http://192.168.4.158:8082/";//李志灏

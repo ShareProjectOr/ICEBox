@@ -23,6 +23,10 @@ public class ItemSellProduct extends ItemProductBase {
     /*
     * 只针对售出和退款的
     * */
+
+/*    "goodsID":210,"inputTime":"2018-01-25 17:13:55.0","exhibitTime":null,"residueStorageTime":7776000
+            ,"bindingTime":"2018-01-25 17:13:55.0",
+            "soldTime":"2018-01-26 09:11:06.0","activityPrice":null,"trade":null,"categoryPrice":0.010000,"isRefund":0,*/
     public int isRefund;
     public String soldPrise;
     public String soldTime;
@@ -123,6 +127,13 @@ public class ItemSellProduct extends ItemProductBase {
                 if (item.has("soldPrise")) {//&& !item.get("soldPrise").equals(null)
                     itemProduct.soldPrise = item.getString("soldPrise");
                 }
+                if (item.has("categoryPrice")) {
+                    itemProduct.soldPrise = item.getString("categoryPrice");
+                }
+                if (item.has("soldTime")) {
+                    itemProduct.soldTime = item.getString("soldTime");
+                }
+
 
                 if (item.has("agent") && !item.get("agent").equals(null)) {
                     itemProduct.agent = ItemPerson.bindPerson(item.getJSONObject("agent"));
