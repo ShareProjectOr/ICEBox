@@ -23,6 +23,7 @@ import com.example.shareiceboxms.models.adapters.TradeRecordDetailAdapter;
 import com.example.shareiceboxms.models.beans.PerSonMessage;
 import com.example.shareiceboxms.models.beans.trade.ItemTradeRecord;
 import com.example.shareiceboxms.models.beans.product.ItemSellProduct;
+import com.example.shareiceboxms.models.contants.ConstanceMethod;
 import com.example.shareiceboxms.models.contants.Constants;
 import com.example.shareiceboxms.models.contants.HttpRequstUrl;
 import com.example.shareiceboxms.models.contants.JsonDataParse;
@@ -219,7 +220,7 @@ public class TradeRecordDetailFragment extends BaseFragment implements RecordDet
         }
         payState.setText(itemTradeRecord.payState == 0 ? Constants.TradeStateTitle[2] : Constants.TradeStateTitle[1]);
         payState.setTextColor(ContextCompat.getColor(getContext(), Constants.TreadIsPayCOLOR[itemTradeRecord.payState]));
-        machineNameAddr.setText(itemTradeRecord.machine.machineAddress);
+        machineNameAddr.setText(ConstanceMethod.getAddress(itemTradeRecord.machine.machineAddress));
         if (itemTradeRecord.consumer != null) {
             customerId.setText(itemTradeRecord.consumer.userID + "");
         }

@@ -8,15 +8,16 @@ import android.os.Environment;
 
 public interface HttpRequstUrl {
     String IP = "10.4.68.82";
-    String LIZHIHAO = "192.168.1.112";
+    String LIZHIHAO = "192.168.4.245";
     String HOST_URL = "http://202.98.157.25/fridgesManage_server/";//外网服务器
 //        String HOST_URL = "http://" + LIZHIHAO + ":8082/";//李坤明
 //    String HOST_URL_1 = "http://192.168.4.158:8082/";//李志灏
 //    String HOST_URL_2 = "http://192.168.4.224:8082/";//刘建成
 //    String HOST_URL_3 = "http://192.168.1.103:8082/";//刘建成
     //  String HOST_URL = "http://202.98.157.25/fridgesManage_server/";+
-    String GET_APP_VERSION_URL = HOST_URL + "/Upload/GetAppURL";
+    String GET_APP_VERSION_URL = HOST_URL + "/upload/GetAppURL";
     String LOGIN_URL = HOST_URL + "base/login";
+    String OUT_LOGIN_URL = HOST_URL + "base/outLogin";
 
     /*
     * 获取所有用户

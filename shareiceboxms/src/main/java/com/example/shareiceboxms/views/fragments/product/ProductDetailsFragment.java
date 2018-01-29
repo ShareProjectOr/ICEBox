@@ -4,6 +4,7 @@ import android.app.Dialog;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -100,10 +101,11 @@ public class ProductDetailsFragment extends BaseFragment {
                         return false;
                     }
                     itemProductType = new ItemProductType();
+                    Log.d("TAG",object.getJSONObject("d").toString());
                     itemProductType.bindData(object.getJSONObject("d"));
 
                 } catch (JSONException e) {
-                    err = RequstTips.JSONException_Tip;
+                    err = e.getMessage();
                     return false;
                 } catch (IOException e) {
                     err = RequstTips.getErrorMsg(e.getMessage());
@@ -136,13 +138,19 @@ public class ProductDetailsFragment extends BaseFragment {
                             mStorageTimeLimit.setText(time[2] + "分" + time[3] + "秒");
                         }
                     }
+                    if (String.valueOf(itemProductType.salingNum).equals("null")) {
+                        mSellAndUpload.setText("0/" + String.valueOf(itemProductType.noExhibitNum));
+                    } else {
+                        mSellAndUpload.setText(String.valueOf(itemProductType.salingNum) + "/" + String.valueOf(itemProductType.noExhibitNum));
+                    }
 
-                    mSellAndUpload.setText(String.valueOf(itemProductType.salingNum) + "/" + String.valueOf(itemProductType.noExhibitNum));
                     //折损率  折损数除以 折损数加上售卖中数量
-//                    float breakfloat = itemProductType.breakNum / (itemProductType.breakNum + itemProductType.salingNum);
+                    if (itemProductType.breakNum != null && itemProductType.salingNum != null && (itemProductType.breakNum + itemProductType.salingNum) != 0) {
+                        float breakfloat = itemProductType.breakNum / (itemProductType.breakNum + itemProductType.salingNum);
 
-                /*   mSpoilageUpload.setText(itemProductType.breakNum +
-                            "(" + String.valueOf(breakfloat * 100) + "%)");*/
+                        mSpoilageUpload.setText(itemProductType.breakNum +
+                                "(" + String.valueOf(breakfloat * 100) + "%)");
+                    }
                     if (String.valueOf(itemProductType.soldOutPrice).equals("null") || String.valueOf(itemProductType.soldOutPrice).equals("")) {
                         mSelledPriceTotal.setText("0");
                     } else {

@@ -119,8 +119,8 @@ public class ItemTradeRecord {
                 ItemTradeRecord itemTradeRecord = new ItemTradeRecord();
                 itemTradeRecord.tradeID = item.getInt("tradeID");
                 itemTradeRecord.tradeCode = item.getString("tradeCode");
-                if (item.has("settlementState") && !item.get("settlementState").equals(null)) {
-                    itemTradeRecord.settlementState = item.getInt("settlementState");
+                if (item.has("settleWay") && !item.get("settleWay").equals(null)) {
+                    itemTradeRecord.settlementState = item.getInt("settleWay");
                 }
                 itemTradeRecord.createTime = item.getString("createTime");
                 if (item.has("payState") && !item.get("payState").equals(null)) {

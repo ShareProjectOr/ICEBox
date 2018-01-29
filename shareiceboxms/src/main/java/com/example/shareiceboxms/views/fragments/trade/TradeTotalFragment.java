@@ -292,9 +292,9 @@ public class TradeTotalFragment extends BaseFragment {
         hasPayNum_2.setText(itemTradeTotal.alipayPoundage);
         notPayNum_2.setText(itemTradeTotal.wechatPoundage);
 
-        totalMoneyNum_3.setText(itemTradeTotal.refundMoney);
-        hasPayNum_3.setText(itemTradeTotal.realRefundMoney);
-        notPayNum_3.setText(itemTradeTotal.refundServiceCharge);
+        totalMoneyNum_3.setText(itemTradeTotal.realRefundMoney);
+      /*  hasPayNum_3.setText(itemTradeTotal.realRefundMoney);
+        notPayNum_3.setText(itemTradeTotal.refundServiceCharge);*/
 
         if (PerSonMessage.userType < Constants.MACHINE_MANAGER) {
 
@@ -304,8 +304,6 @@ public class TradeTotalFragment extends BaseFragment {
             settledMoney.setText(itemTradeTotal.settledMoney);
             unsettleMoney.setText(itemTradeTotal.unsettleMoney);
         }
-
-
         incomeMoney.setText(itemTradeTotal.incomeMoney);
     }
 
