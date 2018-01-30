@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 import com.example.shareiceboxms.R;
 import com.example.shareiceboxms.models.beans.trade.ItemTradeRecord;
+import com.example.shareiceboxms.models.contants.ConstanceMethod;
 import com.example.shareiceboxms.models.contants.Constants;
 import com.example.shareiceboxms.models.factories.FragmentFactory;
 import com.example.shareiceboxms.models.helpers.SecondToDate;
@@ -84,7 +85,7 @@ public class TradeRecordListAdapter extends RecyclerView.Adapter<RecyclerView.Vi
             ((ViewHolder) holder).payState.setText(itemTradeRecord.payState == 0 ? Constants.TradeStateTitle[2] : Constants.TradeStateTitle[1]);
             ((ViewHolder) holder).payState.setTextColor(ContextCompat.getColor(context, Constants.TreadIsPayCOLOR[itemTradeRecord.payState]));
             if (itemTradeRecord.machine != null)
-                ((ViewHolder) holder).machineNameAddr.setText(itemTradeRecord.machine.machineName + "(" + itemTradeRecord.machine.machineAddress + ")");
+                ((ViewHolder) holder).machineNameAddr.setText(itemTradeRecord.machine.machineName + "(" + ConstanceMethod.getAddress(itemTradeRecord.machine.machineAddress) + ")");
             ((ViewHolder) holder).tradeNo.setText(itemTradeRecord.tradeCode);
             ((ViewHolder) holder).jiesuanState.setText(Constants.TradeJieSuanStateTitle[itemTradeRecord.settleWay]);
             ((ViewHolder) holder).jiesuanState.setText(Constants.TradeJieSuanStateTitle[itemTradeRecord.settleWay]);
