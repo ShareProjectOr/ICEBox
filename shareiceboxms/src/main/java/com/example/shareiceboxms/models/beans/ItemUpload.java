@@ -28,6 +28,7 @@ public class ItemUpload {
     public String UpLoadNum;
 
     public void bindData(JSONObject object) throws JSONException {
+        Log.d("上下货",object.toString());
         recordID = object.getInt("recordID");
         unlockTime = object.getString("unlockTime");
         openingTime = object.getString("openingTime");

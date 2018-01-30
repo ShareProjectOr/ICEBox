@@ -237,7 +237,6 @@ public class ExceptionFragment extends BaseFragment implements CompoundButton.On
     @Override
     public String[] onDateSet(DatePicker startDatePicker, int startYear, int startMonthOfYear, int startDayOfMonth, DatePicker endDatePicker, int endYear, int endMonthOfYear, int endDayOfMonth) {
         mTimeSelect.setText(startYear + "-" + String.valueOf(startMonthOfYear + 1) + "-" + startDayOfMonth + "至" + endYear + "-" + String.valueOf(endMonthOfYear + 1) + "-" + endDayOfMonth);
-
         happenTime = super.onDateSet(startDatePicker, startYear, startMonthOfYear, startDayOfMonth, endDatePicker, endYear, endMonthOfYear, endDayOfMonth);
         currentPage = 1;
         getDatas(true);
@@ -247,6 +246,9 @@ public class ExceptionFragment extends BaseFragment implements CompoundButton.On
     @Override
     public void clearDates() {
         happenTime = null;
+        mTimeSelect.setText("");
+        currentPage = 1;
+        getDatas(true);
     }
 
     @Override

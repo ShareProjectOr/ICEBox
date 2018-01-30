@@ -166,7 +166,9 @@ public class MachineDetailFragment extends BaseFragment implements SwipeRefreshL
         isOnLine.setTextColor(ContextCompat.getColor(homeActivity, Constants.MachineStateColor[itemMachine.networkState]));
         isException.setText(itemMachine.faultState == 0 ? Constants.MachineFaultState[0] : Constants.MachineFaultState[1]);
         isException.setTextColor(ContextCompat.getColor(homeActivity, itemMachine.faultState == 0 ? Constants.MachineStateColor[1] : Constants.MachineStateColor[0]));
-        managerName.setText(itemMachine.itemManager.name);
+       if (itemMachine.itemManager!=null &&!itemMachine.itemManager.equals("null")){
+           managerName.setText(itemMachine.itemManager.name+"");
+       }
         machienCode.setText(itemMachine.machineCode);
         machineItemAddView.updateStateControlUi(itemMachine);
     }

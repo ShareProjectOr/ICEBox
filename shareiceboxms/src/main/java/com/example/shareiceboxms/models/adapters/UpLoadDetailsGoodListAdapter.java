@@ -172,7 +172,7 @@ public class UpLoadDetailsGoodListAdapter extends BaseAdapter implements View.On
                 break;
             case TYPE_BODY_ITEM:
                 position -= SPECIAL_ITEM_COUNT;
-                if (convertView == null) {
+                if (convertView == null||convertView.getTag() instanceof HeadViewHolder) {
                     convertView = LayoutInflater.from(mContext).inflate(R.layout.upload_details_goodlist_itemlayout, null);
                     holder = new ViewHolder();
                     holder.goodtypeName = (TextView) convertView.findViewById(R.id.goodtypeName);

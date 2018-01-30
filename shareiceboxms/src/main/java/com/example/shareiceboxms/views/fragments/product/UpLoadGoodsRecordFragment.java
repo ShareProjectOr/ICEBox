@@ -156,6 +156,8 @@ public class UpLoadGoodsRecordFragment extends BaseFragment {
     public void clearDates() {
         mDateRange.setText("");
         operationTime = null;
+        currentPage = 1;
+        getDatas(true);
     }
 
     @Override
