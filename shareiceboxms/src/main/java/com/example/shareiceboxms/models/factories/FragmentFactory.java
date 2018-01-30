@@ -72,7 +72,10 @@ public class FragmentFactory {
 
     public List<BaseFragment> getProductChildFragments() {
         List<BaseFragment> mFragments = new ArrayList<>();
-        if (PerSonMessage.userType >= 2) {//能看品类
+        String userRole = PerSonMessage.userType + "0";
+        if (PerSonMessage.userType == 2) {//能看品类
+            mFragments.add(new ProductTypeListFragment());
+        } else if (PerSonMessage.userType == 3 && PerSonMessage.role.equals("0")) {
             mFragments.add(new ProductTypeListFragment());
         }
 

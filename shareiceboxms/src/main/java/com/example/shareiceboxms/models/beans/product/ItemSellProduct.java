@@ -124,12 +124,12 @@ public class ItemSellProduct extends ItemProductBase {
                     itemProduct.isRefund = item.getInt("isRefund");
                 }
 
-                if (item.has("soldPrise")) {//&& !item.get("soldPrise").equals(null)
-                    itemProduct.soldPrise = item.getString("soldPrise");
+                if (item.has("soldPrice")) {//&& !item.get("soldPrise").equals(null)
+                    itemProduct.soldPrise = item.getString("soldPrice");
                 }
-                if (item.has("categoryPrice")) {
+/*                if (item.has("categoryPrice")) {
                     itemProduct.soldPrise = item.getString("categoryPrice");
-                }
+                }*/
                 if (item.has("soldTime")) {
                     itemProduct.soldTime = item.getString("soldTime");
                 }

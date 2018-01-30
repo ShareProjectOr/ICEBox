@@ -50,6 +50,11 @@ public class MyDialog {
             @Override
             public void onClick(DialogInterface dialog1, int which) {
                 dialog1.dismiss();
+                /*
+                * 从服务器退出登录
+                * */
+                PerSonMessage.GetOutLoginTask getOutLoginTask = new PerSonMessage.GetOutLoginTask();
+                getOutLoginTask.execute();
                 //清空缓存数据
                 Dosql();
                 ConstanceMethod.isFirstLogin(activity, true);
@@ -89,7 +94,7 @@ public class MyDialog {
         return dialog;
     }
 
-    public AlertDialog getMachineTeleControlDialog(String title,String showMsg, final String url, final Map<String, Object> params) {
+    public AlertDialog getMachineTeleControlDialog(String title, String showMsg, final String url, final Map<String, Object> params) {
         return new AlertDialog.Builder(context).setTitle(title).setMessage(showMsg).setPositiveButton("确定", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog1, int which) {

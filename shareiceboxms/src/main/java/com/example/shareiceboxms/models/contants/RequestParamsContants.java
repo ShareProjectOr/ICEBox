@@ -43,6 +43,15 @@ public class RequestParamsContants {
         }
     }
 
+    /*
+    * 退出登录
+    * */
+    public Map<String, Object> getOutLogin() {
+        Map<String, Object> params = new HashMap<>();
+        params.put("appUserID", PerSonMessage.userId);
+        params.put("checkCode", 1);
+        return params;
+    }
 
     /*
    *机器列表请求参数
