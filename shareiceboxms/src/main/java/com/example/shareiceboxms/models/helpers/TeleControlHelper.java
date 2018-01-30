@@ -91,7 +91,7 @@ public class TeleControlHelper {
                     Toast.makeText(context, "温度信息已保存", Toast.LENGTH_SHORT).show();
                 } else {
                     if (isAllow) {
-                        Toast.makeText(context, "操作成功", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(context, "操作成功,请等待几秒", Toast.LENGTH_SHORT).show();
                         MachineItemAddView.isLockStateUpdate = false;
                     } else {
                         Toast.makeText(context, "操作失败，请重试！", Toast.LENGTH_SHORT).show();
