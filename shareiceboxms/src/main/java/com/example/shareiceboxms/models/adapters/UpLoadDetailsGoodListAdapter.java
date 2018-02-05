@@ -114,14 +114,14 @@ public class UpLoadDetailsGoodListAdapter extends BaseAdapter implements View.On
         HeadViewHolder headviewHolder;
         switch (type) {
             case TYPE_HEAD_ITEM:
-                if (convertView == null) {
+                if (convertView == null || convertView.getTag() instanceof ViewHolder) {
 
                     convertView = LayoutInflater.from(mContext).inflate(R.layout.upload_details_goodlist_itemheadlayout, null);
                     headviewHolder = new HeadViewHolder(convertView);
-                 //   headviewHolder.operationType = (TextView) convertView.findViewById(R.id.operationType);
+                    //   headviewHolder.operationType = (TextView) convertView.findViewById(R.id.operationType);
                     headviewHolder.operationType.setOnClickListener(this);
                     convertView.setTag(headviewHolder);
-                }else {
+                } else {
                     headviewHolder = (HeadViewHolder) convertView.getTag();
                 }
 
@@ -172,7 +172,7 @@ public class UpLoadDetailsGoodListAdapter extends BaseAdapter implements View.On
                 break;
             case TYPE_BODY_ITEM:
                 position -= SPECIAL_ITEM_COUNT;
-                if (convertView == null||convertView.getTag() instanceof HeadViewHolder) {
+                if (convertView == null || convertView.getTag() instanceof HeadViewHolder) {
                     convertView = LayoutInflater.from(mContext).inflate(R.layout.upload_details_goodlist_itemlayout, null);
                     holder = new ViewHolder();
                     holder.goodtypeName = (TextView) convertView.findViewById(R.id.goodtypeName);
@@ -186,12 +186,12 @@ public class UpLoadDetailsGoodListAdapter extends BaseAdapter implements View.On
                 switch (oprationType) {
                     case 0:
                         holder.goodtypePrice.setText("￥" + (upLoads.get(position)).price);
-                        holder.goodtypePrice.setText((upLoads.get(position)).goodsName);
+                        holder.goodtypeName.setText((upLoads.get(position)).goodsName);
                         holder.operation.setText("上货");
                         break;
                     default:
                         holder.goodtypePrice.setText("￥" + (downLoads.get(position)).price);
-                        holder.goodtypePrice.setText((downLoads.get(position)).goodsName);
+                        holder.goodtypeName.setText((downLoads.get(position)).goodsName);
                         holder.operation.setText("下货");
                         break;
                 }

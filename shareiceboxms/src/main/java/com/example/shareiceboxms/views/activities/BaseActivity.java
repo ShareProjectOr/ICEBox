@@ -1,6 +1,5 @@
 package com.example.shareiceboxms.views.activities;
 
-import android.app.PendingIntent;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -9,7 +8,6 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
-import com.example.shareiceboxms.models.helpers.NotifySnackbar;
 import com.example.shareiceboxms.models.http.mqtt.GetService;
 
 import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
