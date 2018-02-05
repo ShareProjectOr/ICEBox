@@ -180,6 +180,10 @@ public class HomeActivity extends BaseActivity
                                     curFragment = new OpenDoorSuccessFragment();
                                     showHomepage = false;
                                     switchFragment();
+                                    /*
+                                    * 将dialog 消失掉
+                                    * */
+
                                     LastDoorState = OPEN_LOCK_SUCCESS;
                                 } else if (curFragment instanceof OpenDoorSuccessFragment || LastDoorState == OPEN_LOCK_SUCCESS) {
                                     return;
@@ -189,7 +193,7 @@ public class HomeActivity extends BaseActivity
                                 /*
                                 * 其实可以不添加的，之后看要不要删掉把
                                 * */
-                                if (curFragment instanceof OpeningDoorFragment || LastDoorState == OPENING_DOOR) {
+                                /*if (curFragment instanceof OpeningDoorFragment || LastDoorState == OPENING_DOOR) {
                                     Log.d("222222222222", "----------");
                                     //收到的门状态为关门,且上一状态为初始状态则认为是失败
                                     curFragment = new OpenDoorFailFragment();
@@ -199,7 +203,7 @@ public class HomeActivity extends BaseActivity
                                     LastDoorState = OPEN_LOCK_FAILED;
                                     qrResult = "";
                                     return;
-                                }
+                                }*/
                                 /*else{
                                     onBackPressed();
                                 }*/
@@ -321,9 +325,9 @@ public class HomeActivity extends BaseActivity
             /*
             * 强制开门中时不能按返回按钮
             * */
-            if (curFragment instanceof OpeningDoorFragment) {
-                return;
-            }
+          /*  if (curFragment instanceof OpeningDoorFragment) {
+                 return;
+            }*/
             if (showHomepage) {
                 mOnBackPressListener.OnBackDown();
             } else {
@@ -332,6 +336,8 @@ public class HomeActivity extends BaseActivity
                 * */
                 if (curFragment instanceof OpenDoorSuccessFragment || LastDoorState == OPEN_LOCK_SUCCESS) {
 
+                } else if (curFragment instanceof OpeningDoorFragment || LastDoorState == OPENING_DOOR) {
+                    //如果开门中返回，也不做什么处理
                 } else {
                     LastDoorState = DEFAULT;
                 }

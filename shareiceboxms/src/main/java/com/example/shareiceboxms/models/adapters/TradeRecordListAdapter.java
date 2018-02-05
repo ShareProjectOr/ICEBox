@@ -66,7 +66,14 @@ public class TradeRecordListAdapter extends RecyclerView.Adapter<RecyclerView.Vi
             if (itemTradeRecord == null) {
                 return;
             }
-            ((ViewHolder) holder).totalMoneyNum.setText(itemTradeRecord.tradeMoney);
+            if (TextUtils.equals(itemTradeRecord.tradeMoney, "") || TextUtils.equals(itemTradeRecord.tradeMoney, "null")) {
+                itemTradeRecord.tradeCode = "0";
+            }
+            if (Float.parseFloat(itemTradeRecord.tradeMoney) <= 0f) {
+                ((ViewHolder) holder).totalMoneyNum.setText("没有选购商品");
+            } else {
+                ((ViewHolder) holder).totalMoneyNum.setText(itemTradeRecord.tradeMoney);
+            }
             try {
                 if (itemTradeRecord.closingTime != null && !TextUtils.equals(itemTradeRecord.closingTime, "")) {
                     ((ViewHolder) holder).totalRecordTime.setText(SecondToDate.getStrOfDate(SecondToDate.getDateOfString(itemTradeRecord.closingTime)));

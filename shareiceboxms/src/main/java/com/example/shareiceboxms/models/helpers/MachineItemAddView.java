@@ -421,8 +421,10 @@ public class MachineItemAddView {
         public ScrollView scrollView;
         public ListView stockProductList;
         public LinearLayout addViewLayout;
+        public LinearLayout pageLayout;
         public MachineStockProductAdapter adapter;
         public List<ItemStockProduct> itemProducts;
+        public StocksPageHelper pageHelper;
         public boolean isLoading = false;
 
         public StockProductsHolder(View itemView, final ItemMachine itemMachine, final ScrollView scrollView) {
@@ -430,13 +432,16 @@ public class MachineItemAddView {
             this.scrollView = scrollView;
 //            stockProductList = (ListViewForScrollView) itemView.findViewById(R.id.productList);
             addViewLayout = (LinearLayout) itemView.findViewById(R.id.addViewLayout);
+            pageLayout = (LinearLayout) itemView.findViewById(R.id.pageLayout);
             adapter = new MachineStockProductAdapter(context, this.itemProducts);
             machineItemAddViewHelper = new MachineItemAddViewHelper(this.itemProducts, adapter, itemMachine);
 //            machineItemAddViewHelper.setView(stockProductList, scrollView);
             machineItemAddViewHelper.setLinearLayout(addViewLayout);
             machineItemAddViewHelper.setContext(context);
+            pageHelper = new StocksPageHelper(context, machineItemAddViewHelper, pageLayout);
+            machineItemAddViewHelper.setPageHelper(pageHelper);
 //            stockProductList.setAdapter(adapter);
-            scrollView.setOnTouchListener(new View.OnTouchListener() {
+         /*   scrollView.setOnTouchListener(new View.OnTouchListener() {
                 @Override
                 public boolean onTouch(View v, MotionEvent event) {
                     if (scrollView.getChildAt(0).getHeight() == scrollView.getHeight() + scrollView.getScrollY() - scrollView.getPaddingTop() - scrollView.getPaddingBottom()) {//
@@ -452,10 +457,11 @@ public class MachineItemAddView {
                         } else {
                             Toast.makeText(context, "偷偷告诉你,数据已经全部加载...", Toast.LENGTH_SHORT).show();
                         }
+                        isLoading = false;
                     }
                     return false;
                 }
-            });
+            });*/
         }
     }
 }

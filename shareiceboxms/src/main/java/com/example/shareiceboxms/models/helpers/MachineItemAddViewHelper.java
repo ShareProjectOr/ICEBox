@@ -47,6 +47,7 @@ public class MachineItemAddViewHelper {
     private ListView listView;
     private ScrollView scrollView;
     private LinearLayout linearLayout;
+    private StocksPageHelper stocksPageHelper;
 
     public MachineItemAddViewHelper(List<ItemStockProduct> itemProducts, MachineStockProductAdapter adapter, ItemMachine itemMachine) {
         this.itemProducts = itemProducts;
@@ -62,6 +63,10 @@ public class MachineItemAddViewHelper {
     public void getDatas(Map<String, Object> params) {
         MachineStockProductTask task = new MachineStockProductTask(params);
         task.execute();
+    }
+
+    public void setPageHelper(StocksPageHelper stocksPageHelper) {
+        this.stocksPageHelper = stocksPageHelper;
     }
 
     public void setContext(Context context) {
@@ -159,7 +164,7 @@ public class MachineItemAddViewHelper {
                 curPage = JsonDataParse.getInstance().getCurPage();
                 requestNum = JsonDataParse.getInstance().getRequestNum();
                 totalPage = JsonDataParse.getInstance().getTotalPage();
-                Log.e("MachineItemAddVHelper", "products.size==" + products.size() + "");
+                Log.e("MachineItemAddVHelper", "products.size==" + products.size() + "   ----totalPage=" + totalPage);
                 Log.e("response", response.toString());
                 return true;
             } catch (IOException e) {
@@ -182,9 +187,15 @@ public class MachineItemAddViewHelper {
         protected void onPostExecute(Boolean success) {
             if (success) {
                 dialog.dismiss();
-                itemProducts.addAll(products);
+
                 //   adapter.notifyDataSetChanged();
                 // ListViewForScrollView.setListViewHeightBasedOnChildren(listView, scrollView);
+                if (linearLayout != null) {
+                    Log.d("-----------------", "ChildCount=" + linearLayout.getChildCount());
+                    linearLayout.removeAllViews();
+                    itemProducts.clear();
+                }
+                itemProducts.addAll(products);
                 for (int i = 0; i < itemProducts.size(); i++) {
 
                     View view = LayoutInflater.from(context).inflate(R.layout.machine_detail_prod_list_item, linearLayout, false);
@@ -204,6 +215,9 @@ public class MachineItemAddViewHelper {
                         timeLimit.setText(secondToDate[0] + "天" + secondToDate[1] + "时" + secondToDate[2] + "分" + secondToDate[3] + "秒");
                     }
                     linearLayout.addView(view);
+                    if (stocksPageHelper != null) {
+                        stocksPageHelper.bindDatas(totalPage, totalNum);
+                    }
                 }
 
             } else {

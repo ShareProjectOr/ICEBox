@@ -91,11 +91,11 @@ public class RequestParamsContants {
     * */
     public Map<String, Object> getMachineStockProductParams() {
         Map<String, Object> params = new HashMap<>();
-        params.put("userID", PerSonMessage.userId);
+        /*params.put("userID", PerSonMessage.userId);*/
         params.put("appUserID", PerSonMessage.userId);
         params.put("checkCode", 1);
         params.put("p", 1);
-        params.put("n", 5);
+        params.put("n", 10);
         params.put("machineID", FragmentFactory.getInstance().getSavedBundle().getInt("machineID"));
         return params;
     }
