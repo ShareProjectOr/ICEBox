@@ -8,6 +8,7 @@
         android:layout_width="match_parent"
         android:layout_height="40dp"
         android:layout_margin="5dp"
+        android:visibility="gone"
         android:background="@drawable/shape_trade_time"
         android:gravity="center_vertical"
         android:orientation="horizontal">

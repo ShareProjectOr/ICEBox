@@ -9,6 +9,7 @@ import com.example.shareiceboxms.views.activities.HomeActivity;
 
 import org.eclipse.paho.client.mqttv3.MqttClient;
 import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
+import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttTopic;
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
 
@@ -32,10 +33,22 @@ public class GetService {
         init();
     }
 
+    public void breakClient() {
+        Log.d("断开", ".......");
+        if (client.isConnected()) {
+            try {
+                client.disconnect();
+            } catch (MqttException e) {
+                e.printStackTrace();
+            }
+        }
+
+    }
+
     private void init() {
         try {
             // host为主机名，clientid即连接MQTT的客户端ID，一般以唯一标识符表示，MemoryPersistence设置clientid的保存形式，默认为以内存保存
-            client = new MqttClient(HOST, "admin", new MemoryPersistence());
+            client = new MqttClient(HOST, String.valueOf(PerSonMessage.userId), new MemoryPersistence());
             // MQTT的连接设置
             options = new MqttConnectOptions();
             // 设置是否清空session,这里如果设置为false表示服务器会保留客户端的连接记录，这里设置为true表示每次连接到服务器都以新的身份连接

@@ -65,6 +65,7 @@ public class UpLoadRecordListData {
             @Override
             protected Boolean doInBackground(Void... params) {
                 try {
+                    Log.e("AsyncTask", "params: " + JsonUtil.mapToJson(body));
                     JSONObject object = new JSONObject(OkHttpUtil.post(
                             url, JsonUtil.mapToJson(body)));
                     if (refresh) {
@@ -97,7 +98,7 @@ public class UpLoadRecordListData {
                         Log.e("添加占位后长度", GetDataSetSize() + "");
                         mloadMoreHelper.setLoading(false);
                     }
-
+                    Log.e("AsyncTask", "response: " + DataSet);
                 } catch (IOException e1) {
                     error = RequstTips.getErrorMsg(e1.getMessage());
 

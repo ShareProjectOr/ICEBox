@@ -139,6 +139,7 @@ public class UpLoadGoodsRecordFragment extends BaseFragment {
         map.put("p", currentPage);
         map.put("appUserID", PerSonMessage.userId);
         //  map.put("userID", PerSonMessage.userId);
+        Log.e("operationTime", ":" + RequestParamsContants.getInstance().getSelectTime(operationTime));
         map.put("operationTime", RequestParamsContants.getInstance().getSelectTime(operationTime));
         contentProvider.getData(HttpRequstUrl.UPLOAD_RECORD_LIST_URL, map, b);
     }
@@ -172,7 +173,7 @@ public class UpLoadGoodsRecordFragment extends BaseFragment {
             map.put("operationTime", RequestParamsContants.getInstance().getSelectTime(operationTime));
             contentProvider.getData(HttpRequstUrl.UPLOAD_RECORD_LIST_URL, map, false);
         } else {
-          //  Toast.makeText(getActivity(), "偷偷告诉你,数据已全部加载完毕...", Toast.LENGTH_SHORT).show();
+            //  Toast.makeText(getActivity(), "偷偷告诉你,数据已全部加载完毕...", Toast.LENGTH_SHORT).show();
         }
     }
 }
