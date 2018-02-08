@@ -30,6 +30,7 @@ public interface HttpRequstUrl {
     String MACHINE_DETAIL_URL = HOST_URL + "machine/get";
     String MACHINE_StockGoods_URL = HOST_URL + "machine/stockGoods";
     String MACHINE_Restart_URL = HOST_URL + "machine/restart";
+    String MACHINE_RESET_URL = HOST_URL + "machine/reset";//复位
     String MACHINE_Shutdown_URL = HOST_URL + "machine/powerOff";
     String MACHINE_LightControl_URL = HOST_URL + "machine/toggleLight";
     String MACHINE_Check_URL = HOST_URL + "machine/check";//盘点

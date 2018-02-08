@@ -222,6 +222,7 @@ public class MachineItemAddView {
         public SeekBar subTempSeekbar;
         public RelativeLayout restart;
         public RelativeLayout shutDown;
+        public RelativeLayout reset;
         public RelativeLayout check;
         public android.widget.Button lockSwitch;
         private boolean isChecked = false;
@@ -243,6 +244,7 @@ public class MachineItemAddView {
             restart = (RelativeLayout) itemView.findViewById(R.id.restart);
             shutDown = (RelativeLayout) itemView.findViewById(R.id.shutDown);
             check = (RelativeLayout) itemView.findViewById(R.id.check);
+            reset = (RelativeLayout) itemView.findViewById(R.id.reset);
             lockSwitch = (android.widget.Button) itemView.findViewById(R.id.lockSwitch);
 
            /* if (android.os.Build.VERSION.SDK_INT > android.os.Build.VERSION_CODES.KITKAT) {
@@ -265,6 +267,7 @@ public class MachineItemAddView {
             tempSeekbar.setEnabled(false);
             restart.setOnClickListener(this);
             shutDown.setOnClickListener(this);
+            reset.setOnClickListener(this);
             check.setOnClickListener(this);
             lockSwitch.setOnClickListener(this);
             subTempSeekbar.setOnSeekBarChangeListener(this);
@@ -349,6 +352,13 @@ public class MachineItemAddView {
                         MyDialog checkDialog = new MyDialog(context);
                         checkDialog.showDialog(checkDialog.getMachineTeleControlDialog("盘点", "机器名称：" + itemMachine.machineName
                                 , HttpRequstUrl.MACHINE_Check_URL, RequestParamsContants.getInstance().getMachineCheckParams()));
+                    }
+                    break;
+                case R.id.reset:
+                    if (itemMachine != null) {
+                        MyDialog restartDialog = new MyDialog(context);
+                        restartDialog.showDialog(restartDialog.getMachineTeleControlDialog("复位", "机器名称：" + itemMachine.machineName
+                                , HttpRequstUrl.MACHINE_RESET_URL, RequestParamsContants.getInstance().getMachineRestartParams()));
                     }
                     break;
                 case R.id.lockSwitch:

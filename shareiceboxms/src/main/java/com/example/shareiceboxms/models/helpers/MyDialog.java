@@ -213,4 +213,10 @@ public class MyDialog {
         dialog = builder.create();
         return dialog;
     }
+
+    //识别机器二维码的dialog
+    public static AlertDialog normalDialog(final HomeActivity context, String msg) {
+        return new AlertDialog.Builder(context).setTitle("扫描结果").setMessage("机器码为：" + msg)
+                .setNegativeButton("取消", null).setPositiveButton(" 确 定 ", null).create();
+    }
 }

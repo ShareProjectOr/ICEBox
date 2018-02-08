@@ -108,6 +108,7 @@ public class HomeActivity extends BaseActivity
     private int LastDoorState = DEFAULT;//0初始状态,1开门状态,2上货完成关门,3开门失败状态
     private boolean isRequestOpen = false;
     public String qrResult;//二维码扫描结果
+    public boolean isRecogniteMachineCode = false;//是否是识别机器码
 
     public static HomeActivity getInstance() {
 
@@ -128,6 +129,7 @@ public class HomeActivity extends BaseActivity
         setContentView(R.layout.activity_home);
         SaveUserMessager();
         initViews();
+        startMqttService();
         initData();
         initListener();
         initHandler();
@@ -136,7 +138,7 @@ public class HomeActivity extends BaseActivity
     @Override
     protected void onStart() {
         super.onStart();
-        startMqttService();
+
     }
 
 
@@ -280,7 +282,7 @@ public class HomeActivity extends BaseActivity
         curFragment = new TradeFragment();
         switchFragment();
         setNotifySnackbar();
-        MnanagerNameAndTimePart.setText(SecondToDate.getTimePart());
+        MnanagerNameAndTimePart.setText(PerSonMessage.name + ", " + SecondToDate.getTimePart());
     }
 
 
@@ -391,6 +393,10 @@ public class HomeActivity extends BaseActivity
                     switchFragment();
                 }
 
+                break;
+            case R.id.icon_rMachineCode:
+                isRecogniteMachineCode = true;
+                openSaoma();
                 break;
             case R.id.icon_person:
                 if (!(curFragment instanceof PerSonFragment)) {
@@ -626,6 +632,7 @@ public class HomeActivity extends BaseActivity
                     requestOpenDoor(qrResult);
                 } else {
                     Toast.makeText(getApplication(), "无法获取扫描结果", Toast.LENGTH_LONG).show();
+                    navigationView.setCheckedItem(R.id.icon_home);
                 }
                 break;
 
@@ -635,6 +642,7 @@ public class HomeActivity extends BaseActivity
     public void requestOpenDoor(final String QRCode) {
         if ("".equals(qrResult)) {
             Toast.makeText(this, "解析失败，请重新扫码", Toast.LENGTH_SHORT).show();
+            navigationView.setCheckedItem(R.id.icon_home);
             return;
         }
         String qrString[] = QRCode.split("machineCode=");
@@ -642,9 +650,17 @@ public class HomeActivity extends BaseActivity
         Log.d("---------------------", qrString.toString());
         if (qrString == null || qrString.length <= 1) {
             Toast.makeText(this, "解析失败，请重新扫码", Toast.LENGTH_SHORT).show();
+            navigationView.setCheckedItem(R.id.icon_home);
             return;
         }
         String machineCode = qrString[1];
+        if (isRecogniteMachineCode) {
+            new MyDialog(this).showDialog(MyDialog.normalDialog(this, machineCode));
+            isRecogniteMachineCode = false;
+            qrResult = "";
+            navigationView.setCheckedItem(R.id.icon_home);
+            return;
+        }
         Log.e("machineCode", machineCode);
         final Map<String, Object> body = new HashMap<>();
         body.put("machineCode", machineCode);
@@ -814,7 +830,7 @@ public class HomeActivity extends BaseActivity
         Log.e("掉线", "掉线");
 
 
-        handler.sendEmptyMessage(0);
+      handler.sendEmptyMessage(0);
 
 
     /*  //  super.connectionLost(throwable);

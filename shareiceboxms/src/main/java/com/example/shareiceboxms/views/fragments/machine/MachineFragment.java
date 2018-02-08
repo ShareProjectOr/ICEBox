@@ -218,7 +218,7 @@ public class MachineFragment extends BaseFragment implements HomeActivity.OnBack
     @Override
     public void loadMore(RecyclerView.Adapter<RecyclerView.ViewHolder> adapter, RecyclerView recyclerView) {
 
-        totalPage = totalNum / requestNum + (totalNum % requestNum > 0 ? 1 : 0);
+//        totalPage = totalNum / requestNum + (totalNum % requestNum > 0 ? 1 : 0);
         Log.d("-----totalPage-----", "----loadMore---" + totalPage);
         //拉取数据
         if (curPage < totalPage) {
@@ -302,6 +302,7 @@ public class MachineFragment extends BaseFragment implements HomeActivity.OnBack
                 totalNum = JsonDataParse.getInstance().getTotalNum();
                 curPage = JsonDataParse.getInstance().getCurPage();
                 requestNum = JsonDataParse.getInstance().getRequestNum();
+                totalPage = JsonDataParse.getInstance().getTotalPage();
                 Log.e(TAG, "machines.size==" + machines.size());
                 return true;
             } catch (IOException e) {

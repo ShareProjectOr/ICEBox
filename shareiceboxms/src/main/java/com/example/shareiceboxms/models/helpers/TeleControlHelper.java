@@ -25,6 +25,7 @@ import java.util.Map;
  * 灯控制
  * 盘点
  * 修改温度
+ * 复位
  */
 
 public class TeleControlHelper {
