@@ -173,7 +173,7 @@ public class DoubleDatePickerDialog extends AlertDialog implements OnClickListen
             try {
                 Date startDate = SecondToDate.getDateOfString(SecondToDate.autoAddZero(mDatePicker_start.getYear(), mDatePicker_start.getMonth(), mDatePicker_start.getDayOfMonth()) + " 00:00:00");
                 Date endDate = SecondToDate.getDateOfString(SecondToDate.autoAddZero(mDatePicker_end.getYear(), mDatePicker_end.getMonth(), mDatePicker_end.getDayOfMonth()) + " 23:59:59");
-                Log.d("------startDate---------", startDate.toString());
+                //Log.d("------startDate---------", startDate.toString());
               /*
               * 跨度小于等于1年
               * */

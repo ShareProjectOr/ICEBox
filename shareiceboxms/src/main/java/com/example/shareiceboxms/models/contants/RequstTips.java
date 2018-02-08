@@ -1,10 +1,5 @@
 package com.example.shareiceboxms.models.contants;
 
-import android.util.Log;
-
-/**
- * Created by Administrator on 2017/12/18.
- */
 
 public class RequstTips {
     public static String ServerException_Tip_500 = "服务器出现错误（500）";

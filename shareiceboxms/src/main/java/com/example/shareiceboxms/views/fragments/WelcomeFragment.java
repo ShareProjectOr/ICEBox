@@ -1,6 +1,5 @@
 package com.example.shareiceboxms.views.fragments;
 
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.AsyncTask;
@@ -11,8 +10,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.AlphaAnimation;
-import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.example.shareiceboxms.R;
@@ -145,12 +142,11 @@ public class WelcomeFragment extends BaseFragment {
                     return true;
                 }
             } catch (IOException e) {
-                Log.e("response", e + "");
+                Log.e("response", e.getMessage() + "");
                 err = RequstTips.getErrorMsg(e.getMessage());
                 return false;
             } catch (JSONException e) {
-
-                err = RequstTips.JSONException_Tip;
+                err = RequstTips.JSONException_Tip + e.getMessage();
                 return false;
             }
             return false;

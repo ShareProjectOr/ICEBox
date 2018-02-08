@@ -64,7 +64,7 @@ public class UpLoadGoodsDetailsFragment extends BaseFragment {
             refreshLayout.setOnRefreshListener(this);
         }
     }
-
+    
     private void initdata() {
         final Dialog load = MyDialog.loadDialog(getActivity());
         load.show();
