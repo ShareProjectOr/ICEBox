@@ -32,6 +32,8 @@ import com.example.shareiceboxms.views.fragments.BaseFragment;
 import java.util.HashMap;
 import java.util.Map;
 
+import Interface.onDateSetListener;
+
 /**
  * Created by LYU on 2017/12/12.
  * 品类列表视图管理类
@@ -161,4 +163,6 @@ public class ProductTypeListFragment extends BaseFragment implements TextWatcher
             contentprovider.getData(HttpRequstUrl.PRODUCT_TYPE_LIST_URL, initPostBody, true);
         }
     }
+
+
 }

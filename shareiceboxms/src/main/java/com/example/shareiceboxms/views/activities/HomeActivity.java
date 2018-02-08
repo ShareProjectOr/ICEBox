@@ -73,6 +73,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -108,6 +109,7 @@ public class HomeActivity extends BaseActivity
     private int LastDoorState = DEFAULT;//0初始状态,1开门状态,2上货完成关门,3开门失败状态
     private boolean isRequestOpen = false;
     public String qrResult;//二维码扫描结果
+    private Intent mIntent;
 
     public static HomeActivity getInstance() {
 
@@ -145,14 +147,23 @@ public class HomeActivity extends BaseActivity
             @Override
             public void handleMessage(Message msg) {
                 if (msg.obj == null) {
-                    new AlertDialog.Builder(HomeActivity.this).setTitle("掉线通知")
-                            .setMessage("您已服务器的通讯已断开,请重新登录" + "\n可能原因:\n1.您的账号已被他人登录\n2.网络环境差\n3.服务器重启或异常").setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(HomeActivity.this);
+                    builder.setTitle("掉线通知");
+                    builder.setMessage("您已服务器的通讯已断开,请重新登录" + "\n可能原因:\n1.您的账号已被他人登录\n2.网络环境差\n3.服务器重启或异常");
+                    builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
+                            GetService.getInstance().breakClient();
                             PerSonMessage.isexcit = true;
                             jumpActivity(LoginActivity.class, null);
+                            finish();
                         }
-                    }).create().show();
+                    });
+                    AlertDialog dialog = builder.create();
+                    dialog.setCancelable(false);
+                    dialog.setCanceledOnTouchOutside(false);
+                    dialog.show();
+
                 } else {
                     Log.d("----handleMessage---", "';;;;;");
                     JSONObject object = (JSONObject) msg.obj;
@@ -290,7 +301,7 @@ public class HomeActivity extends BaseActivity
         registerReceiver(mNotificationBroadcastReceiver, intentFilterNotify);
         mNotificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
         mBuilder = new NotificationCompat.Builder(HomeActivity.this);
-
+        mIntent = new Intent(this, MqttService.class);
         mBuilder.setContentTitle("通知")
                 //设置通知栏标题
                 .setContentText("有机器发生了故障!!!") //设置通知栏显示内容
@@ -324,8 +335,8 @@ public class HomeActivity extends BaseActivity
     }
 
     public void startMqttService() {
-        Intent intent = new Intent(this, MqttService.class);
-        startService(intent);
+
+        startService(mIntent);
     }
 
     @Override
@@ -594,6 +605,7 @@ public class HomeActivity extends BaseActivity
     }
 
     public void finishActivity() {
+        JSONObject object = new JSONObject();
         Log.d("---finishActivity---", "----");
         if (System.currentTimeMillis() - lastBackClicked < 2000) {
             super.onBackPressed();
@@ -816,17 +828,6 @@ public class HomeActivity extends BaseActivity
 
         handler.sendEmptyMessage(0);
 
-
-    /*  //  super.connectionLost(throwable);
-        handler = new Handler();
-        handler.post(new Runnable() {
-            @Override
-            public void run() {
-
-                //  GetService.getInstance().start();
-            }
-        });
-*/
     }
 
     @Override
@@ -843,6 +844,7 @@ public class HomeActivity extends BaseActivity
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        stopService(mIntent);
         unregisterReceiver(mNotificationBroadcastReceiver);//销毁广播
     }
 

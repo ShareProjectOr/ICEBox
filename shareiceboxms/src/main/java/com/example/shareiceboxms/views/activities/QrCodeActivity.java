@@ -60,7 +60,6 @@ public class QrCodeActivity extends Activity implements Callback, OnClickListene
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_qr_code);
-
         initView();
         initData();
     }
