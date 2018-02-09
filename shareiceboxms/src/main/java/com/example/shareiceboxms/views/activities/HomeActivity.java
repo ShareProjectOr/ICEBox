@@ -159,6 +159,7 @@ public class HomeActivity extends BaseActivity
                             PerSonMessage.isexcit = true;
                             jumpActivity(LoginActivity.class, null);
                             finish();
+//                            HomeActivity.this.finish();
                         }
                     });
                     AlertDialog dialog = builder.create();

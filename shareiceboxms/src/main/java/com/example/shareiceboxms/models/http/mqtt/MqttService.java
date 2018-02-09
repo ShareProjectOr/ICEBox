@@ -32,6 +32,6 @@ public class MqttService extends IntentService {
 
     @Override
     public void onDestroy() {
-        GetService.getInstance().breakClient();
+    //    GetService.getInstance().breakClient();
     }
 }
