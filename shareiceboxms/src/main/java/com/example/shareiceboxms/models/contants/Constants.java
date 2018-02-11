@@ -14,6 +14,7 @@ public interface Constants {
     int SYSTEM_MANAGER = 1;
     int AGENT_MANAGER = 2;
     int MACHINE_MANAGER = 3;
+    int INVILIDE_USER_TYPE = -1;//针对所有用户不起效
 
     String[] TabTitles = {"交易", "机器", "异常", "商品"};
     int[] TabIcons = {R.drawable.selector_trade, R.drawable.selector_machine,

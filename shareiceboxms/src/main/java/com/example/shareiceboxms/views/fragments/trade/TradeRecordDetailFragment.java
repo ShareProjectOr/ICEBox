@@ -119,7 +119,7 @@ public class TradeRecordDetailFragment extends BaseFragment implements RecordDet
         drawerIcon.setOnClickListener(this);
         saoma.setOnClickListener(this);
         moreRefund.setOnClickListener(this);
-        if (PerSonMessage.userType < Constants.AGENT_MANAGER) {
+        if (PerSonMessage.userType < Constants.INVILIDE_USER_TYPE) {//对所有用户不起效
             allProductCB.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -150,7 +150,7 @@ public class TradeRecordDetailFragment extends BaseFragment implements RecordDet
                             } else {
                                 coorLayout.setVisibility(View.VISIBLE);
                             }
-                            if (PerSonMessage.userType < Constants.AGENT_MANAGER) {
+                            if (PerSonMessage.userType < Constants.INVILIDE_USER_TYPE) {
                                 allProductCB.setVisibility(View.VISIBLE);
                             } else {
                                 allProductCB.setVisibility(View.GONE);
@@ -161,7 +161,7 @@ public class TradeRecordDetailFragment extends BaseFragment implements RecordDet
                         break;
                     case 1:
                         if (adapter != null) {
-                            if (PerSonMessage.userType < Constants.AGENT_MANAGER) {
+                            if (PerSonMessage.userType < Constants.INVILIDE_USER_TYPE) {
                                 allProductCB.setVisibility(View.GONE);
                             }
                             adapter.setRefundProductSelected(true);
@@ -313,7 +313,7 @@ public class TradeRecordDetailFragment extends BaseFragment implements RecordDet
         } else {
             coorLayout.setVisibility(View.VISIBLE);
         }
-        if (PerSonMessage.userType < Constants.AGENT_MANAGER) {
+        if (PerSonMessage.userType < Constants.INVILIDE_USER_TYPE) {
             allProductCB.setVisibility(View.VISIBLE);
         } else {
             allProductCB.setVisibility(View.GONE);
