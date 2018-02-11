@@ -15,7 +15,6 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.NonNull;
@@ -35,6 +34,7 @@ import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -48,7 +48,6 @@ import com.example.shareiceboxms.models.contants.Sql;
 import com.example.shareiceboxms.models.factories.FragmentFactory;
 import com.example.shareiceboxms.models.helpers.MyDialog;
 import com.example.shareiceboxms.models.helpers.SecondToDate;
-import com.example.shareiceboxms.models.helpers.WindowManagerHelper;
 import com.example.shareiceboxms.models.http.JsonUtil;
 import com.example.shareiceboxms.models.http.OkHttpUtil;
 import com.example.shareiceboxms.models.http.mqtt.GetService;
@@ -57,7 +56,6 @@ import com.example.shareiceboxms.views.fragments.AboutFragment;
 import com.example.shareiceboxms.views.fragments.BaseFragment;
 import com.example.shareiceboxms.views.fragments.ChangePasswordFragment;
 import com.example.shareiceboxms.views.fragments.CloseDoorFragment;
-import com.example.shareiceboxms.views.fragments.OpenDoorFailFragment;
 import com.example.shareiceboxms.views.fragments.OpenDoorSuccessFragment;
 import com.example.shareiceboxms.views.fragments.OpeningDoorFragment;
 import com.example.shareiceboxms.views.fragments.PerSonFragment;
@@ -66,14 +64,12 @@ import com.example.shareiceboxms.views.fragments.machine.MachineFragment;
 import com.example.shareiceboxms.views.fragments.product.ProductFragment;
 import com.example.shareiceboxms.views.fragments.trade.TradeFragment;
 
-import org.apache.http.HttpException;
 import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -479,10 +475,7 @@ public class HomeActivity extends BaseActivity
                         fileUrl = object.getJSONObject("d").getString("fileUrl");
                         return true;
                     }
-                } catch (IOException e) {
-                    response = e.getMessage();
-                    e.printStackTrace();
-                } catch (JSONException e) {
+                } catch (IOException | JSONException e) {
                     response = e.getMessage();
                     e.printStackTrace();
                 }
@@ -612,7 +605,6 @@ public class HomeActivity extends BaseActivity
     }
 
     public void finishActivity() {
-        JSONObject object = new JSONObject();
         Log.d("---finishActivity---", "----");
         if (System.currentTimeMillis() - lastBackClicked < 2000) {
             super.onBackPressed();
@@ -651,9 +643,10 @@ public class HomeActivity extends BaseActivity
 
         }
     }
-/*
-* 如果是识别机器码状态，清除
-* */
+
+    /*
+    * 如果是识别机器码状态，清除
+    * */
     private void clearRecogniteMsg() {
         isRecogniteMachineCode = false;
         qrResult = "";
@@ -669,7 +662,7 @@ public class HomeActivity extends BaseActivity
         String qrString[] = QRCode.split("machineCode=");
 
         Log.d("---------------------", qrString.toString());
-        if (qrString == null || qrString.length <= 1) {
+        if (qrString.length <= 1) {
             Toast.makeText(this, "解析失败，请重新扫码", Toast.LENGTH_SHORT).show();
             clearRecogniteMsg();
             return;
@@ -849,7 +842,7 @@ public class HomeActivity extends BaseActivity
         Log.e("掉线", "掉线");
 
 
-      handler.sendEmptyMessage(0);
+        handler.sendEmptyMessage(0);
 
     }
 
