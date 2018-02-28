@@ -2,6 +2,7 @@ package com.example.shareiceboxms.models.helpers;
 
 import android.text.TextUtils;
 import android.util.Log;
+import android.widget.TextView;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -247,9 +248,37 @@ public class SecondToDate {
   * */
     public static String getSubString(String startTime, String endTime) throws ParseException {
         String timeStr = "";
+        if (SecondToDate.getSubOfDates(SecondToDate.getDateOfString(startTime)
+                , SecondToDate.getDateOfString(endTime)) <= 0) {
+            return "已过期";
+        }
         String[] time = SecondToDate.formatLongToTimeStr(
                 SecondToDate.getSubOfDates(SecondToDate.getDateOfString(startTime)
                         , SecondToDate.getDateOfString(endTime)) / 1000);
+        timeStr = getDateString(timeStr, time);
+        if (TextUtils.equals(timeStr, "")) {
+            return "已过期";
+        }
+        return timeStr;
+    }
+
+    /*
+    * 将两string差值直接转换为天时分秒
+    * */
+    public static String getTimeLimitString(String periodTime) throws ParseException {
+        String timeStr = "";
+        if (TextUtils.isEmpty(periodTime) || Long.valueOf(periodTime) <= 0) {
+            return "已过期";
+        }
+        String[] time = SecondToDate.formatLongToTimeStr(Long.valueOf(periodTime));
+        timeStr = getDateString(timeStr, time);
+        if (TextUtils.equals(timeStr, "")) {
+            return "已过期";
+        }
+        return timeStr;
+    }
+
+    private static String getDateString(String timeStr, String[] time) {
         if (!time[0].equals("0")) {
             timeStr += time[0] + "天";
         }
@@ -261,9 +290,6 @@ public class SecondToDate {
         }
         if (!time[3].equals("0")) {
             timeStr += time[3] + "秒";
-        }
-        if (TextUtils.equals(timeStr, "")) {
-            return "已过期";
         }
         return timeStr;
     }

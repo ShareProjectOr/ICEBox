@@ -73,6 +73,8 @@ public class LoginFragment extends BaseFragment implements LoginAnimPresentor.Lo
     }
 
     private void initDatas() {
+        accountEdit.setText(PerSonMessage.loginAccount);
+        passEdit.setText(PerSonMessage.loginPassword);
          /*
             * 解析地址
             * */
@@ -104,7 +106,7 @@ public class LoginFragment extends BaseFragment implements LoginAnimPresentor.Lo
         isRemember.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                ConstanceMethod.isRemember(loginActivity,isChecked);
+                ConstanceMethod.isRemember(loginActivity, isChecked);
             }
         });
         isRemember.setChecked(true);
@@ -115,12 +117,12 @@ public class LoginFragment extends BaseFragment implements LoginAnimPresentor.Lo
         switch (v.getId()) {
             case R.id.login:
                 if (accountEdit.getText().toString().isEmpty()) {
-                    accountEdit.setError("用户名不能为空",null);
+                    accountEdit.setError("用户名不能为空", null);
                     accountEdit.requestFocus();
                     return;
                 }
                 if (passEdit.getText().toString().isEmpty()) {
-                    passEdit.setError("密码不能为空",null);
+                    passEdit.setError("密码不能为空", null);
                     passEdit.requestFocus();
                     return;
                 }
@@ -221,7 +223,7 @@ public class LoginFragment extends BaseFragment implements LoginAnimPresentor.Lo
                 LoginAnimPresentor.loginAnimReverse(editLayout, barLayout);
                 loginBnt.setVisibility(View.VISIBLE);
                 passLayout.setVisibility(View.VISIBLE);
-                passEdit.setError(err,null);
+                passEdit.setError(err, null);
                 passEdit.requestFocus();
             }
         }

@@ -25,7 +25,6 @@ import com.example.shareiceboxms.models.contants.RequestParamsContants;
 import com.example.shareiceboxms.models.contants.RequstTips;
 import com.example.shareiceboxms.models.http.JsonUtil;
 import com.example.shareiceboxms.models.http.OkHttpUtil;
-import com.example.shareiceboxms.models.widget.ListViewForScrollView;
 
 import org.json.JSONException;
 
@@ -41,7 +40,7 @@ import java.util.Map;
 public class MachineItemAddViewHelper {
     private int curPage, requestNum, totalNum, totalPage;
     private List<ItemStockProduct> itemProducts;
-    private MachineStockProductAdapter adapter;
+    //    private MachineStockProductAdapter adapter;
     private ItemMachine itemMachine;
     private Context context;
     private ListView listView;
@@ -49,9 +48,9 @@ public class MachineItemAddViewHelper {
     private LinearLayout linearLayout;
     private StocksPageHelper stocksPageHelper;
 
-    public MachineItemAddViewHelper(List<ItemStockProduct> itemProducts, MachineStockProductAdapter adapter, ItemMachine itemMachine) {
+    public MachineItemAddViewHelper(List<ItemStockProduct> itemProducts, ItemMachine itemMachine) {
         this.itemProducts = itemProducts;
-        this.adapter = adapter;
+//        this.adapter = adapter;
         this.itemMachine = itemMachine;
     }
 
@@ -105,14 +104,6 @@ public class MachineItemAddViewHelper {
         this.itemProducts = itemProducts;
     }
 
-    public MachineStockProductAdapter getAdapter() {
-        return adapter;
-    }
-
-    public void setAdapter(MachineStockProductAdapter adapter) {
-        this.adapter = adapter;
-    }
-
     public void setView(ListView listView, ScrollView scrollView) {
         this.listView = listView;
         this.scrollView = scrollView;
@@ -160,12 +151,12 @@ public class MachineItemAddViewHelper {
                 totalPage = totalNum / requestNum + (totalNum % requestNum > 0 ? 1 : 0);
                 JSONArray jsonList = jsonD.getJSONArray("list");*/
                 products = ItemStockProduct.bindProductList(JsonDataParse.getInstance().getArrayList(response.toString()), itemMachine);
+                Log.e("response", response);
                 totalNum = JsonDataParse.getInstance().getTotalNum();
                 curPage = JsonDataParse.getInstance().getCurPage();
                 requestNum = JsonDataParse.getInstance().getRequestNum();
                 totalPage = JsonDataParse.getInstance().getTotalPage();
                 Log.e("MachineItemAddVHelper", "products.size==" + products.size() + "   ----totalPage=" + totalPage);
-                Log.e("response", response.toString());
                 return true;
             } catch (IOException e) {
                 Log.e("erro", e.toString());
@@ -210,10 +201,19 @@ public class MachineItemAddViewHelper {
                     } else {
                         productSpecPrice.setText(itemProducts.get(i).activityPrice + "");
                     }
-                    if (itemProducts.get(i).residueStorageTime != null) {
-                        String[] secondToDate = SecondToDate.formatLongToTimeStr(Long.valueOf(itemProducts.get(i).residueStorageTime));
-                        timeLimit.setText(secondToDate[0] + "天" + secondToDate[1] + "时" + secondToDate[2] + "分" + secondToDate[3] + "秒");
+                    if (itemProducts.get(i).num != null) {
+                      /*  String[] secondToDate = SecondToDate.formatLongToTimeStr(Long.valueOf(itemProducts.get(i).residueStorageTime));
+                        productNum.setText(secondToDate[0] + "天" + secondToDate[1] + "时" + secondToDate[2] + "分" + secondToDate[3] + "秒");*/
+                        timeLimit.setText(itemProducts.get(i).num + "");
                     }
+                    final int finalI = i;
+                    view.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+
+                            MyDialog.stockProductsDialog(context, itemProducts.get(finalI)).show();
+                        }
+                    });
                     linearLayout.addView(view);
                     if (stocksPageHelper != null) {
                         stocksPageHelper.bindDatas(totalPage, totalNum);

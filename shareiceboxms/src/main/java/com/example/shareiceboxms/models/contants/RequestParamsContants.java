@@ -49,6 +49,7 @@ public class RequestParamsContants {
     public Map<String, Object> getOutLogin() {
         Map<String, Object> params = new HashMap<>();
         params.put("appUserID", PerSonMessage.userId);
+        params.put("userID", PerSonMessage.userId);
         params.put("checkCode", 1);
         return params;
     }
@@ -61,6 +62,7 @@ public class RequestParamsContants {
     public Map<String, Object> getMachineListParams() {
         Map<String, Object> params = new HashMap<>();
         params.put("appUserID", PerSonMessage.userId);
+        params.put("userID", PerSonMessage.userId);
         params.put("keyword", "");
         params.put("p", 1);
         params.put("n", 4);
@@ -93,6 +95,7 @@ public class RequestParamsContants {
         Map<String, Object> params = new HashMap<>();
         /*params.put("userID", PerSonMessage.userId);*/
         params.put("appUserID", PerSonMessage.userId);
+        params.put("userID", PerSonMessage.userId);
         params.put("checkCode", 1);
         params.put("p", 1);
         params.put("n", 10);
@@ -106,6 +109,7 @@ public class RequestParamsContants {
     public Map<String, Object> getMachineLightControlParams() {
         Map<String, Object> params = new HashMap<>();
         params.put("appUserID", PerSonMessage.userId);
+        params.put("userID", PerSonMessage.userId);
         params.put("checkCode", 1);
         params.put("machineID", FragmentFactory.getInstance().getSavedBundle().getInt("machineID"));
         return params;
@@ -129,6 +133,7 @@ public class RequestParamsContants {
     public Map<String, Object> getMachineRestartParams() {
         Map<String, Object> params = new HashMap<>();
         params.put("appUserID", PerSonMessage.userId);
+        params.put("userID", PerSonMessage.userId);
         params.put("checkCode", 1);
         params.put("machineID", FragmentFactory.getInstance().getSavedBundle().getInt("machineID"));
         return params;
@@ -140,6 +145,7 @@ public class RequestParamsContants {
     public Map<String, Object> getMachineCheckParams() {
         Map<String, Object> params = new HashMap<>();
         params.put("appUserID", PerSonMessage.userId);
+        params.put("userID", PerSonMessage.userId);
         params.put("checkCode", 1);
         params.put("machineID", FragmentFactory.getInstance().getSavedBundle().getInt("machineID"));
         return params;
@@ -151,6 +157,7 @@ public class RequestParamsContants {
     public Map<String, Object> getMachineTempParams() {
         Map<String, Object> params = new HashMap<>();
         params.put("appUserID", PerSonMessage.userId);
+        params.put("userID", PerSonMessage.userId);
         params.put("checkCode", 1);
         params.put("machineID", FragmentFactory.getInstance().getSavedBundle().getInt("machineID"));
         params.put("targetTemperature", 0);
@@ -163,6 +170,7 @@ public class RequestParamsContants {
         params.put("n", 5);
         params.put("p", 1);
         params.put("appUserID", PerSonMessage.userId);
+        params.put("userID", PerSonMessage.userId);
         params.put("isDeal", 0);
         params.put("happenTime", null);
         return params;
@@ -173,6 +181,7 @@ public class RequestParamsContants {
         params.put("n", 5);
         params.put("p", 1);
         params.put("appUserID", PerSonMessage.userId);
+        params.put("userID", PerSonMessage.userId);
         params.put("operationTime", null);
         //   params.put("userID", PerSonMessage.userId);
         return params;
@@ -182,6 +191,7 @@ public class RequestParamsContants {
         Map<String, Object> params = new HashMap<>();
         params.put("recordID", FragmentFactory.getInstance().getSavedBundle().getInt("recordID"));
         params.put("appUserID", PerSonMessage.userId);
+        params.put("userID", PerSonMessage.userId);
         return params;
     }
 
@@ -191,6 +201,12 @@ public class RequestParamsContants {
     public Map<String, Object> getTradeTotalParams() {
         Map<String, Object> params = new HashMap<>();
         params.put("appUserID", PerSonMessage.userId);
+        params.put("userID", PerSonMessage.userId);
+        if (PerSonMessage.company != null) {
+            params.put("companyID", PerSonMessage.company.companyID);
+        } else {
+            params.put("companyID", null);
+        }
         params.put("searchTime", "");
         return params;
     }
@@ -222,7 +238,8 @@ public class RequestParamsContants {
         Map<String, Object> params = new HashMap<>();
 
         params.put("appUserID", PerSonMessage.userId);
-//        params.put("checkCode", 1);
+        params.put("userID", PerSonMessage.userId);
+//        params.put("checkCode", 1);u
         params.put("tradeCode", "");
 //        params.put("payState", "");
         params.put("createTime", null);
@@ -240,6 +257,7 @@ public class RequestParamsContants {
     public Map<String, Object> getTradeRecoredDetailParams() {
         Map<String, Object> params = new HashMap<>();
         params.put("appUserID", PerSonMessage.userId);
+        params.put("userID", PerSonMessage.userId);
         params.put("checkCode", 1);
         params.put("tradeID", FragmentFactory.getInstance().getSavedBundle().getInt("tradeID", 0));
         return params;
@@ -251,6 +269,7 @@ public class RequestParamsContants {
     public Map<String, Object> getTradeRecoredDetailProductParams() {
         Map<String, Object> params = new HashMap<>();
         params.put("appUserID", PerSonMessage.userId);
+        params.put("userID", PerSonMessage.userId);
         params.put("checkCode", 1);
         params.put("RFID", "");
 //        params.put("categoryID", 0);
@@ -281,6 +300,7 @@ public class RequestParamsContants {
     public Map<String, Object> getAccountsParams() {
         Map<String, Object> params = new HashMap<>();
         params.put("appUserID", PerSonMessage.userId);
+        params.put("userID", PerSonMessage.userId);
         params.put("checkCode", 1);
         params.put("p", 1);
         params.put("n", 2);
@@ -303,6 +323,7 @@ public class RequestParamsContants {
     public Map<String, Object> getCreateJieSuanParams() {
         Map<String, Object> params = new HashMap<>();
         params.put("appUserID", PerSonMessage.userId);
+        params.put("userID", PerSonMessage.userId);
         params.put("checkCode", 1);
 //        params.put("agentID", "");
         params.put("createTime", null);
@@ -318,6 +339,7 @@ public class RequestParamsContants {
     public Map<String, Object> getRefundParams() {
         Map<String, Object> params = new HashMap<>();
         params.put("appUserID", PerSonMessage.userId);
+        params.put("userID", PerSonMessage.userId);
         params.put("checkCode", 1);
         params.put("RFIDList", null);
         params.put("refundReason", null);
@@ -339,6 +361,7 @@ public class RequestParamsContants {
     public Map<String, Object> getAgentsParams() {
         Map<String, Object> params = new HashMap<>();
         params.put("appUserID", PerSonMessage.userId);
+        params.put("userID", PerSonMessage.userId);
         params.put("checkCode", 1);
 //        params.put("agentID", null);
         params.put("userType", 2);
@@ -354,9 +377,21 @@ public class RequestParamsContants {
     public Map<String, Object> getRefundOfChongdiParams() {
         Map<String, Object> params = new HashMap<>();
         params.put("appUserID", PerSonMessage.userId);
+        params.put("userID", PerSonMessage.userId);
         params.put("settlementID", "");
         params.put("p", 1);
         params.put("n", 6);
+        params.put("checkCode", 1);
+        return params;
+    }
+
+    /*
+    * 用户详情
+    * */
+    public Map<String, Object> getUserDetailInfoParams() {
+        Map<String, Object> params = new HashMap<>();
+        params.put("appUserID", PerSonMessage.userId);
+        params.put("userID", PerSonMessage.userId);
         params.put("checkCode", 1);
         return params;
     }

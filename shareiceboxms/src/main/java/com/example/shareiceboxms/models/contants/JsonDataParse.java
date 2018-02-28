@@ -1,5 +1,7 @@
 package com.example.shareiceboxms.models.contants;
 
+import android.text.TextUtils;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -35,6 +37,14 @@ public class JsonDataParse {
         totalPage = totalNum / requestNum + (totalNum % requestNum > 0 ? 1 : 0);
         JSONArray jsonList = jsonD.getJSONArray("list");
         return jsonList;
+    }
+
+    /*
+    * 解析库存商品列表
+    * */
+    public JSONArray getStockArrayList(String response) throws JSONException {
+        JSONArray list = getArrayList(response);
+        return list.getJSONArray(7);
     }
 
     /*

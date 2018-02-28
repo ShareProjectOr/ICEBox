@@ -171,11 +171,6 @@ public class TradeTotalFragment extends BaseFragment {
     public Map<String, Object> getParams() {
         Map<String, Object> params = RequestParamsContants.getInstance().getTradeTotalParams();
         params.put("searchTime", RequestParamsContants.getInstance().getSelectTime(time));
-        if (companyID >= 0) {
-            params.put("companyID", companyID);
-        } else {
-            params.remove("companyID");
-        }
       /*  switch (PerSonMessage.userType) {
             case Constants.AGENT_MANAGER:
                 if (PerSonMessage.company != null) {

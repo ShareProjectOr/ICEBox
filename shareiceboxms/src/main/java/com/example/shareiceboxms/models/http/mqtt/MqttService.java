@@ -27,9 +27,10 @@ public class MqttService extends IntentService {
     @Override
     protected void onHandleIntent(@Nullable Intent intent) {
         Log.d("11111222222222222222", "222222222222222222222222222222");
-        GetService.getInstance().start();
+        while (!GetService.getInstance().isConnected()) {
+            GetService.getInstance().start();
+        }
     }
-
     @Override
     public void onDestroy() {
     //    GetService.getInstance().breakClient();

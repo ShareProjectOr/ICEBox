@@ -14,12 +14,15 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.shareiceboxms.R;
+import com.example.shareiceboxms.models.adapters.MachineStockProductAdapter;
 import com.example.shareiceboxms.models.beans.ItemPerson;
 import com.example.shareiceboxms.models.beans.PerSonMessage;
+import com.example.shareiceboxms.models.beans.product.ItemStockProduct;
 import com.example.shareiceboxms.models.contants.ConstanceMethod;
 import com.example.shareiceboxms.models.contants.Sql;
 import com.example.shareiceboxms.models.factories.FragmentFactory;
@@ -218,5 +221,16 @@ public class MyDialog {
     public static AlertDialog normalDialog(final HomeActivity context, String msg) {
         return new AlertDialog.Builder(context).setTitle("扫描结果").setMessage("机器码为：" + msg)
                 .setNegativeButton("取消", null).setPositiveButton(" 确 定 ", null).create();
+    }
+
+    /*
+    * 库存商品详情列表
+    * */
+    public static AlertDialog stockProductsDialog(final Context context, ItemStockProduct itemStockProduct) {
+        View view = LayoutInflater.from(context).inflate(R.layout.stock_product_detail_list, null, false);
+        ListView listView = (ListView) view.findViewById(R.id.stockProducts);
+        MachineStockProductAdapter adapter = new MachineStockProductAdapter(context, itemStockProduct);
+        listView.setAdapter(adapter);
+        return new AlertDialog.Builder(context).setTitle("品类详情").setView(view).create();
     }
 }

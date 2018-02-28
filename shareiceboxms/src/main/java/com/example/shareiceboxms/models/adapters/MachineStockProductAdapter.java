@@ -13,6 +13,7 @@ import com.example.shareiceboxms.models.beans.product.ItemProduct;
 import com.example.shareiceboxms.models.beans.product.ItemStockProduct;
 import com.example.shareiceboxms.models.helpers.SecondToDate;
 
+import java.text.ParseException;
 import java.util.List;
 
 /**
@@ -21,21 +22,21 @@ import java.util.List;
 
 public class MachineStockProductAdapter extends BaseAdapter {
     private Context context;
-    private List<ItemStockProduct> itemProducts;
+    private ItemStockProduct itemStockProduct;
 
-    public MachineStockProductAdapter(Context context, List<ItemStockProduct> itemProducts) {
+    public MachineStockProductAdapter(Context context, ItemStockProduct itemStockProduct) {
         this.context = context;
-        this.itemProducts = itemProducts;
+        this.itemStockProduct = itemStockProduct;
     }
 
     @Override
     public int getCount() {
-        return itemProducts.size();
+        return itemStockProduct.goodsProducts.size();
     }
 
     @Override
     public Object getItem(int position) {
-        return itemProducts == null ? null : itemProducts.get(position);
+        return itemStockProduct == null ? null : itemStockProduct.goodsProducts.get(position);
     }
 
     @Override
@@ -57,16 +58,23 @@ public class MachineStockProductAdapter extends BaseAdapter {
         } else {
             viewHolder = (ViewHolder) convertView.getTag();
         }
-        if (position >= itemProducts.size()) {
+        if (position >= itemStockProduct.goodsProducts.size()) {
             return null;
         }
         //添加值
-        viewHolder.productName.setText(itemProducts.get(position).goodsName);
-        viewHolder.productPrice.setText(itemProducts.get(position).price + "");
-        viewHolder.productSpecPrice.setText(itemProducts.get(position).activityPrice + "");
-        if (itemProducts.get(position).residueStorageTime != null) {
-            String[] secondToDate = SecondToDate.formatLongToTimeStr(Long.valueOf(itemProducts.get(position).residueStorageTime));
-            viewHolder.timeLimit.setText(secondToDate[0] + "天" + secondToDate[1] + "时" + secondToDate[2] + "分" + secondToDate[3] + "秒");
+        viewHolder.productName.setText(itemStockProduct.goodsProducts.get(position).goodsName);
+        viewHolder.productPrice.setText(itemStockProduct.goodsProducts.get(position).price + "");
+        if (TextUtils.equals(itemStockProduct.goodsProducts.get(position).activityPrice, "null")) {
+            itemStockProduct.goodsProducts.get(position).activityPrice = "无";
+        }
+        viewHolder.productSpecPrice.setText(itemStockProduct.goodsProducts.get(position).activityPrice + "");
+        if (itemStockProduct.goodsProducts.get(position).residueStorageTime != null) {
+            try {
+                String time = SecondToDate.getTimeLimitString(String.valueOf(itemStockProduct.goodsProducts.get(position).residueStorageTime));
+                viewHolder.timeLimit.setText(time);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
         }
         return convertView;
     }

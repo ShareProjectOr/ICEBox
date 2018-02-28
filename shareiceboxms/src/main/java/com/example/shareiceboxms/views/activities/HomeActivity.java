@@ -29,6 +29,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.NotificationCompat;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
@@ -39,6 +40,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.shareiceboxms.R;
+import com.example.shareiceboxms.models.beans.ItemPerson;
 import com.example.shareiceboxms.models.beans.PerSonMessage;
 import com.example.shareiceboxms.models.contants.ConstanceMethod;
 import com.example.shareiceboxms.models.contants.Constants;
@@ -46,6 +48,7 @@ import com.example.shareiceboxms.models.contants.HttpRequstUrl;
 import com.example.shareiceboxms.models.contants.RequstTips;
 import com.example.shareiceboxms.models.contants.Sql;
 import com.example.shareiceboxms.models.factories.FragmentFactory;
+import com.example.shareiceboxms.models.helpers.GetUserDetailInfo;
 import com.example.shareiceboxms.models.helpers.MyDialog;
 import com.example.shareiceboxms.models.helpers.SecondToDate;
 import com.example.shareiceboxms.models.http.JsonUtil;
@@ -70,11 +73,12 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.text.ParseException;
 import java.util.HashMap;
 import java.util.Map;
 
 public class HomeActivity extends BaseActivity
-        implements NavigationView.OnNavigationItemSelectedListener, TabLayout.OnTabSelectedListener {
+        implements NavigationView.OnNavigationItemSelectedListener, TabLayout.OnTabSelectedListener, GetUserDetailInfo.GetUserDetailInfoCallback {
     /*
     * 01:开关门 doorState: 0 关门 1 开门
     * 02：异常
@@ -107,6 +111,7 @@ public class HomeActivity extends BaseActivity
     public String qrResult;//二维码扫描结果
     public boolean isRecogniteMachineCode = false;//是否是识别机器码
     private Intent mIntent;
+    private GetUserDetailInfo.GetUserDetailInfoCallback callback;
 
     public static HomeActivity getInstance() {
 
@@ -145,26 +150,11 @@ public class HomeActivity extends BaseActivity
             @Override
             public void handleMessage(Message msg) {
                 if (msg.obj == null) {
-                    AlertDialog.Builder builder = new AlertDialog.Builder(HomeActivity.this);
-                    builder.setTitle("掉线通知");
-                    builder.setMessage("您已服务器的通讯已断开,请重新登录" + "\n可能原因:\n1.您的账号已被他人登录\n2.网络环境差\n3.服务器重启或异常");
-                    builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            GetService.getInstance().breakClient();
-                            PerSonMessage.isexcit = true;
-                            jumpActivity(LoginActivity.class, null);
-                            finish();
-//                            HomeActivity.this.finish();
-                        }
-                    });
-                    AlertDialog dialog = builder.create();
-                    dialog.setCancelable(false);
-                    dialog.setCanceledOnTouchOutside(false);
-                    dialog.show();
-
+                    Log.d("----handleMessage---", "掉线");
+                    GetUserDetailInfo getUserDetailInfo = new GetUserDetailInfo(HomeActivity.this, callback);
+                    getUserDetailInfo.getData();
                 } else {
-                    Log.d("----handleMessage---", "';;;;;");
+                    Log.d("----handleMessage---", "收到消息");
                     JSONObject object = (JSONObject) msg.obj;
                     try {
 //                    Log.e("push", object.toString() + "------" + object.getString("createTime") + "----time:" + SecondToDate.getDateToString(Long.parseLong(object.getString("createTime"))));
@@ -295,6 +285,7 @@ public class HomeActivity extends BaseActivity
 
 
     private void initViews() {
+        callback = this;
         mNotificationBroadcastReceiver = new NotificationBroadcastReceiver();
         IntentFilter intentFilterNotify = new IntentFilter(BROADCAST_ACTION_NOTIFIY);
         registerReceiver(mNotificationBroadcastReceiver, intentFilterNotify);
@@ -831,6 +822,42 @@ public class HomeActivity extends BaseActivity
     @Override
     public void onTabReselected(TabLayout.Tab tab) {
 
+    }
+
+    @Override
+    public void getUserDetail(ItemPerson itemPerson) {
+        if (itemPerson != null) {
+            try {
+                long newLoginTime = SecondToDate.getLongOfDate(SecondToDate.getDateOfString(itemPerson.lastLoginTime));
+                long localLoginTime = SecondToDate.getLongOfDate(SecondToDate.getDateOfString(PerSonMessage.lastLoginTime));
+                if (newLoginTime > localLoginTime || !TextUtils.equals(String.valueOf(newLoginTime), String.valueOf(localLoginTime))) {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(HomeActivity.this);
+                    builder.setTitle("掉线通知");
+                    builder.setMessage("您已服务器的通讯已断开,请重新登录" + "\n可能原因:\n1.您的账号已被他人登录");
+                    /*
+                    * 2.网络环境差
+                    3.服务器重启或异常
+                    * */
+
+                    builder.setNegativeButton("确定", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            GetService.getInstance().breakClient();
+                            PerSonMessage.isexcit = true;
+                            jumpActivity(LoginActivity.class, null);
+                            finish();
+                        }
+                    });
+                    builder.show();
+                } else {
+                    startMqttService();
+                }
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+        } else {
+            startMqttService();
+        }
     }
 
     public interface OnBackPressListener {

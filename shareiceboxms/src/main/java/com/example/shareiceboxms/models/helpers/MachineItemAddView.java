@@ -1,31 +1,25 @@
 package com.example.shareiceboxms.models.helpers;
 
 import android.content.Context;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
-import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.SeekBar;
-import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.shareiceboxms.R;
-import com.example.shareiceboxms.models.adapters.MachineStockProductAdapter;
 import com.example.shareiceboxms.models.beans.ItemMachine;
-import com.example.shareiceboxms.models.beans.product.ItemProduct;
 import com.example.shareiceboxms.models.beans.product.ItemStockProduct;
 import com.example.shareiceboxms.models.contants.Constants;
 import com.example.shareiceboxms.models.contants.HttpRequstUrl;
 import com.example.shareiceboxms.models.contants.RequestParamsContants;
-import com.example.shareiceboxms.models.factories.FragmentFactory;
-import com.example.shareiceboxms.models.widget.ListViewForScrollView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -102,7 +96,7 @@ public class MachineItemAddView {
     *更新状态远程控制的值
     * */
     public void updateTeleControlUi(ItemMachine itemMachine) {
-        Log.d("----------lightState------------", itemMachine.lightState + "");
+//        Log.d("----------lightState------------", itemMachine.lightState + "");
         this.itemMachine = itemMachine;
         teleControlHolder.targetTemp.setText(itemMachine.targetTemperature);
         teleControlHolder.offsetTemp.setText(itemMachine.deviationTemperature);
@@ -120,11 +114,11 @@ public class MachineItemAddView {
         } else {
             teleControlHolder.lockSwitch.setBackgroundResource(R.mipmap.switcher_off);
         }
-        if (!itemMachine.targetTemperature.equals("")) {
+        if (!TextUtils.isEmpty(itemMachine.targetTemperature)) {
             float tartgetTemp = Float.parseFloat(itemMachine.targetTemperature.replace("℃", "").trim());
             teleControlHolder.tempSeekbar.setProgress((int) tartgetTemp);
         }
-        if (!itemMachine.deviationTemperature.equals("")) {
+        if (!TextUtils.isEmpty(itemMachine.deviationTemperature)) {
             float offsetTemp = Float.parseFloat(itemMachine.deviationTemperature.replace("℃", "").trim());
             teleControlHolder.subTempSeekbar.setProgress((int) offsetTemp);
         }
@@ -432,7 +426,7 @@ public class MachineItemAddView {
         public ListView stockProductList;
         public LinearLayout addViewLayout;
         public LinearLayout pageLayout;
-        public MachineStockProductAdapter adapter;
+        //        public MachineStockProductAdapter adapter;
         public List<ItemStockProduct> itemProducts;
         public StocksPageHelper pageHelper;
         public boolean isLoading = false;
@@ -443,8 +437,8 @@ public class MachineItemAddView {
 //            stockProductList = (ListViewForScrollView) itemView.findViewById(R.id.productList);
             addViewLayout = (LinearLayout) itemView.findViewById(R.id.addViewLayout);
             pageLayout = (LinearLayout) itemView.findViewById(R.id.pageLayout);
-            adapter = new MachineStockProductAdapter(context, this.itemProducts);
-            machineItemAddViewHelper = new MachineItemAddViewHelper(this.itemProducts, adapter, itemMachine);
+            // adapter = new MachineStockProductAdapter(context, this.itemProducts);
+            machineItemAddViewHelper = new MachineItemAddViewHelper(this.itemProducts, itemMachine);
 //            machineItemAddViewHelper.setView(stockProductList, scrollView);
             machineItemAddViewHelper.setLinearLayout(addViewLayout);
             machineItemAddViewHelper.setContext(context);
