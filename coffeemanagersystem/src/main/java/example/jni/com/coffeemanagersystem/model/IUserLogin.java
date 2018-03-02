@@ -5,5 +5,5 @@ package example.jni.com.coffeemanagersystem.model;
  */
 
 public interface IUserLogin {
-    void login(String username, String password, OnLoginListener loginListener);
+    void login(String username, String password, OnLoginCallBackListener loginCallBackListener);
 }

@@ -1,4 +1,4 @@
-package example.jni.com.coffeemanagersystem.views;
+package example.jni.com.coffeemanagersystem.views.viewinterface;
 
 import example.jni.com.coffeemanagersystem.bean.User;
 
