@@ -65,13 +65,36 @@ public class MachineItemAddView {
     *更新状态控制的值
     * */
     public void updateStateControlUi(ItemMachine itemMachine) {
-        stateControlHolder.runState.setText(Constants.MachineRunState[itemMachine.faultState]);
-        stateControlHolder.netState.setText(Constants.MachineOnLineState[itemMachine.networkState]);
-        stateControlHolder.doorState.setText(Constants.MachineDoorSate[itemMachine.doorState]);
-        stateControlHolder.lockState.setText(Constants.MachineLockState[itemMachine.lockState]);
-        stateControlHolder.lightState.setText(Constants.MachineLightState[itemMachine.lightState]);
-        stateControlHolder.fanState.setText(Constants.MachineFanState[itemMachine.blowerState]);
-        stateControlHolder.refrigeratorState.setText(Constants.MachineRefrigeratorState[itemMachine.refrigeratorState]);
+        if (itemMachine.faultState >= 0) {
+            stateControlHolder.runState.setText(Constants.MachineRunState[0]);
+            if (itemMachine.faultState == 11) {
+                stateControlHolder.runState.setText("异常：" + Constants.MachineRunState[1]);
+            }
+            if (itemMachine.faultState == 12) {
+                stateControlHolder.runState.setText("异常：" + Constants.MachineRunState[2]);
+            }
+            if (itemMachine.faultState == 13) {
+                stateControlHolder.runState.setText("异常：" + Constants.MachineRunState[3]);
+            }
+        }
+        if (itemMachine.networkState >= 0) {
+            stateControlHolder.netState.setText(Constants.MachineOnLineState[itemMachine.networkState]);
+        }
+        if (itemMachine.doorState >= 0) {
+            stateControlHolder.doorState.setText(Constants.MachineDoorSate[itemMachine.doorState]);
+        }
+        if (itemMachine.lockState >= 0) {
+            stateControlHolder.lockState.setText(Constants.MachineLockState[itemMachine.lockState]);
+        }
+        if (itemMachine.lightState >= 0) {
+            stateControlHolder.lightState.setText(Constants.MachineLightState[itemMachine.lightState]);
+        }
+        if (itemMachine.blowerState >= 0) {
+            stateControlHolder.fanState.setText(Constants.MachineFanState[itemMachine.blowerState]);
+        }
+        if (itemMachine.refrigeratorState >= 0) {
+            stateControlHolder.refrigeratorState.setText(Constants.MachineRefrigeratorState[itemMachine.refrigeratorState]);
+        }
         stateControlHolder.tempState.setText(itemMachine.machineTemperature);
         stateControlHolder.appVersion.setText(itemMachine.clientVersion);
         stateControlHolder.driverVersion.setText(itemMachine.driverVersion);

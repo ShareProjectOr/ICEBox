@@ -73,7 +73,6 @@ public class TradeTotalFragment extends BaseFragment {
     private SwipeRefreshLayout refreshLayout;
     private ItemTradeTotal itemTradeTotal;
     private TradeTotalFragment tradeTotalFragment;
-    private Dialog dialog;
     private String[] time;
     private int companyID = -1;
 
@@ -123,7 +122,6 @@ public class TradeTotalFragment extends BaseFragment {
         }
 
         selectTime.setOnClickListener(this);
-
         dateGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup group, @IdRes int checkedId) {
@@ -131,21 +129,28 @@ public class TradeTotalFragment extends BaseFragment {
                 switch (checkedId) {
                     case R.id.todayDate:
                         time = SecondToDate.getDateParams(SecondToDate.TODAY_CODE);
+                        Log.d("777777777777777777", "todayDate");
                         break;
                     case R.id.weekDate:
                         time = SecondToDate.getDateParams(SecondToDate.WEEK_CODE);
+                        Log.d("777777777777777777", "weekDate");
                         break;
                     case R.id.monthDate:
                         time = SecondToDate.getDateParams(SecondToDate.MONTH_CODE);
+                        Log.d("777777777777777777", "monthDate");
+
                         break;
                     case R.id.yearDate:
                         time = SecondToDate.getDateParams(SecondToDate.YEAR_CODE);
+                        Log.d("777777777777777777", "yearDate");
                         break;
                 }
                 timeSelector.setText(SecondToDate.getDateUiShow(time));
                 getDatas(getParams());
+                Log.d("777777777777777777", "setOnCheckedChangeListener");
             }
         });
+        dateGroup.check(R.id.todayDate);
         refreshLayout.setOnRefreshListener(this);
         if (PerSonMessage.userType <= Constants.SYSTEM_MANAGER) {
             choosePerson.setOnClickListener(this);
@@ -160,12 +165,10 @@ public class TradeTotalFragment extends BaseFragment {
         activity = (HomeActivity) getActivity();
         tradeTotalFragment = this;
         time = RequestParamsContants.getInstance().getTimeSelectorParams();
-        dialog = MyDialog.loadDialog(getContext());
         itemTradeTotal = new ItemTradeTotal();
         datePickerDialog = new DoubleDatePickerDialog(getContext(), 0, this
                 , Calendar.getInstance().get(Calendar.YEAR), Calendar.getInstance().get(Calendar.MONTH)
                 , Calendar.getInstance().get(Calendar.DATE), true);
-        dateGroup.check(R.id.todayDate);
     }
 
     public Map<String, Object> getParams() {
@@ -202,9 +205,11 @@ public class TradeTotalFragment extends BaseFragment {
 
     @Override
     public void onRefresh() {
-//        time = SecondToDate.getDateParams(SecondToDate.TODAY_CODE);
-//        timeSelector.setText(SecondToDate.getDateUiShow(time));
+        if (refreshLayout.isRefreshing()) {
+            return;
+        }
         getDatas(getParams());
+        Log.d("777777777777777777", "onRefresh");
         refreshLayout.setRefreshing(false);//关闭刷新
     }
 
@@ -241,9 +246,6 @@ public class TradeTotalFragment extends BaseFragment {
 
     @Override
     public void onDestroy() {
-        if (dialog != null) {
-            dialog = null;
-        }
         super.onDestroy();
     }
 
@@ -252,6 +254,7 @@ public class TradeTotalFragment extends BaseFragment {
         time = super.onDateSet(startDatePicker, startYear, startMonthOfYear, startDayOfMonth, endDatePicker, endYear, endMonthOfYear, endDayOfMonth);
         timeSelector.setText(SecondToDate.getDateUiShow(time));
         getDatas(getParams());
+        Log.d("777777777777777777", "onDateSet");
         return null;
     }
 
@@ -309,6 +312,7 @@ public class TradeTotalFragment extends BaseFragment {
         private String err = "";
         private ItemTradeTotal tradeTotal;
         private Map<String, Object> params;
+        private Dialog dialog;
 
         TradeTotalTask(Map<String, Object> params) {
             this.params = params;
@@ -317,9 +321,8 @@ public class TradeTotalFragment extends BaseFragment {
 
         @Override
         protected void onPreExecute() {
-            if (dialog != null && !dialog.isShowing()) {
-                dialog.show();
-            }
+            dialog = MyDialog.loadDialog(getContext());
+            dialog.show();
         }
 
         @Override
@@ -358,7 +361,6 @@ public class TradeTotalFragment extends BaseFragment {
         protected void onPostExecute(final Boolean success) {
             if (dialog != null && dialog.isShowing()) {
                 dialog.dismiss();
-//                dialog = null;
             }
             if (success) {
                 itemTradeTotal = tradeTotal;

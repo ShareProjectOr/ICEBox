@@ -76,7 +76,6 @@ public class TradeRecordsFragment extends BaseFragment implements LoadMoreHelper
     private ListPopupWindow mTilePopup;
     private HomeActivity homeActivity;
     private String[] time;
-    private Dialog dialog;
     private int curPage, requestNum, totalNum, totalPage;
     private boolean searchClicked = false;
     private boolean isFirstLoad = true;
@@ -139,7 +138,6 @@ public class TradeRecordsFragment extends BaseFragment implements LoadMoreHelper
                 , Calendar.getInstance().get(Calendar.DATE), true);
         mTilePopup = MenuPop.CreateMenuPop(getContext(), tradeType, Constants.TradeStateTitle);
         mTilePopup.setOnItemClickListener(this);
-        dialog = MyDialog.loadDialog(getContext());
         RecyclerView tradeRecordList = (android.support.v7.widget.RecyclerView) containerView.findViewById(R.id.tradeRecordList);
         adapter = new TradeRecordListAdapter(getContext(), itemTradeRecords, this);
         new MyViewFactory(getContext()).BuildRecyclerViewRule(tradeRecordList,
@@ -294,6 +292,7 @@ public class TradeRecordsFragment extends BaseFragment implements LoadMoreHelper
         private String response;
         private String err = "";
         private Map<String, Object> params;
+        private Dialog dialog;
         private List<ItemTradeRecord> tradeRecords;
 
         TradeRecordsTask(Map<String, Object> params) {
@@ -309,9 +308,8 @@ public class TradeRecordsFragment extends BaseFragment implements LoadMoreHelper
             if (isFirstLoad) {
                 return;
             }
-            if (dialog != null && !dialog.isShowing()) {
-                dialog.show();
-            }
+            dialog = MyDialog.loadDialog(getContext());
+            dialog.show();
         }
 
         @Override
