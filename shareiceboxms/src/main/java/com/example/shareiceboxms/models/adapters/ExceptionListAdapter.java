@@ -75,7 +75,6 @@ public class ExceptionListAdapter extends RecyclerView.Adapter<RecyclerView.View
                         body.isDetailsTag.setText("已处理");
                         break;
                 }
-
                 body.machineName.setText(contentProvider.getItem(position).machineName);
                 body.machineAddr.setText(contentProvider.getItem(position).machineAddress);
                 body.exceptionLv.setText(Constants.EXCEPTION_LV_TITLE[contentProvider.getItem(position).exceptionLevel]);

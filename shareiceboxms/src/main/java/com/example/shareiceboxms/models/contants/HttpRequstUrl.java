@@ -1,14 +1,11 @@
 package com.example.shareiceboxms.models.contants;
 
-import android.os.Environment;
-
 /**
  * Created by Administrator on 2017/12/18.
  */
 
 public interface HttpRequstUrl {
     String IP = "202.98.157.25";
-    String LIZHIHAO = "192.168.4.245";
     String HOST_URL = "http://server.aichance.com.cn/fridgesManage_server/";//外网服务器
     //    String HOST_URL = "http://202.98.157.25/fridgesManage_server/";//外网服务器
     //        String HOST_URL = "http://" + LIZHIHAO + ":8082/";//李坤明

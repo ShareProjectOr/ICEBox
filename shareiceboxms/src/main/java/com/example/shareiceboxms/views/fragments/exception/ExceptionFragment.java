@@ -206,12 +206,12 @@ public class ExceptionFragment extends BaseFragment implements CompoundButton.On
         map.put("p", currentPage);
         map.put("appUserID", PerSonMessage.userId);
         map.put("isDeal", isDetail);
-        switch (PerSonMessage.role) {
-            case "3":
-                initPostBody.put("managerID", PerSonMessage.userId);
+        switch (PerSonMessage.userType) {
+            case 3:
+                map.put("managerID", PerSonMessage.userId);
                 break;
-            case "2":
-                initPostBody.put("agentID", PerSonMessage.userId);
+            case 2:
+                map.put("agentID", PerSonMessage.userId);
                 break;
             default:
                 break;

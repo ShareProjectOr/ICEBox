@@ -169,8 +169,18 @@ public class RequestParamsContants {
         Map<String, Object> params = new HashMap<>();
         params.put("n", 5);
         params.put("p", 1);
+        switch (PerSonMessage.userType) {
+            case 3:
+                params.put("managerID", PerSonMessage.userId);
+                break;
+            case 2:
+                params.put("agentID", PerSonMessage.userId);
+                break;
+            default:
+                break;
+
+        }
         params.put("appUserID", PerSonMessage.userId);
-        params.put("userID", PerSonMessage.userId);
         params.put("isDeal", 0);
         params.put("happenTime", null);
         return params;
