@@ -5,14 +5,29 @@ package com.example.shareiceboxms.models.contants;
  */
 
 public interface HttpRequstUrl {
-    String IP = "202.98.157.25";
-    String HOST_URL = "http://server.aichance.com.cn/fridgesManage_server/";//外网服务器
-    //    String HOST_URL = "http://202.98.157.25/fridgesManage_server/";//外网服务器
-    //        String HOST_URL = "http://" + LIZHIHAO + ":8082/";//李坤明
-//    String HOST_URL_1 = "http://192.168.4.158:8082/";//李志灏
-//    String HOST_URL_2 = "http://192.168.4.224:8082/";//刘建成
-//    String HOST_URL_3 = "http://192.168.1.103:8082/";//刘建成
-    //  String HOST_URL = "http://202.98.157.25/fridgesManage_server/";+
+
+    boolean isTest = true;//当前使用ip是否为测试版
+
+    /*
+    *  外网服务器地址
+     */
+    String IP_RUN = "202.98.157.25";
+    String HOST_URL_RUN = "http://server.aichance.com.cn/fridgesManage_server/";//外网服务器
+
+    /*
+    * 测试服务器地址
+     */
+    String IP_TEST = "10.21.161.45";
+    String HOST_URL_TEST = "http://" + IP_TEST + ":8082/";
+
+    /*
+    *使用中的ip
+    * */
+    String IP = (!isTest ? IP_RUN : IP_TEST);
+    String HOST_URL = (!isTest ? HOST_URL_RUN : HOST_URL_TEST);
+
+
+
     String GET_APP_VERSION_URL = HOST_URL + "/upload/GetAppURL";
     String LOGIN_URL = HOST_URL + "base/login";
     String OUT_LOGIN_URL = HOST_URL + "base/outLogin";
