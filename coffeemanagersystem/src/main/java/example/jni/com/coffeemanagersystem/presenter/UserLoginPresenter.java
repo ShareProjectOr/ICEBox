@@ -15,9 +15,9 @@ import example.jni.com.coffeemanagersystem.views.viewinterface.ILoginview;
 public class UserLoginPresenter {
     private IUserLogin iUserLogin;
     private ILoginview iLoginview;
-    private Handler mHandler = new Handler();
+  //  private Handler mHandler = new Handler();
 
-    public UserLoginPresenter( ILoginview iLoginview) {
+    public UserLoginPresenter(ILoginview iLoginview) {
         this.iUserLogin = new UserLogin();
         this.iLoginview = iLoginview;
     }
@@ -27,26 +27,30 @@ public class UserLoginPresenter {
         iUserLogin.login(iLoginview.getUserName(), iLoginview.getPassword(), new OnLoginCallBackListener() {
             @Override
             public void loginSuccess(final User user) {
-                mHandler.post(new Runnable() {
+                iLoginview.hideLoading();
+                iLoginview.toMainActivity(user);
+             /*   mHandler.post(new Runnable() {
                     @Override
                     public void run() {
                         iLoginview.hideLoading();
                         iLoginview.toMainActivity(user);
                     }
                 });
-
+*/
             }
 
             @Override
             public void loginFailed(final String erro) {
-                mHandler.post(new Runnable() {
+                iLoginview.hideLoading();
+                iLoginview.showFailedError(erro);
+              /*  mHandler.post(new Runnable() {
                     @Override
                     public void run() {
                         iLoginview.hideLoading();
                         iLoginview.showFailedError(erro);
                     }
                 });
-
+*/
             }
         });
     }

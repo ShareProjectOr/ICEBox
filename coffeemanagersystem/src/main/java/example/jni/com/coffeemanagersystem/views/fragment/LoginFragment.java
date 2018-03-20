@@ -13,24 +13,27 @@ import android.widget.Toast;
 
 import example.jni.com.coffeemanagersystem.R;
 import example.jni.com.coffeemanagersystem.bean.User;
+import example.jni.com.coffeemanagersystem.model.ISetAndGetObservable;
 import example.jni.com.coffeemanagersystem.presenter.UserLoginPresenter;
+import example.jni.com.coffeemanagersystem.views.activity.LoginActivity;
 import example.jni.com.coffeemanagersystem.views.viewinterface.ILoginview;
+import rx.Observable;
+import rx.Subscriber;
 
-/**
- * Created by Administrator on 2018/3/1.
- */
 
-public class LoginFragment extends Fragment implements ILoginview, View.OnClickListener {
+public class LoginFragment extends Fragment implements ILoginview, View.OnClickListener, ISetAndGetObservable {
     private View view;
     private EditText username, password;
     private ProgressBar mProgressBar;
     private UserLoginPresenter mUserLoginPresenter = new UserLoginPresenter(this);
+    private LoginActivity activity;
+    private Subscriber<String> subscriber;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         if (view == null) {
-            view = inflater.inflate(R.layout.login_fragment_layout, null, false);
+            view = inflater.inflate(R.layout.login_fragment_layout, container, false);
             initview();
         }
         ViewGroup parent = (ViewGroup) view.getParent();
@@ -46,6 +49,8 @@ public class LoginFragment extends Fragment implements ILoginview, View.OnClickL
         mProgressBar = view.findViewById(R.id.loading);
         Button login = view.findViewById(R.id.login);
         login.setOnClickListener(this);
+        activity = (LoginActivity) getActivity();
+        activity.setOnISetAndGetObservable(this);
     }
 
     @Override
@@ -85,5 +90,35 @@ public class LoginFragment extends Fragment implements ILoginview, View.OnClickL
                 mUserLoginPresenter.PresenterLogin();
                 break;
         }
+    }
+
+
+    @Override
+    public void getObservable(Observable<String> observable) {
+        subscriber = new Subscriber<String>() {
+            @Override
+            public void onCompleted() {
+            }
+
+            @Override
+            public void onError(Throwable e) {
+
+            }
+
+            @Override
+            public void onNext(String s) {
+                Toast.makeText(activity, s, Toast.LENGTH_LONG).show();
+            }
+        };
+        observable.subscribe(subscriber);
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (subscriber != null) {
+            subscriber.unsubscribe();
+        }
+
     }
 }
