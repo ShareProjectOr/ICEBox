@@ -13,6 +13,9 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
 import android.widget.GridView;
+import android.widget.ImageView;
+import android.widget.RadioButton;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,21 +23,23 @@ import java.util.List;
 import example.jni.com.coffeeseller.R;
 import example.jni.com.coffeeseller.bean.Coffee;
 import example.jni.com.coffeeseller.model.listeners.GridViewItemListener;
+import example.jni.com.coffeeseller.views.activities.HomeActivity;
+import example.jni.com.coffeeseller.views.fragments.BuyFragment;
 
 /**
  * Created by WH on 2018/3/20.
  */
 
 public class CoffeeViewPagerAdapter extends PagerAdapter {
-    private Context context;
+    private HomeActivity homeActivity;
     private List<Coffee> coffees;
     private List<GridView> gridViews;
     private GridViewItemListener gridViewItemListener;
     private int onePageCount;//偶数
     private int gridViewNum;
 
-    public CoffeeViewPagerAdapter(Context context, List<Coffee> coffees, int onePageCount, GridViewItemListener gridViewItemListener) {
-        this.context = context;
+    public CoffeeViewPagerAdapter(HomeActivity homeActivity, List<Coffee> coffees, int onePageCount, GridViewItemListener gridViewItemListener) {
+        this.homeActivity = homeActivity;
         this.coffees = coffees;
         this.onePageCount = onePageCount;
         this.gridViewItemListener = gridViewItemListener;
@@ -77,24 +82,44 @@ public class CoffeeViewPagerAdapter extends PagerAdapter {
             } else {
                 gridCoffees = coffees.subList(i * onePageCount, coffees.size());
             }
-            View view = LayoutInflater.from(context).inflate(R.layout.coffee_grid_layout, null, false);
+            View view = LayoutInflater.from(homeActivity).inflate(R.layout.coffee_grid_layout, null, false);
             final GridView gridView = (GridView) view.findViewById(R.id.coffeeGrid);
             gridView.setNumColumns(onePageCount / 2);
             gridView.setSelector(new ColorDrawable(Color.TRANSPARENT));
             gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                    if (!view.isEnabled()) {
+                        return;
+                    }
                     if (gridViewItemListener != null) {
                         gridViewItemListener.onGridItemClick(parent, view, position, id);
                     }
-                    Animation anim = AnimationUtils.loadAnimation(context, R.anim.set_snake);
+                    Animation anim = AnimationUtils.loadAnimation(homeActivity, R.anim.set_snake);
                     if (view != null) {
                         view.startAnimation(anim);
                     }
                 }
             });
-            gridView.setAdapter(new CoffeeGridAdapter(context, gridCoffees));
+            gridView.setAdapter(new CoffeeGridAdapter(homeActivity, gridCoffees));
             gridViews.add(gridView);
+            /*
+            * 添加圆点
+            * */
+            addPoint(i);
+
+        }
+    }
+
+    private void addPoint(int i) {
+        View pointView = LayoutInflater.from(homeActivity).inflate(R.layout.point, null);
+        TextView point = (TextView) pointView.findViewById(R.id.point);
+        if (i == 0) {
+            point.setSelected(true);
+        }
+        point.setText((i + 1) + "");
+        if (homeActivity.mCurFragment instanceof BuyFragment) {
+            ((BuyFragment) homeActivity.mCurFragment).addPoint(pointView, i);
         }
     }
 }

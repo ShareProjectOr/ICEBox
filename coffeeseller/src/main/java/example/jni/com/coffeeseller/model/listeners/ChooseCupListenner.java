@@ -7,6 +7,7 @@ import example.jni.com.coffeeseller.bean.CoffeeFomat;
  */
 
 public interface ChooseCupListenner {
+    void cancle();
 
     void getResult(CoffeeFomat coffeeFomat);
 }

@@ -6,7 +6,8 @@
     android:orientation="vertical">
 
     <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:id="@+id/outImg"
+        android:layout_width="400dp"
+        android:layout_height="400dp"
         android:src="@mipmap/out" />
 </LinearLayout>

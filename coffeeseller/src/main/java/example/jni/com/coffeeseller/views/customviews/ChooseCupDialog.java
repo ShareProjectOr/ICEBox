@@ -1,9 +1,10 @@
 package example.jni.com.coffeeseller.views.customviews;
 
-import android.app.AlertDialog;
+import android.animation.Animator;
+import android.animation.AnimatorSet;
+import android.animation.ObjectAnimator;
 import android.app.Dialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.os.Handler;
 import android.support.annotation.IdRes;
 import android.support.annotation.StyleRes;
@@ -12,28 +13,31 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
-import android.view.animation.AnimationSet;
-import android.view.animation.ScaleAnimation;
-import android.view.animation.TranslateAnimation;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 
+import java.math.BigDecimal;
+
 import example.jni.com.coffeeseller.R;
+import example.jni.com.coffeeseller.bean.Coffee;
 import example.jni.com.coffeeseller.bean.CoffeeFomat;
 import example.jni.com.coffeeseller.model.listeners.ChooseCupListenner;
+import example.jni.com.coffeeseller.utils.CoffeeFomatInterface;
+import example.jni.com.coffeeseller.utils.ObjectAnimatorUtil;
 import example.jni.com.coffeeseller.utils.ScreenUtil;
 
 /**
  * Created by WH on 2018/3/22.
  */
 
-public class ChooseCupDialog extends Dialog implements DialogInterface.OnClickListener, View.OnClickListener, RadioGroup.OnCheckedChangeListener {
+public class ChooseCupDialog extends Dialog implements View.OnClickListener, RadioGroup.OnCheckedChangeListener {
     private Context context;
     private View view;
     private ChooseCupListenner listenner;
+    private Coffee coffee;
     private CoffeeFomat coffeeFomat;
     private ViewHolder viewHolder;
 
@@ -49,8 +53,12 @@ public class ChooseCupDialog extends Dialog implements DialogInterface.OnClickLi
         init();
     }
 
-    public void setListenner(ChooseCupListenner listenner) {
+    public void setData(Coffee coffee, ChooseCupListenner listenner) {
+        this.coffee = coffee;
         this.listenner = listenner;
+        coffeeFomat.setCoffee(coffee);
+
+        initData();
     }
 
     public void init() {
@@ -62,10 +70,35 @@ public class ChooseCupDialog extends Dialog implements DialogInterface.OnClickLi
         window.setTitle(null);
         window.setWindowAnimations(R.style.dialogWindowAnim);
         window.setBackgroundDrawableResource(android.R.color.transparent);
-        wl.width = WindowManager.LayoutParams.WRAP_CONTENT;
+        wl.width = ScreenUtil.getScreenWidth(context) / 2;
         wl.height = WindowManager.LayoutParams.WRAP_CONTENT;
         wl.alpha = 0.9f;
         window.setAttributes(wl);
+    }
+
+    public void initData() {
+        /*
+        * 初始化数据
+        * */
+        viewHolder.mCoffeePrice.setText(coffee.price + "");
+        changeText();
+
+        /*
+        * 没有多奶规格
+        * */
+        if (coffee.milkFomat == -1) {
+            //    viewHolder.mTaste_milk.setVisibility(View.GONE);
+        }
+        /*
+        * 可使用规格不足
+        * */
+        for (int i = 0; i < viewHolder.mTaste_suger.getChildCount(); i++) {
+            if (i != 0) {
+                RadioButton button = (RadioButton) viewHolder.mTaste_suger.getChildAt(i);
+                button.setEnabled(false);
+                button.setAlpha(0.3f);
+            }
+        }
     }
 
     private void initView() {
@@ -81,26 +114,14 @@ public class ChooseCupDialog extends Dialog implements DialogInterface.OnClickLi
         viewHolder.mGiveUp.setOnClickListener(this);
         viewHolder.mTaste_suger.setOnCheckedChangeListener(this);
         viewHolder.mTaste_milk.setOnCheckedChangeListener(this);
-
-
+        viewHolder.mCoffeeNumSub.setAlpha(0.3f);
         setContentView(view);
-        setCanceledOnTouchOutside(true);
+        setCanceledOnTouchOutside(false);
     }
 
     public void showDialog() {
-        show();
-    }
 
-    @Override
-    public void onClick(DialogInterface dialog, int which) {
-        switch (which) {
-            case AlertDialog.BUTTON_NEGATIVE:
-                break;
-            case AlertDialog.BUTTON_POSITIVE:
-                break;
-            case AlertDialog.BUTTON_NEUTRAL:
-                break;
-        }
+        show();
     }
 
     @Override
@@ -108,70 +129,143 @@ public class ChooseCupDialog extends Dialog implements DialogInterface.OnClickLi
 
         switch (v.getId()) {
             case R.id.coffeeNumAdd:
+
                 coffeeFomat.cupAdd();
+                changeText();
+                if (coffeeFomat.isMax()) {
+                    viewHolder.mCoffeeNumAdd.setAlpha(0.3f);
+                }
+                viewHolder.mCoffeeNumSub.setAlpha(1f);
 
                 break;
             case R.id.coffeeNumSub:
+
                 coffeeFomat.cupSub();
+                changeText();
+                if (coffeeFomat.isMin()) {
+                    viewHolder.mCoffeeNumSub.setAlpha(0.3f);
+                }
+                viewHolder.mCoffeeNumAdd.setAlpha(1f);
                 break;
             case R.id.ok:
+
                 if (listenner != null) {
                     listenner.getResult(coffeeFomat);
                 }
                 dismiss();
                 break;
             case R.id.giveUp:
-                viewHolder.mGiveUp.setEnabled(false);
-                final View view = LayoutInflater.from(context).inflate(R.layout.make_out_layout, null);
-             /*   LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT
-                        , ViewGroup.LayoutParams.MATCH_PARENT); */
-                LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ScreenUtil.getScreenWidth(context)
-                        , ScreenUtil.getScreenHeight(context));
-                addContentView(view, layoutParams);
-                AnimationSet set = new AnimationSet(true);
-//                TranslateAnimation animation = new TranslateAnimation(view.getWidth(), view.getWidth() / 2, view.getHeight(), view.getHeight() / 2);
-                ScaleAnimation alphaAnimation = new ScaleAnimation(5f, 1f, 5f, 1f);
-                set.addAnimation(alphaAnimation);
-//                set.addAnimation(animation);
-                set.setDuration(3000);
-                view.startAnimation(set);
+
+                giveUp();
                 new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
-//                        dismiss();
+                        if (listenner != null) {
+                            listenner.cancle();
+                        }
                     }
-                }, 1000);
-
-//                dismiss();
-//                view.setVisibility(View.GONE);
-               /* this.cancel();
-                dismiss();*/
+                }, 1300);
                 break;
         }
     }
 
+    private void changeText() {
+        viewHolder.mCoffeeNum.setText(coffeeFomat.getCup() + "");
+        viewHolder.mTipCupNum.setText(coffeeFomat.getCup() + "");
+        viewHolder.mTipName.setText(coffee.name);
+        BigDecimal bigDecimal = new BigDecimal(Float.parseFloat(coffee.price) * coffeeFomat.getCup());
+        float pay = bigDecimal.setScale(2, BigDecimal.ROUND_HALF_UP).floatValue();
+        viewHolder.mTipPayM.setText(pay + "");
+    }
+
+    private void giveUp() {
+        viewHolder.mGiveUp.setEnabled(false);
+        final View view = LayoutInflater.from(context).inflate(R.layout.make_out_layout, null);
+        ImageView imageView = (ImageView) view.findViewById(R.id.outImg);
+        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT
+                , ViewGroup.LayoutParams.MATCH_PARENT);
+        addContentView(view, layoutParams);
+
+        AnimatorSet animatorSet = new AnimatorSet();
+        ObjectAnimator scaleX = ObjectAnimatorUtil.scaleXAnimator(imageView, 4f, 1f);
+        ObjectAnimator scaleY = ObjectAnimatorUtil.scaleYAnimator(imageView, 4f, 1f);
+        ObjectAnimator alpha = ObjectAnimatorUtil.alphaAnimator(imageView, 0f, 1f);
+        animatorSet.setDuration(300);
+        animatorSet.play(scaleX).with(scaleY).with(alpha);
+        animatorSet.addListener(new Animator.AnimatorListener() {
+            @Override
+            public void onAnimationStart(Animator animation) {
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                dismiss();
+            }
+
+            @Override
+            public void onAnimationCancel(Animator animation) {
+
+            }
+
+            @Override
+            public void onAnimationRepeat(Animator animation) {
+
+            }
+        });
+        animatorSet.start();
+    }
+
     @Override
     public void onCheckedChanged(RadioGroup group, @IdRes int checkedId) {
+        switch (checkedId) {
+            case R.id.suger_no:
+                coffeeFomat.setSurgerFomat(CoffeeFomatInterface.SUGER_NO);
+                break;
+            case R.id.suger_less:
+                coffeeFomat.setSurgerFomat(CoffeeFomatInterface.SUGER_LESS);
+                break;
+            case R.id.suger_normal:
+                viewHolder.mTaste_suger.clearChildFocus(viewHolder.mTaste_suger.getChildAt(2));
+                coffeeFomat.setSurgerFomat(CoffeeFomatInterface.SUGER_NORMAL);
+                break;
+            case R.id.suger_more:
 
+                coffeeFomat.setSurgerFomat(CoffeeFomatInterface.SUGER_MORE);
+                break;
+            case R.id.milk_no:
+                coffeeFomat.setMilkFomat(CoffeeFomatInterface.MILK_NO);
+                break;
+            case R.id.milk_less:
+                coffeeFomat.setMilkFomat(CoffeeFomatInterface.MILK_LESS);
+                break;
+            case R.id.milk_normal:
+                coffeeFomat.setMilkFomat(CoffeeFomatInterface.MILK_NORMAL);
+                break;
+            case R.id.milk_more:
+                coffeeFomat.setMilkFomat(CoffeeFomatInterface.MILK_MORE);
+                break;
+        }
     }
 
     class ViewHolder {
         public ImageView mCoffeeImage, mGiveUp, mOk, mCoffeeNumSub, mCoffeeNumAdd;
-        public TextView mCoffeeName, mCoffeePrice, mTip, mCoffeeNum;
+        public TextView mCoffeeName, mCoffeePrice, mCoffeeNum, mTipCupNum, mTipName, mTipPayM;
         public RadioGroup mTaste_suger, mTaste_milk;
         public RadioButton mSuger_no, mSuger_less, mSuger_normal, mSuger_more;
         public RadioButton mMilk_no, mMilk_less, mMilk_normal, mMilk_more;
 
         public ViewHolder(View view) {
             initView(view);
-
         }
 
         private void initView(View view) {
             mCoffeeImage = (ImageView) view.findViewById(R.id.coffeeImage);
             mCoffeeName = (TextView) view.findViewById(R.id.coffeeName);
             mCoffeePrice = (TextView) view.findViewById(R.id.coffeePrice);
-            mTip = (TextView) view.findViewById(R.id.tip);
+            mTipCupNum = (TextView) view.findViewById(R.id.tipCupNum);
+            mTipName = (TextView) view.findViewById(R.id.tipName);
+            mTipPayM = (TextView) view.findViewById(R.id.tipPayM);
             mGiveUp = (ImageView) view.findViewById(R.id.giveUp);
             mOk = (ImageView) view.findViewById(R.id.ok);
             mCoffeeNumSub = (ImageView) view.findViewById(R.id.coffeeNumSub);

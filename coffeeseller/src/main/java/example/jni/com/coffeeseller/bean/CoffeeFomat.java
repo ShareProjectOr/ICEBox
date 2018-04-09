@@ -1,5 +1,7 @@
 package example.jni.com.coffeeseller.bean;
 
+import example.jni.com.coffeeseller.utils.CoffeeFomatInterface;
+
 /**
  * Created by WH on 2018/3/22.
  * 购买时的Coffee规格
@@ -13,8 +15,47 @@ package example.jni.com.coffeeseller.bean;
     *   ...
     * */
 public class CoffeeFomat {
+    private Coffee coffee;
     private int coffeeId;
-    private int cup = 0;
+    private int cup = 1;
+    private int surgerFomat = CoffeeFomatInterface.SUGER_NORMAL;
+    private int milkFomat = CoffeeFomatInterface.MILK_NORMAL;
+
+    public void cupAdd() {
+        if (cup < coffee.restNum) {
+            cup += 1;
+        }
+    }
+
+    public void cupSub() {
+        if (cup > 1) {
+            cup -= 1;
+        }
+    }
+
+    public boolean isMax() {
+        return cup == coffee.restNum;
+    }
+
+    public boolean isMin() {
+        return cup == 1;
+    }
+
+    public int getSurgerFomat() {
+        return surgerFomat;
+    }
+
+    public void setSurgerFomat(int surgerFomat) {
+        this.surgerFomat = surgerFomat;
+    }
+
+    public int getMilkFomat() {
+        return milkFomat;
+    }
+
+    public void setMilkFomat(int milkFomat) {
+        this.milkFomat = milkFomat;
+    }
 
     public int getCoffeeId() {
         return coffeeId;
@@ -32,13 +73,7 @@ public class CoffeeFomat {
         this.cup = cup;
     }
 
-    public void cupAdd() {
-        cup += 1;
-    }
-
-    public void cupSub() {
-        if (cup > 0) {
-            cup -= 1;
-        }
+    public void setCoffee(Coffee coffee) {
+        this.coffee = coffee;
     }
 }

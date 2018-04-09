@@ -2,46 +2,12 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/colorAccent"
-    android:clipChildren="false"
     android:orientation="vertical">
 
-    <LinearLayout
+    <FrameLayout
+        android:id="@+id/frag_container"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:background="@color/white"></LinearLayout>
+        android:layout_height="match_parent">
 
-    <LinearLayout
-        android:id="@+id/viewPagerParentLayout"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="5"
-        android:clipChildren="false">
-
-        <android.support.v4.view.ViewPager
-            android:id="@+id/viewPager"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginTop="50dp"
-            android:layout_marginBottom="50dp"
-            android:layout_marginLeft="200dp"
-            android:layout_marginRight="200dp"
-            android:clipChildren="false">
-            <!--android:clipChildren="false"-->
-        </android.support.v4.view.ViewPager>
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="2"
-        android:background="@color/white">
-
-        <ImageView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:src="@mipmap/ic_launcher_round" />
-    </LinearLayout>
+    </FrameLayout>
 </LinearLayout>

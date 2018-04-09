@@ -28,7 +28,6 @@ import example.jni.com.coffeeseller.utils.CornersTransmation;
 public class CoffeeGridAdapter extends BaseAdapter {
     private Context context;
     private List<Coffee> coffees;
-    private static boolean isFirst = true;
 
 
     public CoffeeGridAdapter(Context context, List<Coffee> coffees) {
@@ -77,13 +76,12 @@ public class CoffeeGridAdapter extends BaseAdapter {
             if (coffee.isOver) {
                 viewHolder.overLayout.setVisibility(View.VISIBLE);
                 viewHolder.sellOver.setVisibility(View.VISIBLE);
+                convertView.setEnabled(false);
             } else {
                 viewHolder.overLayout.setVisibility(View.GONE);
                 viewHolder.sellOver.setVisibility(View.GONE);
+                convertView.setEnabled(true);
             }
-        }
-        if (position == coffees.size() - 1) {
-            isFirst = false;
         }
         return convertView;
     }
