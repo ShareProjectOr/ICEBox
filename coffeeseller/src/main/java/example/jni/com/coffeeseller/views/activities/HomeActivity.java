@@ -2,29 +2,31 @@ package example.jni.com.coffeeseller.views.activities;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 
 import example.jni.com.coffeeseller.R;
-import example.jni.com.coffeeseller.views.fragments.BaseFragment;
-import example.jni.com.coffeeseller.views.fragments.BuyFragment;
+import example.jni.com.coffeeseller.factory.FragmentEnum;
+import example.jni.com.coffeeseller.factory.FragmentFactory;
+import example.jni.com.coffeeseller.presenter.AddFragmentPresenter;
+import example.jni.com.coffeeseller.views.fragments.BasicFragment;
+import example.jni.com.coffeeseller.views.viewinterface.IAddFragmentView;
+
+import static example.jni.com.coffeeseller.factory.FragmentEnum.ChooseCupNumFragment;
 
 /**
  * Created by Administrator on 2018/3/20.
  */
 
-public class HomeActivity extends AppCompatActivity {
+public class HomeActivity extends AppCompatActivity implements IAddFragmentView {
     private static HomeActivity mInstance;
-    private FragmentManager mManager;
-    public BaseFragment mCurFragment;
+    private AddFragmentPresenter mAddFragmentPresenter;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         init();
-        turnFragment(mCurFragment);
+
     }
 
     public static HomeActivity getInstance() {
@@ -38,21 +40,37 @@ public class HomeActivity extends AppCompatActivity {
     }
 
     private void initDatas() {
-        if (mCurFragment == null) {
-            mCurFragment = new BuyFragment();
-        }
+
     }
 
     private void initViews() {
         mInstance = this;
-        mManager = getSupportFragmentManager();
+        FragmentFactory.curPage = ChooseCupNumFragment;
+        mAddFragmentPresenter = new AddFragmentPresenter(this);
+        mAddFragmentPresenter.AddFragment();
 
     }
 
-    public void turnFragment(BaseFragment fragment) {
-        FragmentTransaction transaction = mManager.beginTransaction();
-        transaction.replace(R.id.frag_container, fragment);
-        transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_CLOSE);
-        transaction.commit();
+
+    public void replaceFragment(FragmentEnum fromPage, FragmentEnum currentPage) {
+        FragmentFactory.lastPage = fromPage;
+        FragmentFactory.curPage = currentPage;
+        mAddFragmentPresenter.AddFragment();
+    }
+
+    @Override
+    public AppCompatActivity getActivity() {
+        return this;
+    }
+
+    @Override
+    public BasicFragment getFragment() {
+        return FragmentFactory.getInstance().getFragment(FragmentFactory.curPage);
+    }
+
+
+    @Override
+    public int getLayoutId() {
+        return R.id.frag_container;
     }
 }

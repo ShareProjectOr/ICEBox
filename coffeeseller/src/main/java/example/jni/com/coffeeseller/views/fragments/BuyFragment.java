@@ -32,7 +32,7 @@ import example.jni.com.coffeeseller.views.customviews.ChooseCupDialog;
  * Created by WH on 2018/3/30.
  */
 
-public class BuyFragment extends BaseFragment implements GridViewItemListener, ChooseCupListenner, View.OnClickListener {
+public class BuyFragment extends BasicFragment implements GridViewItemListener, ChooseCupListenner, View.OnClickListener {
     private View content;
     private HomeActivity homeActivity;
     private static int DEFAULT_ONEPAGE_NUM = 12;

@@ -1,4 +1,4 @@
-package example.jni.com.coffeeseller.model;
+package example.jni.com.coffeeseller.model.listeners;
 
 
 import example.jni.com.coffeeseller.bean.User;
@@ -8,7 +8,7 @@ import example.jni.com.coffeeseller.bean.User;
  */
 
 public interface OnLoginCallBackListener {
-    void loginSuccess(User user);
+    void loginSuccess();
 
     void loginFailed(String erro);
 }

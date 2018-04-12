@@ -1,4 +1,4 @@
-package example.jni.com.coffeeseller.model;
+package example.jni.com.coffeeseller.model.listeners;
 
 /**
  * Created by Administrator on 2018/3/1.
