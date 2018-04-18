@@ -73,7 +73,7 @@ public class MachineCheckPresenter {
             public void MachineCheckEnd(boolean isCheckSuccess) {
                 mICheckMachineView.endCheck();
                 if (isCheckSuccess) {
-                    mICheckMachineView.ChangePage(FragmentEnum.DebugFragment);
+                    mICheckMachineView.ChangePage(FragmentEnum.ChooseCupNumFragment);
                 } else {
                     mICheckMachineView.SetButtonState(false);
                     mICheckMachineView.StartTimeCount();

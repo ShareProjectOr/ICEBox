@@ -79,4 +79,5 @@ public class SharedPreferencesManager {
     public String getCoffeeBeanAcount() {
         return sharedPreferences.getString("CoffeeBeanAcount", "");
     }
+
 }

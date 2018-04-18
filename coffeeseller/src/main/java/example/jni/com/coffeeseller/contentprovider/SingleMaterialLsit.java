@@ -1,15 +1,14 @@
 package example.jni.com.coffeeseller.contentprovider;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
+import android.util.Log;
+
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import cof.ac.inter.ContainerConfig;
 import example.jni.com.coffeeseller.bean.Coffee;
-import example.jni.com.coffeeseller.bean.Process;
 
 /**
  * Created by Administrator on 2018/4/16.
@@ -19,6 +18,7 @@ public class SingleMaterialLsit {
     private static SingleMaterialLsit mInstance;
 
     private List<Coffee> coffeeList;
+    private String TAG = "SingleMaterialLsit";
 
     public SingleMaterialLsit() {
         coffeeList = new ArrayList<>();
@@ -32,8 +32,9 @@ public class SingleMaterialLsit {
     }
 
     public boolean AddCoffeeList(Coffee coffee) {
-       /* com.alibaba.fastjson.JSONArray jsonArray = (com.alibaba.fastjson.JSONArray) com.alibaba.fastjson.JSONObject.toJSON(coffeeList);
-        jsonArray.toString();*/
+        JSONArray jsonArray = (JSONArray) JSONObject.toJSON(coffeeList);
+        String array = jsonArray.toString();
+        Log.d(TAG, array);
         return coffeeList.add(coffee);
     }
 

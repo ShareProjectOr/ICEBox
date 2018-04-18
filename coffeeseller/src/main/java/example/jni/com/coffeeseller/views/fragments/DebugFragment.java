@@ -12,6 +12,7 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
@@ -132,9 +133,13 @@ public class DebugFragment extends BasicFragment implements IDebugDropMaterialVi
                 presenter.make();
                 break;
             case R.id.getDropSpeed:
+                if (dropAccunt.getText().toString().isEmpty()) {
+                    Toast.makeText(getActivity(), "你不输入真实落料量,你要我咋给你计算???", Toast.LENGTH_LONG).show();
+                    return;
+                }
                 int realdropAcount = Integer.parseInt(dropAccunt.getText().toString());
                 int Speed = realdropAcount / 5;
-              //  new AlertDialog
+                new AlertDialog.Builder(getActivity()).setMessage("单位落料量:" + Speed + "0.1mg/s").setPositiveButton("我记住了", null).create().show();
                 break;
         }
     }
