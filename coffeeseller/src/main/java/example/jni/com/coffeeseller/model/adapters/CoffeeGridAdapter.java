@@ -1,27 +1,19 @@
 package example.jni.com.coffeeseller.model.adapters;
 
 import android.content.Context;
-import android.os.Environment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AbsListView;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
-
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
 import example.jni.com.coffeeseller.R;
 import example.jni.com.coffeeseller.bean.Coffee;
-import example.jni.com.coffeeseller.utils.CornersTransmation;
-import example.jni.com.coffeeseller.views.fragments.BuyFragment;
 
 /**
  * Created by WH on 2018/3/20.
@@ -30,6 +22,11 @@ import example.jni.com.coffeeseller.views.fragments.BuyFragment;
 public class CoffeeGridAdapter extends BaseAdapter {
     private Context context;
     private List<Coffee> coffees;
+
+    private int[] images = {
+            R.mipmap.cafe_irish, R.mipmap.flat_white, R.mipmap.caramel_macchiato, R.mipmap.cappuccino, R.mipmap.americano, R.mipmap.cafe_mocha,
+            R.mipmap.cafe_latte, R.mipmap.viennese, R.mipmap.espresso
+    };
 
 
     public CoffeeGridAdapter(Context context, List<Coffee> coffees) {
@@ -70,11 +67,12 @@ public class CoffeeGridAdapter extends BaseAdapter {
             viewHolder.coffeeName.setText(coffee.name);
             viewHolder.coffeePrice.setText(coffee.price);
 
-            Glide.with(context)
+          /*  Glide.with(context)
                     .load("http://ww4.sinaimg.cn/large/610dc034gw1f96kp6faayj20u00jywg9.jpg")
                     .transform(new CornersTransmation(context, 10))
                     .placeholder(R.mipmap.ic_launcher)
-                    .error(R.mipmap.ic_launcher).into(viewHolder.coffeeImage);
+                    .error(R.mipmap.ic_launcher).into(viewHolder.coffeeImage);*/
+            viewHolder.coffeeImage.setImageResource(images[position]);
             if (coffee.isOver) {
                 viewHolder.overLayout.setVisibility(View.VISIBLE);
                 viewHolder.sellOver.setVisibility(View.VISIBLE);

@@ -9,6 +9,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -18,6 +19,8 @@ import java.util.List;
 import example.jni.com.coffeeseller.R;
 import example.jni.com.coffeeseller.bean.Coffee;
 import example.jni.com.coffeeseller.bean.CoffeeFomat;
+import example.jni.com.coffeeseller.contentprovider.SingleMaterialLsit;
+import example.jni.com.coffeeseller.factory.FragmentEnum;
 import example.jni.com.coffeeseller.factory.FragmentFactory;
 import example.jni.com.coffeeseller.model.adapters.CoffeeViewPagerAdapter;
 import example.jni.com.coffeeseller.model.listeners.ChooseCupListenner;
@@ -38,9 +41,13 @@ public class BuyFragment extends BasicFragment implements GridViewItemListener, 
     private LinearLayout mViewPagerParentLayout;
     private ViewPager mViewPager;
     private LinearLayout mPointGroup;
+    public ImageView mLogo;
+    public TextView mMachineCode;
+    public ImageView mHelp;
     private CoffeeViewPagerAdapter mPagerAdapter;
     private List<Coffee> mCoffees;
     private List<CoffeeFomat> mCoffeeFomats;
+    private long lastClickTime;
 
     @Nullable
     @Override
@@ -58,6 +65,11 @@ public class BuyFragment extends BasicFragment implements GridViewItemListener, 
     private void initViews() {
 
         homeActivity = HomeActivity.getInstance();
+        mLogo = (ImageView) content.findViewById(R.id.logo);
+        mHelp = (ImageView) content.findViewById(R.id.help);
+        mMachineCode = (TextView) content.findViewById(R.id.machineCode);
+        mLogo.setOnClickListener(this);
+
         mViewPagerParentLayout = (LinearLayout) content.findViewById(R.id.viewPagerParentLayout);
         mViewPager = (ViewPager) content.findViewById(R.id.viewPager);
         mPointGroup = (LinearLayout) content.findViewById(R.id.pointGroup);
@@ -90,36 +102,7 @@ public class BuyFragment extends BasicFragment implements GridViewItemListener, 
     private void initDatas() {
         Log.d("----------------", "initDatas");
         mCoffees = new ArrayList<>();
-        mCoffeeFomats = new ArrayList<>();
-        Coffee coffee = new Coffee();
-        coffee.name = "美式咖啡";
-        coffee.price = "12.4";
-        mCoffees.add(coffee);
-        mCoffees.add(coffee);
-        mCoffees.add(coffee);
-        mCoffees.add(coffee);
-        mCoffees.add(coffee);
-        Coffee coffee2 = new Coffee();
-        coffee2.name = "美式咖啡2";
-        coffee2.price = "12.4";
-        coffee2.isOver = true;
-        mCoffees.add(coffee2);
-        mCoffees.add(coffee2);
-        mCoffees.add(coffee2);
-        mCoffees.add(coffee2);
-        mCoffees.add(coffee2);
-
-        mCoffees.add(coffee);
-        mCoffees.add(coffee);
-        mCoffees.add(coffee);
-        mCoffees.add(coffee);
-        mCoffees.add(coffee);
-
-        mCoffees.add(coffee2);
-        mCoffees.add(coffee2);
-        mCoffees.add(coffee2);
-        mCoffees.add(coffee2);
-        mCoffees.add(coffee2);
+        mCoffees = SingleMaterialLsit.getInstance().getCoffeeList();
 
         mPagerAdapter = new CoffeeViewPagerAdapter(homeActivity, mCoffees, this);
         mViewPager.addOnPageChangeListener(new ViewpagerPageChangedListener());
@@ -172,6 +155,14 @@ public class BuyFragment extends BasicFragment implements GridViewItemListener, 
 
     @Override
     public void onClick(View v) {
-
+        switch (v.getId()) {
+            case R.id.logo:
+                if (System.currentTimeMillis() - lastClickTime <= 2 * 1000) {
+                    homeActivity.replaceFragment(FragmentEnum.ChooseCupNumFragment, FragmentEnum.LoginFragment);
+                } else {
+                    lastClickTime = System.currentTimeMillis();
+                }
+                break;
+        }
     }
 }
