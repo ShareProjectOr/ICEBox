@@ -12,6 +12,7 @@ import example.jni.com.coffeeseller.views.fragments.BasicFragment;
 import example.jni.com.coffeeseller.views.viewinterface.IAddFragmentView;
 
 import static example.jni.com.coffeeseller.factory.FragmentEnum.ChooseCupNumFragment;
+import static example.jni.com.coffeeseller.factory.FragmentEnum.MachineCheckFragment;
 
 /**
  * Created by Administrator on 2018/3/20.
@@ -44,7 +45,7 @@ public class HomeActivity extends AppCompatActivity implements IAddFragmentView 
 
     private void initViews() {
         mInstance = this;
-        FragmentFactory.curPage = ChooseCupNumFragment;
+        FragmentFactory.curPage = MachineCheckFragment;
         mAddFragmentPresenter = new AddFragmentPresenter(this);
         mAddFragmentPresenter.AddFragment();
 

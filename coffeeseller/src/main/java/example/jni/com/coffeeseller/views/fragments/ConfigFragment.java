@@ -39,7 +39,7 @@ public class ConfigFragment extends BasicFragment {
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.debug_machine:
-                homeActivity.replaceFragment(FragmentEnum.ConfigFragment, FragmentEnum.MachineCheckFragment);
+                homeActivity.replaceFragment(FragmentEnum.ConfigFragment, FragmentEnum.DebugFragment);
                 break;
         }
     }

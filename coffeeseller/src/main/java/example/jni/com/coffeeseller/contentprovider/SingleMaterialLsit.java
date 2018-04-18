@@ -34,8 +34,12 @@ public class SingleMaterialLsit {
     public boolean AddCoffeeList(Coffee coffee) {
         JSONArray jsonArray = (JSONArray) JSONObject.toJSON(coffeeList);
         String array = jsonArray.toString();
-        Log.d(TAG, array);
-        return coffeeList.add(coffee);
+        if (coffeeList.add(coffee)) {
+            Log.d(TAG, array);
+            return true;
+        } else {
+            return false;
+        }
     }
 
     public void RemoveCoffeeList(int position) {

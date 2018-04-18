@@ -80,4 +80,12 @@ public class SharedPreferencesManager {
         return sharedPreferences.getString("CoffeeBeanAcount", "");
     }
 
+    public void SetCoffeeList(String coffeeListArray) {
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString("coffeeListArray", coffeeListArray);
+    }
+
+    public String getCoffeeListArray() {
+        return sharedPreferences.getString("coffeeListArray", "[]");
+    }
 }
