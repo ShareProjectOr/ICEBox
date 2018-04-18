@@ -10,10 +10,9 @@ import java.util.List;
 import example.jni.com.coffeeseller.views.fragments.BasicFragment;
 import example.jni.com.coffeeseller.views.fragments.BuyFragment;
 import example.jni.com.coffeeseller.views.fragments.ConfigFragment;
+import example.jni.com.coffeeseller.views.fragments.DebugFragment;
 import example.jni.com.coffeeseller.views.fragments.LoginFragment;
 import example.jni.com.coffeeseller.views.fragments.MachineCheckFragment;
-
-import static example.jni.com.coffeeseller.factory.FragmentEnum.ChooseCupNumFragment;
 
 /**
  * Created by Administrator on 2018/4/11.
@@ -71,6 +70,9 @@ public class FragmentFactory {
                     break;
                 case ConfigFragment:
                     mFrag = new ConfigFragment();
+                    break;
+                case DebugFragment:
+                    mFrag = new DebugFragment();
                     break;
             }
             if (mFrag != null) {

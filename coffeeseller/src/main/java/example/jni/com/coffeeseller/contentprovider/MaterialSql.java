@@ -1,4 +1,4 @@
-package example.jni.com.coffeeseller.utils;
+package example.jni.com.coffeeseller.contentprovider;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -25,6 +25,8 @@ public class MaterialSql extends SQLiteOpenHelper {
     public static final String MATERIALS_COLUMN_MATERIALNAME = "MaterialName"; //原料名字
     public static final String MATERIALS_COLUMN_MATERIALUNIT = "MaterialUnit"; //原料单位
     public static final String MATERIALS_COLUMN_MATERIALSTOCK = "MaterialStock"; //原料剩余量
+    public static final String MATERIALS_COLUMN_MATERIALDORPSPEED = "MaterialDropSpeed";//单位落料量
+    public static final String MATERIALS_COLUMN_CONTAINERID = "containerID";//机器真正的料仓编号
 
     public MaterialSql(Context context) {
         super(context, DATABASE_NAME, null, 1);
@@ -34,7 +36,7 @@ public class MaterialSql extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         db.execSQL("create table" + MATERIALS_TABLE_NAME
-                + "(id integer primary key ,bunkersID text, MaterialID text, MaterialType text, MaterialName text, MaterialUnit text, MaterialStock text)");
+                + "(id integer primary key ,bunkersID text, MaterialID text, MaterialType text, MaterialName text, MaterialUnit text, MaterialStock text , MaterialDropSpeed text ,containerID text)");
     }
 
     @Override
@@ -65,8 +67,9 @@ public class MaterialSql extends SQLiteOpenHelper {
     *  MaterialName
     *  MaterialUnit
     *  MaterialStock
+    *  MaterialDropSpeed
     */
-    public boolean insertContact(String bunkersID, String MaterialID, String MaterialType, String MaterialName, String MaterialUnit, String MaterialStock) {
+    public boolean insertContact(String bunkersID, String MaterialID, String MaterialType, String MaterialName, String MaterialUnit, String MaterialStock, String MaterialDropSpeed, String containerID) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put("bunkersID", bunkersID);
@@ -75,21 +78,46 @@ public class MaterialSql extends SQLiteOpenHelper {
         contentValues.put("MaterialName", MaterialName);
         contentValues.put("MaterialUnit", MaterialUnit);
         contentValues.put("MaterialStock", MaterialStock);
-        db.insert(MATERIALS_TABLE_NAME, null, contentValues);
-        return true;
+        contentValues.put("MaterialDropSpeed", MaterialDropSpeed);
+        long result = db.insert(MATERIALS_TABLE_NAME, null, contentValues);
+        if (result == -1) {
+            return false;
+        } else {
+            return true;
+        }
+
     }
 
     /*
     * 更新数据库操作
     * */
-    public boolean updateContact(String bunkersID, String MaterialID, String MaterialType, String MaterialName, String MaterialUnit, String MaterialStock) {
+    public boolean updateContact(String bunkersID, String MaterialID, String MaterialType, String MaterialName, String MaterialUnit, String MaterialStock, String MaterialDropSpeed, String containerID) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
-        contentValues.put("MaterialID", MaterialID);
-        contentValues.put("MaterialType", MaterialType);
-        contentValues.put("MaterialName", MaterialName);
-        contentValues.put("MaterialUnit", MaterialUnit);
-        contentValues.put("MaterialStock", MaterialStock);
+        if (!MaterialID.isEmpty()) {
+            contentValues.put("MaterialID", MaterialID);
+        }
+        if (!MaterialType.isEmpty()) {
+            contentValues.put("MaterialType", MaterialType);
+        }
+
+        if (!MaterialName.isEmpty()) {
+            contentValues.put("MaterialName", MaterialName);
+        }
+
+        if (!MaterialUnit.isEmpty()) {
+            contentValues.put("MaterialUnit", MaterialUnit);
+        }
+        if (!MaterialStock.isEmpty()) {
+            contentValues.put("MaterialStock", MaterialStock);
+        }
+        if (!MaterialDropSpeed.isEmpty()) {
+            contentValues.put("MaterialDropSpeed", MaterialDropSpeed);
+        }
+        if (!containerID.isEmpty()) {
+            contentValues.put("containerID", containerID);
+        }
+
         db.update(MATERIALS_TABLE_NAME, contentValues, bunkersID + " = ? ", new String[]{bunkersID});
         return true;
     }

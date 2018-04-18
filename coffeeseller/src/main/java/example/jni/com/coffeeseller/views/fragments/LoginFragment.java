@@ -10,8 +10,11 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import example.jni.com.coffeeseller.R;
+
+import example.jni.com.coffeeseller.factory.FragmentEnum;
 import example.jni.com.coffeeseller.factory.FragmentFactory;
 import example.jni.com.coffeeseller.presenter.UserLoginPresenter;
+import example.jni.com.coffeeseller.views.activities.HomeActivity;
 import example.jni.com.coffeeseller.views.viewinterface.Iloginview;
 
 /**
@@ -23,6 +26,7 @@ public class LoginFragment extends BasicFragment implements Iloginview {
     private UserLoginPresenter mUserLoginPresenter;
     private EditText UserName, PassWord;
     private Button login;
+    private HomeActivity homeActivity;
 
     @Nullable
     @Override
@@ -37,8 +41,9 @@ public class LoginFragment extends BasicFragment implements Iloginview {
         UserName = (EditText) view.findViewById(R.id.userName);
         PassWord = (EditText) view.findViewById(R.id.passWord);
         login = (Button) view.findViewById(R.id.login);
+        homeActivity = HomeActivity.getInstance();
         login.setOnClickListener(this);
-        mUserLoginPresenter = new UserLoginPresenter(this);
+        mUserLoginPresenter = new UserLoginPresenter(getActivity(), this);
     }
 
     @Override
@@ -63,7 +68,7 @@ public class LoginFragment extends BasicFragment implements Iloginview {
 
     @Override
     public void toSettingFragment() {
-
+      homeActivity.replaceFragment(FragmentEnum.LoginFragment,FragmentEnum.ConfigFragment);
     }
 
     @Override

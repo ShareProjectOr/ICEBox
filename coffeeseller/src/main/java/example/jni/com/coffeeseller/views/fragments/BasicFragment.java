@@ -6,6 +6,7 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
 
 /**
  * Created by Administrator on 2018/4/11.
@@ -31,4 +32,6 @@ public class BasicFragment extends Fragment implements View.OnClickListener {
     public void onClick(View v) {
 
     }
+
+
 }

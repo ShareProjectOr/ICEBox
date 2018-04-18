@@ -26,6 +26,7 @@ public class AddFragment implements IAddFragment {
         FragmentManager fm = activity.getSupportFragmentManager();
         FragmentTransaction ft = fm.beginTransaction();
         ft.remove(fragment);
+        ft.commit();
     }
 
     @Override

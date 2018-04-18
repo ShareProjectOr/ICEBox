@@ -1,5 +1,7 @@
 package example.jni.com.coffeeseller.presenter;
 
+import android.content.Context;
+
 import example.jni.com.coffeeseller.model.listeners.IUserLogin;
 import example.jni.com.coffeeseller.model.listeners.OnLoginCallBackListener;
 import example.jni.com.coffeeseller.model.UserLogin;
@@ -13,8 +15,8 @@ public class UserLoginPresenter {
     private IUserLogin iUserLogin;
     private Iloginview iLoginview;
 
-    public UserLoginPresenter(Iloginview iLoginview) {
-        this.iUserLogin = new UserLogin();
+    public UserLoginPresenter(Context mContext, Iloginview iLoginview) {
+        this.iUserLogin = new UserLogin(mContext);
         this.iLoginview = iLoginview;
     }
 

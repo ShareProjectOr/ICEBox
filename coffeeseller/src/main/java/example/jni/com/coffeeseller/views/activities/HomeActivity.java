@@ -2,7 +2,6 @@ package example.jni.com.coffeeseller.views.activities;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 
 import example.jni.com.coffeeseller.R;
@@ -30,8 +29,7 @@ public class HomeActivity extends AppCompatActivity implements IAddFragmentView 
 
     }
 
-    public static HomeActivity getInstance() {
-
+    public static synchronized HomeActivity getInstance() {
         return mInstance;
     }
 
@@ -53,9 +51,9 @@ public class HomeActivity extends AppCompatActivity implements IAddFragmentView 
     }
 
 
-    public void replaceFragment(FragmentEnum fromPage, FragmentEnum currentPage) {
-        FragmentFactory.lastPage = fromPage;
-        FragmentFactory.curPage = currentPage;
+    public void replaceFragment(FragmentEnum currentPage, FragmentEnum toPage) {
+        FragmentFactory.lastPage = currentPage;
+        FragmentFactory.curPage = toPage;
         mAddFragmentPresenter.AddFragment();
     }
 

@@ -1,0 +1,305 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@mipmap/background"
+    android:orientation="vertical">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="20dp"
+        android:text="单位落料量测试:"
+        android:textColor="@color/white"
+        android:textSize="@dimen/text_size_one" />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:background="@drawable/yuanjiaobiankuang"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingBottom="20dp">
+
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:layout_marginTop="20dp"
+                android:text="料仓:"
+                android:textColor="@color/white"
+                android:textSize="@dimen/text_size_one" />
+
+            <EditText
+                android:id="@+id/ChooseBunkers"
+                android:layout_width="400dp"
+                android:layout_height="60dp"
+                android:layout_marginLeft="20dp"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/shape_inut"
+                android:editable="false" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:layout_marginTop="20dp"
+                android:text="落料量(0.1mg):"
+                android:textColor="@color/white"
+                android:textSize="@dimen/text_size_one" />
+
+            <EditText
+                android:id="@+id/dropAcount"
+                android:layout_width="400dp"
+                android:layout_height="60dp"
+                android:layout_marginLeft="20dp"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/shape_inut"
+                android:hint=""
+                android:inputType="number"
+                android:paddingLeft="10dp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:layout_marginTop="20dp"
+                android:text="转动速度:"
+                android:textColor="@color/white"
+                android:textSize="@dimen/text_size_one" />
+
+            <EditText
+                android:id="@+id/RotSpeed"
+                android:layout_width="400dp"
+                android:layout_height="60dp"
+                android:layout_marginLeft="20dp"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/shape_inut"
+                android:inputType="number" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:layout_marginTop="20dp"
+                android:text="搅拌速度:"
+                android:textColor="@color/white"
+                android:textSize="@dimen/text_size_one" />
+
+            <EditText
+                android:id="@+id/StirSpeed"
+                android:layout_width="400dp"
+                android:layout_height="60dp"
+                android:layout_marginLeft="20dp"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/shape_inut"
+                android:inputType="number" />
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/start_drop"
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:layout_marginTop="20dp"
+            android:background="@drawable/shape_botton"
+            android:gravity="center"
+            android:text="开始落料"
+            android:textColor="@color/white"
+            android:textSize="@dimen/text_size_one" />
+
+        <Button
+            android:id="@+id/getDropSpeed"
+            android:layout_width="350dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:layout_marginTop="20dp"
+            android:background="@drawable/shape_botton"
+            android:gravity="center"
+            android:text="单位落料量计算(0.1mg/s)"
+            android:textColor="@color/white"
+            android:textSize="@dimen/text_size_one" />
+    </LinearLayout>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="20dp"
+        android:text="单位落料量计算公式:(mg)/秒数"
+        android:textColor="@color/white"
+        android:textSize="@dimen/text_size_one" />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:layout_marginTop="20dp"
+        android:background="@drawable/yuanjiaobiankuang"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:text="制作配方:"
+                android:textColor="@color/white"
+                android:textSize="@dimen/text_size_one" />
+
+            <Button
+                android:id="@+id/add_process"
+                android:layout_width="150dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="400dp"
+                android:background="@drawable/shape_botton"
+                android:gravity="center"
+                android:text="添加步骤"
+                android:textColor="@color/white"
+                android:textSize="@dimen/text_size_one" />
+
+            <Button
+                android:id="@+id/make"
+                android:layout_width="150dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="300dp"
+                android:layout_marginRight="20dp"
+                android:background="@drawable/shape_botton"
+                android:gravity="center"
+                android:text="制作一杯"
+                android:textColor="@color/white"
+                android:textSize="@dimen/text_size_one" />
+
+            <Button
+                android:id="@+id/save"
+                android:layout_width="150dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="300dp"
+                android:layout_marginRight="20dp"
+                android:background="@drawable/shape_botton"
+                android:gravity="center"
+                android:text="保存配方"
+                android:textColor="@color/white"
+                android:textSize="@dimen/text_size_one" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:layout_marginTop="10dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+
+            <TextView
+                android:layout_width="300dp"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="落料仓"
+                android:textColor="@color/white"
+                android:textSize="@dimen/text_size_one" />
+
+            <TextView
+                android:layout_width="300dp"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+
+                android:text="出水间隔"
+                android:textColor="@color/white"
+                android:textSize="@dimen/text_size_one" />
+
+            <TextView
+                android:layout_width="300dp"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+
+                android:text="出水量"
+                android:textColor="@color/white"
+                android:textSize="@dimen/text_size_one" />
+
+            <TextView
+                android:layout_width="300dp"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+
+                android:text="落料时间"
+                android:textColor="@color/white"
+                android:textSize="@dimen/text_size_one" />
+
+            <TextView
+                android:layout_width="300dp"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+
+                android:text="旋转速度"
+                android:textColor="@color/white"
+                android:textSize="@dimen/text_size_one" />
+
+            <TextView
+                android:layout_width="300dp"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+
+                android:text="搅拌速度"
+                android:textColor="@color/white"
+                android:textSize="@dimen/text_size_one" />
+
+            <TextView
+                android:layout_width="300dp"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="水温"
+                android:textColor="@color/white"
+                android:textSize="@dimen/text_size_one" />
+
+
+        </LinearLayout>
+
+        <ListView
+            android:id="@+id/processList"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp">
+
+        </ListView>
+    </LinearLayout>
+</LinearLayout>

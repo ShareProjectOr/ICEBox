@@ -1,0 +1,264 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="10dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="操作仓:"
+            android:textColor="@color/black"
+            android:textSize="@dimen/text_size_one" />
+
+        <RadioGroup
+            android:id="@+id/chooseBunkersGroup"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <RadioButton
+                android:id="@+id/bunkersBean"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checked="true"
+                android:text="豆仓" />
+
+            <RadioButton
+                android:id="@+id/bunkersHotWater"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="热水仓" />
+
+            <RadioButton
+                android:id="@+id/bunkers1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="料仓1" />
+
+            <RadioButton
+                android:id="@+id/bunkers2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="料仓2" />
+
+            <RadioButton
+                android:id="@+id/bunkers3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="料仓3" />
+
+            <RadioButton
+                android:id="@+id/bunkers4"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="料仓4" />
+
+            <RadioButton
+                android:id="@+id/bunkers5"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="料仓5" />
+
+            <RadioButton
+                android:id="@+id/bunkers6"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="料仓6" />
+        </RadioGroup>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="20dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="出水间隔:"
+            android:textColor="@color/black"
+            android:textSize="@dimen/text_size_one" />
+
+        <EditText
+            android:id="@+id/water_interval"
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:hint="单位(s)(第一步为0)"
+            android:inputType="number" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="20dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="出水量:"
+            android:textColor="@color/black"
+            android:textSize="@dimen/text_size_one" />
+
+        <EditText
+            android:id="@+id/water_capacity"
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:hint="单位(0.1ml)"
+            android:inputType="number" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="20dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="落料时间:"
+            android:textColor="@color/black"
+            android:textSize="@dimen/text_size_one" />
+
+        <EditText
+            android:id="@+id/material_time"
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:hint="单位(s)"
+            android:inputType="number" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="20dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="旋转速度:"
+            android:textColor="@color/black"
+            android:textSize="@dimen/text_size_one" />
+
+        <EditText
+            android:id="@+id/rotate_speed"
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:hint="默认全速"
+            android:text="127"
+            android:inputType="number" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="20dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="搅拌速度:"
+
+            android:textColor="@color/black"
+            android:textSize="@dimen/text_size_one" />
+
+        <EditText
+            android:id="@+id/stir_speed"
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:hint="默认全速"
+            android:text="127"
+            android:inputType="number" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="20dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="水温:"
+            android:textColor="@color/black"
+            android:textSize="@dimen/text_size_one" />
+
+        <RadioGroup
+            android:id="@+id/waterTypeGroup"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <RadioButton
+                android:id="@+id/hot"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checked="true"
+                android:text="热饮" />
+
+            <RadioButton
+                android:id="@+id/cold"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="冷饮" />
+        </RadioGroup>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:layout_marginTop="20dp"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/ok"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="50dp"
+            android:background="@drawable/shape_botton"
+            android:padding="20dp"
+            android:text="确认添加"
+            android:textColor="@color/white"
+            android:textSize="@dimen/text_size_one" />
+
+        <Button
+            android:id="@+id/cancel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="50dp"
+            android:background="@drawable/shape_botton"
+            android:padding="20dp"
+            android:text="取消添加"
+            android:textColor="@color/white"
+            android:textSize="@dimen/text_size_one" />
+    </LinearLayout>
+
+</LinearLayout>
