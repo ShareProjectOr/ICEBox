@@ -3,6 +3,7 @@ package example.jni.com.coffeeseller.model.adapters;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.support.v4.app.Fragment;
 import android.support.v4.view.PagerAdapter;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -22,6 +23,8 @@ import java.util.List;
 
 import example.jni.com.coffeeseller.R;
 import example.jni.com.coffeeseller.bean.Coffee;
+import example.jni.com.coffeeseller.factory.FragmentEnum;
+import example.jni.com.coffeeseller.factory.FragmentFactory;
 import example.jni.com.coffeeseller.model.listeners.GridViewItemListener;
 import example.jni.com.coffeeseller.views.activities.HomeActivity;
 import example.jni.com.coffeeseller.views.fragments.BuyFragment;
@@ -38,10 +41,10 @@ public class CoffeeViewPagerAdapter extends PagerAdapter {
     private int onePageCount;//偶数
     private int gridViewNum;
 
-    public CoffeeViewPagerAdapter(HomeActivity homeActivity, List<Coffee> coffees, int onePageCount, GridViewItemListener gridViewItemListener) {
+    public CoffeeViewPagerAdapter(HomeActivity homeActivity, List<Coffee> coffees, GridViewItemListener gridViewItemListener) {
         this.homeActivity = homeActivity;
         this.coffees = coffees;
-        this.onePageCount = onePageCount;
+        this.onePageCount = BuyFragment.DEFAULT_ONEPAGE_NUM;
         this.gridViewItemListener = gridViewItemListener;
         this.gridViews = new ArrayList<>();
         getGridViews();
@@ -101,7 +104,14 @@ public class CoffeeViewPagerAdapter extends PagerAdapter {
                     }
                 }
             });
+//            BuyFragment.PER_COFFEE_HEIGHT = gridView.getHeight() / 2;
             gridView.setAdapter(new CoffeeGridAdapter(homeActivity, gridCoffees));
+            gridView.setOnTouchListener(new View.OnTouchListener() {
+                @Override
+                public boolean onTouch(View v, MotionEvent event) {
+                    return false;
+                }
+            });
             gridViews.add(gridView);
             /*
             * 添加圆点
@@ -118,8 +128,8 @@ public class CoffeeViewPagerAdapter extends PagerAdapter {
             point.setSelected(true);
         }
         point.setText((i + 1) + "");
-        if (homeActivity.mCurFragment instanceof BuyFragment) {
-            ((BuyFragment) homeActivity.mCurFragment).addPoint(pointView, i);
+        if (FragmentFactory.curPage == FragmentEnum.ChooseCupNumFragment) {
+            ((BuyFragment) FragmentFactory.getInstance().getFragment(FragmentEnum.ChooseCupNumFragment)).addPoint(pointView, i);
         }
     }
 }

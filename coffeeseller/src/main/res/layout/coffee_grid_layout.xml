@@ -7,7 +7,7 @@
     <GridView
         android:id="@+id/coffeeGrid"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:background="@android:color/transparent"
         android:horizontalSpacing="50dp"
         android:orientation="vertical"

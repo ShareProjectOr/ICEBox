@@ -5,7 +5,6 @@ import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.app.Dialog;
 import android.content.Context;
-import android.os.Handler;
 import android.support.annotation.IdRes;
 import android.support.annotation.StyleRes;
 import android.view.LayoutInflater;
@@ -33,7 +32,7 @@ import example.jni.com.coffeeseller.utils.ScreenUtil;
  * Created by WH on 2018/3/22.
  */
 
-public class ChooseCupDialog extends Dialog implements View.OnClickListener, RadioGroup.OnCheckedChangeListener {
+public class ChooseCupDialogTest extends Dialog implements View.OnClickListener, RadioGroup.OnCheckedChangeListener {
     private Context context;
     private View view;
     private ChooseCupListenner listenner;
@@ -41,13 +40,13 @@ public class ChooseCupDialog extends Dialog implements View.OnClickListener, Rad
     private CoffeeFomat coffeeFomat;
     private ViewHolder viewHolder;
 
-    public ChooseCupDialog(Context context) {
+    public ChooseCupDialogTest(Context context) {
         super(context);
         this.context = context;
         init();
     }
 
-    public ChooseCupDialog(Context context, @StyleRes int themeResId) {
+    public ChooseCupDialogTest(Context context, @StyleRes int themeResId) {
         super(context, themeResId);
         this.context = context;
         init();
@@ -57,12 +56,13 @@ public class ChooseCupDialog extends Dialog implements View.OnClickListener, Rad
         this.coffee = coffee;
         this.listenner = listenner;
         coffeeFomat.setCoffee(coffee);
-
         initData();
+
     }
 
     public void init() {
         initView();
+
         coffeeFomat = new CoffeeFomat();
 
         Window window = this.getWindow();
@@ -77,11 +77,17 @@ public class ChooseCupDialog extends Dialog implements View.OnClickListener, Rad
     }
 
     public void initData() {
+        if (coffee == null) {
+            return;
+        }
         /*
         * 初始化数据
         * */
-        viewHolder.mCoffeePrice.setText(coffee.price + "");
-        changeText();
+        BigDecimal bigDecimal = new BigDecimal(Float.parseFloat(coffee.price));
+        float pay = bigDecimal.setScale(2, BigDecimal.ROUND_HALF_UP).floatValue();
+        viewHolder.mCoffeePrice.setText("￥ " + pay + "");
+
+        viewHolder.mCoffeeName.setText(coffee.name);
 
         /*
         * 没有多奶规格
@@ -103,18 +109,15 @@ public class ChooseCupDialog extends Dialog implements View.OnClickListener, Rad
 
     private void initView() {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
-        view = LayoutInflater.from(context).inflate(R.layout.choose_cup_layout, null);
+        view = LayoutInflater.from(context).inflate(R.layout.dialog_choose_cup_layout, null);
         if (viewHolder == null) {
             viewHolder = new ViewHolder(view);
         }
 
-        viewHolder.mCoffeeNumAdd.setOnClickListener(this);
-        viewHolder.mCoffeeNumSub.setOnClickListener(this);
-        viewHolder.mOk.setOnClickListener(this);
-        viewHolder.mGiveUp.setOnClickListener(this);
         viewHolder.mTaste_suger.setOnCheckedChangeListener(this);
         viewHolder.mTaste_milk.setOnCheckedChangeListener(this);
-        viewHolder.mCoffeeNumSub.setAlpha(0.3f);
+        viewHolder.mCoffeeHot.setOnClickListener(this);
+        viewHolder.mCoffeeCold.setOnClickListener(this);
         setContentView(view);
         setCanceledOnTouchOutside(false);
     }
@@ -128,104 +131,37 @@ public class ChooseCupDialog extends Dialog implements View.OnClickListener, Rad
     public void onClick(View v) {
 
         switch (v.getId()) {
-            case R.id.coffeeNumAdd:
-
-                coffeeFomat.cupAdd();
-                changeText();
-                if (coffeeFomat.isMax()) {
-                    viewHolder.mCoffeeNumAdd.setAlpha(0.3f);
-                }
-                viewHolder.mCoffeeNumSub.setAlpha(1f);
-
+            case R.id.coffeeCold:
+                viewHolder.mCoffeeCold.setSelected(true);
+                viewHolder.mCoffeeHot.setSelected(false);
                 break;
-            case R.id.coffeeNumSub:
-
-                coffeeFomat.cupSub();
-                changeText();
-                if (coffeeFomat.isMin()) {
-                    viewHolder.mCoffeeNumSub.setAlpha(0.3f);
-                }
-                viewHolder.mCoffeeNumAdd.setAlpha(1f);
+            case R.id.coffeeHot:
+                viewHolder.mCoffeeCold.setSelected(false);
+                viewHolder.mCoffeeHot.setSelected(true);
                 break;
-   /*         case R.id.ok:
-
-                if (listenner != null) {
-                    listenner.getResult(coffeeFomat);
-                }
-                dismiss();
-                break;
-            case R.id.giveUp:
-
-                giveUp();
-                new Handler().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (listenner != null) {
-                            listenner.cancle();
-                        }
-                    }
-                }, 1300);
-            break;*/
         }
     }
 
-    private void changeText() {
-        viewHolder.mCoffeeNum.setText(coffeeFomat.getCup() + "");
-        viewHolder.mTipCupNum.setText(coffeeFomat.getCup() + "");
-        viewHolder.mTipName.setText(coffee.name);
-        BigDecimal bigDecimal = new BigDecimal(Float.parseFloat(coffee.price) * coffeeFomat.getCup());
-        float pay = bigDecimal.setScale(2, BigDecimal.ROUND_HALF_UP).floatValue();
-        viewHolder.mTipPayM.setText(pay + "");
-    }
-
-   /* private void giveUp() {
-        viewHolder.mGiveUp.setEnabled(false);
-        final View view = LayoutInflater.from(context).inflate(R.layout.make_out_layout, null);
-        ImageView imageView = (ImageView) view.findViewById(R.id.outImg);
-        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT
-                , ViewGroup.LayoutParams.MATCH_PARENT);
-        addContentView(view, layoutParams);
-
-        AnimatorSet animatorSet = new AnimatorSet();
-        ObjectAnimator scaleX = ObjectAnimatorUtil.scaleXAnimator(imageView, 4f, 1f);
-        ObjectAnimator scaleY = ObjectAnimatorUtil.scaleYAnimator(imageView, 4f, 1f);
-        ObjectAnimator alpha = ObjectAnimatorUtil.alphaAnimator(imageView, 0f, 1f);
-        animatorSet.setDuration(300);
-        animatorSet.play(scaleX).with(scaleY).with(alpha);
-        animatorSet.addListener(new Animator.AnimatorListener() {
-            @Override
-            public void onAnimationStart(Animator animation) {
-
-            }
-
-            @Override
-            public void onAnimationEnd(Animator animation) {
-                dismiss();
-            }
-
-            @Override
-            public void onAnimationCancel(Animator animation) {
-
-            }
-
-            @Override
-            public void onAnimationRepeat(Animator animation) {
-
-            }
-        });
-        animatorSet.start();
-    }*/
-
     @Override
     public void onCheckedChanged(RadioGroup group, @IdRes int checkedId) {
+
+        if (group.getId() == R.id.taste_suger) {
+
+            updateTextColor(viewHolder.mTaste_suger, checkedId);
+        } else if (group.getId() == R.id.taste_milk) {
+            updateTextColor(viewHolder.mTaste_milk, checkedId);
+        }
         switch (checkedId) {
             case R.id.suger_no:
+
                 coffeeFomat.setSurgerFomat(CoffeeFomatInterface.SUGER_NO);
                 break;
             case R.id.suger_less:
+
                 coffeeFomat.setSurgerFomat(CoffeeFomatInterface.SUGER_LESS);
                 break;
             case R.id.suger_normal:
+
                 viewHolder.mTaste_suger.clearChildFocus(viewHolder.mTaste_suger.getChildAt(2));
                 coffeeFomat.setSurgerFomat(CoffeeFomatInterface.SUGER_NORMAL);
                 break;
@@ -234,23 +170,43 @@ public class ChooseCupDialog extends Dialog implements View.OnClickListener, Rad
                 coffeeFomat.setSurgerFomat(CoffeeFomatInterface.SUGER_MORE);
                 break;
             case R.id.milk_no:
+
                 coffeeFomat.setMilkFomat(CoffeeFomatInterface.MILK_NO);
                 break;
             case R.id.milk_less:
+
                 coffeeFomat.setMilkFomat(CoffeeFomatInterface.MILK_LESS);
                 break;
             case R.id.milk_normal:
+
                 coffeeFomat.setMilkFomat(CoffeeFomatInterface.MILK_NORMAL);
                 break;
             case R.id.milk_more:
+
                 coffeeFomat.setMilkFomat(CoffeeFomatInterface.MILK_MORE);
                 break;
         }
     }
 
+    private void updateTextColor(RadioGroup group, int checkedId) {
+        for (int i = 0; i < group.getChildCount(); i++) {
+            RadioButton button = (RadioButton) group.getChildAt(i);
+            if (button.getId() != checkedId) {
+                button.setSelected(false);
+            } else {
+                button.setSelected(true);
+            }
+        }
+    }
+
     class ViewHolder {
-        public ImageView mCoffeeImage, mGiveUp, mOk, mCoffeeNumSub, mCoffeeNumAdd;
-        public TextView mCoffeeName, mCoffeePrice, mCoffeeNum, mTipCupNum, mTipName, mTipPayM;
+
+        public TextView mCoffeeName;
+        public TextView mCoffeeCold;
+        public TextView mCoffeeHot;
+        public TextView mCoffeePrice;
+        public ImageView mQrCodeImage;
+
         public RadioGroup mTaste_suger, mTaste_milk;
         public RadioButton mSuger_no, mSuger_less, mSuger_normal, mSuger_more;
         public RadioButton mMilk_no, mMilk_less, mMilk_normal, mMilk_more;
@@ -260,22 +216,18 @@ public class ChooseCupDialog extends Dialog implements View.OnClickListener, Rad
         }
 
         private void initView(View view) {
-            mCoffeeImage = (ImageView) view.findViewById(R.id.coffeeImage);
             mCoffeeName = (TextView) view.findViewById(R.id.coffeeName);
+            mQrCodeImage = (ImageView) view.findViewById(R.id.qrCodeImage);
+            mCoffeeCold = (TextView) view.findViewById(R.id.coffeeCold);
+            mCoffeeHot = (TextView) view.findViewById(R.id.coffeeHot);
             mCoffeePrice = (TextView) view.findViewById(R.id.coffeePrice);
-            mTipCupNum = (TextView) view.findViewById(R.id.tipCupNum);
-            mTipName = (TextView) view.findViewById(R.id.tipName);
-            mTipPayM = (TextView) view.findViewById(R.id.tipPayM);
-     /*       mGiveUp = (ImageView) view.findViewById(R.id.giveUp);
-            mOk = (ImageView) view.findViewById(R.id.ok);*/
-            mCoffeeNumSub = (ImageView) view.findViewById(R.id.coffeeNumSub);
-            mCoffeeNum = (TextView) view.findViewById(R.id.coffeeNum);
-            mCoffeeNumAdd = (ImageView) view.findViewById(R.id.coffeeNumAdd);
+
             mTaste_suger = (RadioGroup) view.findViewById(R.id.taste_suger);
             mSuger_no = (RadioButton) view.findViewById(R.id.suger_no);
             mSuger_less = (RadioButton) view.findViewById(R.id.suger_less);
             mSuger_normal = (RadioButton) view.findViewById(R.id.suger_normal);
             mSuger_more = (RadioButton) view.findViewById(R.id.suger_more);
+
             mTaste_milk = (RadioGroup) view.findViewById(R.id.taste_milk);
             mMilk_no = (RadioButton) view.findViewById(R.id.milk_no);
             mMilk_less = (RadioButton) view.findViewById(R.id.milk_less);

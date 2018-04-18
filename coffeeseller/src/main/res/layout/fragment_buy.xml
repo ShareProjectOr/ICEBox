@@ -45,41 +45,6 @@
         android:layout_weight="1"
         android:orientation="horizontal">
 
-        <HorizontalScrollView
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="7"
-            android:background="@color/colorPrimary">
 
-            <LinearLayout
-                android:id="@+id/choosedCupGroup"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:accessibilityLiveRegion="assertive"
-                android:orientation="horizontal">
-
-            </LinearLayout>
-        </HorizontalScrollView>
-
-        <LinearLayout
-            android:id="@+id/payLayout"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="3"
-            android:orientation="vertical"
-            android:visibility="gone">
-
-            <Button
-                android:id="@+id/payNow"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="立即付款" />
-
-            <Button
-                android:id="@+id/cancleALL"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="全部取消" />
-        </LinearLayout>
     </LinearLayout>
 </LinearLayout>

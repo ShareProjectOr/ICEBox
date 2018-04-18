@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<example.jni.com.coffeeseller.views.customviews.ProgressbarWithText xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/progressTextLayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <ProgressBar
+        android:id="@+id/progressBar"
+        style="@style/Base.Widget.AppCompat.ProgressBar.Horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="20dp"
+        android:progress="5"
+        android:progressDrawable="@drawable/layer_list_progress" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:id="@+id/tipOne"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="      落杯中\n香醇已经就绪"
+            android:textColor="@color/white"
+            android:textSize="25sp"
+            android:visibility="gone" />
+
+        <TextView
+            android:id="@+id/tipTwo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="      制作中\n美味马上就好"
+            android:textColor="@color/white"
+            android:textSize="25sp"
+            android:visibility="gone" />
+
+        <TextView
+            android:id="@+id/tipThress"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="    制作完成\n请记得取杯哦"
+            android:textColor="@color/white"
+            android:textSize="25sp"
+            android:visibility="gone" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ImageView
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:src="@mipmap/ic_launcher_round" />
+
+        <ImageView
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:src="@mipmap/ic_launcher_round" />
+
+        <ImageView
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:src="@mipmap/ic_launcher_round" />
+    </LinearLayout>
+</example.jni.com.coffeeseller.views.customviews.ProgressbarWithText>
