@@ -12,6 +12,7 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -21,6 +22,7 @@ import java.util.List;
 import cof.ac.inter.ContainerConfig;
 import example.jni.com.coffeeseller.R;
 import example.jni.com.coffeeseller.contentprovider.Constance;
+import example.jni.com.coffeeseller.factory.FragmentEnum;
 import example.jni.com.coffeeseller.factory.FragmentFactory;
 import example.jni.com.coffeeseller.model.AddProcess;
 import example.jni.com.coffeeseller.model.adapters.ProcessListViewAdapter;
@@ -29,6 +31,7 @@ import example.jni.com.coffeeseller.model.listeners.OnAddProcessCallBackListener
 import example.jni.com.coffeeseller.presenter.DropMaterialPresenter;
 import example.jni.com.coffeeseller.presenter.SaveCoffeePresenter;
 import example.jni.com.coffeeseller.presenter.ShowPopListWindowPresenter;
+import example.jni.com.coffeeseller.views.activities.HomeActivity;
 import example.jni.com.coffeeseller.views.viewinterface.IDebugDropMaterialView;
 import example.jni.com.coffeeseller.views.viewinterface.ISaveCoffeeView;
 import example.jni.com.coffeeseller.views.viewinterface.IShowPopListWindowView;
@@ -56,6 +59,8 @@ public class DebugFragment extends BasicFragment implements IDebugDropMaterialVi
     public List<ContainerConfig> processList = new ArrayList<>();
     private SaveCoffeePresenter presenter;
     private boolean iscanDrop = true;
+    private TextView back;
+    private HomeActivity homeActivity;
 
     @Nullable
     @Override
@@ -77,6 +82,9 @@ public class DebugFragment extends BasicFragment implements IDebugDropMaterialVi
         mStart_drop = (Button) mView.findViewById(R.id.start_drop);
         mAdd_process = (Button) mView.findViewById(R.id.add_process);
         getDropSpeed = (Button) mView.findViewById(R.id.getDropSpeed);
+        back = (TextView) mView.findViewById(R.id.backToConfig);
+        homeActivity = HomeActivity.getInstance();
+        back.setOnClickListener(this);
         getDropSpeed.setOnClickListener(this);
         Make = (Button) mView.findViewById(R.id.make);
         mProcessList = (ListView) mView.findViewById(R.id.processList);
@@ -142,6 +150,9 @@ public class DebugFragment extends BasicFragment implements IDebugDropMaterialVi
                 int realdropAcount = Integer.parseInt(dropAccunt.getText().toString());
                 int Speed = realdropAcount / 5;
                 new AlertDialog.Builder(getActivity()).setMessage("单位落料量:" + Speed + "0.1mg/s").setPositiveButton("我记住了", null).create().show();
+                break;
+            case R.id.backToConfig:
+                homeActivity.replaceFragment(FragmentEnum.DebugFragment, FragmentEnum.ConfigFragment);
                 break;
         }
     }

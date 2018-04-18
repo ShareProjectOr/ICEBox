@@ -6,6 +6,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import example.jni.com.coffeeseller.R;
 import example.jni.com.coffeeseller.factory.FragmentEnum;
@@ -20,6 +22,7 @@ public class ConfigFragment extends BasicFragment {
     private View mView;
     private Button toDebug;
     private HomeActivity homeActivity;
+    private TextView back;
 
     @Nullable
     @Override
@@ -31,6 +34,8 @@ public class ConfigFragment extends BasicFragment {
 
     private void initView() {
         toDebug = (Button) mView.findViewById(R.id.debug_machine);
+        back = (TextView) mView.findViewById(R.id.backToCheck);
+        back.setOnClickListener(this);
         homeActivity = HomeActivity.getInstance();
         toDebug.setOnClickListener(this);
     }
@@ -40,6 +45,9 @@ public class ConfigFragment extends BasicFragment {
         switch (v.getId()) {
             case R.id.debug_machine:
                 homeActivity.replaceFragment(FragmentEnum.ConfigFragment, FragmentEnum.DebugFragment);
+                break;
+            case R.id.backToCheck:
+                homeActivity.replaceFragment(FragmentEnum.ConfigFragment, FragmentEnum.MachineCheckFragment);
                 break;
         }
     }

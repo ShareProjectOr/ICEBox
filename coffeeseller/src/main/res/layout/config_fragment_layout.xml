@@ -11,12 +11,35 @@
         android:background="@mipmap/top_title"></LinearLayout>
 
     <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="50dp"
+        android:layout_marginTop="20dp"
+        android:gravity="center"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:layout_width="50dp"
+            android:layout_height="60dp"
+            android:src="@mipmap/left" />
+
+        <TextView
+            android:id="@+id/backToCheck"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="返回"
+            android:textColor="@color/white"
+            android:textSize="50sp"
+            android:textStyle="bold" />
+    </LinearLayout>
+
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginBottom="30dp"
         android:layout_marginLeft="30dp"
         android:layout_marginRight="30dp"
-        android:layout_marginTop="30dp"
+        android:layout_marginTop="20dp"
         android:alpha="0.85"
         android:background="@drawable/layout_shape"
         android:orientation="horizontal"
@@ -114,7 +137,7 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:text="运行状态:"
-                        android:textSize="@dimen/text_size_one"  />
+                        android:textSize="@dimen/text_size_one" />
 
                     <TextView
                         android:layout_width="0dp"
@@ -128,7 +151,7 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:text="仓杯余量:"
-                        android:textSize="@dimen/text_size_one"  />
+                        android:textSize="@dimen/text_size_one" />
 
                     <TextView
                         android:layout_width="0dp"
@@ -149,14 +172,14 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:text="锅炉温度:"
-                        android:textSize="@dimen/text_size_one"  />
+                        android:textSize="@dimen/text_size_one" />
 
                     <TextView
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:text="锅炉压力:"
-                        android:textSize="@dimen/text_size_one"  />
+                        android:textSize="@dimen/text_size_one" />
 
                     <TextView
                         android:layout_width="0dp"
@@ -170,14 +193,14 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:text="取杯门:"
-                        android:textSize="@dimen/text_size_one"  />
+                        android:textSize="@dimen/text_size_one" />
 
                     <TextView
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:text="驱动版本:"
-                        android:textSize="@dimen/text_size_one"  />
+                        android:textSize="@dimen/text_size_one" />
                 </LinearLayout>
             </LinearLayout>
 
