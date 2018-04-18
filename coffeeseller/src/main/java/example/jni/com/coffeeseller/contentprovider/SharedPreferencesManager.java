@@ -56,6 +56,7 @@ public class SharedPreferencesManager {
     public void setCupNum(int CupNum) {
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putInt("CupNum", CupNum);
+        editor.apply();
     }
 
     public int getCupNum() {
@@ -65,6 +66,7 @@ public class SharedPreferencesManager {
     public void setWaterCount(String WaterCount) {
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putString("WaterCount", WaterCount);
+        editor.apply();
     }
 
     public String getWaterCount() {
@@ -74,6 +76,7 @@ public class SharedPreferencesManager {
     public void setCoffeeBeanAcount(String CoffeeBeanAcount) {
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putString("CoffeeBeanAcount", CoffeeBeanAcount);
+        editor.apply();
     }
 
     public String getCoffeeBeanAcount() {
@@ -83,9 +86,10 @@ public class SharedPreferencesManager {
     public void SetCoffeeList(String coffeeListArray) {
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putString("coffeeListArray", coffeeListArray);
+        editor.apply();
     }
 
     public String getCoffeeListArray() {
-        return sharedPreferences.getString("coffeeListArray", "[]");
+        return sharedPreferences.getString("coffeeListArray", "");
     }
 }

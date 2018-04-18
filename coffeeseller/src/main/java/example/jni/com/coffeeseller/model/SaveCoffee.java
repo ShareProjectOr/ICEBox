@@ -58,7 +58,7 @@ public class SaveCoffee implements ISaveCoffee, View.OnClickListener {
                 coffee.setName(mName.getText().toString());
                 coffee.setPrice(mPrice.getText().toString());
                 coffee.setProcessList(list);
-                if (SingleMaterialLsit.getInstance().AddCoffeeList(coffee)) {
+                if (SingleMaterialLsit.getInstance(mContext).AddCoffeeList(coffee)) {
                     onSaveCoffeeCallBackListener.saveSuccess();
                     dialog.dismiss();
                 } else {

@@ -9,8 +9,10 @@ import cof.ac.inter.ContainerType;
 public interface IDebugDropMaterialView {
     int getContainerID();
 
+    void ShowDropResult(String result);
+
     int getTime();
 
-
+    void setButtonSate(boolean b);
 
 }

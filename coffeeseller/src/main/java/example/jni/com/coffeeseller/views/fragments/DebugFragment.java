@@ -14,17 +14,11 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONArray;
-
-import org.json.JSONObject;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 import cof.ac.inter.ContainerConfig;
-import cof.ac.inter.ContainerType;
 import example.jni.com.coffeeseller.R;
 import example.jni.com.coffeeseller.contentprovider.Constance;
 import example.jni.com.coffeeseller.factory.FragmentFactory;
@@ -54,16 +48,18 @@ public class DebugFragment extends BasicFragment implements IDebugDropMaterialVi
     private ListView mProcessList;
     private View anchorView;
     private List<String> popList = new ArrayList<>();
-    private int Position;
+    private int Position = 0;
     private ShowPopListWindowPresenter mShowPopListWindowPresenter;
     private DropMaterialPresenter mDropMaterialPresenter;
     private ProcessListViewAdapter mAdapter;
     private IAddProcess iAddProcess;
     public List<ContainerConfig> processList = new ArrayList<>();
     private SaveCoffeePresenter presenter;
+    private boolean iscanDrop = true;
 
     @Nullable
     @Override
+
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         mView = super.onCreateView(inflater, container, FragmentFactory.getInstance().putLayoutId(R.layout.debug_fragment_layout));
         initview();
@@ -109,7 +105,13 @@ public class DebugFragment extends BasicFragment implements IDebugDropMaterialVi
                 mShowPopListWindowPresenter.ShowWindow();
                 break;
             case R.id.start_drop:
-                mDropMaterialPresenter.startDrop();
+                if (iscanDrop) {
+                    mDropMaterialPresenter.startDrop();
+                    iscanDrop = false;
+                } else {
+                    Toast.makeText(getActivity(), "当前正在执行落粉中,别着急", Toast.LENGTH_LONG).show();
+                }
+
                 break;
             case R.id.add_process:
                 iAddProcess.AddProcess(getActivity(), processList, new OnAddProcessCallBackListener() {
@@ -150,8 +152,18 @@ public class DebugFragment extends BasicFragment implements IDebugDropMaterialVi
     }
 
     @Override
+    public void ShowDropResult(String result) {
+        Toast.makeText(getActivity(), result, Toast.LENGTH_LONG).show();
+    }
+
+    @Override
     public int getTime() {
         return 0;
+    }
+
+    @Override
+    public void setButtonSate(boolean b) {
+        iscanDrop = true;
     }
 
 

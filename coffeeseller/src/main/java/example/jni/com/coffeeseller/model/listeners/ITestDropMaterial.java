@@ -7,5 +7,5 @@ import cof.ac.inter.ContainerType;
  */
 
 public interface ITestDropMaterial {
-    void StartDrop(int Bunkers, int time);
+    void StartDrop(int Bunkers, int time, TestDropMaterialCallBackListener testDropMaterialCallBackListener);
 }
