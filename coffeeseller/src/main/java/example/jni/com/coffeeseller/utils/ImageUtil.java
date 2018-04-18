@@ -12,6 +12,8 @@ import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
+import android.graphics.Rect;
+import android.graphics.RectF;
 import android.graphics.Shader;
 
 /**
@@ -61,6 +63,24 @@ public class ImageUtil {
             return bm;
         }
         return bitmap;
+    }
+
+    /*
+    * 将图片设置成圆角
+    * */
+    public static Bitmap getCornerBitmap(Bitmap bitmap, int corner) {
+        if (bitmap == null) return null;
+        Bitmap output = Bitmap.createBitmap(bitmap.getWidth(), bitmap.getHeight(), Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(output);
+        Paint paint = new Paint();
+        Rect rect = new Rect(0, 0, bitmap.getWidth(), bitmap.getHeight());
+        RectF rectF = new RectF(rect);
+        paint.setAntiAlias(true);
+        canvas.drawARGB(0, 0, 0, 0);
+        canvas.drawRoundRect(rectF, corner, corner, paint);
+        paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));
+        canvas.drawBitmap(bitmap, rect, rect, paint);
+        return output;
     }
 
 }

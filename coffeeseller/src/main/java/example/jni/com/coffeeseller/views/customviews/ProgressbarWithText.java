@@ -14,7 +14,10 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import java.util.Random;
+
 import example.jni.com.coffeeseller.R;
+import example.jni.com.coffeeseller.utils.Waiter;
 
 /**
  * Created by WH on 2018/4/17.
@@ -24,6 +27,7 @@ public class ProgressbarWithText extends RelativeLayout {
     private Context context;
     private int offset = 5;
     private int maxProgress = 100;
+    private int maxMakingProgress = 98;
     private int perWidthOfPerProgress;
     private int paddingTop = 20;
     private int onePointProgress = offset;
@@ -37,6 +41,8 @@ public class ProgressbarWithText extends RelativeLayout {
     private int firstNoteImageCenterPosition;
     private int secondNoteImageCenterPosition;
     private int thiredNoteImageCenterPosition;
+
+    public boolean makeSuccess = false;
 
 
     public ProgressbarWithText(Context context) {
@@ -60,7 +66,7 @@ public class ProgressbarWithText extends RelativeLayout {
         onePointProgress = progressBar.getProgress();
         twoPointProgress = onePointProgress + (maxProgress - onePointProgress) / 2;
         threePointProgress = maxProgress;
-
+        offset = progressBar.getProgress();
     }
 
     public void setProgress(int progress) {
@@ -87,6 +93,24 @@ public class ProgressbarWithText extends RelativeLayout {
             tipThree.setVisibility(VISIBLE);
         }
         progressBar.setSecondaryProgress(totalProgress);
+    }
+
+    public void updateProgressAnim() {
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                for (int i = offset + 1; i < maxMakingProgress; i++) {
+                    if (!makeSuccess) {
+                        setProgress(i);
+                        Waiter.doWait(300);
+                    } else {
+                        setProgress(maxProgress);
+                        break;
+                    }
+                }
+            }
+        }).start();
     }
 
     @Override

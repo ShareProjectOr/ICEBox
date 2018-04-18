@@ -5,26 +5,10 @@
     android:gravity="center"
     android:orientation="vertical">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="500dp"
-        android:background="@mipmap/dialog_bng"
-        android:gravity="center"
-        android:orientation="vertical"
-        android:paddingLeft="50dp"
-        android:paddingRight="50dp"
-        android:paddingTop="150dp">
-
-        <include layout="@layout/progress_text_layout" />
-        <!--        <include layout="@layout/progressbar_text" />
-
-                <include layout="@layout/progressbar" />-->
-    </LinearLayout>
-
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="200dp"
-        android:layout_marginTop="-570dp">
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="-100dp">
 
         <ImageView
             android:id="@+id/makeCenterImage"
@@ -42,9 +26,34 @@
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
             android:layout_marginRight="50dp"
-            android:paddingBottom="50dp"
             android:src="@mipmap/ic_launcher" />
     </RelativeLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@mipmap/dialog_bng"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:paddingBottom="50dp"
+        android:paddingLeft="50dp"
+        android:paddingRight="50dp"
+        android:paddingTop="150dp">
+
+        <TextView
+            android:id="@+id/errTip"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="对不起，咖啡制作失败了..."
+            android:textColor="@color/white"
+            android:textSize="30sp"
+            android:visibility="gone" />
+
+        <include layout="@layout/progress_text_layout" />
+
+
+    </LinearLayout>
 
 
 </LinearLayout>

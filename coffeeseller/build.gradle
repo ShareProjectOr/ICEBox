@@ -35,6 +35,6 @@ dependencies {
     compile 'io.reactivex:rxjava:1.0.14'
     compile 'io.reactivex:rxandroid:1.0.1'
     compile 'com.github.bumptech.glide:glide:3.7.0'
-    compile files('libs/coff20180417(1).jar')
     compile files('libs/fastjson-1.2.43.jar')
+    compile files('libs/coff20180417(1).jar')
 }

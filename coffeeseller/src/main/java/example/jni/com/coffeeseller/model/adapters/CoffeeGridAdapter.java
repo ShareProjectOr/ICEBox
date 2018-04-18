@@ -1,6 +1,8 @@
 package example.jni.com.coffeeseller.model.adapters;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,6 +16,7 @@ import java.util.List;
 
 import example.jni.com.coffeeseller.R;
 import example.jni.com.coffeeseller.bean.Coffee;
+import example.jni.com.coffeeseller.utils.ImageUtil;
 
 /**
  * Created by WH on 2018/3/20.
@@ -72,7 +75,15 @@ public class CoffeeGridAdapter extends BaseAdapter {
                     .transform(new CornersTransmation(context, 10))
                     .placeholder(R.mipmap.ic_launcher)
                     .error(R.mipmap.ic_launcher).into(viewHolder.coffeeImage);*/
-            viewHolder.coffeeImage.setImageResource(images[position]);
+
+            Bitmap bitmap = BitmapFactory.decodeResource(context.getResources(), images[position]);
+            bitmap = ImageUtil.getCornerBitmap(bitmap, 10);
+            if (bitmap == null) {
+                viewHolder.coffeeImage.setImageResource(R.mipmap.no_coffee);
+            } else {
+                viewHolder.coffeeImage.setImageBitmap(bitmap);
+            }
+
             if (coffee.isOver) {
                 viewHolder.overLayout.setVisibility(View.VISIBLE);
                 viewHolder.sellOver.setVisibility(View.VISIBLE);

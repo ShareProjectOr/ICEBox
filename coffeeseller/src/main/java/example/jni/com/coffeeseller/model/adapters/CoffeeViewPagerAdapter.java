@@ -1,11 +1,8 @@
 package example.jni.com.coffeeseller.model.adapters;
 
-import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
-import android.support.v4.app.Fragment;
 import android.support.v4.view.PagerAdapter;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -14,8 +11,6 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
 import android.widget.GridView;
-import android.widget.ImageView;
-import android.widget.RadioButton;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -27,7 +22,6 @@ import example.jni.com.coffeeseller.factory.FragmentEnum;
 import example.jni.com.coffeeseller.factory.FragmentFactory;
 import example.jni.com.coffeeseller.model.listeners.GridViewItemListener;
 import example.jni.com.coffeeseller.views.activities.HomeActivity;
-import example.jni.com.coffeeseller.views.fragments.BuyFragment;
 
 /**
  * Created by WH on 2018/3/20.

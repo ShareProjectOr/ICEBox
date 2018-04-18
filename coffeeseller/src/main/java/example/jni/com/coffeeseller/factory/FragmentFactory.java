@@ -8,7 +8,6 @@ import java.util.HashMap;
 import java.util.List;
 
 import example.jni.com.coffeeseller.views.fragments.BasicFragment;
-import example.jni.com.coffeeseller.views.fragments.BuyFragment;
 import example.jni.com.coffeeseller.views.fragments.ConfigFragment;
 import example.jni.com.coffeeseller.views.fragments.DebugFragment;
 import example.jni.com.coffeeseller.views.fragments.LoginFragment;
