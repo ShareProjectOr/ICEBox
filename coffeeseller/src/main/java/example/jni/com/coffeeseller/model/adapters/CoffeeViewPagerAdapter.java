@@ -22,6 +22,7 @@ import example.jni.com.coffeeseller.factory.FragmentEnum;
 import example.jni.com.coffeeseller.factory.FragmentFactory;
 import example.jni.com.coffeeseller.model.listeners.GridViewItemListener;
 import example.jni.com.coffeeseller.views.activities.HomeActivity;
+import example.jni.com.coffeeseller.views.fragments.BuyFragment;
 
 /**
  * Created by WH on 2018/3/20.
@@ -34,6 +35,7 @@ public class CoffeeViewPagerAdapter extends PagerAdapter {
     private GridViewItemListener gridViewItemListener;
     private int onePageCount;//偶数
     private int gridViewNum;
+    private long lastClickTime;
 
     public CoffeeViewPagerAdapter(HomeActivity homeActivity, List<Coffee> coffees, GridViewItemListener gridViewItemListener) {
         this.homeActivity = homeActivity;
@@ -86,6 +88,9 @@ public class CoffeeViewPagerAdapter extends PagerAdapter {
             gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                    if (System.currentTimeMillis() - lastClickTime < 500) {
+                        return;
+                    }
                     if (!view.isEnabled()) {
                         return;
                     }
@@ -98,7 +103,7 @@ public class CoffeeViewPagerAdapter extends PagerAdapter {
                     }
                 }
             });
-//            BuyFragment.PER_COFFEE_HEIGHT = gridView.getHeight() / 2;
+
             gridView.setAdapter(new CoffeeGridAdapter(homeActivity, gridCoffees));
             gridView.setOnTouchListener(new View.OnTouchListener() {
                 @Override

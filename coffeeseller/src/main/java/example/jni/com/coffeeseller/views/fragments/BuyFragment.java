@@ -101,7 +101,6 @@ public class BuyFragment extends BasicFragment implements GridViewItemListener, 
         Log.d("----------------", "initDatas");
         mCoffees = new ArrayList<>();
         mCoffees = SingleMaterialLsit.getInstance(homeActivity).getCoffeeList();
-        mCoffees.add(new Coffee());
 
         mPagerAdapter = new CoffeeViewPagerAdapter(homeActivity, mCoffees, this);
         mViewPager.addOnPageChangeListener(new ViewpagerPageChangedListener());

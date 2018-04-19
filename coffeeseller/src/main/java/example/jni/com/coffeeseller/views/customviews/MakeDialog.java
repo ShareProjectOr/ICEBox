@@ -3,7 +3,6 @@ package example.jni.com.coffeeseller.views.customviews;
 import android.app.Dialog;
 import android.content.Context;
 import android.os.Handler;
-import android.os.Looper;
 import android.support.annotation.StyleRes;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -86,8 +85,6 @@ public class MakeDialog extends Dialog implements View.OnClickListener {
         } else {
             MyLog.d(TAG, "coffMsger is null");
         }
-
-
     }
 
     public void updateProgress() {
@@ -100,7 +97,7 @@ public class MakeDialog extends Dialog implements View.OnClickListener {
     * 制作咖啡
     * */
     private void judgeMakeState() {
-
+        setCanceledOnTouchOutside(false);
         Runnable runnable = new Runnable() {
             @Override
             public void run() {
@@ -120,7 +117,9 @@ public class MakeDialog extends Dialog implements View.OnClickListener {
                         continue;
                     }
 
+
                     if (coffeeMakeStateRecorder.state == CoffeeMakeState.COFFEEMAKING_ERR) {
+                        disDialog(true);
                         break;
                     }
 
@@ -128,8 +127,12 @@ public class MakeDialog extends Dialog implements View.OnClickListener {
                         MajorState majorState = machineState.getMajorState();
 
                         if (majorState != null) {
-                            StateEnum curStateEnum = majorState.getCurState();
+                            StateEnum curStateEnum = majorState.getCurStateEnum();
 
+                            if (machineState.hasCupOnShelf()) {
+                                MyLog.d(TAG, "cup has been down but not on the shelf");
+                                coffeeMakeStateRecorder.setState(CoffeeMakeState.COFFEE_DOWN_CUP);
+                            }
                             changeRecorderState(curStateEnum);
 
                         } else {
@@ -139,7 +142,7 @@ public class MakeDialog extends Dialog implements View.OnClickListener {
                         }
                     }
                     if (coffeeMakeStateRecorder.state == CoffeeMakeState.COFFEEMAKING_FINISHED) {
-                        if (machineState.isCupShelfRightPlace()) {
+                        if (machineState.hasCupOnShelf()) {
                             if (System.currentTimeMillis() - START_MAKING_TIME > WAIT_TIME) {
 
                                 MyLog.d(TAG, "coffee has not been taken cup ,time is too long,over 120s !");
@@ -161,20 +164,31 @@ public class MakeDialog extends Dialog implements View.OnClickListener {
         };
         MachineState machineState = coffMsger.getCurState();
         if (machineState != null) {
-            MajorState majorState = machineState.getMajorState();
-            if (majorState != null) {
-                if (majorState.getCurState() == StateEnum.IDLE) {
 
-                    handler.post(runnable);
-                }
+            if (machineState.hasCupOnShelf()) {
+                MyLog.W(TAG, "there is a cup in the font of door");
+
+                disDialog(true);
             } else {
-                MyLog.d(TAG, "majorState is null before mkCoffee");
+
+                MajorState majorState = machineState.getMajorState();
+                if (majorState != null) {
+                    if (majorState.getCurStateEnum() == StateEnum.IDLE) {
+
+                        handler.post(runnable);
+                    } else if (majorState.getCurStateEnum() == StateEnum.HAS_ERR) {
+                        disDialog(true);
+                        MyLog.d(TAG, "machine has err!");
+                    }
+                } else {
+                    MyLog.d(TAG, "majorState is null before mkCoffee");
+                }
             }
         } else {
             MyLog.d(TAG, "machinestate is null before mkCoffee");
         }
-
     }
+
 
     private void changeRecorderState(StateEnum stateEnum) {
 
@@ -232,11 +246,13 @@ public class MakeDialog extends Dialog implements View.OnClickListener {
 
             MyLog.d(TAG, "result=" + result);
             MyLog.W(TAG, "sent coffeeMking but comm failed instantly");
+            disDialog(true);
             return false;
         } else if (result.getCode() != Result.SUCCESS) {
 
             MyLog.d(TAG, "result invilide error =" + result.getErrDes());
             MyLog.W(TAG, "sent coffeeMking but resultMsg is " + result.getErrDes());
+            disDialog(true);
             return false;
         }
         return true;
@@ -250,13 +266,29 @@ public class MakeDialog extends Dialog implements View.OnClickListener {
         }
 
         setContentView(makingViewHolder.view);
-        setCanceledOnTouchOutside(false);
+        setCanceledOnTouchOutside(true);
     }
 
 
     public void showDialog() {
 
         show();
+    }
+
+    public void disDialog(boolean isErr) {
+        if (isErr) {
+            makingViewHolder.mErrTip.setVisibility(View.VISIBLE);
+            makingViewHolder.progressbarWithText.setVisibility(View.GONE);
+        }
+
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if (isShowing()) {
+                    dismiss();
+                }
+            }
+        }, 3000);
     }
 
     @Override
