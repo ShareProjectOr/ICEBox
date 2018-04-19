@@ -7,7 +7,7 @@ package example.jni.com.coffeeseller.model.listeners;
 public interface OnMachineCheckCallBackListener {
     void OpenMainCrilSuccess();
 
-    void OpenMainCrilFailed();
+    void OpenMainCrilFailed(String response);
 
     void MachineCodeCheckSuccess();
 

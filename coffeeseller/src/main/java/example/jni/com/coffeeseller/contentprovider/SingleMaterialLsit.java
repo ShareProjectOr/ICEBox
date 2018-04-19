@@ -92,7 +92,7 @@ public class SingleMaterialLsit {
         mokaProcess3.setContainer(ContainerType.BEAN_CONTAINER);
         mokaProcess3.setWater_capacity(550);
         mokaProcess3.setWater_interval(0);
-        mokaProcess3.setMaterial_time(15);
+        mokaProcess3.setMaterial_time(15*2);
         mokaProcess3.setWater_type(WaterType.HOT_WATER);
         mokaProcess3.setRotate_speed(127);
         mokaProcess3.setStir_speed(127);
@@ -124,7 +124,7 @@ public class SingleMaterialLsit {
         kabuqiluoProcess2.setContainer(ContainerType.BEAN_CONTAINER);
         kabuqiluoProcess2.setWater_interval(0);
         kabuqiluoProcess2.setWater_capacity(700);
-        kabuqiluoProcess2.setMaterial_time(17);
+        kabuqiluoProcess2.setMaterial_time(17*2);
         kabuqiluoProcess2.setStir_speed(127);
         kabuqiluoProcess2.setRotate_speed(127);
         kabuqiluoProcess2.setWater_type(WaterType.HOT_WATER);
@@ -189,7 +189,7 @@ public class SingleMaterialLsit {
         yishinongkaProcess0.setContainer(ContainerType.BEAN_CONTAINER);
         yishinongkaProcess0.setWater_interval(0);
         yishinongkaProcess0.setWater_capacity(1100);
-        yishinongkaProcess0.setMaterial_time(17);
+        yishinongkaProcess0.setMaterial_time(17*2);
         yishinongkaProcess0.setRotate_speed(127);
         yishinongkaProcess0.setStir_speed(127);
         yishinongkaProcess0.setWater_type(WaterType.HOT_WATER);
@@ -203,7 +203,7 @@ public class SingleMaterialLsit {
         natieProcess0.setContainer(ContainerType.BEAN_CONTAINER);
         natieProcess0.setWater_interval(0);
         natieProcess0.setWater_capacity(600);
-        natieProcess0.setMaterial_time(17);
+        natieProcess0.setMaterial_time(17*2);
         natieProcess0.setStir_speed(127);
         natieProcess0.setRotate_speed(127);
         natieProcess0.setWater_type(WaterType.HOT_WATER);
@@ -244,7 +244,7 @@ public class SingleMaterialLsit {
         meishikafeiProcess1.setContainer(ContainerType.BEAN_CONTAINER);
         meishikafeiProcess1.setWater_interval(0);
         meishikafeiProcess1.setWater_capacity(1000);
-        meishikafeiProcess1.setMaterial_time(17);
+        meishikafeiProcess1.setMaterial_time(17*2);
         meishikafeiProcess1.setRotate_speed(127);
         meishikafeiProcess1.setStir_speed(127);
         meishikafeiProcess1.setWater_type(WaterType.HOT_WATER);

@@ -2,6 +2,7 @@ package example.jni.com.coffeeseller.presenter;
 
 import android.os.Handler;
 import android.os.Looper;
+import android.widget.Toast;
 
 import example.jni.com.coffeeseller.factory.FragmentEnum;
 import example.jni.com.coffeeseller.model.MachineCheck;
@@ -35,9 +36,10 @@ public class MachineCheckPresenter {
             }
 
             @Override
-            public void OpenMainCrilFailed() {
-
+            public void OpenMainCrilFailed(String response) {
+                mICheckMachineView.showTips(1, response);
             }
+
 
             @Override
             public void MachineCodeCheckSuccess() {
