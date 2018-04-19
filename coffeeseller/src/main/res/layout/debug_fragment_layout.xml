@@ -81,7 +81,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="20dp"
                 android:layout_marginTop="20dp"
-                android:text="落料量(0.1mg):"
+                android:text="落料量(0.1g):"
                 android:textColor="@color/white"
                 android:textSize="@dimen/text_size_one" />
 
@@ -169,7 +169,7 @@
             android:layout_marginTop="20dp"
             android:background="@drawable/shape_botton"
             android:gravity="center"
-            android:text="单位落料量计算(0.1mg/s)"
+            android:text="单位落料量计算(0.1g/s)"
             android:textColor="@color/white"
             android:textSize="@dimen/text_size_one" />
     </LinearLayout>

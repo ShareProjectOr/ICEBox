@@ -147,7 +147,7 @@ public class AddProcess implements IAddProcess, View.OnClickListener {
         this.mContext = mContext;
         View view = LayoutInflater.from(mContext).inflate(R.layout.addprocess_dialog_layout, null);
         builder.setView(view);
-       final AlertDialog dialog2 = builder.create();
+        final AlertDialog dialog2 = builder.create();
         dialog2.show();
         final ContainerConfig containerConfig2 = new ContainerConfig();
         mChooseBunkersGroup = (RadioGroup) view.findViewById(R.id.chooseBunkersGroup);
@@ -158,6 +158,16 @@ public class AddProcess implements IAddProcess, View.OnClickListener {
         cancel = (Button) view.findViewById(R.id.cancel);
         ok.setOnClickListener(this);
         cancel.setOnClickListener(this);
+        RadioButton mBunkersBean, mBunkersHotWater, mBunkers1, mBunkers2, mBunkers3, mBunkers4, mBunkers5, mBunkers6, mHot, mCold;
+        mBunkersBean = (RadioButton) view.findViewById(R.id.bunkersBean);
+        mHot = (RadioButton) view.findViewById(R.id.hot);
+        mCold = (RadioButton) view.findViewById(R.id.cold);
+        mBunkers1 = (RadioButton) view.findViewById(R.id.bunkers1);
+        mBunkers2 = (RadioButton) view.findViewById(R.id.bunkers2);
+        mBunkers3 = (RadioButton) view.findViewById(R.id.bunkers3);
+        mBunkers4 = (RadioButton) view.findViewById(R.id.bunkers4);
+        mBunkers5 = (RadioButton) view.findViewById(R.id.bunkers5);
+        mBunkers6 = (RadioButton) view.findViewById(R.id.bunkers6);
         mWater_interval = (EditText) view.findViewById(R.id.water_interval);
         mWater_capacity = (EditText) view.findViewById(R.id.water_capacity);
         mMaterial_time = (EditText) view.findViewById(R.id.material_time);
@@ -169,8 +179,40 @@ public class AddProcess implements IAddProcess, View.OnClickListener {
         mMaterial_time.setText(list2.get(position).getMaterial_time() + "");
         mRotate_speed.setText(list2.get(position).getRotate_speed() + "");
         mStir_speed.setText(list2.get(position).getStir_speed() + "");
-        containerConfig2.setContainer(ContainerType.BEAN_CONTAINER);//默认豆仓
-        containerConfig2.setWater_type(WaterType.HOT_WATER);//默认热水
+        containerConfig2.setContainer(list2.get(position).getContainer());//默认豆仓
+        containerConfig2.setWater_type(list2.get(position).getWater_type());//默认热水
+        switch (containerConfig2.getContainer()) {
+            case BEAN_CONTAINER:
+                mBunkersBean.setChecked(true);
+                break;
+            case NO_ONE:
+                mBunkers1.setChecked(true);
+                break;
+            case NO_TOW:
+                mBunkers2.setChecked(true);
+                break;
+            case NO_THREE:
+                mBunkers3.setChecked(true);
+                break;
+            case NO_FOUR:
+                mBunkers4.setChecked(true);
+                break;
+            case NO_FIVE:
+                mBunkers5.setChecked(true);
+                break;
+            case NO_SIX:
+                mBunkers6.setChecked(true);
+                break;
+
+        }
+        switch (list2.get(position).getWater_type()) {
+            case HOT_WATER:
+                mHot.setChecked(true);
+                break;
+            case COLD_WATER:
+                mCold.setChecked(true);
+                break;
+        }
         mChooseBunkersGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup group, @IdRes int checkedId) {

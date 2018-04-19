@@ -5,6 +5,7 @@ import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -66,7 +67,7 @@ public class DebugFragment extends BasicFragment implements IDebugDropMaterialVi
     @Override
 
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        mView = super.onCreateView(inflater, container, FragmentFactory.getInstance().putLayoutId(R.layout.debug_fragment_layout));
+        mView = inflater.inflate(R.layout.debug_fragment_layout,null,false);
         initview();
         initdata();
         return mView;
@@ -114,8 +115,9 @@ public class DebugFragment extends BasicFragment implements IDebugDropMaterialVi
                 break;
             case R.id.start_drop:
                 if (iscanDrop) {
-                    mDropMaterialPresenter.startDrop();
                     iscanDrop = false;
+                    mDropMaterialPresenter.startDrop();
+
                 } else {
                     Toast.makeText(getActivity(), "当前正在执行落粉中,别着急", Toast.LENGTH_LONG).show();
                 }
@@ -149,7 +151,7 @@ public class DebugFragment extends BasicFragment implements IDebugDropMaterialVi
                 }
                 int realdropAcount = Integer.parseInt(dropAccunt.getText().toString());
                 int Speed = realdropAcount / 5;
-                new AlertDialog.Builder(getActivity()).setMessage("单位落料量:" + Speed + "0.1mg/s").setPositiveButton("我记住了", null).create().show();
+                new AlertDialog.Builder(getActivity()).setMessage("单位落料量:" + Speed + "\t(0.1g/s)").setPositiveButton("我记住了", null).create().show();
                 break;
             case R.id.backToConfig:
                 homeActivity.replaceFragment(FragmentEnum.DebugFragment, FragmentEnum.ConfigFragment);
@@ -159,6 +161,7 @@ public class DebugFragment extends BasicFragment implements IDebugDropMaterialVi
 
     @Override
     public int getContainerID() {
+        Log.d("Debug","点击位置:"+Position);
         return Constance.bunkersID[Position];
     }
 

@@ -18,13 +18,30 @@ public class TestDropMaterial implements ITestDropMaterial {
     @Override
     public void StartDrop(int dropBunker, int time, final TestDropMaterialCallBackListener testDropMaterialCallBackListener) {
         CoffMsger coffMsger = CoffMsger.getInstance();
-        Result result = coffMsger.Debug(DebugAction.OUT_INGREDIENT, dropBunker, 5);
-        if (result.getCode() == Result.SUCCESS) {
-            testDropMaterialCallBackListener.TestSuccess();
-            testDropMaterialCallBackListener.TestEnd();
+        if (dropBunker == 0xAA) {
+            Result result = coffMsger.Debug(DebugAction.CRUSH_BEAN, dropBunker, 50);
+            if (result.getCode() == Result.SUCCESS) {
+                testDropMaterialCallBackListener.TestSuccess();
+            } else {
+                testDropMaterialCallBackListener.TestFailed(result.getCode());
+            }
+        } else if (dropBunker == 0x00) {
+            Result result = coffMsger.Debug(DebugAction.OUT_HOTWATER, dropBunker, 50);
+            if (result.getCode() == Result.SUCCESS) {
+                testDropMaterialCallBackListener.TestSuccess();
+            } else {
+                testDropMaterialCallBackListener.TestFailed(result.getCode());
+            }
         } else {
-            testDropMaterialCallBackListener.TestFailed(result.getCode());
-            testDropMaterialCallBackListener.TestEnd();
+            Result result = coffMsger.Debug(DebugAction.OUT_INGREDIENT, dropBunker, 50);
+            if (result.getCode() == Result.SUCCESS) {
+                testDropMaterialCallBackListener.TestSuccess();
+            } else {
+                testDropMaterialCallBackListener.TestFailed(result.getCode());
+            }
         }
+
+
+        testDropMaterialCallBackListener.TestEnd();
     }
 }

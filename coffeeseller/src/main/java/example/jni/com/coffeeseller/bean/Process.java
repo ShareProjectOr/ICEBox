@@ -1,5 +1,6 @@
 package example.jni.com.coffeeseller.bean;
 
+import cof.ac.inter.ContainerType;
 import cof.ac.inter.WaterType;
 
 /**
@@ -7,7 +8,7 @@ import cof.ac.inter.WaterType;
  */
 
 public class Process {
-    int container_id; //操作仓ID
+    ContainerType container_id; //操作仓ID
     int water_interval; //出水间隔
     int water_capacity; //出水量
     int material_time; // 落料时间
@@ -15,11 +16,11 @@ public class Process {
     int stir_speed;  //搅拌速度
     WaterType water_type;// 水温
 
-    public int getContainer_id() {
+    public ContainerType getContainer_id() {
         return container_id;
     }
 
-    public void setContainer_id(int container_id) {
+    public void setContainer_id(ContainerType container_id) {
         this.container_id = container_id;
     }
 
