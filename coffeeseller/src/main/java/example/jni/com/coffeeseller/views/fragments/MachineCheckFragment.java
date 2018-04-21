@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import cof.ac.inter.CoffMsger;
 import example.jni.com.coffeeseller.MachineConfig.MachineInitState;
@@ -78,7 +79,7 @@ public class MachineCheckFragment extends BasicFragment implements ICheckMachine
 
     private void startMachineCheck() {
         beginCheck();
-        mMachineCheckPresenter = new MachineCheckPresenter(this);
+        mMachineCheckPresenter = new MachineCheckPresenter(this, getActivity());
 
         if (checkThread == null) {
 
@@ -138,7 +139,6 @@ public class MachineCheckFragment extends BasicFragment implements ICheckMachine
     }
 
 
-
     @Override
     public void ChangePage(final FragmentEnum fragment) {
         hasTurned = true;
@@ -154,7 +154,8 @@ public class MachineCheckFragment extends BasicFragment implements ICheckMachine
 
     @Override
     public void showTips(int whichTextView, String tips) {
-
+        Toast toast = Toast.makeText(getActivity(), tips, Toast.LENGTH_LONG);
+        toast.show();
     }
 
     @Override

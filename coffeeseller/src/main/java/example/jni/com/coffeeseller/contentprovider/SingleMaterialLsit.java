@@ -58,7 +58,7 @@ public class SingleMaterialLsit {
         yishinongka = new Coffee();
         natie = new Coffee();
         mieshikafei = new Coffee();
-        moka.setName("摩卡");
+        moka.setName("摩卡(mocha)");
         moka.setPrice("0.1");
         List<ContainerConfig> mokaProcess = new ArrayList<>();
         ContainerConfig mokaProcess0 = new ContainerConfig();
@@ -99,7 +99,7 @@ public class SingleMaterialLsit {
         mokaProcess.add(3, mokaProcess3);
         moka.setProcessList(mokaProcess);
 
-        kabuqiluo.setName("卡布奇洛");
+        kabuqiluo.setName("卡布奇洛(Card butch los)");
         kabuqiluo.setPrice("0.1");
         List<ContainerConfig> kabuqiluoProcessList = new ArrayList<>();
         ContainerConfig kabuqiluoProcess0 = new ContainerConfig();
@@ -131,7 +131,7 @@ public class SingleMaterialLsit {
         kabuqiluoProcessList.add(2, kabuqiluoProcess2);
         kabuqiluo.setProcessList(kabuqiluoProcessList);
 
-        chunxiangniunai.setName("醇香牛奶");
+        chunxiangniunai.setName("醇香牛奶(Mellow milk)");
         chunxiangniunai.setPrice("0.1");
         List<ContainerConfig> chunxiangniunaiProcessList = new ArrayList<>();
         ContainerConfig chunxiangniunaiProcess0 = new ContainerConfig();
@@ -145,7 +145,7 @@ public class SingleMaterialLsit {
         chunxiangniunaiProcessList.add(0, chunxiangniunaiProcess0);
         chunxiangniunai.setProcessList(chunxiangniunaiProcessList);
 
-        qiaokeliniunai.setName("巧克力牛奶");
+        qiaokeliniunai.setName("巧克力牛奶(Chocolate milk)");
         qiaokeliniunai.setPrice("0.1");
         List<ContainerConfig> qiaokeliniunaiProcessList = new ArrayList<>();
         ContainerConfig qiaokeliniunaiProcess0 = new ContainerConfig();
@@ -168,7 +168,7 @@ public class SingleMaterialLsit {
         qiaokeliniunaiProcessList.add(1, qiaokeliniunaiProcess1);
         qiaokeliniunai.setProcessList(qiaokeliniunaiProcessList);
 
-        xiangnongqiaokeli.setName("香浓巧克力");
+        xiangnongqiaokeli.setName("香浓巧克力(Fragrant chocolate)");
         xiangnongqiaokeli.setPrice("0.1");
         List<ContainerConfig> xiangnongqiaokeliProcessList = new ArrayList<>();
         ContainerConfig xiangnongqiaokeliProcess0 = new ContainerConfig();
@@ -183,7 +183,7 @@ public class SingleMaterialLsit {
         xiangnongqiaokeli.setProcessList(xiangnongqiaokeliProcessList);
 
         yishinongka.setPrice("0.1");
-        yishinongka.setName("意式浓卡");
+        yishinongka.setName("意式浓卡(Italian thick card)");
         List<ContainerConfig> yishinongkaProcessList = new ArrayList<>();
         ContainerConfig yishinongkaProcess0 = new ContainerConfig();
         yishinongkaProcess0.setContainer(ContainerType.BEAN_CONTAINER);
@@ -196,7 +196,7 @@ public class SingleMaterialLsit {
         yishinongkaProcessList.add(0, yishinongkaProcess0);
         yishinongka.setProcessList(yishinongkaProcessList);
 
-        natie.setName("拿铁");
+        natie.setName("拿铁(latte)");
         natie.setPrice("0.1");
         List<ContainerConfig> natieProcessList = new ArrayList<>();
         ContainerConfig natieProcess0 = new ContainerConfig();
@@ -228,7 +228,7 @@ public class SingleMaterialLsit {
         natieProcessList.add(2, natieProcess2);
         natie.setProcessList(natieProcessList);
 
-        mieshikafei.setName("美式咖啡");
+        mieshikafei.setName("美式咖啡(American coffee)");
         mieshikafei.setPrice("0.1");
         List<ContainerConfig> meishikafeiProcessList = new ArrayList<>();
         ContainerConfig meishikafeiProcess0 = new ContainerConfig();

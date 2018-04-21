@@ -1,5 +1,6 @@
 package example.jni.com.coffeeseller.presenter;
 
+import android.content.Context;
 import android.os.Handler;
 import android.os.Looper;
 import android.widget.Toast;
@@ -17,10 +18,12 @@ import example.jni.com.coffeeseller.views.viewinterface.ICheckMachineView;
 public class MachineCheckPresenter {
     private IMachineCheck mIMachineCheck;
     private ICheckMachineView mICheckMachineView;
+    private Context mContext;
 
-    public MachineCheckPresenter(ICheckMachineView mICheckMachineView) {
+    public MachineCheckPresenter(ICheckMachineView mICheckMachineView, Context mContext) {
         this.mICheckMachineView = mICheckMachineView;
-        mIMachineCheck = new MachineCheck();
+        this.mContext = mContext;
+        mIMachineCheck = new MachineCheck(mContext);
     }
 
     public void toLoginFragment() {

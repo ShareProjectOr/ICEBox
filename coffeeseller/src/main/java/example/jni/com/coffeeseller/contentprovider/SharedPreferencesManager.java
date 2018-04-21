@@ -40,6 +40,16 @@ public class SharedPreferencesManager {
 
     }
 
+    public void setMachineCode(String machineCode) {
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString("machineCode", machineCode);
+        editor.commit();
+    }
+
+    public String getMachineCode() {
+        return sharedPreferences.getString("machineCode", "");
+    }
+
     public void setLoginPassword(String adminPassword) {
 
         SharedPreferences.Editor editor = sharedPreferences.edit();

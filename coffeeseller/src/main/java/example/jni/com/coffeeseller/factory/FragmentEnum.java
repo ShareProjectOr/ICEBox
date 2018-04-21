@@ -11,5 +11,6 @@ public enum FragmentEnum {
     LoginFragment,
     ConfigFragment,
     ChooseCupNumFragment,
-    DebugFragment
+    DebugFragment,
+    HomeFragement
 }

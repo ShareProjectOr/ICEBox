@@ -2,6 +2,8 @@ package example.jni.com.coffeeseller.views.fragments;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,6 +14,7 @@ import android.widget.TextView;
 import example.jni.com.coffeeseller.R;
 import example.jni.com.coffeeseller.factory.FragmentEnum;
 import example.jni.com.coffeeseller.factory.FragmentFactory;
+import example.jni.com.coffeeseller.model.adapters.MaterialRecycleListAdapter;
 import example.jni.com.coffeeseller.views.activities.HomeActivity;
 
 /**
@@ -23,6 +26,8 @@ public class ConfigFragment extends BasicFragment {
     private Button toDebug;
     private HomeActivity homeActivity;
     private TextView back;
+    private RecyclerView materialList;
+    private MaterialRecycleListAdapter mAdapter;
 
     @Nullable
     @Override
@@ -32,9 +37,15 @@ public class ConfigFragment extends BasicFragment {
         return mView;
     }
 
+
     private void initView() {
         toDebug = (Button) mView.findViewById(R.id.debug_machine);
         back = (TextView) mView.findViewById(R.id.backToCheck);
+        materialList = (RecyclerView) mView.findViewById(R.id.material_list);
+        mAdapter = new MaterialRecycleListAdapter(getActivity());
+        materialList.setAdapter(mAdapter);
+        materialList.setLayoutManager(new LinearLayoutManager(getActivity()));
+        materialList.setHasFixedSize(true);
         back.setOnClickListener(this);
         homeActivity = HomeActivity.getInstance();
         toDebug.setOnClickListener(this);

@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import example.jni.com.coffeeseller.R;
@@ -27,6 +28,7 @@ public class LoginFragment extends BasicFragment implements Iloginview {
     private EditText UserName, PassWord;
     private Button login;
     private HomeActivity homeActivity;
+    private TextView backToCheck;
 
     @Nullable
     @Override
@@ -41,8 +43,10 @@ public class LoginFragment extends BasicFragment implements Iloginview {
         UserName = (EditText) view.findViewById(R.id.userName);
         PassWord = (EditText) view.findViewById(R.id.passWord);
         login = (Button) view.findViewById(R.id.login);
+        backToCheck = (TextView) view.findViewById(R.id.backToCheck);
         homeActivity = HomeActivity.getInstance();
         login.setOnClickListener(this);
+        backToCheck.setOnClickListener(this);
         mUserLoginPresenter = new UserLoginPresenter(getActivity(), this);
     }
 
@@ -68,7 +72,7 @@ public class LoginFragment extends BasicFragment implements Iloginview {
 
     @Override
     public void toSettingFragment() {
-      homeActivity.replaceFragment(FragmentEnum.LoginFragment,FragmentEnum.ConfigFragment);
+        homeActivity.replaceFragment(FragmentEnum.LoginFragment, FragmentEnum.ConfigFragment);
     }
 
     @Override
@@ -81,6 +85,9 @@ public class LoginFragment extends BasicFragment implements Iloginview {
         switch (v.getId()) {
             case R.id.login:
                 mUserLoginPresenter.PresenterLogin();
+                break;
+            case R.id.backToCheck:
+                homeActivity.replaceFragment(FragmentEnum.LoginFragment,FragmentEnum.MachineCheckFragment);
                 break;
         }
     }

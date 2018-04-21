@@ -7,11 +7,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import example.jni.com.coffeeseller.R;
+
 /**
  * Created by Administrator on 2018/3/20.
  */
 
-public class HomeFragment extends Fragment{
+public class HomeFragment extends BasicFragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -20,7 +22,8 @@ public class HomeFragment extends Fragment{
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return super.onCreateView(inflater, container, savedInstanceState);
+        return inflater.inflate(R.layout.progressbar_layout, null);
+
     }
 
 }

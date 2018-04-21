@@ -11,6 +11,7 @@ import example.jni.com.coffeeseller.views.fragments.BasicFragment;
 import example.jni.com.coffeeseller.views.fragments.BuyFragment;
 import example.jni.com.coffeeseller.views.fragments.ConfigFragment;
 import example.jni.com.coffeeseller.views.fragments.DebugFragment;
+import example.jni.com.coffeeseller.views.fragments.HomeFragment;
 import example.jni.com.coffeeseller.views.fragments.LoginFragment;
 import example.jni.com.coffeeseller.views.fragments.MachineCheckFragment;
 
@@ -74,6 +75,8 @@ public class FragmentFactory {
                 case DebugFragment:
                     mFrag = new DebugFragment();
                     break;
+                case HomeFragement:
+                    mFrag = new HomeFragment();
             }
             if (mFrag != null) {
 
