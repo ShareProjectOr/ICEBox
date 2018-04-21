@@ -1,16 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:tools="http://schemas.android.com/tools">
+    android:gravity="center"
+    android:orientation="vertical">
 
-    <GridView
+    <!--android:background="@android:color/transparent"-->
+
+    <example.jni.com.coffeeseller.views.customviews.HomeGridView
         android:id="@+id/coffeeGrid"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@android:color/transparent"
-        android:horizontalSpacing="50dp"
-        android:orientation="vertical"
+        android:horizontalSpacing="25dp"
         android:scrollbars="none"
-        android:verticalSpacing="50dp"></GridView>
+        android:verticalSpacing="25dp" />
+
 </LinearLayout>

@@ -1,13 +1,8 @@
 package example.jni.com.coffeeseller.views.customviews;
 
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Paint;
 import android.os.AsyncTask;
-import android.os.Handler;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
@@ -16,27 +11,25 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import java.util.Random;
-
-import example.jni.com.coffeeseller.R;
+import example.jni.com.coffeeseller.utils.MyLog;
 import example.jni.com.coffeeseller.utils.Waiter;
 
 /**
  * Created by WH on 2018/4/17.
  */
 
-public class ProgressbarWithText extends RelativeLayout {
+public class ProgressbarWithTextTest extends RelativeLayout {
     private Context context;
     private int offset = 5;
     private int maxProgress = 100;
     private int maxMakingProgress = 80;
     private int perWidthOfPerProgress;
     private int paddingTop = 20;
-    private int imageOffset = 5;
     private int onePointProgress = offset;
     private int twoPointProgress;
     private int threePointProgress;
 
+    private LinearLayout progressBarLayout;
     private ProgressBar progressBar;
     private LinearLayout textLayout;
     private LinearLayout imageLayout;
@@ -51,24 +44,23 @@ public class ProgressbarWithText extends RelativeLayout {
 
     public boolean makeSuccess = false;
 
-
-    public ProgressbarWithText(Context context) {
+    public ProgressbarWithTextTest(Context context) {
         super(context);
         this.context = context;
     }
 
-    public ProgressbarWithText(Context context, AttributeSet attrs) {
+    public ProgressbarWithTextTest(Context context, AttributeSet attrs) {
         super(context, attrs);
         this.context = context;
     }
 
-    public ProgressbarWithText(Context context, AttributeSet attrs, int defStyleAttr) {
+    public ProgressbarWithTextTest(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         this.context = context;
     }
 
     public void init() {
-        progressBar =  (ProgressBar) ((LinearLayout) getChildAt(0)).getChildAt(0);;
+        progressBar = (ProgressBar) ((LinearLayout) getChildAt(0)).getChildAt(0);
         textLayout = (LinearLayout) getChildAt(1);
         onePointProgress = progressBar.getProgress();
         twoPointProgress = onePointProgress + (maxProgress - onePointProgress) / 2;
@@ -103,35 +95,36 @@ public class ProgressbarWithText extends RelativeLayout {
     }
 
     public void updateProgressAnim() {
-        if (makeSuccess) {
-            setProgress(maxProgress);
-            return;
-        }
 
         new AsyncTask<Void, Integer, Integer>() {
 
             @Override
             protected Integer doInBackground(Void... params) {
-                for (int i = offset + 1; i <= maxProgress; i++) {
-                    if (isCancelled()) {
-                        break;
+                if (!makeSuccess) {
+                    for (int i = offset + 1; i <= maxMakingProgress; i++) {
+
+                        publishProgress(i);
+
+                        if (i == maxMakingProgress) {
+                            break;
+                        }
+                        Waiter.doWait(300);
                     }
-                    publishProgress(i);
-                    Waiter.doWait(300);
+                } else {
+                    publishProgress(maxProgress);
                 }
+
                 return null;
             }
 
             @Override
             protected void onProgressUpdate(Integer... values) {
-                super.onProgressUpdate(values);
-                if (isCancelled()) {
-                    return;
-                }
+
                 setProgress(values[0]);
+                super.onProgressUpdate(values);
+
             }
         }.execute();
-
     }
 
     @Override
@@ -140,41 +133,29 @@ public class ProgressbarWithText extends RelativeLayout {
 
         int width;
         int height;
+        progressBarLayout = (LinearLayout) getChildAt(0);
         progressBar = (ProgressBar) ((LinearLayout) getChildAt(0)).getChildAt(0);
         textLayout = (LinearLayout) getChildAt(1);
         imageLayout = (LinearLayout) getChildAt(2);
         offset = progressBar.getProgress();
-
+        this.measureChild(progressBar, widthMeasureSpec, heightMeasureSpec);
+        this.measureChild(progressBarLayout, widthMeasureSpec, heightMeasureSpec);
         int textChildCount = textLayout.getChildCount();
         for (int i = 0; i < textChildCount; i++) {
             View view = textLayout.getChildAt(i);
             this.measureChild(view, widthMeasureSpec, heightMeasureSpec);
         }
-        this.measureChild(textLayout, widthMeasureSpec, textLayout.getChildAt(0).getHeight());
+        this.measureChild(textLayout, widthMeasureSpec, heightMeasureSpec);
         int imageChildCount = imageLayout.getChildCount();
         for (int i = 0; i < imageChildCount; i++) {
             View view = imageLayout.getChildAt(i);
             this.measureChild(view, widthMeasureSpec, heightMeasureSpec);
-            if ((view.getHeight() - progressBar.getHeight()) / 2 < imageOffset) {
-                int imageSize = progressBar.getHeight() + 2 * imageOffset;
-                this.measureChild(view, imageSize, imageSize);
-            } else {
-                if (view.getHeight() >= view.getWidth()) {
-                    this.measureChild(view, view.getWidth(), view.getWidth());
-                } else {
-                    this.measureChild(view, view.getHeight(), view.getHeight());
-                }
-            }
         }
-        this.measureChild(imageLayout, widthMeasureSpec, imageLayout.getChildAt(0).getHeight());
+        this.measureChild(imageLayout, widthMeasureSpec, heightMeasureSpec);
 
+        height = imageLayout.getChildAt(0).getMeasuredHeight() + textLayout.getChildAt(0).getHeight() + paddingTop;
 
-        this.measureChild(progressBar, widthMeasureSpec * 2 / 3, heightMeasureSpec);
-
-        width = progressBar.getMeasuredWidth() + textLayout.getChildAt(0).getMeasuredWidth();
-        height = imageLayout.getMeasuredHeight() + textLayout.getMeasuredHeight() + paddingTop;
-
-        setMeasuredDimension(width, height);
+        setMeasuredDimension(widthMeasureSpec, height);
     }
 
     @Override
@@ -186,17 +167,19 @@ public class ProgressbarWithText extends RelativeLayout {
         int textViewHeight = textLayout.getChildAt(0).getMeasuredHeight();
         int imageViewWidth = imageLayout.getChildAt(0).getMeasuredWidth();
         int imageViewHeight = imageLayout.getChildAt(0).getMeasuredHeight();
-
         int progressbarWidth = progressBar.getMeasuredWidth() - progressBar.getPaddingLeft() - progressBar.getPaddingRight();
+
         perWidthOfPerProgress = progressbarWidth / maxProgress;
-        offset = progressBar.getProgress();
-        int offsetWidth = offset * perWidthOfPerProgress;
-        int threeOfMatchParent = textLayout.getMeasuredWidth() / 3;
+        int progressWidth = progressBar.getProgress() * perWidthOfPerProgress;
+        progressBarLayout.layout(textViewWidth / 2 - progressBar.getPaddingLeft(), textViewHeight + paddingTop + (imageViewHeight - progressBar.getHeight()) / 2,
+                getWidth() - textViewWidth / 2, textViewHeight + paddingTop + (imageViewHeight - progressBar.getHeight()) / 2 + progressBar.getMeasuredHeight());
+        progressBar.layout(textViewWidth / 2 - progressBar.getPaddingLeft() + 30, textViewHeight + paddingTop + (imageViewHeight - progressBar.getHeight()) / 2 + 10,
+                getWidth() - textViewWidth / 2 - 30, textViewHeight + paddingTop + (imageViewHeight - progressBar.getHeight()) / 2 + progressBar.getMeasuredHeight() + 10);
 
+        firstNoteImageCenterPosition = textViewWidth / 2 + progressWidth;//-progressBar.getPaddingLeft()
+        secondNoteImageCenterPosition = (progressbarWidth - progressWidth) / 2 + progressWidth; //+ firstNoteImageCenterPosition;//(progressBar.getMeasuredWidth() - offset) / 2 + firstNoteImageCenterPosition - getPaddingLeft();
+        thiredNoteImageCenterPosition = progressbarWidth - textViewWidth / 2;//+ progressBar.getPaddingRight() - textViewWidth / 2;
 
-        firstNoteImageCenterPosition = threeOfMatchParent / 2;
-        secondNoteImageCenterPosition = textLayout.getMeasuredWidth() / 2;
-        thiredNoteImageCenterPosition = threeOfMatchParent / 2 * 5;
 
         int textChildCount = textLayout.getChildCount();
         for (int i = 0; i < textChildCount; i++) {
@@ -223,13 +206,13 @@ public class ProgressbarWithText extends RelativeLayout {
                 view.layout(secondNoteImageCenterPosition - imageViewWidth / 2, textViewHeight + paddingTop, secondNoteImageCenterPosition + imageViewWidth / 2, textViewHeight + paddingTop + view.getMeasuredHeight());
             }
 
-            if (i == 2) {
+            if (i == 2) {//thiredNoteImageCenterPosition + imageViewWidth / 2
                 view.layout(thiredNoteImageCenterPosition - imageViewWidth / 2, textViewHeight + paddingTop, thiredNoteImageCenterPosition + imageViewWidth / 2, textViewHeight + paddingTop + view.getMeasuredHeight());
             }
         }
+//        progressBar.layout(textViewWidth / 2, getHeight() - progressBar.getMeasuredHeight(), getWidth() - textViewWidth / 2, getHeight() - imageViewHeight / 2 + progressBar.getMeasuredHeight() / 2);
 
-        progressBar.layout(firstNoteImageCenterPosition - offsetWidth, textViewHeight + paddingTop + imageViewHeight / 2 - progressBar.getHeight() / 2
-                , thiredNoteImageCenterPosition, getWidth() - imageViewHeight / 2 + progressBar.getHeight() / 2);
+
     }
 
     @Override
