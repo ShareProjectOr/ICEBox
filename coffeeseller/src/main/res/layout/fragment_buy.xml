@@ -30,13 +30,15 @@
             android:layout_marginLeft="20dp"
             android:gravity="center"
             android:text="机器号："
-            android:textSize="25sp" />
+            android:textSize="25sp"
+            android:visibility="gone" />
 
         <TextView
             android:id="@+id/machineCode"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:gravity="center"
+            android:visibility="gone"
             android:text="1111111111111111"
             android:textSize="25sp" />
 
@@ -44,11 +46,13 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_marginLeft="20dp"
-            android:src="@mipmap/on_line" />
+            android:src="@mipmap/on_line"
+            android:visibility="gone" />
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:visibility="gone">
 
             <ImageView
                 android:id="@+id/help"

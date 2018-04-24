@@ -100,7 +100,7 @@ public class CoffeeViewPagerAdapter extends PagerAdapter {
             gridView.setSelector(new ColorDrawable(Color.TRANSPARENT));
             gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
-                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                public void onItemClick(AdapterView<?> parent, final View view, int position, long id) {
                     if (System.currentTimeMillis() - lastClickTime < 500) {
                         return;
                     } else {
@@ -114,6 +114,25 @@ public class CoffeeViewPagerAdapter extends PagerAdapter {
                         gridViewItemListener.onGridItemClick(parent, view, position, id);
                     }
                     Animation anim = AnimationUtils.loadAnimation(homeActivity, R.anim.set_snake);
+
+                    anim.setAnimationListener(new Animation.AnimationListener() {
+                        @Override
+                        public void onAnimationStart(Animation animation) {
+
+                        }
+
+                        @Override
+                        public void onAnimationEnd(Animation animation) {
+                            if (view != null) {
+                                view.clearAnimation();
+                            }
+                        }
+
+                        @Override
+                        public void onAnimationRepeat(Animation animation) {
+
+                        }
+                    });
                     if (view != null) {
                         view.startAnimation(anim);
                     }

@@ -42,10 +42,12 @@ import static android.view.View.VISIBLE;
 
 public class MakeDialog extends Dialog implements View.OnClickListener {
     private static String TAG = "MakeDialog";
-    private long MAX_TOTAL_MK_TIME = 90000;
+    private long MAX_TOTAL_MK_TIME = 180000;
     private long MAX_STATE_TIME = 5000;
     private int MAX_PROGRESS = 100;
     private int MAX_MAKING_PROGRESS = 92;
+    private int CONTAIN_MAKING_PROGRESS_TIME = 550;
+    private int NOT_CONTAIN_MAKING_PROGRESS_TIME = 200;
     private Context context;
     private MakingViewHolder makingViewHolder;
     private CoffMsger coffMsger;
@@ -78,10 +80,11 @@ public class MakeDialog extends Dialog implements View.OnClickListener {
         WindowManager.LayoutParams wl = window.getAttributes();
         window.setTitle(null);
         window.setWindowAnimations(R.style.dialogWindowAnim);
-        window.setBackgroundDrawableResource(android.R.color.transparent);
-        wl.width = ScreenUtil.getScreenWidth(context) / 2;
-        wl.height = WindowManager.LayoutParams.WRAP_CONTENT;
-        wl.alpha = 0.9f;
+//        window.setBackgroundDrawableResource(android.R.color.transparent);
+        wl.width = ScreenUtil.getScreenWidth(context) /2;//ScreenUtil.getScreenWidth(context) / 2
+//        wl.height = ScreenUtil.getScreenHeight(context) * 3 / 4;
+        wl.height = LinearLayout.LayoutParams.WRAP_CONTENT;
+//        wl.alpha = 0.3f;
         window.setAttributes(wl);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         handler = new Handler();
@@ -120,13 +123,18 @@ public class MakeDialog extends Dialog implements View.OnClickListener {
         if (coffeeMakeStateRecorder.state == CoffeeMakeState.COFFEE_ISMAKING && !isStartMaking) {
 
             isStartMaking = true;
-            updateProgressAnim();
+            updateProgressAnim(CONTAIN_MAKING_PROGRESS_TIME);
+
+        } else if (coffeeMakeStateRecorder.state == CoffeeMakeState.COFFEE_DOWN_POWER && !isStartMaking) {
+
+            isStartMaking = true;
+            updateProgressAnim(NOT_CONTAIN_MAKING_PROGRESS_TIME);
 
         } else if (coffeeMakeStateRecorder.state == CoffeeMakeState.COFFEEFINISHED_CUPNOTAKEN && isStartMaking) {
 
             isStartMaking = false;
             makeSuccess = true;
-            updateProgressAnim();
+            updateProgressAnim(0);
 
         }
     }
@@ -193,6 +201,7 @@ public class MakeDialog extends Dialog implements View.OnClickListener {
                     if (coffeeMakeStateRecorder.state == CoffeeMakeState.COFFEE_DOWN_CUP) {
 
                         dealStateDownCup(machineState);
+
                         continue;
                     }
 
@@ -208,14 +217,19 @@ public class MakeDialog extends Dialog implements View.OnClickListener {
                     if (coffeeMakeStateRecorder.state == CoffeeMakeState.COFFEE_DOWN_POWER) {
 
                         dealStateDownPower(machineState);
+
+                        updateProgress();
+
                         continue;
                     }
 
                     if (coffeeMakeStateRecorder.state == CoffeeMakeState.COFFEEFINISHED_CUPNOTAKEN) {
                         //上报交易记录
 
-                        disDialog(false);
                         updateProgress();
+
+                        disDialog(false);
+
                     }
                     if (coffeeMakeStateRecorder.state == CoffeeMakeState.COFFEEFINISHED_CUPISTAKEN) {
 
@@ -225,7 +239,6 @@ public class MakeDialog extends Dialog implements View.OnClickListener {
                     }
                     if (coffeeMakeStateRecorder.state == CoffeeMakeState.COFFEEMAKING_FAILED) {
 
-                        //     makingViewHolder.mErrTip.setText(buffer.toString());
                         disDialog(true);
                     }
                 }
@@ -326,12 +339,15 @@ public class MakeDialog extends Dialog implements View.OnClickListener {
         buffer.setLength(0);
         MachineState machineState = coffMsger.getLastMachineState();
 
+
         if (!checkMaterial(machineState)) {
 
             return false;
         } else {
 
             MajorState majorState = machineState.getMajorState();
+
+            MyLog.d(TAG, "majorState.getCurStateEnum() ==" + majorState.getCurStateEnum());
             if (majorState.getCurStateEnum() == StateEnum.FINISH) {
 
                 buffer.append("\n");
@@ -340,8 +356,26 @@ public class MakeDialog extends Dialog implements View.OnClickListener {
                 return false;
             } else if (majorState.getCurStateEnum() != StateEnum.IDLE) {
                 buffer.append("\n");
-                buffer.append("错误:" + majorState.getCurStateEnum());
-                MyLog.d(TAG, "majorState.getCurStateEnum() ==" + majorState.getCurStateEnum());
+                switch (majorState.getCurStateEnum()) {
+                    case DOOR_OPNE:
+                        buffer.append("错误:升降门未落下");
+                        break;
+                    case DOWN_CUP:
+                        buffer.append("错误:正在落杯中");
+                        break;
+                    case DOWN_POWER:
+                        buffer.append("错误:正在落粉中");
+                        break;
+                    case HEAT_POT:
+                        buffer.append("错误:锅炉加热中");
+                        break;
+                    case UNKNOW_STATE:
+                        buffer.append("错误:未知错误");
+                        break;
+
+                }
+
+
                 return false;
             }
         }
@@ -350,6 +384,14 @@ public class MakeDialog extends Dialog implements View.OnClickListener {
 
     //检查其他状态,原料状态
     private boolean checkMaterial(MachineState machineState) {
+        if (machineState == null) {
+            return false;
+        }
+
+        MyLog.d(TAG, "----------" + machineState.isCupShelfRightPlace());
+        MyLog.d(TAG, "----------" + machineState.hasCupOnShelf());
+        MyLog.d(TAG, "----------" + machineState.isLittleDoorOpen());
+
         boolean isCheckCanMake = true;
         //  StringBuffer buffer = new StringBuffer();
         buffer.append("提示：");
@@ -359,38 +401,44 @@ public class MakeDialog extends Dialog implements View.OnClickListener {
             buffer.append("\n");
             buffer.append("锅炉温度大于130");
 
-        } else if (machineState.getPotPressure() > 1500) {
+        }
+        if (machineState.getPotPressure() > 1500) {
 
             isCheckCanMake = false;
             buffer.append("\n");
             buffer.append("锅炉压力大于1500");
 
-        } else if (!machineState.isBeanEnough()) {
+        }
+        if (!machineState.isBeanEnough()) {
 
            /* isCheckCanMake = false;
             buffer.append("\n");
             buffer.append("咖啡豆不足");*/
 
-        } else if (machineState.isWasteContainerFull()) {
+        }
+        if (machineState.isWasteContainerFull()) {
 
           /*  isCheckCanMake = false;
             buffer.append("\n");
             buffer.append("污水仓已满");*/
 
-        } else if (machineState.isLittleDoorOpen()) {
-
+        }
+        if (machineState.isLittleDoorOpen()) {
+            Log.d(TAG, "前门未关");
             isCheckCanMake = false;
             buffer.append("\n");
             buffer.append("前门未关");
 
-        } else if (!machineState.isCupShelfRightPlace()) {
-
-         /*   isCheckCanMake = false;
+        }
+        if (!machineState.isCupShelfRightPlace()) {
+            Log.d(TAG, "杯架未在初始状态");
+            isCheckCanMake = false;
             buffer.append("\n");
-            buffer.append("杯架未在初始状态");*/
+            buffer.append("杯架未在初始状态");
 
-        } else if (machineState.hasCupOnShelf()) {
-
+        }
+        if (machineState.hasCupOnShelf()) {
+            Log.d(TAG, "杯架上有杯子未取走");
             isCheckCanMake = false;
             buffer.append("\n");
             buffer.append("杯架上有杯子未取走");
@@ -401,6 +449,7 @@ public class MakeDialog extends Dialog implements View.OnClickListener {
 
             MyLog.W(TAG, "err tip : " + buffer.toString());
         }
+
         return isCheckCanMake;
     }
 
@@ -420,7 +469,7 @@ public class MakeDialog extends Dialog implements View.OnClickListener {
         });
     }
 
-    public void updateProgressAnim() {
+    public void updateProgressAnim(final int waitTime) {
 
         new AsyncTask<Void, Integer, Integer>() {
 
@@ -434,7 +483,11 @@ public class MakeDialog extends Dialog implements View.OnClickListener {
                         if (i == MAX_MAKING_PROGRESS) {
                             break;
                         }
-                        Waiter.doWait(550);
+                        if (makeSuccess) {
+                            publishProgress(MAX_PROGRESS);
+                            break;
+                        }
+                        Waiter.doWait(waitTime);
                     }
                 } else {
                     publishProgress(MAX_PROGRESS);
@@ -528,7 +581,7 @@ public class MakeDialog extends Dialog implements View.OnClickListener {
         public ImageView mMakeBtn;
         public ImageView mMakeCenterImage;
 
-        public RelativeLayout mProgressBarLayout;
+        public LinearLayout mProgressBarLayout;
         public ProgressBar mProgressBar;
         public LinearLayout mTextLayout;
         public LinearLayout mTipOne;
@@ -548,7 +601,7 @@ public class MakeDialog extends Dialog implements View.OnClickListener {
             mMakeBtn = (ImageView) view.findViewById(R.id.make);
             mMakeCenterImage = (ImageView) view.findViewById(R.id.makeCenterImage);
 
-            mProgressBarLayout = (RelativeLayout) view.findViewById(R.id.progressBarLayout);
+            mProgressBarLayout = (LinearLayout) view.findViewById(R.id.progressBarLayout);
             mProgressBar = (ProgressBar) view.findViewById(R.id.progressBar);
             mTextLayout = (LinearLayout) view.findViewById(R.id.textLayout);
             mTipOne = (LinearLayout) view.findViewById(R.id.tipOne);

@@ -31,13 +31,14 @@ import example.jni.com.coffeeseller.model.listeners.ViewpagerPageChangedListener
 import example.jni.com.coffeeseller.utils.GridViewTransformation;
 import example.jni.com.coffeeseller.utils.MyLog;
 import example.jni.com.coffeeseller.views.activities.HomeActivity;
+import example.jni.com.coffeeseller.views.customviews.ChooseCupDialogTest;
 import example.jni.com.coffeeseller.views.customviews.MakeDialog;
 
 /**
  * Created by WH on 2018/3/30.
  */
 
-public class BuyFragment extends BasicFragment implements GridViewItemListener, View.OnClickListener {
+public class BuyFragment extends BasicFragment implements GridViewItemListener, View.OnClickListener, ChooseCupListenner {
     private static String TAG = "BuyFragment";
     private View content;
     private HomeActivity homeActivity;
@@ -132,11 +133,13 @@ public class BuyFragment extends BasicFragment implements GridViewItemListener, 
 
     @Override
     public void onGridItemClick(AdapterView<?> parent, View view, int position, long id) {
-      /*  ChooseCupDialogTest dialog = new ChooseCupDialogTest(homeActivity);
-        dialog.setData(mCoffees.get(position), this);
-        dialog.showDialog();*/
 
-        MakeDialog dialog = new MakeDialog(homeActivity);
+        /*Coffee coffee = mCoffees.get(position);
+
+        ChooseCupDialogTest dialog = new ChooseCupDialogTest(homeActivity);
+        dialog.setData(coffee.getProcessList(), this);
+        dialog.showDialog();*/
+        MakeDialog dialog = new MakeDialog(homeActivity, R.style.dialog);
         Coffee coffee = mCoffees.get(position);
         if (coffee != null) {
 
@@ -160,5 +163,15 @@ public class BuyFragment extends BasicFragment implements GridViewItemListener, 
                 }
                 break;
         }
+    }
+
+    @Override
+    public void cancle() {
+
+    }
+
+    @Override
+    public void getResult(CoffeeFomat coffeeFomat) {
+
     }
 }

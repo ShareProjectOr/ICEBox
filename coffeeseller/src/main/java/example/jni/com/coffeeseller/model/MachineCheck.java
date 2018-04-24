@@ -50,18 +50,16 @@ public class MachineCheck implements IMachineCheck {
 
 
             if (mCoffmsger.init()) {
-                mOnMachineCheckCallBackListener.OpenMainCrilSuccess();
-                mCoffmsger.startCheckState();
-                MachineInitState.CHECK_OPENMAINCTRL = MachineInitState.NORMAL;
-                // Result result = mCoffmsger.Debug(DebugAction.RESET, 0, 0);//复位机器
 
-               /* if (result.getCode() == Result.SUCCESS) {
+                Result result = mCoffmsger.Debug(DebugAction.RESET, 0, 0);//复位机器
+
+                if (result.getCode() == Result.SUCCESS) {
                     mOnMachineCheckCallBackListener.OpenMainCrilSuccess();
                     mCoffmsger.startCheckState();
                     MachineInitState.CHECK_OPENMAINCTRL = MachineInitState.NORMAL;
                 } else {
                     mOnMachineCheckCallBackListener.OpenMainCrilFailed("主控板检测出错,错误:" + result.getErrDes());
-                }*/
+                }
 
 
             } else {
@@ -69,14 +67,14 @@ public class MachineCheck implements IMachineCheck {
                 MachineInitState.CHECK_OPENMAINCTRL = MachineInitState.UNNORMAL;
             }
 
-            Map<String, Object> postBody = new HashMap<>();
+           /* Map<String, Object> postBody = new HashMap<>();
             postBody.put("machineCode", SharedPreferencesManager.getInstance(mContext).getMachineCode());
-            postBody.put("loginPassword",SharedPreferencesManager.getInstance(mContext).getLoginPassword());
-            try {
+            postBody.put("loginPassword",SharedPreferencesManager.getInstance(mContext).getLoginPassword());*/
+      /*      try {
                 OkHttpUtil.post("", JsonUtil.mapToJson(postBody));
             } catch (IOException e) {
                 e.printStackTrace();
-            }
+            }*/
 
 
             if (MachineInitState.CHECK_OPENMAINCTRL == MachineInitState.NORMAL) {

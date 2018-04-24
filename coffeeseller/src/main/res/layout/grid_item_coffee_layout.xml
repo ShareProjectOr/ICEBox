@@ -11,7 +11,7 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/shape_img_round_corner">
+        android:background="@drawable/shape_shadow">
 
         <LinearLayout
             android:id="@+id/coffeeLayout"
@@ -24,7 +24,10 @@
                 android:id="@+id/coffeeImage"
                 android:layout_width="match_parent"
                 android:layout_height="180dp"
-                android:layout_margin="5dp"
+                android:layout_marginBottom="5dp"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="7dp"
+                android:layout_marginTop="5dp"
                 android:scaleType="fitXY"
                 android:src="@mipmap/no_coffee" />
 

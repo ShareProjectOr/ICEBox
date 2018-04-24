@@ -12,8 +12,8 @@
         android:id="@+id/coffeeGrid"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:horizontalSpacing="25dp"
+        android:horizontalSpacing="40dp"
         android:scrollbars="none"
-        android:verticalSpacing="25dp" />
+        android:verticalSpacing="40dp" />
 
 </LinearLayout>

@@ -49,7 +49,8 @@ public class MachineCheckFragment extends BasicFragment implements ICheckMachine
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        mView = super.onCreateView(inflater, container, FragmentFactory.getInstance().putLayoutId(R.layout.machinecheck_fragment_layout));
+        mView = inflater.inflate(R.layout.machinecheck_fragment_layout,null);
+    //    mView = super.onCreateView(inflater, container, FragmentFactory.getInstance().putLayoutId(R.layout.machinecheck_fragment_layout));
         initview();
         FragmentFactory.curPage = FragmentEnum.MachineCheckFragment;
         startMachineCheck();
@@ -154,8 +155,8 @@ public class MachineCheckFragment extends BasicFragment implements ICheckMachine
 
     @Override
     public void showTips(int whichTextView, String tips) {
-        Toast toast = Toast.makeText(getActivity(), tips, Toast.LENGTH_LONG);
-        toast.show();
+//        Toast toast = Toast.makeText(getActivity(), tips, Toast.LENGTH_LONG);
+//        toast.show();
     }
 
     @Override

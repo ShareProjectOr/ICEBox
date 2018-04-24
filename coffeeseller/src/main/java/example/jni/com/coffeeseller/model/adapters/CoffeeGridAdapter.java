@@ -29,8 +29,8 @@ public class CoffeeGridAdapter extends BaseAdapter {
 
     private int[] images = {
             R.mipmap.cafe_latte, R.mipmap.americano, R.mipmap.cafe_mocha, R.mipmap.cappuccino,
-            R.mipmap.cafe_mocha,
-            R.mipmap.cafe_latte, R.mipmap.viennese,
+            R.mipmap.fragrant_milk,
+            R.mipmap.chocolate_milk, R.mipmap.rich_chocolate,
             R.mipmap.espresso
     };
 
