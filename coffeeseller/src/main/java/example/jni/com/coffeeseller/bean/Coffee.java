@@ -19,6 +19,15 @@ public class Coffee {
     public int surgerFomat;
     public int milkFomat = -1;
     public List<ContainerConfig> processList;
+    public List<Step> stepList;
+
+    public List<Step> getStepList() {
+        return stepList;
+    }
+
+    public void setStepList(List<Step> stepList) {
+        this.stepList = stepList;
+    }
 
     public String getNetUrl() {
         return netUrl;
