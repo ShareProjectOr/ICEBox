@@ -17,7 +17,7 @@
             android:layout_height="wrap_content"
             android:text="糖"
             android:textColor="@color/white"
-            android:textSize="25sp"
+            android:textSize="35sp"
             android:textStyle="bold" />
 
         <RadioGroup
@@ -38,7 +38,7 @@
                 android:padding="20dp"
                 android:text="无糖"
                 android:textColor="@color/selector_taste_text_color"
-                android:textSize="20sp" />
+                android:textSize="30sp" />
 
             <RadioButton
                 android:id="@+id/suger_less"
@@ -52,7 +52,7 @@
                 android:padding="20dp"
                 android:text="少糖"
                 android:textColor="@color/selector_taste_text_color"
-                android:textSize="20sp" />
+                android:textSize="30sp" />
 
             <RadioButton
                 android:id="@+id/suger_normal"
@@ -66,7 +66,7 @@
                 android:padding="20dp"
                 android:text="正常"
                 android:textColor="@color/selector_taste_text_color"
-                android:textSize="20sp" />
+                android:textSize="30sp" />
 
             <RadioButton
                 android:id="@+id/suger_more"
@@ -80,7 +80,7 @@
                 android:padding="20dp"
                 android:text="多糖"
                 android:textColor="@color/selector_taste_text_color"
-                android:textSize="20sp" />
+                android:textSize="30sp" />
         </RadioGroup>
 
     </LinearLayout>

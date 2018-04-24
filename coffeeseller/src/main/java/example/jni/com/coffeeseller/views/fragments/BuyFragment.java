@@ -1,6 +1,5 @@
 package example.jni.com.coffeeseller.views.fragments;
 
-import android.app.Dialog;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.view.ViewPager;
@@ -24,27 +23,23 @@ import example.jni.com.coffeeseller.contentprovider.SingleMaterialLsit;
 import example.jni.com.coffeeseller.factory.FragmentEnum;
 import example.jni.com.coffeeseller.factory.FragmentFactory;
 import example.jni.com.coffeeseller.model.adapters.CoffeeViewPagerAdapter;
-import example.jni.com.coffeeseller.model.adapters.HomeViewPager;
 import example.jni.com.coffeeseller.model.listeners.ChooseCupListenner;
 import example.jni.com.coffeeseller.model.listeners.GridViewItemListener;
 import example.jni.com.coffeeseller.model.listeners.ViewpagerPageChangedListener;
 import example.jni.com.coffeeseller.utils.GridViewTransformation;
-import example.jni.com.coffeeseller.utils.MyLog;
 import example.jni.com.coffeeseller.views.activities.HomeActivity;
-import example.jni.com.coffeeseller.views.customviews.ChooseCupDialogTest;
 import example.jni.com.coffeeseller.views.customviews.MakeDialog;
 
 /**
  * Created by WH on 2018/3/30.
  */
 
-public class BuyFragment extends BasicFragment implements GridViewItemListener, View.OnClickListener, ChooseCupListenner {
-    private static String TAG = "BuyFragment";
+public class BuyFragment extends BasicFragment implements GridViewItemListener, View.OnClickListener {
     private View content;
     private HomeActivity homeActivity;
-    public static int DEFAULT_ONEPAGE_NUM = 8;
+    public static int DEFAULT_ONEPAGE_NUM = 12;
     private LinearLayout mViewPagerParentLayout;
-    private HomeViewPager mViewPager;
+    private ViewPager mViewPager;
     private LinearLayout mPointGroup;
     public ImageView mLogo;
     public TextView mMachineCode;
@@ -74,9 +69,15 @@ public class BuyFragment extends BasicFragment implements GridViewItemListener, 
         mLogo.setOnClickListener(this);
 
         mViewPagerParentLayout = (LinearLayout) content.findViewById(R.id.viewPagerParentLayout);
-        mViewPager = (HomeViewPager) content.findViewById(R.id.viewPager);
+        mViewPager = (ViewPager) content.findViewById(R.id.viewPager);
         mPointGroup = (LinearLayout) content.findViewById(R.id.pointGroup);
         mViewPager.setPageTransformer(true, new GridViewTransformation());
+        mViewPagerParentLayout.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                return mViewPager.dispatchTouchEvent(event);
+            }
+        });
         mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
@@ -97,9 +98,10 @@ public class BuyFragment extends BasicFragment implements GridViewItemListener, 
     }
 
     private void initDatas() {
-
+        Log.d("----------------", "initDatas");
         mCoffees = new ArrayList<>();
         mCoffees = SingleMaterialLsit.getInstance(homeActivity).getyoubaoCoffeeList();
+
         mPagerAdapter = new CoffeeViewPagerAdapter(homeActivity, mCoffees, this);
         mViewPager.addOnPageChangeListener(new ViewpagerPageChangedListener());
         mViewPager.setAdapter(mPagerAdapter);
@@ -133,23 +135,17 @@ public class BuyFragment extends BasicFragment implements GridViewItemListener, 
 
     @Override
     public void onGridItemClick(AdapterView<?> parent, View view, int position, long id) {
-
-        /*Coffee coffee = mCoffees.get(position);
-
-        ChooseCupDialogTest dialog = new ChooseCupDialogTest(homeActivity);
-        dialog.setData(coffee.getProcessList(), this);
+      /*  ChooseCupDialogTest dialog = new ChooseCupDialogTest(homeActivity);
+        dialog.setData(mCoffees.get(position), this);
         dialog.showDialog();*/
-        MakeDialog dialog = new MakeDialog(homeActivity, R.style.dialog);
+
         Coffee coffee = mCoffees.get(position);
         if (coffee != null) {
-
+            MakeDialog dialog = new MakeDialog(homeActivity);
             dialog.initData(coffee.getProcessList());
-
             dialog.showDialog();
-
-        } else {
-            MyLog.d(TAG, "coffee ==null ");
         }
+
     }
 
     @Override
@@ -163,15 +159,5 @@ public class BuyFragment extends BasicFragment implements GridViewItemListener, 
                 }
                 break;
         }
-    }
-
-    @Override
-    public void cancle() {
-
-    }
-
-    @Override
-    public void getResult(CoffeeFomat coffeeFomat) {
-
     }
 }

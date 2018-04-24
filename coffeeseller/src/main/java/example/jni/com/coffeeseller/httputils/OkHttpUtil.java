@@ -132,6 +132,9 @@ public class OkHttpUtil {
     public static final MediaType JSON = MediaType.parse("application/json; charset=utf-8");
 
     public static String post(String url, String json) throws IOException {
+        if (url.isEmpty()) {
+            return "请求地址错误";
+        }
 //        OkHttpClient okHttpClient = new OkHttpClient();
 //        okHttpClient.setConnectTimeout(20, TimeUnit.SECONDS);
         RequestBody requestBody = RequestBody.create(JSON, json);

@@ -7,10 +7,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import cof.ac.inter.CoffMsger;
+import example.jni.com.coffeeseller.MachineConfig.MachineCheckState;
 import example.jni.com.coffeeseller.MachineConfig.MachineInitState;
 import example.jni.com.coffeeseller.MachineConfig.SerialPortInfo;
 import example.jni.com.coffeeseller.R;
@@ -32,12 +34,6 @@ public class MachineCheckFragment extends BasicFragment implements ICheckMachine
     boolean hasTurned = false;
     private Button tologin;
     private TextView timeDownText;
-    final int STEP_INITDATA = 1;
-    final int STEP_MAINCTL = 2;
-    final int STEP_IC = 3;
-    final int STEP_NET = 4;
-    final int NORMAL_REFRESH = 5;
-    final int RANDOM_REFRESH = 6;
     Thread checkThread;
     int checkFlag = 0;
     private MachineCheckPresenter mMachineCheckPresenter;
@@ -45,12 +41,18 @@ public class MachineCheckFragment extends BasicFragment implements ICheckMachine
     Handler mhHandler = new Handler();
     private HomeActivity homeActivity;
     Handler handler = new Handler();
+    private ProgressBar mCheck_machineCode;
+    private TextView mMachineCode_check_Tips;
+    private ProgressBar mCheck_mainCtrl;
+    private TextView mCheck_mainCtrl_Tips;
+    private ProgressBar mSub_Mqtt;
+    private TextView mSub_Mqtt_Tips;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        mView = inflater.inflate(R.layout.machinecheck_fragment_layout,null);
-    //    mView = super.onCreateView(inflater, container, FragmentFactory.getInstance().putLayoutId(R.layout.machinecheck_fragment_layout));
+        // mView = super.onCreateView(inflater, container, FragmentFactory.getInstance().putLayoutId(R.layout.machinecheck_fragment_layout));
+        mView = inflater.inflate(R.layout.machinecheck_fragment_layout, null);
         initview();
         FragmentFactory.curPage = FragmentEnum.MachineCheckFragment;
         startMachineCheck();
@@ -58,6 +60,12 @@ public class MachineCheckFragment extends BasicFragment implements ICheckMachine
     }
 
     private void initview() {
+        mCheck_machineCode = (ProgressBar) mView.findViewById(R.id.check_machineCode);
+        mMachineCode_check_Tips = (TextView) mView.findViewById(R.id.machineCode_check_Tips);
+        mCheck_mainCtrl = (ProgressBar) mView.findViewById(R.id.check_mainCtrl);
+        mCheck_mainCtrl_Tips = (TextView) mView.findViewById(R.id.check_mainCtrl_Tips);
+        mSub_Mqtt = (ProgressBar) mView.findViewById(R.id.sub_Mqtt);
+        mSub_Mqtt_Tips = (TextView) mView.findViewById(R.id.sub_Mqtt_Tips);
         tologin = (Button) mView.findViewById(R.id.tologin);
         homeActivity = HomeActivity.getInstance();
         tologin.setOnClickListener(this);
@@ -79,7 +87,9 @@ public class MachineCheckFragment extends BasicFragment implements ICheckMachine
 
 
     private void startMachineCheck() {
+        timeDownText.setVisibility(View.GONE);
         beginCheck();
+
         mMachineCheckPresenter = new MachineCheckPresenter(this, getActivity());
 
         if (checkThread == null) {
@@ -131,11 +141,58 @@ public class MachineCheckFragment extends BasicFragment implements ICheckMachine
     }
 
     @Override
+    public void ChangeProgressBar(MachineCheckState state, boolean isSuccess) {
+        switch (state) {
+            case MACHINECODECHECK:
+                if (isSuccess) {
+                    mCheck_machineCode.setProgress(30);
+                    Waiter.doWait(500);
+                    mCheck_machineCode.setProgress(50);
+                    Waiter.doWait(300);
+                    mCheck_machineCode.setProgress(70);
+                    Waiter.doWait(100);
+                    mCheck_machineCode.setProgress(100);
+                } else {
+
+                }
+                break;
+            case MAINCTRLCHECK:
+                if (isSuccess) {
+                    mCheck_mainCtrl.setProgress(30);
+                    Waiter.doWait(500);
+                    mCheck_mainCtrl.setProgress(50);
+                    Waiter.doWait(300);
+                    mCheck_mainCtrl.setProgress(70);
+                    Waiter.doWait(100);
+                    mCheck_mainCtrl.setProgress(100);
+                } else {
+
+                }
+                break;
+            case SUBMQTT:
+                if (isSuccess) {
+                    mSub_Mqtt.setProgress(30);
+                    Waiter.doWait(500);
+                    mSub_Mqtt.setProgress(50);
+                    Waiter.doWait(300);
+                    mSub_Mqtt.setProgress(70);
+                    Waiter.doWait(100);
+                    mSub_Mqtt.setProgress(100);
+                } else {
+
+                }
+                break;
+        }
+    }
+
+
+    @Override
     public void SetButtonState(boolean isHide) {
+
         if (isHide) {
-
+            tologin.setVisibility(View.VISIBLE);
         } else {
-
+            tologin.setVisibility(View.GONE);
         }
     }
 
@@ -155,13 +212,25 @@ public class MachineCheckFragment extends BasicFragment implements ICheckMachine
 
     @Override
     public void showTips(int whichTextView, String tips) {
-//        Toast toast = Toast.makeText(getActivity(), tips, Toast.LENGTH_LONG);
-//        toast.show();
+        switch (whichTextView) {
+            case 1:
+                mMachineCode_check_Tips.setText(tips);
+                break;
+            case 2:
+                mCheck_mainCtrl_Tips.setText(tips);
+                break;
+            case 3:
+                mSub_Mqtt_Tips.setText(tips);
+                break;
+        }
+       /* Toast toast = Toast.makeText(getActivity(), tips, Toast.LENGTH_LONG);
+        toast.show();*/
     }
 
     @Override
     public void StartTimeCount() {
         doCountDown = true;
+        timeDownText.setVisibility(View.VISIBLE);
         Thread countThr = new Thread(new Runnable() {
 
             @Override

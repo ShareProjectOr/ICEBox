@@ -52,6 +52,14 @@ public class ChooseCupDialogTest extends Dialog implements View.OnClickListener,
         init();
     }
 
+    public void setData(Coffee coffee, ChooseCupListenner listenner) {
+        this.coffee = coffee;
+        this.listenner = listenner;
+        coffeeFomat.setCoffee(coffee);
+        initData();
+
+    }
+
     public void init() {
         initView();
 
@@ -68,28 +76,6 @@ public class ChooseCupDialogTest extends Dialog implements View.OnClickListener,
         window.setAttributes(wl);
     }
 
-    private void initView() {
-        requestWindowFeature(Window.FEATURE_NO_TITLE);
-        view = LayoutInflater.from(context).inflate(R.layout.dialog_choose_pay_layout, null);
-        if (viewHolder == null) {
-            viewHolder = new ViewHolder(view);
-        }
-
-        viewHolder.mTaste_suger.setOnCheckedChangeListener(this);
-        viewHolder.mTaste_milk.setOnCheckedChangeListener(this);
-        viewHolder.mCoffeeHot.setOnClickListener(this);
-        viewHolder.mCoffeeCold.setOnClickListener(this);
-        setContentView(view);
-        setCanceledOnTouchOutside(false);
-    }
-
-    public void setData(Coffee coffee, ChooseCupListenner listenner) {
-        this.coffee = coffee;
-        this.listenner = listenner;
-        coffeeFomat.setCoffee(coffee);
-        initData();
-    }
-
     public void initData() {
         if (coffee == null) {
             return;
@@ -103,55 +89,38 @@ public class ChooseCupDialogTest extends Dialog implements View.OnClickListener,
 
         viewHolder.mCoffeeName.setText(coffee.name);
 
-        checkHotOrCold(true);
-
-        initSugerGroup();
-
-        initMilkGroup();
-    }
-
-    protected void setEnable(RadioGroup group) {
-        for (int i = 0; i < group.getChildCount(); i++) {
+        /*
+        * 没有多奶规格
+        * */
+        if (coffee.milkFomat == -1) {
+            //    viewHolder.mTaste_milk.setVisibility(View.GONE);
+        }
+        /*
+        * 可使用规格不足
+        * */
+        for (int i = 0; i < viewHolder.mTaste_suger.getChildCount(); i++) {
             if (i != 0) {
-                RadioButton button = (RadioButton) group.getChildAt(i);
+                RadioButton button = (RadioButton) viewHolder.mTaste_suger.getChildAt(i);
                 button.setEnabled(false);
-                button.setAlpha(0.8f);
+                button.setAlpha(0.3f);
             }
         }
     }
 
-    private void checkHotOrCold(boolean checkHot) {
-        if (checkHot) {
-            viewHolder.mCoffeeHot.setSelected(true);
-            viewHolder.mCoffeeCold.setSelected(false);
-        } else {
-            viewHolder.mCoffeeHot.setSelected(true);
-            viewHolder.mCoffeeCold.setSelected(false);
+    private void initView() {
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
+        view = LayoutInflater.from(context).inflate(R.layout.dialog_choose_cup_layout, null);
+        if (viewHolder == null) {
+            viewHolder = new ViewHolder(view);
         }
+
+        viewHolder.mTaste_suger.setOnCheckedChangeListener(this);
+        viewHolder.mTaste_milk.setOnCheckedChangeListener(this);
+        viewHolder.mCoffeeHot.setOnClickListener(this);
+        viewHolder.mCoffeeCold.setOnClickListener(this);
+        setContentView(view);
+        setCanceledOnTouchOutside(false);
     }
-
-    private void initSugerGroup() {
-
-        setEnable(viewHolder.mTaste_suger);
-    }
-
-    private void initMilkGroup() {
-
-        setEnable(viewHolder.mTaste_milk);
-
-    }
-
-    private void updateTextColor(RadioGroup group, int checkedId) {
-        for (int i = 0; i < group.getChildCount(); i++) {
-            RadioButton button = (RadioButton) group.getChildAt(i);
-            if (button.getId() != checkedId) {
-                button.setSelected(false);
-            } else {
-                button.setSelected(true);
-            }
-        }
-    }
-
 
     public void showDialog() {
 
@@ -216,6 +185,17 @@ public class ChooseCupDialogTest extends Dialog implements View.OnClickListener,
 
                 coffeeFomat.setMilkFomat(CoffeeFomatInterface.MILK_MORE);
                 break;
+        }
+    }
+
+    private void updateTextColor(RadioGroup group, int checkedId) {
+        for (int i = 0; i < group.getChildCount(); i++) {
+            RadioButton button = (RadioButton) group.getChildAt(i);
+            if (button.getId() != checkedId) {
+                button.setSelected(false);
+            } else {
+                button.setSelected(true);
+            }
         }
     }
 
