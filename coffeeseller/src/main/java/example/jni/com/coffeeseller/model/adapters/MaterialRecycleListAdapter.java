@@ -7,11 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import java.util.List;
-
 import example.jni.com.coffeeseller.R;
-import example.jni.com.coffeeseller.bean.bunkerData;
-import example.jni.com.coffeeseller.contentprovider.MaterialSql;
 
 /**
  * Created by Administrator on 2018/4/16.
@@ -19,10 +15,8 @@ import example.jni.com.coffeeseller.contentprovider.MaterialSql;
 
 public class MaterialRecycleListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private Activity mContext;
-    private MaterialSql sql;
 
     public MaterialRecycleListAdapter(Activity mContext) {
-        sql = new MaterialSql(mContext);
         this.mContext = mContext;
     }
 
@@ -36,22 +30,13 @@ public class MaterialRecycleListAdapter extends RecyclerView.Adapter<RecyclerVie
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         ContentViewHolder mHolder = (ContentViewHolder) holder;
-        List<bunkerData> list = sql.getBunkersList();
-        mHolder.bankersName.setText(list.get(position).getContainerID() + "-" + list.get(position).getMaterialName() + "仓");
-        mHolder.Material.setText(list.get(position).getMaterialName());
-        mHolder.AddTime.setText(list.get(position).getLastLoadingTime());
-        mHolder.Opration.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                
-            }
-        });
+      //  mHolder.bankersName
 
     }
 
     @Override
     public int getItemCount() {
-        return sql.getBunkersList().size();
+        return 0;
     }
 
     class ContentViewHolder extends RecyclerView.ViewHolder {

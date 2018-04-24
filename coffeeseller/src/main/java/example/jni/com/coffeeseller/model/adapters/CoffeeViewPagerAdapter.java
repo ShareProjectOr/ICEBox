@@ -3,6 +3,8 @@ package example.jni.com.coffeeseller.model.adapters;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.support.v4.view.PagerAdapter;
+import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -11,6 +13,8 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
 import android.widget.GridView;
+import android.widget.LinearLayout;
+import android.widget.ListAdapter;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -21,7 +25,9 @@ import example.jni.com.coffeeseller.bean.Coffee;
 import example.jni.com.coffeeseller.factory.FragmentEnum;
 import example.jni.com.coffeeseller.factory.FragmentFactory;
 import example.jni.com.coffeeseller.model.listeners.GridViewItemListener;
+import example.jni.com.coffeeseller.utils.MyLog;
 import example.jni.com.coffeeseller.views.activities.HomeActivity;
+import example.jni.com.coffeeseller.views.customviews.HomeGridView;
 import example.jni.com.coffeeseller.views.fragments.BuyFragment;
 
 /**
@@ -29,6 +35,7 @@ import example.jni.com.coffeeseller.views.fragments.BuyFragment;
  */
 
 public class CoffeeViewPagerAdapter extends PagerAdapter {
+    private static String TAG = "CoffeeViewPagerAdapter";
     private HomeActivity homeActivity;
     private List<Coffee> coffees;
     private List<GridView> gridViews;
@@ -44,6 +51,10 @@ public class CoffeeViewPagerAdapter extends PagerAdapter {
         this.gridViewItemListener = gridViewItemListener;
         this.gridViews = new ArrayList<>();
         getGridViews();
+
+
+        Log.d("-----------", gridViews.size() + " -------------");
+        Log.d("-----------", coffees.size() + " --------coffees-----");
     }
 
     @Override
@@ -82,28 +93,51 @@ public class CoffeeViewPagerAdapter extends PagerAdapter {
                 gridCoffees = coffees.subList(i * onePageCount, coffees.size());
             }
             View view = LayoutInflater.from(homeActivity).inflate(R.layout.coffee_grid_layout, null, false);
-            final GridView gridView = (GridView) view.findViewById(R.id.coffeeGrid);
+            final HomeGridView gridView = (HomeGridView) view.findViewById(R.id.coffeeGrid);
             gridView.setNumColumns(onePageCount / 2);
+            gridView.setGravity(Gravity.CENTER);
+
             gridView.setSelector(new ColorDrawable(Color.TRANSPARENT));
             gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
-                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                public void onItemClick(AdapterView<?> parent, final View view, int position, long id) {
                     if (System.currentTimeMillis() - lastClickTime < 500) {
                         return;
+                    } else {
+                        lastClickTime = System.currentTimeMillis();
                     }
-                    if (!view.isEnabled()) {
+           /*         if (!view.isEnabled()) {
                         return;
-                    }
+                    }*/
                     if (gridViewItemListener != null) {
+                        MyLog.d(TAG, "gridViewItemListener has been called");
                         gridViewItemListener.onGridItemClick(parent, view, position, id);
                     }
                     Animation anim = AnimationUtils.loadAnimation(homeActivity, R.anim.set_snake);
+
+                    anim.setAnimationListener(new Animation.AnimationListener() {
+                        @Override
+                        public void onAnimationStart(Animation animation) {
+
+                        }
+
+                        @Override
+                        public void onAnimationEnd(Animation animation) {
+                            if (view != null) {
+                                view.clearAnimation();
+                            }
+                        }
+
+                        @Override
+                        public void onAnimationRepeat(Animation animation) {
+
+                        }
+                    });
                     if (view != null) {
                         view.startAnimation(anim);
                     }
                 }
             });
-
             gridView.setAdapter(new CoffeeGridAdapter(homeActivity, gridCoffees));
             gridView.setOnTouchListener(new View.OnTouchListener() {
                 @Override
@@ -116,7 +150,6 @@ public class CoffeeViewPagerAdapter extends PagerAdapter {
             * 添加圆点
             * */
             addPoint(i);
-
         }
     }
 

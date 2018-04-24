@@ -25,17 +25,6 @@ public class SharedPreferencesManager {
         sharedPreferences = mContext.getSharedPreferences("config", Context.MODE_PRIVATE);
     }
 
-    public void setTopicIP(String topicIP) {
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putString("topicIP", topicIP);
-        editor.commit();
-    }
-
-
-    public String getTopicIP() {
-        return sharedPreferences.getString("topicIP", "");
-    }
-
     public void setLoginAccount(String adminAcount) {
 
 

@@ -1,6 +1,5 @@
 package example.jni.com.coffeeseller.views.viewinterface;
 
-import example.jni.com.coffeeseller.MachineConfig.MachineCheckState;
 import example.jni.com.coffeeseller.factory.FragmentEnum;
 
 /**
@@ -14,8 +13,6 @@ public interface ICheckMachineView {
     void ChangePage(FragmentEnum fragment);
 
     void endCheck();
-
-    void ChangeProgressBar(MachineCheckState state, boolean isSuccess);
 
     void showTips(int whichTextView, String tips);
 

@@ -35,6 +35,6 @@
     <!--灰色  未选中下划线 -->
     <color name="colorLineDefault">#FFAAAAAA</color>
     <color name="layoutgraybackground">#F2F2F2</color>
-    <color name="lightorange">#FCC141</color>
-    <color name="deeporange">#FD6F02</color>
+    <color name="coffeeColor">#B64314</color>
+
 </resources>

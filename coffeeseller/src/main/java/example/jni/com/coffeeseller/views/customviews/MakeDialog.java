@@ -2,15 +2,22 @@ package example.jni.com.coffeeseller.views.customviews;
 
 import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.os.AsyncTask;
 import android.os.Handler;
 import android.support.annotation.StyleRes;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import java.io.StringWriter;
 import java.util.List;
 
 import cof.ac.inter.CoffMsger;
@@ -24,6 +31,10 @@ import example.jni.com.coffeeseller.R;
 import example.jni.com.coffeeseller.bean.CoffeeMakeStateRecorder;
 import example.jni.com.coffeeseller.utils.MyLog;
 import example.jni.com.coffeeseller.utils.ScreenUtil;
+import example.jni.com.coffeeseller.utils.Waiter;
+
+import static android.view.View.GONE;
+import static android.view.View.VISIBLE;
 
 /**
  * Created by WH on 2018/3/22.
@@ -31,6 +42,12 @@ import example.jni.com.coffeeseller.utils.ScreenUtil;
 
 public class MakeDialog extends Dialog implements View.OnClickListener {
     private static String TAG = "MakeDialog";
+    private long MAX_TOTAL_MK_TIME = 180000;
+    private long MAX_STATE_TIME = 5000;
+    private int MAX_PROGRESS = 100;
+    private int MAX_MAKING_PROGRESS = 92;
+    private int CONTAIN_MAKING_PROGRESS_TIME = 550;
+    private int NOT_CONTAIN_MAKING_PROGRESS_TIME = 200;
     private Context context;
     private MakingViewHolder makingViewHolder;
     private CoffMsger coffMsger;
@@ -38,8 +55,11 @@ public class MakeDialog extends Dialog implements View.OnClickListener {
     private CoffeeMakeStateRecorder coffeeMakeStateRecorder;
     private Handler handler;
     private boolean isStartMaking = false;
-    private long START_MAKING_TIME = 0;
-    private long WAIT_TIME = 120000;
+    private boolean makeSuccess = false;
+
+    private long lastStateTime;
+    private long totalMakingTime;
+    private StringBuffer buffer;
 
 
     public MakeDialog(Context context) {
@@ -55,30 +75,41 @@ public class MakeDialog extends Dialog implements View.OnClickListener {
     }
 
     public void init() {
-        initView();
 
         Window window = this.getWindow();
         WindowManager.LayoutParams wl = window.getAttributes();
         window.setTitle(null);
         window.setWindowAnimations(R.style.dialogWindowAnim);
-        window.setBackgroundDrawableResource(android.R.color.transparent);
-        wl.width = ScreenUtil.getScreenWidth(context) / 2;
-        wl.height = WindowManager.LayoutParams.WRAP_CONTENT;
-        wl.alpha = 0.9f;
+//        window.setBackgroundDrawableResource(android.R.color.transparent);
+        wl.width = ScreenUtil.getScreenWidth(context) /2;//ScreenUtil.getScreenWidth(context) / 2
+//        wl.height = ScreenUtil.getScreenHeight(context) * 3 / 4;
+        wl.height = LinearLayout.LayoutParams.WRAP_CONTENT;
+//        wl.alpha = 0.3f;
         window.setAttributes(wl);
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
         handler = new Handler();
+        coffMsger = CoffMsger.getInstance();
+        buffer = new StringBuffer();
     }
 
     public void initData(List<ContainerConfig> containerConfigs) {
         this.containerConfigs = containerConfigs;
-        coffMsger = CoffMsger.getInstance();
+        initView();
+        startMkCoffee();
+    }
+
+    public void startMkCoffee() {
         if (coffeeMakeStateRecorder == null) {
             coffeeMakeStateRecorder = new CoffeeMakeStateRecorder();
         }
         coffeeMakeStateRecorder.init();
         if (coffMsger != null) {
             if (this.containerConfigs != null && this.containerConfigs.size() >= 0) {
-                judgeMakeState();
+                if (isCanMaking()) {
+                    makingViewHolder.mIsMakeLayout.setVisibility(View.VISIBLE);
+                } else {
+                    disDialog(true);
+                }
             } else {
                 MyLog.d(TAG, "containerConfigs is null");
             }
@@ -88,197 +119,429 @@ public class MakeDialog extends Dialog implements View.OnClickListener {
     }
 
     public void updateProgress() {
-        if (!isStartMaking) {
-            makingViewHolder.progressbarWithText.updateProgressAnim();
+
+        if (coffeeMakeStateRecorder.state == CoffeeMakeState.COFFEE_ISMAKING && !isStartMaking) {
+
+            isStartMaking = true;
+            updateProgressAnim(CONTAIN_MAKING_PROGRESS_TIME);
+
+        } else if (coffeeMakeStateRecorder.state == CoffeeMakeState.COFFEE_DOWN_POWER && !isStartMaking) {
+
+            isStartMaking = true;
+            updateProgressAnim(NOT_CONTAIN_MAKING_PROGRESS_TIME);
+
+        } else if (coffeeMakeStateRecorder.state == CoffeeMakeState.COFFEEFINISHED_CUPNOTAKEN && isStartMaking) {
+
+            isStartMaking = false;
+            makeSuccess = true;
+            updateProgressAnim(0);
+
         }
     }
 
     /*
     * 制作咖啡
     * */
-    private void judgeMakeState() {
-        setCanceledOnTouchOutside(false);
+    private void mkCoffee() {
+
+
         Runnable runnable = new Runnable() {
             @Override
             public void run() {
-                MyLog.d(TAG, "coffeeMakeStateRecorder.state = " + coffeeMakeStateRecorder.state);
 
-                Result result = coffMsger.mkCoffee(containerConfigs);
-                if (!isResultVlide(result)) {
-                    MyLog.d(TAG, "make coffee failed");
-                    coffeeMakeStateRecorder.setState(CoffeeMakeState.COFFEEMAKING_FAILED);
-                    return;
-                }
+                //   StringBuffer buffer = new StringBuffer();
+                buffer.append("提示：");
+                MachineState machineState = null;
+                lastStateTime = System.currentTimeMillis();
+                totalMakingTime = System.currentTimeMillis();
                 while (true) {
-                    MachineState machineState = coffMsger.getCurState();
-                    Result stateResult = machineState.getResult();
-                    if (!isResultVlide(stateResult)) {
-                        coffeeMakeStateRecorder.setState(CoffeeMakeState.COFFEEMAKING_FAILED);
+
+
+                    machineState = coffMsger.getLastMachineState();
+
+                    if (isMkTimeOut()) {
+
+                        disDialog(false);
+                        break;
+                    }
+                    if (DealMachineState(machineState)) {
+
+                        if (machineState.getMajorState().getCurStateEnum() == StateEnum.HAS_ERR) {
+
+                            coffeeMakeStateRecorder.state = CoffeeMakeState.COFFEEMAKING_FAILED;
+                            buffer.append("/n");
+                            buffer.append("制作过程中接收到0a");
+                        }
+                    } else {
+
                         continue;
                     }
 
 
-                    if (coffeeMakeStateRecorder.state == CoffeeMakeState.COFFEEMAKING_ERR) {
+                    if (coffeeMakeStateRecorder.state == null) {
+
+                        Result result = coffMsger.mkCoffee(containerConfigs);
+                        if (result.getCode() == Result.SUCCESS) {
+
+                            coffeeMakeStateRecorder.state = CoffeeMakeState.COFFEE_MAKE_INIT;
+                        } else {
+
+                            coffeeMakeStateRecorder.state = CoffeeMakeState.COFFEEMAKING_FAILED;
+                            buffer.append("/n");
+                            buffer.append("发送咖啡制作指令，返回" + result.getErrDes());
+                        }
+
+                    }
+
+                    if (coffeeMakeStateRecorder.state == CoffeeMakeState.COFFEE_MAKE_INIT) {
+
+                        dealStateMakeInit(machineState);
+                        continue;
+                    }
+                    if (coffeeMakeStateRecorder.state == CoffeeMakeState.COFFEE_DOWN_CUP) {
+
+                        dealStateDownCup(machineState);
+
+                        continue;
+                    }
+
+                    if (coffeeMakeStateRecorder.state == CoffeeMakeState.COFFEE_ISMAKING) {
+
+                        dealMakingState(machineState);
+
+                        updateProgress();
+
+                        continue;
+                    }
+
+                    if (coffeeMakeStateRecorder.state == CoffeeMakeState.COFFEE_DOWN_POWER) {
+
+                        dealStateDownPower(machineState);
+
+                        updateProgress();
+
+                        continue;
+                    }
+
+                    if (coffeeMakeStateRecorder.state == CoffeeMakeState.COFFEEFINISHED_CUPNOTAKEN) {
+                        //上报交易记录
+
+                        updateProgress();
+
+                        disDialog(false);
+
+                    }
+                    if (coffeeMakeStateRecorder.state == CoffeeMakeState.COFFEEFINISHED_CUPISTAKEN) {
+
+                        coffeeMakeStateRecorder.state = null;
+
+                        disDialog(false);
+                    }
+                    if (coffeeMakeStateRecorder.state == CoffeeMakeState.COFFEEMAKING_FAILED) {
+
                         disDialog(true);
-                        break;
-                    }
-
-                    if (coffeeMakeStateRecorder.state == null || coffeeMakeStateRecorder.state != CoffeeMakeState.COFFEEMAKING_FINISHED) {
-                        MajorState majorState = machineState.getMajorState();
-
-                        if (majorState != null) {
-                            StateEnum curStateEnum = majorState.getCurStateEnum();
-
-                            if (machineState.hasCupOnShelf()) {
-                                MyLog.d(TAG, "cup has been down but not on the shelf");
-                                coffeeMakeStateRecorder.setState(CoffeeMakeState.COFFEE_DOWN_CUP);
-                            }
-                            changeRecorderState(curStateEnum);
-
-                        } else {
-                            coffeeMakeStateRecorder.setState(CoffeeMakeState.COFFEEMAKING_FAILED);
-                            MyLog.d(TAG, "MajorState is null");
-                            continue;
-                        }
-                    }
-                    if (coffeeMakeStateRecorder.state == CoffeeMakeState.COFFEEMAKING_FINISHED) {
-                        if (machineState.hasCupOnShelf()) {
-                            if (System.currentTimeMillis() - START_MAKING_TIME > WAIT_TIME) {
-
-                                MyLog.d(TAG, "coffee has not been taken cup ,time is too long,over 120s !");
-                                MyLog.W(TAG, "coffee mk time is too long!");
-                                coffeeMakeStateRecorder.setState(CoffeeMakeState.COFFEEFINISHED_CUPNOTAKEN);
-                                break;
-                            } else {
-                                continue;
-                            }
-                        } else {
-                            MyLog.W(TAG, "coffee has been taken cup !");
-                            coffeeMakeStateRecorder.setState(CoffeeMakeState.COFFEEFINISHED_CUPNOTAKEN);
-                            break;
-                        }
-
                     }
                 }
             }
         };
-        MachineState machineState = coffMsger.getCurState();
-        if (machineState != null) {
+        new Thread(runnable).start();
 
-            if (machineState.hasCupOnShelf()) {
-                MyLog.W(TAG, "there is a cup in the font of door");
+    }
 
-                disDialog(true);
-            } else {
 
-                MajorState majorState = machineState.getMajorState();
-                if (majorState != null) {
-                    if (majorState.getCurStateEnum() == StateEnum.IDLE) {
+    protected void dealStateDownCup(MachineState machineState) {
 
-                        handler.post(runnable);
-                    } else if (majorState.getCurStateEnum() == StateEnum.HAS_ERR) {
-                        disDialog(true);
-                        MyLog.d(TAG, "machine has err!");
-                    }
-                } else {
-                    MyLog.d(TAG, "majorState is null before mkCoffee");
-                }
-            }
+        if (machineState.getMajorState().getCurStateEnum() == StateEnum.MAKING) {
+
+            coffeeMakeStateRecorder.state = CoffeeMakeState.COFFEE_ISMAKING;
+        } else if (machineState.getMajorState().getCurStateEnum() == StateEnum.DOWN_POWER) {
+
+            coffeeMakeStateRecorder.state = CoffeeMakeState.COFFEE_DOWN_POWER;
+        } else if (machineState.getMajorState().getCurStateEnum() == StateEnum.FINISH) {
+
+            coffeeMakeStateRecorder.state = CoffeeMakeState.COFFEEFINISHED_CUPNOTAKEN;
+        } else if (machineState.getMajorState().getCurStateEnum() == StateEnum.HAS_ERR) {
+
+            coffeeMakeStateRecorder.state = CoffeeMakeState.COFFEEMAKING_FAILED;
+
+        }
+    }
+
+    private boolean dealMakingState(MachineState machineState) {
+
+        if (machineState.getMajorState().getCurStateEnum() == StateEnum.DOWN_POWER) {
+
+            coffeeMakeStateRecorder.state = CoffeeMakeState.COFFEE_DOWN_POWER;
+            return true;
+        } else if (machineState.getMajorState().getCurStateEnum() == StateEnum.FINISH) {
+
+            coffeeMakeStateRecorder.state = CoffeeMakeState.COFFEEFINISHED_CUPNOTAKEN;
+            return true;
+        }
+        return false;
+    }
+
+    protected void dealStateDownPower(MachineState machineState) {
+
+        if (machineState.getMajorState().getCurStateEnum() == StateEnum.MAKING) {
+
+            coffeeMakeStateRecorder.state = CoffeeMakeState.COFFEE_ISMAKING;
+        } else if (machineState.getMajorState().getCurStateEnum() == StateEnum.FINISH) {
+
+            coffeeMakeStateRecorder.state = CoffeeMakeState.COFFEEFINISHED_CUPNOTAKEN;
+        }
+    }
+
+    protected void dealStateMakeInit(MachineState machineState) {
+        if (machineState.getMajorState().getCurStateEnum() == StateEnum.DOWN_CUP) {
+
+            coffeeMakeStateRecorder.state = CoffeeMakeState.COFFEE_DOWN_CUP;
+        }
+    }
+
+    private boolean DealMachineState(MachineState curState) {
+
+        if (curState.getResult().getCode() == Result.SUCCESS) {
+
+            lastStateTime = System.currentTimeMillis();
+            return true;
         } else {
-            MyLog.d(TAG, "machinestate is null before mkCoffee");
+            if (isTimeOut()) {
+
+                coffeeMakeStateRecorder.state = CoffeeMakeState.COFFEEMAKING_FAILED;
+
+            }
+            return false;
         }
     }
 
+    private boolean isTimeOut() {
 
-    private void changeRecorderState(StateEnum stateEnum) {
+        long curTime = System.currentTimeMillis();
+        if (curTime - lastStateTime > MAX_STATE_TIME) {
 
-        MyLog.d(TAG, "stateEnum= " + stateEnum);
-        switch (stateEnum) {
-            case UNKNOW_STATE:
-                break;
-            case DOWN_CUP:
-                coffeeMakeStateRecorder.setState(CoffeeMakeState.COFFEE_DOWN_CUP);
-                MyLog.d(TAG, "machine current operator is  DOWN_CUP");
-                MyLog.W(TAG, "machine current operator is  DOWN_CUP");
-                break;
-            case MAKING:
-                if (coffeeMakeStateRecorder.state == CoffeeMakeState.COFFEE_DOWN_CUP) {
-                    updateProgress();
-                    isStartMaking = true;
-                    coffeeMakeStateRecorder.setState(CoffeeMakeState.COFFEE_ISMAKING);
-
-                } else if (coffeeMakeStateRecorder.state == CoffeeMakeState.COFFEE_DOWN_POWER) {
-
-                    coffeeMakeStateRecorder.setState(CoffeeMakeState.COFFEE_ISMAKING);
-                }
-                MyLog.d(TAG, "machine current operator is  MAKING");
-                MyLog.W(TAG, "machine current operator is  MAKING");
-
-                break;
-            case DOWN_POWER:
-                coffeeMakeStateRecorder.setState(CoffeeMakeState.COFFEE_DOWN_POWER);
-                MyLog.d(TAG, "machine current operator is  DOWN_POWER");
-                MyLog.W(TAG, "machine current operator is  DOWN_POWER");
-                break;
-            case FINISH:
-                MyLog.d(TAG, "machine current operator is  making FINISH");
-                MyLog.W(TAG, "machine current operator is  making FINISH");
-                if (coffeeMakeStateRecorder.state == CoffeeMakeState.COFFEE_ISMAKING) {
-                    isStartMaking = false;
-                    makingViewHolder.progressbarWithText.makeSuccess = true;
-                    updateProgress();
-                    coffeeMakeStateRecorder.setState(CoffeeMakeState.COFFEEMAKING_FINISHED);
-                    START_MAKING_TIME = System.currentTimeMillis();
-                }
-
-            case HAS_ERR:
-                MyLog.d(TAG, "last state is " + coffeeMakeStateRecorder.state + ", but cur state is HAS_ERR");
-                MyLog.W(TAG, "last state is " + coffeeMakeStateRecorder.state + ", but cur state is HAS_ERR");
-                coffeeMakeStateRecorder.setState(CoffeeMakeState.COFFEEMAKING_ERR);
-                makingViewHolder.mErrTip.setVisibility(View.VISIBLE);
-                makingViewHolder.progressbarWithText.setVisibility(View.GONE);
-                break;
+            return true;
         }
+        return false;
     }
 
-    private boolean isResultVlide(Result result) {
-        if (result == null) {
+    private boolean isMkTimeOut() {
 
-            MyLog.d(TAG, "result=" + result);
-            MyLog.W(TAG, "sent coffeeMking but comm failed instantly");
-            disDialog(true);
-            return false;
-        } else if (result.getCode() != Result.SUCCESS) {
+        long curTime = System.currentTimeMillis();
+        if (curTime - totalMakingTime > MAX_TOTAL_MK_TIME) {
 
-            MyLog.d(TAG, "result invilide error =" + result.getErrDes());
-            MyLog.W(TAG, "sent coffeeMking but resultMsg is " + result.getErrDes());
-            disDialog(true);
+            return true;
+        }
+        return false;
+    }
+
+    private boolean isCanMaking() {
+        buffer.setLength(0);
+        MachineState machineState = coffMsger.getLastMachineState();
+
+
+        if (!checkMaterial(machineState)) {
+
             return false;
+        } else {
+
+            MajorState majorState = machineState.getMajorState();
+
+            MyLog.d(TAG, "majorState.getCurStateEnum() ==" + majorState.getCurStateEnum());
+            if (majorState.getCurStateEnum() == StateEnum.FINISH) {
+
+                buffer.append("\n");
+                buffer.append("杯架上有杯子未取走");
+
+                return false;
+            } else if (majorState.getCurStateEnum() != StateEnum.IDLE) {
+                buffer.append("\n");
+                switch (majorState.getCurStateEnum()) {
+                    case DOOR_OPNE:
+                        buffer.append("错误:升降门未落下");
+                        break;
+                    case DOWN_CUP:
+                        buffer.append("错误:正在落杯中");
+                        break;
+                    case DOWN_POWER:
+                        buffer.append("错误:正在落粉中");
+                        break;
+                    case HEAT_POT:
+                        buffer.append("错误:锅炉加热中");
+                        break;
+                    case UNKNOW_STATE:
+                        buffer.append("错误:未知错误");
+                        break;
+
+                }
+
+
+                return false;
+            }
         }
         return true;
     }
 
-    private void initView() {
-        requestWindowFeature(Window.FEATURE_NO_TITLE);
+    //检查其他状态,原料状态
+    private boolean checkMaterial(MachineState machineState) {
+        if (machineState == null) {
+            return false;
+        }
 
+        MyLog.d(TAG, "----------" + machineState.isCupShelfRightPlace());
+        MyLog.d(TAG, "----------" + machineState.hasCupOnShelf());
+        MyLog.d(TAG, "----------" + machineState.isLittleDoorOpen());
+
+        boolean isCheckCanMake = true;
+        //  StringBuffer buffer = new StringBuffer();
+        buffer.append("提示：");
+        if (machineState.getPotTemp() > 130) {
+
+            isCheckCanMake = false;
+            buffer.append("\n");
+            buffer.append("锅炉温度大于130");
+
+        }
+        if (machineState.getPotPressure() > 1500) {
+
+            isCheckCanMake = false;
+            buffer.append("\n");
+            buffer.append("锅炉压力大于1500");
+
+        }
+        if (!machineState.isBeanEnough()) {
+
+           /* isCheckCanMake = false;
+            buffer.append("\n");
+            buffer.append("咖啡豆不足");*/
+
+        }
+        if (machineState.isWasteContainerFull()) {
+
+          /*  isCheckCanMake = false;
+            buffer.append("\n");
+            buffer.append("污水仓已满");*/
+
+        }
+        if (machineState.isLittleDoorOpen()) {
+            Log.d(TAG, "前门未关");
+            isCheckCanMake = false;
+            buffer.append("\n");
+            buffer.append("前门未关");
+
+        }
+        if (!machineState.isCupShelfRightPlace()) {
+            Log.d(TAG, "杯架未在初始状态");
+            isCheckCanMake = false;
+            buffer.append("\n");
+            buffer.append("杯架未在初始状态");
+
+        }
+        if (machineState.hasCupOnShelf()) {
+            Log.d(TAG, "杯架上有杯子未取走");
+            isCheckCanMake = false;
+            buffer.append("\n");
+            buffer.append("杯架上有杯子未取走");
+
+        }
+        if (!isCheckCanMake) {
+            //     makingViewHolder.mErrTip.setText(buffer.toString());
+
+            MyLog.W(TAG, "err tip : " + buffer.toString());
+        }
+
+        return isCheckCanMake;
+    }
+
+    private void initView() {
         if (makingViewHolder == null) {
             makingViewHolder = new MakingViewHolder();
         }
-
+        makingViewHolder.mMakeBtn.setOnClickListener(this);
+        makingViewHolder.mNotMakeBtn.setOnClickListener(this);
         setContentView(makingViewHolder.view);
-        setCanceledOnTouchOutside(true);
+        setCanceledOnTouchOutside(false);
+        setOnDismissListener(new OnDismissListener() {
+            @Override
+            public void onDismiss(DialogInterface dialog) {
+                makeSuccess = false;
+            }
+        });
     }
 
+    public void updateProgressAnim(final int waitTime) {
+
+        new AsyncTask<Void, Integer, Integer>() {
+
+            @Override
+            protected Integer doInBackground(Void... params) {
+                if (!makeSuccess) {
+                    for (int i = 0; i <= MAX_MAKING_PROGRESS; i++) {
+
+                        publishProgress(i);
+
+                        if (i == MAX_MAKING_PROGRESS) {
+                            break;
+                        }
+                        if (makeSuccess) {
+                            publishProgress(MAX_PROGRESS);
+                            break;
+                        }
+                        Waiter.doWait(waitTime);
+                    }
+                } else {
+                    publishProgress(MAX_PROGRESS);
+                }
+
+                return null;
+            }
+
+            @Override
+            protected void onProgressUpdate(Integer... values) {
+
+                setProgress(values[0]);
+                super.onProgressUpdate(values);
+
+            }
+        }.execute();
+    }
+
+    public void setProgress(int progress) {
+
+        makingViewHolder.mProgressBar.setProgress(progress);
+        if (progress < MAX_PROGRESS / 2) {
+            makingViewHolder.mTipOne.setVisibility(VISIBLE);
+            makingViewHolder.mTipTwo.setVisibility(View.INVISIBLE);
+            makingViewHolder.mTipThress.setVisibility(View.INVISIBLE);
+        } else if (progress >= MAX_PROGRESS / 2 && progress < MAX_PROGRESS) {
+            makingViewHolder.mTipOne.setVisibility(View.INVISIBLE);
+            makingViewHolder.mTipTwo.setVisibility(View.VISIBLE);
+            makingViewHolder.mTipThress.setVisibility(View.INVISIBLE);
+            makingViewHolder.mMakeCenterImage.setImageResource(R.mipmap.making);
+        } else {
+            makingViewHolder.mTipOne.setVisibility(View.INVISIBLE);
+            makingViewHolder.mTipTwo.setVisibility(View.INVISIBLE);
+            makingViewHolder.mTipThress.setVisibility(View.VISIBLE);
+            makingViewHolder.mMakeCenterImage.setImageResource(R.mipmap.make_finish);
+
+        }
+    }
 
     public void showDialog() {
 
-        show();
+        if (!isShowing()) {
+
+            show();
+        } else {
+            MyLog.d(TAG, "dialog is showing");
+        }
     }
 
     public void disDialog(boolean isErr) {
         if (isErr) {
-            makingViewHolder.mErrTip.setVisibility(View.VISIBLE);
-            makingViewHolder.progressbarWithText.setVisibility(View.GONE);
+            makingViewHolder.mErrTip.setVisibility(VISIBLE);
+            makingViewHolder.mProgressBarLayout.setVisibility(GONE);
+            makingViewHolder.mErrTip.setText(buffer.toString());
         }
 
         handler.postDelayed(new Runnable() {
@@ -286,6 +549,7 @@ public class MakeDialog extends Dialog implements View.OnClickListener {
             public void run() {
                 if (isShowing()) {
                     dismiss();
+                    //    buffer.setLength(0);
                 }
             }
         }, 3000);
@@ -295,19 +559,35 @@ public class MakeDialog extends Dialog implements View.OnClickListener {
     public void onClick(View v) {
 
         switch (v.getId()) {
+            case R.id.notMake:
+                dismiss();
+                break;
+            case R.id.make:
 
+                makingViewHolder.mIsMakeLayout.setVisibility(GONE);
+                makingViewHolder.mProgressBarLayout.setVisibility(VISIBLE);
+
+                mkCoffee();
+
+                break;
         }
     }
 
     class MakingViewHolder {
         public View view;
         public TextView mErrTip;
-        public ProgressbarWithText progressbarWithText;
-        public TextView mProgressTextOne;
-        public TextView mProgressTextTwo;
-        public TextView mProgressTextThree;
+        public LinearLayout mIsMakeLayout;
+        public ImageView mNotMakeBtn;
+        public ImageView mMakeBtn;
+        public ImageView mMakeCenterImage;
 
+        public LinearLayout mProgressBarLayout;
         public ProgressBar mProgressBar;
+        public LinearLayout mTextLayout;
+        public LinearLayout mTipOne;
+        public LinearLayout mTipTwo;
+        public LinearLayout mTipThress;
+
 
         public MakingViewHolder() {
             initView();
@@ -316,13 +596,23 @@ public class MakeDialog extends Dialog implements View.OnClickListener {
         private void initView() {
             view = LayoutInflater.from(context).inflate(R.layout.make_out_layout, null);
             mErrTip = (TextView) view.findViewById(R.id.errTip);
-            progressbarWithText = (ProgressbarWithText) view.findViewById(R.id.progressTextLayout);
-            mProgressTextOne = (TextView) progressbarWithText.findViewById(R.id.tipOne);
-            mProgressTextTwo = (TextView) progressbarWithText.findViewById(R.id.tipTwo);
-            mProgressTextThree = (TextView) progressbarWithText.findViewById(R.id.tipThress);
-            mProgressBar = (ProgressBar) findViewById(R.id.progressBar);
-            progressbarWithText.init();
-            progressbarWithText.setProgress(0);
+            mIsMakeLayout = (LinearLayout) view.findViewById(R.id.isMakeLayout);
+            mNotMakeBtn = (ImageView) view.findViewById(R.id.notMake);
+            mMakeBtn = (ImageView) view.findViewById(R.id.make);
+            mMakeCenterImage = (ImageView) view.findViewById(R.id.makeCenterImage);
+
+            mProgressBarLayout = (LinearLayout) view.findViewById(R.id.progressBarLayout);
+            mProgressBar = (ProgressBar) view.findViewById(R.id.progressBar);
+            mTextLayout = (LinearLayout) view.findViewById(R.id.textLayout);
+            mTipOne = (LinearLayout) view.findViewById(R.id.tipOne);
+            mTipTwo = (LinearLayout) view.findViewById(R.id.tipTwo);
+            mTipThress = (LinearLayout) view.findViewById(R.id.tipThress);
+
+            mTipTwo.setVisibility(View.INVISIBLE);
+            mTipThress.setVisibility(View.INVISIBLE);
+            mProgressBarLayout.setVisibility(GONE);
+            mIsMakeLayout.setVisibility(GONE);
+
         }
 
     }

@@ -3,6 +3,7 @@ package example.jni.com.coffeeseller.model.adapters;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,8 +28,10 @@ public class CoffeeGridAdapter extends BaseAdapter {
     private List<Coffee> coffees;
 
     private int[] images = {
-            R.mipmap.cafe_irish, R.mipmap.flat_white, R.mipmap.caramel_macchiato, R.mipmap.cappuccino, R.mipmap.americano, R.mipmap.cafe_mocha,
-            R.mipmap.cafe_latte, R.mipmap.viennese, R.mipmap.espresso
+            R.mipmap.cafe_latte, R.mipmap.americano, R.mipmap.cafe_mocha, R.mipmap.cappuccino,
+            R.mipmap.fragrant_milk,
+            R.mipmap.chocolate_milk, R.mipmap.rich_chocolate,
+            R.mipmap.espresso
     };
 
 
@@ -61,6 +64,7 @@ public class CoffeeGridAdapter extends BaseAdapter {
         if (convertView == null) {
             convertView = LayoutInflater.from(context).inflate(R.layout.grid_item_coffee_layout, null);
             viewHolder = new ViewHolder(convertView);
+
             convertView.setTag(viewHolder);
         } else {
             viewHolder = (ViewHolder) convertView.getTag();

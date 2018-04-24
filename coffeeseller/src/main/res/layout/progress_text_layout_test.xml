@@ -1,11 +1,39 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/progressBarLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_marginLeft="40dp"
     android:layout_marginRight="40dp"
     android:orientation="vertical">
+
+    <RelativeLayout
+        android:id="@+id/progressbarLayouy"
+        android:layout_width="match_parent"
+        android:layout_height="120dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:layout_alignParentBottom="true"
+            android:layout_marginLeft="50dp"
+            android:layout_marginRight="70dp"
+            android:background="@mipmap/progress_bng">
+
+            <ProgressBar
+                android:id="@+id/progressBar"
+                style="@android:style/Widget.ProgressBar.Horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:paddingBottom="22dp"
+                android:paddingLeft="40dp"
+                android:paddingRight="40dp"
+                android:paddingTop="20dp"
+                android:progressDrawable="@drawable/layer_list_progress" />
+        </LinearLayout>
+
+
+    </RelativeLayout>
 
     <LinearLayout
         android:id="@+id/textLayout"
@@ -48,6 +76,18 @@
                     android:textSize="@dimen/text_size_one" />
             </LinearLayout>
 
+            <LinearLayout
+                android:layout_width="160dp"
+                android:layout_height="60dp">
+
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_gravity="center"
+                    android:gravity="center"
+                    android:src="@mipmap/num1" />
+            </LinearLayout>
+
 
         </LinearLayout>
 
@@ -82,6 +122,17 @@
                     android:textSize="@dimen/text_size_one" />
             </LinearLayout>
 
+            <LinearLayout
+                android:layout_width="160dp"
+                android:layout_height="60dp">
+
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_gravity="center"
+                    android:gravity="center"
+                    android:src="@mipmap/num2" />
+            </LinearLayout>
         </LinearLayout>
 
         <LinearLayout
@@ -118,91 +169,20 @@
                     android:textSize="@dimen/text_size_one" />
 
             </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="160dp"
+                android:layout_height="60dp">
+
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_gravity="center"
+                    android:gravity="center"
+                    android:src="@mipmap/num3" />
+            </LinearLayout>
         </LinearLayout>
     </LinearLayout>
 
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="50dp">
 
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginLeft="50dp"
-            android:layout_marginRight="50dp">
-
-            <ImageView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:background="@mipmap/progress_bng" />
-
-            <ProgressBar
-                android:id="@+id/progressBar"
-                style="@android:style/Widget.ProgressBar.Horizontal"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_centerHorizontal="true"
-                android:paddingBottom="17dp"
-                android:paddingLeft="20dp"
-                android:paddingRight="20dp"
-                android:paddingTop="15dp"
-                android:progressDrawable="@drawable/layer_list_progress" />
-
-        </RelativeLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:gravity="center"
-            android:orientation="horizontal">
-
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_weight="1"
-                android:gravity="center">
-
-                <ImageView
-                    android:id="@+id/imageView"
-                    android:layout_width="wrap_content"
-                    android:layout_height="50dp"
-                    android:layout_gravity="center"
-                    android:gravity="center"
-                    android:src="@mipmap/num1" />
-            </LinearLayout>
-
-
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_weight="1"
-                android:gravity="center">
-
-                <ImageView
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
-                    android:gravity="center"
-                    android:src="@mipmap/num1" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_weight="1"
-                android:gravity="center">
-
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="50dp"
-                    android:layout_gravity="center"
-                    android:gravity="center"
-                    android:src="@mipmap/num1" />
-            </LinearLayout>
-        </LinearLayout>
-
-    </RelativeLayout>
-</LinearLayout>
+</RelativeLayout>
