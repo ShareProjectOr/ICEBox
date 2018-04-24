@@ -146,7 +146,7 @@ public class SingleMaterialLsit {
         chunxiangniunai.setProcessList(chunxiangniunaiProcessList);
 
         qiaokeliniunai.setName("巧克力牛奶(Chocolate milk)");
-        qiaokeliniunai.setPrice("0.1");
+        qiaokeliniunai.setPrice("0.2");
         List<ContainerConfig> qiaokeliniunaiProcessList = new ArrayList<>();
         ContainerConfig qiaokeliniunaiProcess0 = new ContainerConfig();
         qiaokeliniunaiProcess0.setContainer(ContainerType.NO_FIVE);

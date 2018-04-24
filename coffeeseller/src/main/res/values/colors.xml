@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <color name="coffeeColor">#B64314</color>
     <color name="colorPrimary">#3F51B5</color>
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
@@ -35,6 +36,6 @@
     <!--灰色  未选中下划线 -->
     <color name="colorLineDefault">#FFAAAAAA</color>
     <color name="layoutgraybackground">#F2F2F2</color>
-    <color name="coffeeColor">#B64314</color>
-
+    <color name="lightorange">#FCC141</color>
+    <color name="deeporange">#FD6F02</color>
 </resources>

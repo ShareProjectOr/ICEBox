@@ -2,22 +2,33 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="40dp"
     android:background="@android:color/transparent"
     android:baselineAligned="false"
     android:orientation="vertical">
+    <!--@android:color/transparent-->
+<!--
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="100dp">
+
+        <include layout="@layout/progress_text_layout" />
+    </LinearLayout>
+
+-->
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="-85dp"
         android:gravity="center"
         android:orientation="horizontal"
-        android:paddingLeft="10dp"
-        android:paddingRight="10dp">
+        android:paddingLeft="70dp"
+        android:paddingRight="70dp">
 
         <View
             android:layout_width="0dp"
-            android:layout_height="2dp"
+            android:layout_height="8dp"
             android:layout_weight="1"
             android:alpha="0.8"
             android:background="@color/white" />
@@ -29,14 +40,14 @@
             android:layout_gravity="center"
             android:paddingLeft="10dp"
             android:paddingRight="10dp"
-            android:text="香浓巧克力"
+            android:text="服撒白咖啡"
             android:textColor="@color/white"
-            android:textSize="25sp"
+            android:textSize="50sp"
             android:textStyle="bold" />
 
         <View
             android:layout_width="0dp"
-            android:layout_height="2dp"
+            android:layout_height="8dp"
             android:layout_weight="1"
             android:alpha="0.8"
             android:background="@color/white" />
@@ -46,7 +57,8 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@mipmap/dialog_bng">
+        android:background="@mipmap/dialog_bng"
+        android:padding="100dp">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -70,13 +82,13 @@
                     android:layout_alignParentLeft="true"
                     android:background="@drawable/selector_cold_hot"
                     android:gravity="center"
-                    android:paddingBottom="10dp"
-                    android:paddingLeft="60dp"
-                    android:paddingRight="60dp"
-                    android:paddingTop="10dp"
+                    android:paddingBottom="20dp"
+                    android:paddingLeft="80dp"
+                    android:paddingRight="80dp"
+                    android:paddingTop="20dp"
                     android:text="冷"
                     android:textColor="@color/white"
-                    android:textSize="20sp"
+                    android:textSize="30sp"
                     android:textStyle="bold" />
 
                 <TextView
@@ -86,13 +98,13 @@
                     android:layout_alignParentRight="true"
                     android:background="@drawable/selector_cold_hot"
                     android:gravity="center"
-                    android:paddingBottom="10dp"
-                    android:paddingLeft="60dp"
-                    android:paddingRight="60dp"
-                    android:paddingTop="10dp"
+                    android:paddingBottom="20dp"
+                    android:paddingLeft="80dp"
+                    android:paddingRight="80dp"
+                    android:paddingTop="20dp"
                     android:text="热"
                     android:textColor="@color/white"
-                    android:textSize="20sp"
+                    android:textSize="30sp"
                     android:textStyle="bold" />
             </RelativeLayout>
 
@@ -107,6 +119,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
+        android:layout_marginTop="-170dp"
         android:gravity="center"
         android:orientation="horizontal"
         android:padding="40dp">

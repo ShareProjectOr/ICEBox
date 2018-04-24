@@ -16,7 +16,7 @@
             android:layout_height="wrap_content"
             android:text="牛奶"
             android:textColor="@color/white"
-            android:textSize="25sp"
+            android:textSize="35sp"
             android:textStyle="bold" />
 
         <RadioGroup
@@ -39,7 +39,7 @@
                 android:padding="20dp"
                 android:text="无奶"
                 android:textColor="@color/selector_taste_text_color"
-                android:textSize="20sp" />
+                android:textSize="30sp" />
 
             <RadioButton
                 android:id="@+id/milk_less"
@@ -53,7 +53,7 @@
                 android:padding="20dp"
                 android:text="少奶"
                 android:textColor="@color/selector_taste_text_color"
-                android:textSize="20sp" />
+                android:textSize="30sp" />
 
             <RadioButton
                 android:id="@+id/milk_normal"
@@ -67,7 +67,7 @@
                 android:padding="20dp"
                 android:text="正常"
                 android:textColor="@color/selector_taste_text_color"
-                android:textSize="20sp" />
+                android:textSize="30sp" />
 
             <RadioButton
                 android:id="@+id/milk_more"
@@ -81,7 +81,7 @@
                 android:padding="20dp"
                 android:text="多奶"
                 android:textColor="@color/selector_taste_text_color"
-                android:textSize="20sp" />
+                android:textSize="30sp" />
         </RadioGroup>
     </LinearLayout>
 </LinearLayout>

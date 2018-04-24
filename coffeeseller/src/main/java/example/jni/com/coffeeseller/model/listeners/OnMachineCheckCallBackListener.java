@@ -13,6 +13,7 @@ public interface OnMachineCheckCallBackListener {
 
     void MachineCodeCheckFailed(String response);
 
+
     void MaterialGroupGetSuccess();
 
     void MaterialGroupGetFailed(String response);

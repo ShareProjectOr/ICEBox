@@ -10,14 +10,14 @@ public class MachineInitState {
 
     public static int CHECK_MACHINECODE = -1;
     public static int CHECK_OPENMAINCTRL = -1;
-    public static int CHECK_NETWORK_STATE = -1;
-    public static int CHECK_IC_COMM = -1;
+    public static int SUB_MQTT_STATE = -1;
+    public static int GET_FORMULA = -1;
 
     public static void init() {
 
         CHECK_MACHINECODE = -1;
         CHECK_OPENMAINCTRL = -1;
-        CHECK_NETWORK_STATE = -1;
-        CHECK_IC_COMM = -1;
+        SUB_MQTT_STATE = -1;
+        GET_FORMULA = -1;
     }
 }
