@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_margin="40dp"
     android:background="@android:color/transparent"
     android:baselineAligned="false"
@@ -99,9 +99,18 @@
                     android:textStyle="bold" />
             </RelativeLayout>
 
-            <include layout="@layout/coffee_taste_suger_choose" />
+            <LinearLayout
+                android:id="@+id/tast_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
 
-            <include layout="@layout/coffee_taste_milk_choose" />
+                <!--<include layout="@layout/coffee_taste_suger_choose" />
+
+                <include layout="@layout/coffee_taste_milk_choose" />-->
+
+            </LinearLayout>
+
 
         </LinearLayout>
     </LinearLayout>
@@ -120,10 +129,10 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="end"
+            android:paddingEnd="10dp"
             android:paddingLeft="5dp"
             android:paddingRight="5dp"
             android:text="￥ 12.00"
-            android:paddingEnd="10dp"
             android:textColor="@color/white"
             android:textSize="25sp"
             android:textStyle="bold" />
@@ -143,8 +152,8 @@
             android:gravity="start"
             android:paddingLeft="5dp"
             android:paddingRight="5dp"
-            android:singleLine="false"
             android:paddingStart="10dp"
+            android:singleLine="false"
             android:text="支付宝或微信扫码支付"
             android:textColor="@color/white"
             android:textSize="25sp"

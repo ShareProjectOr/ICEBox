@@ -13,6 +13,7 @@
         android:orientation="vertical">
 
         <TextView
+            android:id="@+id/taste_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="糖"
@@ -27,60 +28,60 @@
             android:layout_marginTop="10dp"
             android:orientation="horizontal">
 
-            <RadioButton
-                android:id="@+id/suger_no"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:background="@drawable/selector_taste_bng_shape"
-                android:button="@null"
-                android:gravity="center"
-                android:padding="20dp"
-                android:text="无糖"
-                android:textColor="@color/selector_taste_text_color"
-                android:textSize="30sp" />
+            <!--     <RadioButton
+                     android:id="@+id/suger_no"
+                     android:layout_width="0dp"
+                     android:layout_height="wrap_content"
+                     android:layout_weight="1"
+                     android:background="@drawable/selector_taste_bng_shape"
+                     android:button="@null"
+                     android:gravity="center"
+                     android:padding="20dp"
+                     android:text="无糖"
+                     android:textColor="@color/selector_taste_text_color"
+                     android:textSize="30sp" />
 
-            <RadioButton
-                android:id="@+id/suger_less"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="20dp"
-                android:layout_weight="1"
-                android:background="@drawable/selector_taste_bng_shape"
-                android:button="@null"
-                android:gravity="center"
-                android:padding="20dp"
-                android:text="少糖"
-                android:textColor="@color/selector_taste_text_color"
-                android:textSize="30sp" />
+                 <RadioButton
+                     android:id="@+id/suger_less"
+                     android:layout_width="0dp"
+                     android:layout_height="wrap_content"
+                     android:layout_marginLeft="20dp"
+                     android:layout_weight="1"
+                     android:background="@drawable/selector_taste_bng_shape"
+                     android:button="@null"
+                     android:gravity="center"
+                     android:padding="20dp"
+                     android:text="少糖"
+                     android:textColor="@color/selector_taste_text_color"
+                     android:textSize="30sp" />
 
-            <RadioButton
-                android:id="@+id/suger_normal"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="20dp"
-                android:layout_weight="1"
-                android:background="@drawable/selector_taste_bng_shape"
-                android:button="@null"
-                android:gravity="center"
-                android:padding="20dp"
-                android:text="正常"
-                android:textColor="@color/selector_taste_text_color"
-                android:textSize="30sp" />
+                 <RadioButton
+                     android:id="@+id/suger_normal"
+                     android:layout_width="0dp"
+                     android:layout_height="wrap_content"
+                     android:layout_marginLeft="20dp"
+                     android:layout_weight="1"
+                     android:background="@drawable/selector_taste_bng_shape"
+                     android:button="@null"
+                     android:gravity="center"
+                     android:padding="20dp"
+                     android:text="正常"
+                     android:textColor="@color/selector_taste_text_color"
+                     android:textSize="30sp" />
 
-            <RadioButton
-                android:id="@+id/suger_more"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="20dp"
-                android:layout_weight="1"
-                android:background="@drawable/selector_taste_bng_shape"
-                android:button="@null"
-                android:gravity="center"
-                android:padding="20dp"
-                android:text="多糖"
-                android:textColor="@color/selector_taste_text_color"
-                android:textSize="30sp" />
+                 <RadioButton
+                     android:id="@+id/suger_more"
+                     android:layout_width="0dp"
+                     android:layout_height="wrap_content"
+                     android:layout_marginLeft="20dp"
+                     android:layout_weight="1"
+                     android:background="@drawable/selector_taste_bng_shape"
+                     android:button="@null"
+                     android:gravity="center"
+                     android:padding="20dp"
+                     android:text="多糖"
+                     android:textColor="@color/selector_taste_text_color"
+                     android:textSize="30sp" />-->
         </RadioGroup>
 
     </LinearLayout>

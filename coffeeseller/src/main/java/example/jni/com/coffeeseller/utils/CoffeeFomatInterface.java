@@ -20,4 +20,10 @@ public interface CoffeeFomatInterface {
     public static int MILK_LESS = 1;
     public static int MILK_NORMAL = 2;
     public static int MILK_MORE = 3;
+
+    /*
+    * 冷、热
+    * */
+    public static int COLD = 0;
+    public static int HOT = 1;
 }

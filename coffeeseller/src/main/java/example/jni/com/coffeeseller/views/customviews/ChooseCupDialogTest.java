@@ -5,8 +5,10 @@ import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.app.Dialog;
 import android.content.Context;
+import android.database.Cursor;
 import android.support.annotation.IdRes;
 import android.support.annotation.StyleRes;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,10 +21,15 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 import example.jni.com.coffeeseller.R;
 import example.jni.com.coffeeseller.bean.Coffee;
 import example.jni.com.coffeeseller.bean.CoffeeFomat;
+import example.jni.com.coffeeseller.bean.Material;
+import example.jni.com.coffeeseller.bean.Step;
+import example.jni.com.coffeeseller.bean.Taste;
+import example.jni.com.coffeeseller.contentprovider.MaterialSql;
 import example.jni.com.coffeeseller.model.listeners.ChooseCupListenner;
 import example.jni.com.coffeeseller.utils.CoffeeFomatInterface;
 import example.jni.com.coffeeseller.utils.ObjectAnimatorUtil;
@@ -32,7 +39,7 @@ import example.jni.com.coffeeseller.utils.ScreenUtil;
  * Created by WH on 2018/3/22.
  */
 
-public class ChooseCupDialogTest extends Dialog implements View.OnClickListener, RadioGroup.OnCheckedChangeListener {
+public class ChooseCupDialogTest extends Dialog implements View.OnClickListener {
     private Context context;
     private View view;
     private ChooseCupListenner listenner;
@@ -75,8 +82,6 @@ public class ChooseCupDialogTest extends Dialog implements View.OnClickListener,
             viewHolder = new ViewHolder(view);
         }
 
-        viewHolder.mTaste_suger.setOnCheckedChangeListener(this);
-        viewHolder.mTaste_milk.setOnCheckedChangeListener(this);
         viewHolder.mCoffeeHot.setOnClickListener(this);
         viewHolder.mCoffeeCold.setOnClickListener(this);
         setContentView(view);
@@ -105,39 +110,31 @@ public class ChooseCupDialogTest extends Dialog implements View.OnClickListener,
 
         checkHotOrCold(true);
 
-        initSugerGroup();
-
-        initMilkGroup();
+        initTaste(coffee.getStepList());
     }
 
-    protected void setEnable(RadioGroup group) {
-        for (int i = 0; i < group.getChildCount(); i++) {
-            if (i != 0) {
-                RadioButton button = (RadioButton) group.getChildAt(i);
-                button.setEnabled(false);
-                button.setAlpha(0.8f);
-            }
-        }
-    }
 
     private void checkHotOrCold(boolean checkHot) {
         if (checkHot) {
             viewHolder.mCoffeeHot.setSelected(true);
             viewHolder.mCoffeeCold.setSelected(false);
+            coffeeFomat.setTemp(CoffeeFomatInterface.HOT);
         } else {
             viewHolder.mCoffeeHot.setSelected(true);
             viewHolder.mCoffeeCold.setSelected(false);
+            coffeeFomat.setTemp(CoffeeFomatInterface.COLD);
         }
     }
 
-    private void initSugerGroup() {
+    private void initTaste(List<Step> steps) {
+        if (steps == null || steps.size() <= 0) {
+            return;
+        }
 
-        setEnable(viewHolder.mTaste_suger);
-    }
-
-    private void initMilkGroup() {
-
-        setEnable(viewHolder.mTaste_milk);
+        for (int i = 0; i < steps.size(); i++) {
+            Step step = steps.get(i);
+            viewHolder.addView(step);
+        }
 
     }
 
@@ -148,6 +145,7 @@ public class ChooseCupDialogTest extends Dialog implements View.OnClickListener,
                 button.setSelected(false);
             } else {
                 button.setSelected(true);
+                coffeeFomat.set
             }
         }
     }
@@ -173,52 +171,6 @@ public class ChooseCupDialogTest extends Dialog implements View.OnClickListener,
         }
     }
 
-    @Override
-    public void onCheckedChanged(RadioGroup group, @IdRes int checkedId) {
-
-        if (group.getId() == R.id.taste_suger) {
-
-            updateTextColor(viewHolder.mTaste_suger, checkedId);
-        } else if (group.getId() == R.id.taste_milk) {
-            updateTextColor(viewHolder.mTaste_milk, checkedId);
-        }
-        switch (checkedId) {
-            case R.id.suger_no:
-
-                coffeeFomat.setSurgerFomat(CoffeeFomatInterface.SUGER_NO);
-                break;
-            case R.id.suger_less:
-
-                coffeeFomat.setSurgerFomat(CoffeeFomatInterface.SUGER_LESS);
-                break;
-            case R.id.suger_normal:
-
-                viewHolder.mTaste_suger.clearChildFocus(viewHolder.mTaste_suger.getChildAt(2));
-                coffeeFomat.setSurgerFomat(CoffeeFomatInterface.SUGER_NORMAL);
-                break;
-            case R.id.suger_more:
-
-                coffeeFomat.setSurgerFomat(CoffeeFomatInterface.SUGER_MORE);
-                break;
-            case R.id.milk_no:
-
-                coffeeFomat.setMilkFomat(CoffeeFomatInterface.MILK_NO);
-                break;
-            case R.id.milk_less:
-
-                coffeeFomat.setMilkFomat(CoffeeFomatInterface.MILK_LESS);
-                break;
-            case R.id.milk_normal:
-
-                coffeeFomat.setMilkFomat(CoffeeFomatInterface.MILK_NORMAL);
-                break;
-            case R.id.milk_more:
-
-                coffeeFomat.setMilkFomat(CoffeeFomatInterface.MILK_MORE);
-                break;
-        }
-    }
-
     class ViewHolder {
 
         public TextView mCoffeeName;
@@ -226,10 +178,7 @@ public class ChooseCupDialogTest extends Dialog implements View.OnClickListener,
         public TextView mCoffeeHot;
         public TextView mCoffeePrice;
         public ImageView mQrCodeImage;
-
-        public RadioGroup mTaste_suger, mTaste_milk;
-        public RadioButton mSuger_no, mSuger_less, mSuger_normal, mSuger_more;
-        public RadioButton mMilk_no, mMilk_less, mMilk_normal, mMilk_more;
+        public LinearLayout mTastLayout;
 
         public ViewHolder(View view) {
             initView(view);
@@ -241,18 +190,74 @@ public class ChooseCupDialogTest extends Dialog implements View.OnClickListener,
             mCoffeeCold = (TextView) view.findViewById(R.id.coffeeCold);
             mCoffeeHot = (TextView) view.findViewById(R.id.coffeeHot);
             mCoffeePrice = (TextView) view.findViewById(R.id.coffeePrice);
+            mTastLayout = (LinearLayout) view.findViewById(R.id.tast_layout);
+        }
 
-            mTaste_suger = (RadioGroup) view.findViewById(R.id.taste_suger);
-            mSuger_no = (RadioButton) view.findViewById(R.id.suger_no);
-            mSuger_less = (RadioButton) view.findViewById(R.id.suger_less);
-            mSuger_normal = (RadioButton) view.findViewById(R.id.suger_normal);
-            mSuger_more = (RadioButton) view.findViewById(R.id.suger_more);
+        public void addView(final Step step) {
+            if (step == null) {
+                return;
+            }
+            List<Taste> tastes = step.getTastes();
+            Material material = step.getMaterial();
+            if (tastes == null || tastes.size() <= 0 || material == null) {
+                return;
+            }
 
-            mTaste_milk = (RadioGroup) view.findViewById(R.id.taste_milk);
-            mMilk_no = (RadioButton) view.findViewById(R.id.milk_no);
-            mMilk_less = (RadioButton) view.findViewById(R.id.milk_less);
-            mMilk_normal = (RadioButton) view.findViewById(R.id.milk_normal);
-            mMilk_more = (RadioButton) view.findViewById(R.id.milk_more);
+            View tasteView = LayoutInflater.from(context).inflate(R.layout.coffee_taste_suger_choose, null);
+            TextView tasteName = (TextView) tasteView.findViewById(R.id.taste_name);
+            RadioGroup group = (RadioGroup) tasteView.findViewById(R.id.taste_suger);
+            group.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(RadioGroup group, @IdRes int checkedId) {
+                    updateTextColor(group, checkedId);
+                }
+            });
+            tasteName.setText(material.getName());
+            for (int i = 0; i < tastes.size(); i++) {
+                Taste taste = tastes.get(i);
+                View childView = LayoutInflater.from(context).inflate(R.layout.radio_btn, null);
+                RadioButton radioButton = (RadioButton) childView.findViewById(R.id.tasteChild);
+                radioButton.setText(taste.getRemark());
+                group.addView(childView);
+            }
+            setEnable(group, step);
+            mTastLayout.addView(tasteView);
+        }
+    }
+
+    /*
+    * 根据数据库剩余量计算RadioButton是否可用
+    * */
+    private void setEnable(RadioGroup group, Step step) {
+
+        List<Taste> tastes = step.getTastes();
+        Material material = step.getMaterial();
+        if (tastes == null || tastes.size() <= 0 || material == null) {
+            return;
+        }
+
+        MaterialSql table = new MaterialSql(context);
+        Cursor cursor = table.getDataCursor(table.MATERIALS_COLUMN_MATERIALID, material.getMaterialID());
+        cursor.moveToFirst();
+        String stock = cursor.getString(cursor.getColumnIndex(table.MATERIALS_COLUMN_MATERIALSTOCK));
+        if (TextUtils.isEmpty(stock)) {
+            return;
+        }
+
+        int stockInt = Integer.parseInt(stock);
+
+        for (int i = 0; i < group.getChildCount(); i++) {
+
+            Taste taste = tastes.get(i);
+            if (taste == null) {
+                continue;
+            }
+            int useMaterial = taste.getAmount() / 100 * step.getMaterial_time();
+            if (stockInt < useMaterial) {
+                RadioButton button = (RadioButton) group.getChildAt(i);
+                button.setEnabled(false);
+                button.setAlpha(0.8f);
+            }
         }
     }
 }

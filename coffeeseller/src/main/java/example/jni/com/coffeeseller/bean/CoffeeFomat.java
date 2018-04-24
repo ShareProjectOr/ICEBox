@@ -1,5 +1,8 @@
 package example.jni.com.coffeeseller.bean;
 
+import java.util.List;
+
+import cof.ac.inter.ContainerConfig;
 import example.jni.com.coffeeseller.utils.CoffeeFomatInterface;
 
 /**
@@ -18,8 +21,8 @@ public class CoffeeFomat {
     private Coffee coffee;
     private int coffeeId;
     private int cup = 1;
-    private int surgerFomat = CoffeeFomatInterface.SUGER_NORMAL;
-    private int milkFomat = CoffeeFomatInterface.MILK_NORMAL;
+    private int temp;
+    private List<ContainerConfig> containerConfigs;
 
     public void cupAdd() {
         if (cup < coffee.restNum) {
@@ -41,22 +44,6 @@ public class CoffeeFomat {
         return cup == 1;
     }
 
-    public int getSurgerFomat() {
-        return surgerFomat;
-    }
-
-    public void setSurgerFomat(int surgerFomat) {
-        this.surgerFomat = surgerFomat;
-    }
-
-    public int getMilkFomat() {
-        return milkFomat;
-    }
-
-    public void setMilkFomat(int milkFomat) {
-        this.milkFomat = milkFomat;
-    }
-
     public int getCoffeeId() {
         return coffeeId;
     }
@@ -75,5 +62,25 @@ public class CoffeeFomat {
 
     public void setCoffee(Coffee coffee) {
         this.coffee = coffee;
+    }
+
+    public Coffee getCoffee() {
+        return coffee;
+    }
+
+    public int getTemp() {
+        return temp;
+    }
+
+    public void setTemp(int temp) {
+        this.temp = temp;
+    }
+
+    public List<ContainerConfig> getContainerConfigs() {
+        return containerConfigs;
+    }
+
+    public void setContainerConfigs(List<ContainerConfig> containerConfigs) {
+        this.containerConfigs = containerConfigs;
     }
 }
