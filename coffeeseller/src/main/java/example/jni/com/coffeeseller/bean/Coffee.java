@@ -18,7 +18,7 @@ public class Coffee {
     public int restNum = 10;
     public int surgerFomat;
     public int milkFomat = -1;
-    public List<ContainerConfig> processList;
+    public List<Step> processList;
 
     public String getNetUrl() {
         return netUrl;
@@ -84,11 +84,11 @@ public class Coffee {
         this.milkFomat = milkFomat;
     }
 
-    public List<ContainerConfig> getProcessList() {
+    public List<Step> getProcessList() {
         return processList;
     }
 
-    public void setProcessList(List<ContainerConfig> processList) {
+    public void setProcessList(List<Step> processList) {
         this.processList = processList;
     }
 }
