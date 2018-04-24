@@ -5,13 +5,27 @@
     android:gravity="center"
     android:orientation="vertical">
 
-    <ProgressBar
-        android:id="@+id/check_machineCode"
-        style="@style/Widget.AppCompat.ProgressBar.Horizontal"
-        android:layout_width="1200dp"
-        android:layout_height="160dp"
-        android:background="@drawable/machine_checkprogress_layer"
-        android:max="100" />
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:text="机器鉴权:"
+            android:textColor="@color/white"
+            android:textSize="40sp" />
+
+        <ProgressBar
+            android:id="@+id/check_machineCode"
+            style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+            android:layout_width="1200dp"
+            android:layout_height="160dp"
+            android:background="@drawable/machine_checkprogress_layer"
+            android:max="100" />
+    </LinearLayout>
 
     <TextView
         android:id="@+id/machineCode_check_Tips"
@@ -19,13 +33,27 @@
         android:layout_height="wrap_content"
         android:textSize="@dimen/text_size_one" />
 
-    <ProgressBar
-        android:id="@+id/check_mainCtrl"
-        style="@style/Widget.AppCompat.ProgressBar.Horizontal"
-        android:layout_width="1200dp"
-        android:layout_height="160dp"
-        android:background="@drawable/machine_checkprogress_layer"
-        android:max="100" />
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:text="主控板检测:"
+            android:textColor="@color/white"
+            android:textSize="40sp" />
+
+        <ProgressBar
+            android:id="@+id/check_mainCtrl"
+            style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+            android:layout_width="1200dp"
+            android:layout_height="160dp"
+            android:background="@drawable/machine_checkprogress_layer"
+            android:max="100" />
+    </LinearLayout>
 
     <TextView
         android:id="@+id/check_mainCtrl_Tips"
@@ -33,16 +61,56 @@
         android:layout_height="wrap_content"
         android:textSize="@dimen/text_size_one" />
 
-    <ProgressBar
-        android:id="@+id/sub_Mqtt"
-        style="@style/Widget.AppCompat.ProgressBar.Horizontal"
-        android:layout_width="1200dp"
-        android:layout_height="160dp"
-        android:background="@drawable/machine_checkprogress_layer"
-        android:max="100" />
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:text="通信检测:"
+            android:textColor="@color/white"
+            android:textSize="40sp" />
+
+        <ProgressBar
+            android:id="@+id/sub_Mqtt"
+            style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+            android:layout_width="1200dp"
+            android:layout_height="160dp"
+            android:background="@drawable/machine_checkprogress_layer"
+            android:max="100" />
+    </LinearLayout>
 
     <TextView
         android:id="@+id/sub_Mqtt_Tips"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/text_size_one" />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:text="配方获取:"
+            android:textColor="@color/white"
+            android:textSize="40sp" />
+        <ProgressBar
+            android:id="@+id/getMaterial"
+            style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+            android:layout_width="1200dp"
+            android:layout_height="160dp"
+            android:background="@drawable/machine_checkprogress_layer"
+            android:max="100" />
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/getMaterial_Tips"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="@dimen/text_size_one" />

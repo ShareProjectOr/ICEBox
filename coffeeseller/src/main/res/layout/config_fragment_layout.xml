@@ -417,6 +417,175 @@
             android:layout_height="match_parent"
             android:layout_marginLeft="10dp"
             android:layout_weight="1"
-            android:background="@drawable/yuanjiaobiankuang"></LinearLayout>
+            android:background="@drawable/yuanjiaobiankuang"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/machineName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="20dp"
+                android:text="技术中心一号机"
+                android:textColor="@color/blue"
+                android:textSize="@dimen/text_size_one" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="2.5dp"
+                android:background="@color/white" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="20dp"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:layout_marginTop="20dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="机器编号:"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/text_size_one" />
+
+                <EditText
+                    android:id="@+id/machineCode"
+                    android:layout_width="500dp"
+                    android:layout_height="40dp"
+                    android:layout_marginLeft="20dp"
+                    android:background="@drawable/shape_config_edit" />
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="20dp"
+                android:text="咖啡预冲泡:"
+                android:textColor="@color/black"
+                android:textSize="@dimen/text_size_one" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="20dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="时间:"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/text_size_one" />
+
+                <EditText
+                    android:id="@+id/time"
+                    android:layout_width="150dp"
+                    android:layout_height="40dp"
+                    android:background="@drawable/shape_config_edit"
+                    android:hint="0-2.5s"
+                    android:inputType="numberDecimal"
+                    android:paddingLeft="5dp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="50dp"
+                    android:text="水量比例:"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/text_size_one" />
+
+                <EditText
+                    android:id="@+id/waterPercent"
+                    android:layout_width="150dp"
+                    android:layout_height="40dp"
+                    android:background="@drawable/shape_config_edit"
+                    android:hint="0-100"
+                    android:inputType="number"
+                    android:paddingLeft="5dp" />
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="20dp"
+                android:text="清洗设置:"
+                android:textColor="@color/black"
+                android:textSize="@dimen/text_size_one" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:orientation="horizontal">
+
+                <CheckBox
+                    android:layout_width="wrap_content"
+                    android:layout_height="50dp"
+                    android:buttonTint="@color/blue"
+                    android:text="出杯后自动清洗"
+                    android:textColor="@color/gray"
+                    android:textSize="@dimen/text_size_one" />
+
+                <CheckBox
+                    android:layout_width="wrap_content"
+                    android:layout_height="50dp"
+                    android:layout_marginLeft="100dp"
+                    android:buttonTint="@color/blue"
+                    android:text="开机清洗"
+                    android:textColor="@color/gray"
+                    android:textSize="@dimen/text_size_one" />
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="20dp"
+                android:text="模式设置:"
+                android:textColor="@color/black"
+                android:textSize="@dimen/text_size_one" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:orientation="horizontal">
+
+                <CheckBox
+                    android:layout_width="wrap_content"
+                    android:layout_height="50dp"
+                    android:buttonTint="@color/blue"
+                    android:text="常温水产品"
+                    android:textColor="@color/gray"
+                    android:textSize="@dimen/text_size_one" />
+
+                <CheckBox
+                    android:layout_width="wrap_content"
+                    android:layout_height="50dp"
+                    android:layout_marginLeft="100dp"
+                    android:buttonTint="@color/blue"
+                    android:text="冷热水切换"
+                    android:textColor="@color/gray"
+                    android:textSize="@dimen/text_size_one" />
+            </LinearLayout>
+
+            <Button
+                android:id="@+id/saveConfig"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:layout_marginTop="150dp"
+                android:background="@drawable/shape_botton"
+                android:text="保存配置"
+                android:textColor="@color/white"
+                android:textSize="@dimen/text_size_one" />
+        </LinearLayout>
     </LinearLayout>
 </LinearLayout>

@@ -10,16 +10,22 @@ import example.jni.com.coffeeseller.utils.CoffeeFomatInterface;
  */
 
 public class Coffee {
-    public String netUrl;
+
     public String price = "0.01";
     public String name;
     public boolean isOver = false;
     public String cacheUrl;
-    public int restNum = 10;
-    public int surgerFomat;
-    public int milkFomat = -1;
+    public int formulaID;
     public List<ContainerConfig> processList;
     public List<Step> stepList;
+
+    public int getFormulaID() {
+        return formulaID;
+    }
+
+    public void setFormulaID(int formulaID) {
+        this.formulaID = formulaID;
+    }
 
     public List<Step> getStepList() {
         return stepList;
@@ -29,13 +35,6 @@ public class Coffee {
         this.stepList = stepList;
     }
 
-    public String getNetUrl() {
-        return netUrl;
-    }
-
-    public void setNetUrl(String netUrl) {
-        this.netUrl = netUrl;
-    }
 
     public String getPrice() {
         return price;
@@ -69,29 +68,6 @@ public class Coffee {
         this.cacheUrl = cacheUrl;
     }
 
-    public int getRestNum() {
-        return restNum;
-    }
-
-    public void setRestNum(int restNum) {
-        this.restNum = restNum;
-    }
-
-    public int getSurgerFomat() {
-        return surgerFomat;
-    }
-
-    public void setSurgerFomat(int surgerFomat) {
-        this.surgerFomat = surgerFomat;
-    }
-
-    public int getMilkFomat() {
-        return milkFomat;
-    }
-
-    public void setMilkFomat(int milkFomat) {
-        this.milkFomat = milkFomat;
-    }
 
     public List<ContainerConfig> getProcessList() {
         return processList;

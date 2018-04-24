@@ -7,5 +7,6 @@ package example.jni.com.coffeeseller.MachineConfig;
 public enum MachineCheckState {
     MACHINECODECHECK,
     MAINCTRLCHECK,
-    SUBMQTT
+    SUBMQTT,
+    GETMATERIAL
 }

@@ -93,11 +93,24 @@ public class MachineCheckPresenter {
 
             @Override
             public void MaterialGroupGetSuccess() {
+                mHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        mICheckMachineView.ChangeProgressBar(MachineCheckState.GETMATERIAL, true);
+                    }
+                });
 
             }
 
             @Override
-            public void MaterialGroupGetFailed(String response) {
+            public void MaterialGroupGetFailed(final String response) {
+                mHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        mICheckMachineView.ChangeProgressBar(MachineCheckState.GETMATERIAL, false);
+                        mICheckMachineView.showTips(4, response);
+                    }
+                });
 
             }
 

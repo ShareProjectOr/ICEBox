@@ -103,14 +103,14 @@ public class MachineCheck implements IMachineCheck {
                         data.setLastLoadingTime(bunkerdata.getString("lastLoadingTime"));
                         list.add(i, data);
                     }
-                    SingleMaterialLsit.getInstance(mContext).setCoffeeList(d.getJSONArray("list"));
+
                     if (content.getAllbunkersIDs().size() == 0) {
                         for (int i = 0; i < list.size(); i++) {
                             content.insertContact(list.get(i).getBunkerID(), list.get(i).getMaterialID(), list.get(i).getMaterialType(), list.get(i).getMaterialName()
                                     , list.get(i).getMaterialUnit(), list.get(i).getMaterialStock(), list.get(i).getMaterialDropSpeed(), list.get(i).getContainerID(), list.get(i).getLastLoadingTime());
                         }
                     }
-
+                    SingleMaterialLsit.getInstance(mContext).setCoffeeList(d.getJSONArray("list"));
                     mOnMachineCheckCallBackListener.MaterialGroupGetSuccess();
                 } else {
                     mOnMachineCheckCallBackListener.MaterialGroupGetFailed(object.getString("err"));

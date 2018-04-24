@@ -9,12 +9,8 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import cof.ac.inter.CoffMsger;
 import example.jni.com.coffeeseller.MachineConfig.MachineCheckState;
-import example.jni.com.coffeeseller.MachineConfig.MachineInitState;
-import example.jni.com.coffeeseller.MachineConfig.SerialPortInfo;
 import example.jni.com.coffeeseller.R;
 import example.jni.com.coffeeseller.factory.FragmentEnum;
 import example.jni.com.coffeeseller.factory.FragmentFactory;
@@ -47,6 +43,8 @@ public class MachineCheckFragment extends BasicFragment implements ICheckMachine
     private TextView mCheck_mainCtrl_Tips;
     private ProgressBar mSub_Mqtt;
     private TextView mSub_Mqtt_Tips;
+    private ProgressBar getMaterial;
+    private TextView getMaterialTips;
 
     @Nullable
     @Override
@@ -60,6 +58,8 @@ public class MachineCheckFragment extends BasicFragment implements ICheckMachine
     }
 
     private void initview() {
+        getMaterial = (ProgressBar) mView.findViewById(R.id.getMaterial);
+        getMaterialTips = (TextView) mView.findViewById(R.id.getMaterial_Tips);
         mCheck_machineCode = (ProgressBar) mView.findViewById(R.id.check_machineCode);
         mMachineCode_check_Tips = (TextView) mView.findViewById(R.id.machineCode_check_Tips);
         mCheck_mainCtrl = (ProgressBar) mView.findViewById(R.id.check_mainCtrl);
@@ -182,6 +182,19 @@ public class MachineCheckFragment extends BasicFragment implements ICheckMachine
 
                 }
                 break;
+            case GETMATERIAL:
+                if (isSuccess) {
+                    getMaterial.setProgress(30);
+                    Waiter.doWait(500);
+                    getMaterial.setProgress(50);
+                    Waiter.doWait(300);
+                    getMaterial.setProgress(70);
+                    Waiter.doWait(100);
+                    getMaterial.setProgress(100);
+                } else {
+
+                }
+                break;
         }
     }
 
@@ -221,6 +234,9 @@ public class MachineCheckFragment extends BasicFragment implements ICheckMachine
                 break;
             case 3:
                 mSub_Mqtt_Tips.setText(tips);
+                break;
+            case 4:
+                getMaterialTips.setText(tips);
                 break;
         }
        /* Toast toast = Toast.makeText(getActivity(), tips, Toast.LENGTH_LONG);

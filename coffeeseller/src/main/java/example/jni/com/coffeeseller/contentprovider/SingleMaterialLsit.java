@@ -1,6 +1,7 @@
 package example.jni.com.coffeeseller.contentprovider;
 
 import android.content.Context;
+import android.database.Cursor;
 import android.util.Log;
 
 import com.alibaba.fastjson.JSON;
@@ -16,6 +17,9 @@ import cof.ac.inter.ContainerConfig;
 import cof.ac.inter.ContainerType;
 import cof.ac.inter.WaterType;
 import example.jni.com.coffeeseller.bean.Coffee;
+import example.jni.com.coffeeseller.bean.Material;
+import example.jni.com.coffeeseller.bean.Step;
+import example.jni.com.coffeeseller.bean.Taste;
 
 /**
  * Created by Administrator on 2018/4/16.
@@ -28,9 +32,11 @@ public class SingleMaterialLsit {
     private String TAG = "SingleMaterialLsit";
     private Context mContext;
     private List<Coffee> youbaoCoffeeList = new ArrayList<>();
+    private MaterialSql sql;
 
     public SingleMaterialLsit(Context context) {
         mContext = context;
+        sql = new MaterialSql(mContext);
         coffeeList = new ArrayList<>();
        /* String arrayString = SharedPreferencesManager.getInstance(context).getCoffeeListArray();
         Log.d(TAG, arrayString);
@@ -45,8 +51,94 @@ public class SingleMaterialLsit {
         setyoubaoList();
     }
 
-    public void setCoffeeList(org.json.JSONArray array) {
-
+    public void setCoffeeList(org.json.JSONArray array) throws JSONException {
+        for (int i = 0; i < array.length(); i++) {
+            org.json.JSONObject coffeeObject = (org.json.JSONObject) array.opt(i);
+            Coffee coffee = new Coffee();
+            coffee.setCacheUrl(coffeeObject.getString("imageSource"));
+            coffee.setName(coffeeObject.getString("name"));
+            coffee.setPrice(coffeeObject.getInt("suggestedPrice") + "");
+            coffee.setFormulaID(coffeeObject.getInt("formulaID"));
+            org.json.JSONArray stepArray = coffeeObject.getJSONArray("process");
+            for (int j = 0; j < stepArray.length(); j++) {
+                org.json.JSONObject stepObject = (org.json.JSONObject) stepArray.opt(j);
+                int containerID = stepObject.getInt("containerID");
+                Cursor cursor = sql.getDataCursor("containerID", containerID);
+                cursor.moveToFirst();
+                String materialStock = cursor.getString(cursor.getColumnIndex(sql.MATERIALS_COLUMN_MATERIALSTOCK));//找到对应料仓编号的剩余量
+                if (materialStock.equals("0")) {
+                    coffee.setOver(true);
+                    break;
+                }
+            }
+            List<Step> stepList = new ArrayList<>();
+            for (int j = 0; j < stepArray.length(); j++) {
+                org.json.JSONObject stepObject = (org.json.JSONObject) stepArray.opt(j);
+                Step step = new Step();
+                ContainerConfig containerConfig = new ContainerConfig();
+                switch (stepObject.getInt("containerID")) {
+                    case 0:
+                        containerConfig.setContainer(ContainerType.BEAN_CONTAINER);
+                        break;
+                    case 1:
+                        containerConfig.setContainer(ContainerType.NO_ONE);
+                        break;
+                    case 2:
+                        containerConfig.setContainer(ContainerType.NO_TOW);
+                        break;
+                    case 3:
+                        containerConfig.setContainer(ContainerType.NO_THREE);
+                        break;
+                    case 4:
+                        containerConfig.setContainer(ContainerType.NO_FOUR);
+                        break;
+                    case 5:
+                        containerConfig.setContainer(ContainerType.NO_FIVE);
+                        break;
+                    case 6:
+                        containerConfig.setContainer(ContainerType.NO_FIVE);
+                        break;
+                    case 7:
+                        containerConfig.setContainer(ContainerType.HOTWATER_CONTAINER);
+                        break;
+                }
+                containerConfig.setWater_interval(stepObject.getInt("timeOut"));
+                containerConfig.setWater_capacity(stepObject.getInt("water"));
+                containerConfig.setMaterial_time(stepObject.getInt("time"));
+                containerConfig.setRotate_speed(stepObject.getInt("loadingSpeed"));
+                containerConfig.setStir_speed(stepObject.getInt("mixingSpeed"));
+                switch (stepObject.getInt("waterType")) {
+                    case 0:
+                        containerConfig.setWater_type(WaterType.COLD_WATER);
+                        break;
+                    case 1:
+                        containerConfig.setWater_type(WaterType.HOT_WATER);
+                        break;
+                }
+                step.setContainerConfig(containerConfig);
+                org.json.JSONArray tasteArray = stepObject.getJSONArray("taste");
+                List<Taste> tastesList = new ArrayList<>();
+                for (int k = 0; k < tasteArray.length(); k++) {
+                    org.json.JSONObject tasteObject = (org.json.JSONObject) tasteArray.opt(k);
+                    Taste taste = new Taste();
+                    taste.setAmount(tasteObject.getInt("amount"));
+                    taste.setRemark(tasteObject.getString("remark"));
+                    tastesList.add(k, taste);
+                }
+                step.setTastes(tastesList);
+                Material material = new Material();
+                org.json.JSONObject materialObject = stepObject.getJSONObject("material");
+                material.setName(materialObject.getString("name"));
+                material.setMaterialID(materialObject.getInt("materialID"));
+                material.setOutput(materialObject.getInt("output"));
+                material.setType(materialObject.getInt("type"));
+                material.setUnit(materialObject.getString("unit"));
+                step.setMaterial(material);
+                stepList.add(step);
+            }
+            coffee.setStepList(stepList);
+            coffeeList.add(coffee);
+        }
     }
 
     private void setyoubaoList() {
