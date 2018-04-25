@@ -18,13 +18,24 @@
             android:textColor="@color/white"
             android:textSize="40sp" />
 
-        <ProgressBar
-            android:id="@+id/check_machineCode"
-            style="@style/Widget.AppCompat.ProgressBar.Horizontal"
-            android:layout_width="1200dp"
-            android:layout_height="160dp"
-            android:background="@drawable/machine_checkprogress_layer"
-            android:max="100" />
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/progressbackground"
+            android:gravity="center_vertical"
+            android:paddingBottom="25dp"
+            android:paddingLeft="50dp"
+            android:paddingRight="50dp"
+            android:paddingTop="23dp">
+
+            <ProgressBar
+                android:id="@+id/check_machineCode"
+                style="@android:style/Widget.ProgressBar.Horizontal"
+                android:layout_width="1200dp"
+                android:layout_height="40dp"
+                android:max="100"
+                android:progressDrawable="@drawable/machine_checkprogress_layer" />
+        </LinearLayout>
     </LinearLayout>
 
     <TextView
@@ -46,13 +57,25 @@
             android:textColor="@color/white"
             android:textSize="40sp" />
 
-        <ProgressBar
-            android:id="@+id/check_mainCtrl"
-            style="@style/Widget.AppCompat.ProgressBar.Horizontal"
-            android:layout_width="1200dp"
-            android:layout_height="160dp"
-            android:background="@drawable/machine_checkprogress_layer"
-            android:max="100" />
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/progressbackground"
+            android:gravity="center_vertical"
+            android:paddingBottom="25dp"
+            android:paddingLeft="50dp"
+            android:paddingRight="50dp"
+            android:paddingTop="23dp">
+
+            <ProgressBar
+                android:id="@+id/check_mainCtrl"
+                style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+                android:layout_width="1200dp"
+                android:layout_height="40dp"
+
+                android:max="100"
+                android:progressDrawable="@drawable/machine_checkprogress_layer" />
+        </LinearLayout>
     </LinearLayout>
 
     <TextView
@@ -74,13 +97,24 @@
             android:textColor="@color/white"
             android:textSize="40sp" />
 
-        <ProgressBar
-            android:id="@+id/sub_Mqtt"
-            style="@style/Widget.AppCompat.ProgressBar.Horizontal"
-            android:layout_width="1200dp"
-            android:layout_height="160dp"
-            android:background="@drawable/machine_checkprogress_layer"
-            android:max="100" />
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/progressbackground"
+            android:gravity="center_vertical"
+            android:paddingBottom="25dp"
+            android:paddingLeft="50dp"
+            android:paddingRight="50dp"
+            android:paddingTop="23dp">
+
+            <ProgressBar
+                android:id="@+id/sub_Mqtt"
+                style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+                android:layout_width="1200dp"
+                android:layout_height="40dp"
+                android:max="100"
+                android:progressDrawable="@drawable/machine_checkprogress_layer" />
+        </LinearLayout>
     </LinearLayout>
 
     <TextView
@@ -93,6 +127,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical">
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -100,13 +135,25 @@
             android:text="配方获取:"
             android:textColor="@color/white"
             android:textSize="40sp" />
-        <ProgressBar
-            android:id="@+id/getMaterial"
-            style="@style/Widget.AppCompat.ProgressBar.Horizontal"
-            android:layout_width="1200dp"
-            android:layout_height="160dp"
-            android:background="@drawable/machine_checkprogress_layer"
-            android:max="100" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/progressbackground"
+            android:gravity="center_vertical"
+            android:paddingBottom="25dp"
+            android:paddingLeft="50dp"
+            android:paddingRight="50dp"
+            android:paddingTop="23dp">
+
+            <ProgressBar
+                android:id="@+id/getMaterial"
+                style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+                android:layout_width="1200dp"
+                android:layout_height="40dp"
+                android:progressDrawable="@drawable/machine_checkprogress_layer"
+                android:max="100" />
+        </LinearLayout>
     </LinearLayout>
 
     <TextView
@@ -127,6 +174,7 @@
         android:id="@+id/tologin"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:visibility="gone"
         android:text="登录"
-        android:visibility="gone" />
+      />
 </LinearLayout>

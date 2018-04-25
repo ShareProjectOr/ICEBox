@@ -27,13 +27,14 @@ import org.json.JSONObject;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import example.jni.com.coffeeseller.MachineConfig.MachineInitState;
 import example.jni.com.coffeeseller.bean.MachineConfig;
 import example.jni.com.coffeeseller.model.listeners.OnMachineCheckCallBackListener;
 import example.jni.com.coffeeseller.utils.MyLog;
 
 
 public class TaskService extends Service implements MqttCallback {
-    public static final String HOST = "tcp://" + "" + ":61616";//tcp://127.0.0.1:61613
+    public static final String HOST = "tcp://" + MachineConfig.getTcpIP() + ":61616";//tcp://127.0.0.1:61613
     private static MqttClient client;
     private MqttConnectOptions options;
     private String userName = "admin";
@@ -71,6 +72,10 @@ public class TaskService extends Service implements MqttCallback {
     }
 
     private void checkSubSuccess() {
+        if (!isConnected()) {
+            mOnMachineCheckCallBackListener.MQTTSubcribeFailed();
+            return;
+        }
         long startTime = System.currentTimeMillis();
         while (System.currentTimeMillis() - startTime < 3000) {
             if (!isSubSuccess) {
@@ -79,6 +84,7 @@ public class TaskService extends Service implements MqttCallback {
             }
         }
         mOnMachineCheckCallBackListener.MQTTSubcribeSuccess();
+        MachineInitState.SUB_MQTT_STATE = MachineInitState.NORMAL;
     }
 
     @Override
@@ -87,7 +93,9 @@ public class TaskService extends Service implements MqttCallback {
     }
 
     public static synchronized TaskService getInstance() {
-
+        if (mInstance == null) {
+            mInstance = new TaskService();
+        }
         return mInstance;
     }
 
@@ -106,7 +114,7 @@ public class TaskService extends Service implements MqttCallback {
         mInstance = this;
         //settingDataManager = SettingDataManager.getSettingDataManager(mInstance);
 
-        checkNetState();
+        //   checkNetState();
     }
 
     public void breakClient() {
@@ -155,10 +163,11 @@ public class TaskService extends Service implements MqttCallback {
             int[] Qos = {2};
             String[] topic1 = {"T-M-" + MachineConfig.getMachineCode()};
             client.subscribe(topic1, Qos);
-            checkSubSuccess();
+
         } catch (Exception e) {
             e.printStackTrace();
         }
+        checkSubSuccess();
     }
 
     @Override

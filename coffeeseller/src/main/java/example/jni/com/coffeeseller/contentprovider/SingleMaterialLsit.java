@@ -387,6 +387,22 @@ public class SingleMaterialLsit {
         return coffeeList;
     }
 
+    public boolean isCoffeeSellOut(int position) {
+        Coffee coffee = coffeeList.get(position);
+        MaterialSql sql = new MaterialSql(mContext);
+        List<Step> steps = coffee.getStepList();
+        for (int i = 0; i < steps.size(); i++) {
+            Step step = steps.get(i);
+            String materialID = "" + step.getMaterial().getMaterialID();
+            String storck = sql.getStorkByMaterialID(materialID);
+            if (storck.equals("0")) {
+                return true;
+            }
+
+        }
+        return false;
+    }
+
     public List<Coffee> getyoubaoCoffeeList() {
         return youbaoCoffeeList;
     }

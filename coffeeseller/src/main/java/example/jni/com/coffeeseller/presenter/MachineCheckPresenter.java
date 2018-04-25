@@ -1,8 +1,10 @@
 package example.jni.com.coffeeseller.presenter;
 
+import android.app.Activity;
 import android.content.Context;
 import android.os.Handler;
 import android.os.Looper;
+import android.util.Log;
 import android.widget.Toast;
 
 import example.jni.com.coffeeseller.MachineConfig.MachineCheckState;
@@ -11,6 +13,7 @@ import example.jni.com.coffeeseller.httputils.OkHttpUtil;
 import example.jni.com.coffeeseller.model.MachineCheck;
 import example.jni.com.coffeeseller.model.listeners.IMachineCheck;
 import example.jni.com.coffeeseller.model.listeners.OnMachineCheckCallBackListener;
+import example.jni.com.coffeeseller.views.activities.HomeActivity;
 import example.jni.com.coffeeseller.views.viewinterface.ICheckMachineView;
 
 /**
@@ -20,10 +23,11 @@ import example.jni.com.coffeeseller.views.viewinterface.ICheckMachineView;
 public class MachineCheckPresenter {
     private IMachineCheck mIMachineCheck;
     private ICheckMachineView mICheckMachineView;
-    private Context mContext;
+    private HomeActivity mContext;
     private Handler mHandler;
+    private String TAG = "MachineCheckPresenter";
 
-    public MachineCheckPresenter(ICheckMachineView mICheckMachineView, Context mContext) {
+    public MachineCheckPresenter(ICheckMachineView mICheckMachineView, HomeActivity mContext) {
         this.mICheckMachineView = mICheckMachineView;
         this.mContext = mContext;
         mHandler = new Handler(mContext.getMainLooper());
@@ -35,22 +39,14 @@ public class MachineCheckPresenter {
     }
 
     public void checkMachine() {
-        mHandler.post(new Runnable() {
-            @Override
-            public void run() {
-                mICheckMachineView.SetButtonState(true);
-            }
-        });
+
 
         mIMachineCheck.MachineCheck(new OnMachineCheckCallBackListener() {
             @Override
             public void OpenMainCrilSuccess() {
-                mHandler.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        mICheckMachineView.ChangeProgressBar(MachineCheckState.MAINCTRLCHECK, true);
-                    }
-                });
+
+                mICheckMachineView.ChangeProgressBar(MachineCheckState.MAINCTRLCHECK, true);
+
 
             }
 
@@ -69,12 +65,9 @@ public class MachineCheckPresenter {
 
             @Override
             public void MachineCodeCheckSuccess() {
-                mHandler.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        mICheckMachineView.ChangeProgressBar(MachineCheckState.MACHINECODECHECK, true);
-                    }
-                });
+
+                mICheckMachineView.ChangeProgressBar(MachineCheckState.MACHINECODECHECK, true);
+
 
             }
 
@@ -93,12 +86,9 @@ public class MachineCheckPresenter {
 
             @Override
             public void MaterialGroupGetSuccess() {
-                mHandler.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        mICheckMachineView.ChangeProgressBar(MachineCheckState.GETMATERIAL, true);
-                    }
-                });
+
+                mICheckMachineView.ChangeProgressBar(MachineCheckState.GETMATERIAL, true);
+
 
             }
 
@@ -116,12 +106,8 @@ public class MachineCheckPresenter {
 
             @Override
             public void MQTTSubcribeSuccess() {
-                mHandler.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        mICheckMachineView.ChangeProgressBar(MachineCheckState.SUBMQTT, true);
-                    }
-                });
+
+                mICheckMachineView.ChangeProgressBar(MachineCheckState.SUBMQTT, true);
 
 
             }
@@ -131,6 +117,7 @@ public class MachineCheckPresenter {
                 mHandler.post(new Runnable() {
                     @Override
                     public void run() {
+                        Log.d(TAG, "MQtt订阅失败");
                         mICheckMachineView.ChangeProgressBar(MachineCheckState.SUBMQTT, false);
                         mICheckMachineView.showTips(3, "通信连接失败");
                     }

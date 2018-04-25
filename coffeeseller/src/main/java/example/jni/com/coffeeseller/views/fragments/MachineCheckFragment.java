@@ -1,8 +1,11 @@
 package example.jni.com.coffeeseller.views.fragments;
 
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
 import android.support.annotation.Nullable;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -87,10 +90,22 @@ public class MachineCheckFragment extends BasicFragment implements ICheckMachine
 
 
     private void startMachineCheck() {
-        timeDownText.setVisibility(View.GONE);
+        Handler handler = new Handler(Looper.getMainLooper());
+        Runnable runnable = new Runnable() {
+            @Override
+            public void run() {
+                timeDownText.setVisibility(View.GONE);
+                tologin.setVisibility(View.GONE);
+                mCheck_machineCode.setProgress(0);
+                mCheck_mainCtrl.setProgress(0);
+                mSub_Mqtt.setProgress(0);
+                getMaterial.setProgress(0);
+            }
+        };
+        handler.post(runnable);
         beginCheck();
 
-        mMachineCheckPresenter = new MachineCheckPresenter(this, getActivity());
+        mMachineCheckPresenter = new MachineCheckPresenter(this, homeActivity);
 
         if (checkThread == null) {
 
@@ -145,52 +160,115 @@ public class MachineCheckFragment extends BasicFragment implements ICheckMachine
         switch (state) {
             case MACHINECODECHECK:
                 if (isSuccess) {
-                    mCheck_machineCode.setProgress(30);
-                    Waiter.doWait(500);
-                    mCheck_machineCode.setProgress(50);
-                    Waiter.doWait(300);
-                    mCheck_machineCode.setProgress(70);
-                    Waiter.doWait(100);
-                    mCheck_machineCode.setProgress(100);
+                    new AsyncTask<Void, Integer, Integer>() {
+
+
+                        @Override
+                        protected Integer doInBackground(Void... params) {
+                            for (int i = 0; i <= 100; i += 20) {
+                                publishProgress(i);
+                                Waiter.doWait(250);
+                            }
+
+                            return null;
+                        }
+
+                        @Override
+                        protected void onProgressUpdate(Integer... values) {
+                            Log.d("changeProgress", values + "");
+                            mCheck_machineCode.setProgress(values[0]);
+                            super.onProgressUpdate(values);
+                        }
+                    }.execute();
+
+
                 } else {
 
                 }
                 break;
             case MAINCTRLCHECK:
                 if (isSuccess) {
-                    mCheck_mainCtrl.setProgress(30);
-                    Waiter.doWait(500);
-                    mCheck_mainCtrl.setProgress(50);
-                    Waiter.doWait(300);
-                    mCheck_mainCtrl.setProgress(70);
-                    Waiter.doWait(100);
-                    mCheck_mainCtrl.setProgress(100);
+                    new AsyncTask<Void, Integer, Integer>() {
+
+
+                        @Override
+                        protected Integer doInBackground(Void... params) {
+                            for (int i = 0; i <= 100; i += 20) {
+                                publishProgress(i);
+                                Waiter.doWait(250);
+                            }
+
+                            return null;
+                        }
+
+                        @Override
+                        protected void onProgressUpdate(Integer... values) {
+                            Log.d("changeProgress", values + "");
+                            mCheck_mainCtrl.setProgress(values[0]);
+                            super.onProgressUpdate(values);
+                        }
+                    }.execute();
+
+
+
                 } else {
 
                 }
                 break;
             case SUBMQTT:
                 if (isSuccess) {
-                    mSub_Mqtt.setProgress(30);
-                    Waiter.doWait(500);
-                    mSub_Mqtt.setProgress(50);
-                    Waiter.doWait(300);
-                    mSub_Mqtt.setProgress(70);
-                    Waiter.doWait(100);
-                    mSub_Mqtt.setProgress(100);
+                    new AsyncTask<Void, Integer, Integer>() {
+
+
+                        @Override
+                        protected Integer doInBackground(Void... params) {
+                            for (int i = 0; i <= 100; i += 20) {
+                                publishProgress(i);
+                                Waiter.doWait(250);
+                            }
+
+                            return null;
+                        }
+
+                        @Override
+                        protected void onProgressUpdate(Integer... values) {
+                            Log.d("changeProgress", values + "");
+                            mSub_Mqtt.setProgress(values[0]);
+                            super.onProgressUpdate(values);
+                        }
+                    }.execute();
+
+
+
                 } else {
 
                 }
                 break;
             case GETMATERIAL:
                 if (isSuccess) {
-                    getMaterial.setProgress(30);
-                    Waiter.doWait(500);
-                    getMaterial.setProgress(50);
-                    Waiter.doWait(300);
-                    getMaterial.setProgress(70);
-                    Waiter.doWait(100);
-                    getMaterial.setProgress(100);
+                    new AsyncTask<Void, Integer, Integer>() {
+
+
+                        @Override
+                        protected Integer doInBackground(Void... params) {
+                            for (int i = 0; i <= 100; i += 20) {
+                                publishProgress(i);
+                                Waiter.doWait(250);
+                            }
+
+                            return null;
+                        }
+
+                        @Override
+                        protected void onProgressUpdate(Integer... values) {
+                            Log.d("changeProgress", values + "");
+                            getMaterial.setProgress(values[0]);
+                            super.onProgressUpdate(values);
+                        }
+                    }.execute();
+
+
+
                 } else {
 
                 }
@@ -245,8 +323,10 @@ public class MachineCheckFragment extends BasicFragment implements ICheckMachine
 
     @Override
     public void StartTimeCount() {
+        checkThread = null;
         doCountDown = true;
         timeDownText.setVisibility(View.VISIBLE);
+        tologin.setVisibility(View.VISIBLE);
         Thread countThr = new Thread(new Runnable() {
 
             @Override

@@ -145,7 +145,7 @@ public class ChooseCupDialogTest extends Dialog implements View.OnClickListener 
                 button.setSelected(false);
             } else {
                 button.setSelected(true);
-                coffeeFomat.set
+             //   coffeeFomat.set
             }
         }
     }
@@ -252,12 +252,12 @@ public class ChooseCupDialogTest extends Dialog implements View.OnClickListener 
             if (taste == null) {
                 continue;
             }
-            int useMaterial = taste.getAmount() / 100 * step.getMaterial_time();
-            if (stockInt < useMaterial) {
+      //      int useMaterial = taste.getAmount() / 100 * step.getMaterial_time();
+          /*  if (stockInt < useMaterial) {
                 RadioButton button = (RadioButton) group.getChildAt(i);
                 button.setEnabled(false);
                 button.setAlpha(0.8f);
-            }
+            }*/
         }
     }
 }

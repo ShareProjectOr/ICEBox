@@ -24,11 +24,11 @@ public class CoffeeFomat {
     private int temp;
     private List<ContainerConfig> containerConfigs;
 
-    public void cupAdd() {
+  /*  public void cupAdd() {
         if (cup < coffee.restNum) {
             cup += 1;
         }
-    }
+    }*/
 
     public void cupSub() {
         if (cup > 1) {
@@ -36,9 +36,9 @@ public class CoffeeFomat {
         }
     }
 
-    public boolean isMax() {
+  /*  public boolean isMax() {
         return cup == coffee.restNum;
-    }
+    }*/
 
     public boolean isMin() {
         return cup == 1;

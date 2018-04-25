@@ -2,6 +2,113 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:background="@color/white"
+    android:orientation="vertical"
+    android:paddingTop="200dp">
 
+    <TextView
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="100dp"
+        android:gravity="right"
+        android:text="补料记录"
+        android:textColor="@color/black"
+        android:textSize="@dimen/text_size_one" />
+
+    <TextView
+        android:id="@+id/add_bunker_name"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="100dp"
+        android:layout_marginTop="40dp"
+        android:gravity="right"
+        android:text="补料仓:"
+        android:textColor="@color/black"
+        android:textSize="@dimen/text_size_one" />
+
+    <TextView
+        android:id="@+id/before_add_stock"
+        android:layout_width="204dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="100dp"
+        android:layout_marginTop="40dp"
+        android:gravity="right"
+        android:text="补料前余量:"
+        android:textColor="@color/black"
+        android:textSize="@dimen/text_size_one" />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="100dp"
+        android:layout_marginTop="40dp"
+        android:orientation="horizontal">
+
+        <TextView
+
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:gravity="right"
+            android:text="补料量:"
+            android:textColor="@color/black"
+            android:textSize="@dimen/text_size_one" />
+
+        <EditText
+            android:id="@+id/add_account"
+            android:layout_width="400dp"
+            android:layout_height="wrap_content"
+            android:inputType="number" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="100dp"
+        android:layout_marginTop="40dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <TextView
+
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:gravity="right"
+            android:text="补料后余量:"
+            android:textColor="@color/black"
+            android:textSize="@dimen/text_size_one" />
+
+        <EditText
+            android:id="@+id/last_add_stock"
+            android:layout_width="400dp"
+            android:layout_height="wrap_content"
+            android:inputType="number" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="600dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="100dp"
+        android:layout_marginTop="50dp"
+        android:gravity="end|center_vertical"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/cancel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="50dp"
+            android:background="@drawable/shape_config_edit"
+            android:text="取消"
+            android:textColor="@color/black"
+            android:textSize="@dimen/text_size_one" />
+
+        <Button
+            android:id="@+id/sure"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/shape_botton"
+            android:text="确定"
+            android:textColor="@color/white"
+            android:textSize="@dimen/text_size_one" />
+    </LinearLayout>
 </LinearLayout>

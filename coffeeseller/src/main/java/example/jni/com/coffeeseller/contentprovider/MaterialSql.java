@@ -50,6 +50,32 @@ public class MaterialSql extends SQLiteOpenHelper {
         onCreate(db);
     }
 
+    public String getBunkersNameByID(String bunkesID) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor res = db.rawQuery("select * from " + MATERIALS_TABLE_NAME + "where" + MATERIALS_COLUMN_BUNKERSID + "=" + bunkesID + "", null);
+        res.moveToFirst();
+        String MaterialName = res.getString(res.getColumnIndex(MATERIALS_COLUMN_MATERIALNAME));
+        res.close();
+        return MaterialName + "仓";
+
+    }
+
+    public String getStorkByBunkersID(String bunkesID) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor res = db.rawQuery("select * from " + MATERIALS_TABLE_NAME + "where" + MATERIALS_COLUMN_BUNKERSID + "=" + bunkesID + "", null);
+        res.moveToFirst();
+        String MaterialStock = res.getString(res.getColumnIndex(MATERIALS_COLUMN_MATERIALSTOCK));
+        res.close();
+        return MaterialStock;
+    }
+    public String getStorkByMaterialID(String MaterialID) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor res = db.rawQuery("select * from " + MATERIALS_TABLE_NAME + "where" + MATERIALS_COLUMN_MATERIALID + "=" + MaterialID + "", null);
+        res.moveToFirst();
+        String MaterialStock = res.getString(res.getColumnIndex(MATERIALS_COLUMN_MATERIALSTOCK));
+        res.close();
+        return MaterialStock;
+    }
 
     //获取查询条件的指针位置
     public Cursor getDataCursor(String whereKey, Object whereValue) {

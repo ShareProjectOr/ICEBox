@@ -58,7 +58,7 @@ public class SharedPreferencesManager {
     }
 
     public String getMachineCode() {
-        return sharedPreferences.getString("machineCode", "");
+        return sharedPreferences.getString("machineCode", "4545");
     }
 
     public void setLoginPassword(String adminPassword) {
