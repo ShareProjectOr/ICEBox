@@ -88,17 +88,12 @@ public class MachineCheck implements IMachineCheck {
                 if (object.getString("err").equals("")) {
 
                     JSONObject d = object.getJSONObject("d");
+                    SingleMaterialLsit.getInstance(mContext).setCoffeeArray(d.getJSONArray("list"));
                     Log.e(TAG, d.toString());
                     JSONArray array = d.getJSONArray("list2");
                     for (int i = 0; i < array.length(); i++) {
                         JSONObject bunkerdata = (JSONObject) array.opt(i);
                         bunkerData data = new bunkerData();
-                    /*    if (bunkerdata.getInt("containerID") == 0) {  //咖啡豆仓
-                            SharedPreferencesManager.getInstance(mContext).setCoffeeBeanAcount(bunkerdata.getInt("materialStock") + "");
-                            SharedPreferencesManager.getInstance(mContext).setAddBeanTime(bunkerdata.getString("lastLoadingTime"));
-
-
-                        } else*/
                         if (bunkerdata.getInt("containerID") == 7) {  //纸杯仓
                             SharedPreferencesManager.getInstance(mContext).setCupNum(bunkerdata.getInt("materialStock"));
                             SharedPreferencesManager.getInstance(mContext).setAddCupTime(bunkerdata.getString("lastLoadingTime"));
@@ -126,7 +121,7 @@ public class MachineCheck implements IMachineCheck {
                                     , list.get(i).getMaterialUnit(), list.get(i).getMaterialStock(), list.get(i).getMaterialDropSpeed(), list.get(i).getContainerID(), list.get(i).getLastLoadingTime());
                         }
                     }
-                    SingleMaterialLsit.getInstance(mContext).setCoffeeArray(d.getJSONArray("list"));
+
                     mOnMachineCheckCallBackListener.MaterialGroupGetSuccess();
                     MachineInitState.GET_FORMULA = MachineInitState.NORMAL;
                 } else {

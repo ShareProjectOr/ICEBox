@@ -15,6 +15,7 @@
         android:theme="@style/AppTheme.NoActionBar">
         <activity
             android:name=".views.activities.HomeActivity"
+            android:launchMode="singleInstance"
             android:screenOrientation="landscape"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>

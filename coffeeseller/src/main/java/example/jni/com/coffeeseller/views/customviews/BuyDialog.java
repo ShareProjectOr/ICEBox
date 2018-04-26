@@ -215,7 +215,7 @@ public class BuyDialog extends Dialog implements ChooseCupListenner, MkCoffeeLis
                             + ", stock=" + (sqlRestMaterialInt - mkUseMaterialInt));
 
                     ReportBunker reportBunker = new ReportBunker();
-                    reportBunker.setBunkerID();
+                    //   reportBunker.setBunkerID();
                     reportBunker.setMaterialStock((sqlRestMaterialInt - mkUseMaterialInt));
 
                     bunkers.add(reportBunker);
@@ -224,6 +224,7 @@ public class BuyDialog extends Dialog implements ChooseCupListenner, MkCoffeeLis
 
                 }
         }
+        return null;
     }
 
     @Override

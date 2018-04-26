@@ -1,6 +1,8 @@
 package example.jni.com.coffeeseller.views.activities;
 
 import android.content.IntentFilter;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -25,14 +27,27 @@ public class HomeActivity extends AppCompatActivity implements IAddFragmentView 
     private static HomeActivity mInstance;
     private AddFragmentPresenter mAddFragmentPresenter;
 
+    public static String Version;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         init();
-         //动态注册，此广播只能动态注册才能接收到
+        //动态注册，此广播只能动态注册才能接收到
         IntentFilter filter = new IntentFilter();
         filter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);//网络的连接（包括wifi和移动网络）
+    }
+
+    public String getVersion() {
+        try {
+            PackageManager manager = this.getPackageManager();
+            PackageInfo info = manager.getPackageInfo(this.getPackageName(), 0);
+            return info.versionName;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "";
+        }
     }
 
     public static synchronized HomeActivity getInstance() {
@@ -46,7 +61,7 @@ public class HomeActivity extends AppCompatActivity implements IAddFragmentView 
     }
 
     private void initDatas() {
-
+        Version = getVersion();
     }
 
     private void initViews() {

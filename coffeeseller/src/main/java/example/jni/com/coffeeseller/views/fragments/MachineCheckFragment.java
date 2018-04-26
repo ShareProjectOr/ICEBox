@@ -100,6 +100,10 @@ public class MachineCheckFragment extends BasicFragment implements ICheckMachine
                 mCheck_mainCtrl.setProgress(0);
                 mSub_Mqtt.setProgress(0);
                 getMaterial.setProgress(0);
+                mMachineCode_check_Tips.setText("");
+                mCheck_mainCtrl_Tips.setText("");
+                mSub_Mqtt_Tips.setText("");
+                getMaterialTips.setText("");
             }
         };
         handler.post(runnable);
@@ -210,7 +214,6 @@ public class MachineCheckFragment extends BasicFragment implements ICheckMachine
                     }.execute();
 
 
-
                 } else {
 
                 }
@@ -239,7 +242,6 @@ public class MachineCheckFragment extends BasicFragment implements ICheckMachine
                     }.execute();
 
 
-
                 } else {
 
                 }
@@ -266,7 +268,6 @@ public class MachineCheckFragment extends BasicFragment implements ICheckMachine
                             super.onProgressUpdate(values);
                         }
                     }.execute();
-
 
 
                 } else {

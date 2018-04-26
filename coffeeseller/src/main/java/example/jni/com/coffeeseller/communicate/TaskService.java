@@ -40,9 +40,11 @@ import example.jni.com.coffeeseller.bean.MachineConfig;
 import example.jni.com.coffeeseller.factory.FragmentFactory;
 import example.jni.com.coffeeseller.httputils.JsonUtil;
 import example.jni.com.coffeeseller.httputils.OkHttpUtil;
+import example.jni.com.coffeeseller.model.listeners.MsgTransListener;
 import example.jni.com.coffeeseller.model.listeners.OnMachineCheckCallBackListener;
 import example.jni.com.coffeeseller.utils.MyLog;
 import example.jni.com.coffeeseller.utils.SecondToDate;
+import example.jni.com.coffeeseller.views.activities.HomeActivity;
 
 
 public class TaskService extends Service implements MqttCallback {
@@ -247,6 +249,12 @@ public class TaskService extends Service implements MqttCallback {
 
     }
 
+    private MsgTransListener msgTransListener;
+
+    public void SetOnMsgListener(MsgTransListener msgTransListener) {
+        this.msgTransListener = msgTransListener;
+    }
+
     /**
      * 版本检测
      */
@@ -301,7 +309,7 @@ public class TaskService extends Service implements MqttCallback {
                     //videoScreenCheck();//开关屏检测
 
                     //	LocalDataBaseUtil.deleteOutDateItem();
-                    sendStateMsg();
+                    //sendStateMsg();
                     if (COUNT % 3 == 0) {//本地交易记录上传
 
                         //sendLocDealMsg();
@@ -366,10 +374,37 @@ public class TaskService extends Service implements MqttCallback {
             }
             msg.put("boilerTemperature", (int) state.getPotTemp());
             msg.put("boilerPressure", state.getPotPressure());
-           // if (state.isFrontDoorOpen())
+            if (state.isFrontDoorOpen()) {
+                msg.put("doorState", 1);
+            } else {
+                msg.put("doorState", 0);
+            }
+            if (state.isLittleDoorOpen()) {
+                msg.put("cupDoorState", 1);
+            } else {
+                msg.put("cupDoorState", 0);
+            }
+            msg.put("driverVersion", state.getVersion());
+            msg.put("errCode", state.getMajorState().getState_byte() + "");
+
         } else {
 
+            msg.put("cupHolderState", null);
+
+
+            msg.put("boilerTemperature", null);
+            msg.put("boilerPressure", null);
+
+            msg.put("doorState", null);
+
+
+            msg.put("cupDoorState", null);
+
+            msg.put("driverVersion", state.getVersion());
+            msg.put("errCode", null);
         }
+        msg.put("clientVersion", HomeActivity.getInstance().getVersion());
+        msg.put("mediaVersion", "1.0.0");
 
         //   msg.put("cupHouseState", CoffMsger.getInstance().getLastMachineState().)
         /*SendMsg msg = new  SendMsg();
