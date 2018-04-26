@@ -8,11 +8,13 @@ import example.jni.com.coffeeseller.bean.MachineConfig;
 
 public interface Constance {
 
-    String GET_QR = MachineConfig.getHostUrl() + "/trade/getQrCode";
+    String SERVER = MachineConfig.getHostUrl();
 
-    String CHECK_PAY = MachineConfig.getHostUrl() + "/trade/payResult";
+    String GET_QR = "http://192.168.4.138:8083" + "/trade/getQrCode";
 
-    String TRADE_UPLOAD = MachineConfig.getHostUrl() + "/trade/upload";
+    String CHECK_PAY = "http://192.168.4.138:8083" + "/trade/payResult";
+
+    String TRADE_UPLOAD = "http://192.168.4.138:8083" + "/trade/upload";
 
     String MachineAuthentication_URL = "http://192.168.4.152:8083" + "/machine/activate";
 

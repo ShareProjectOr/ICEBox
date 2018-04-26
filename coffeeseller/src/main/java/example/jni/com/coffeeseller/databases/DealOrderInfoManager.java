@@ -43,22 +43,24 @@ public class DealOrderInfoManager {
             SQLiteDatabase localSQLiteDatabase = mDataBaseHelper.getWritableDatabase();
 
 
-            Object[] arrayOfObject = new Object[10];
-            arrayOfObject[0] = orderRecorder.getRqcup();
-            arrayOfObject[1] = orderRecorder.getRqTempFormat();
-            arrayOfObject[2] = orderRecorder.getTasteRadio();
-            arrayOfObject[3] = orderRecorder.getOrder();
-            arrayOfObject[4] = orderRecorder.getPrice();
-            arrayOfObject[5] = orderRecorder.getCustomerId();
-            arrayOfObject[6] = orderRecorder.isPayed();
-            arrayOfObject[7] = orderRecorder.isMakeSuccess();
+            Object[] arrayOfObject = new Object[12];
+            arrayOfObject[0] = orderRecorder.getOrder();
+            arrayOfObject[1] = orderRecorder.getRqcup();
+            arrayOfObject[2] = orderRecorder.getPrice();
+            arrayOfObject[3] = orderRecorder.getTasteRadio();
+            arrayOfObject[4] = orderRecorder.getRqTempFormat();
+            arrayOfObject[5] = orderRecorder.isPayed() ? 1 : 0;
+            arrayOfObject[6] = orderRecorder.isMakeSuccess() ? 1 : 0;
+            arrayOfObject[7] = orderRecorder.getCustomerId();
             arrayOfObject[8] = orderRecorder.getFormulaID();
-            arrayOfObject[9] = orderRecorder.getFormulaID();
+            arrayOfObject[9] = orderRecorder.getPayTime();
+            arrayOfObject[10] = orderRecorder.isReportSuccess() ? 1 : 0;
+            arrayOfObject[11] = orderRecorder.getReportMsg();
 
             MyLog.d(TAG, "arrayOfObject=" + arrayOfObject);
-            localSQLiteDatabase.execSQL("insert into order_info(rqcup,temp_format,taste,taste_redio,order,price,customer_id," +
-                    "payed,make_success,formula_id,pay_time) " +
-                    "values(?,?,?,?,?,?,?,?,?,?)", arrayOfObject);
+            localSQLiteDatabase.execSQL("insert into order_info(order,rqcup,price,taste_redio,temp_format,payed," +
+                    "make_success,customer_id,formula_id,pay_time,is_report_success,report_msg) " +
+                    "values(?,?,?,?,?,?,?,?,?,?,?,?)", arrayOfObject);
             localSQLiteDatabase.close();
         }
     }
@@ -94,10 +96,17 @@ public class DealOrderInfoManager {
             if (bean.isMakeSuccess()) {
                 arrayOfObject[1] = 1;
             } else {
-                arrayOfObject[0] = 0;
+                arrayOfObject[1] = 0;
             }
 
-            localSQLiteDatabase.execSQL("update order_info set payed=?," + "make_success=?", arrayOfObject);
+            if (bean.isMakeSuccess()) {
+                arrayOfObject[2] = 1;
+            } else {
+                arrayOfObject[2] = 0;
+            }
+            arrayOfObject[3] = bean.getReportMsg();
+
+            localSQLiteDatabase.execSQL("update order_info set payed=?,make_success=?,is_report_uccess=?,report_msg=?", arrayOfObject);
 
             localSQLiteDatabase.close();
         }

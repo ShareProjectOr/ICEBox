@@ -70,7 +70,12 @@ public class ParseRQMsg {
             JSONObject responsesObject = new JSONObject(response);
 
             parseRQMsg.setQrCode(responsesObject.getString("qRcode"));
-            parseRQMsg.setCupNum(responsesObject.getInt("cupNum"));
+            if (!"null".equals(responsesObject.getString("cupNum"))) {
+                parseRQMsg.setCupNum(responsesObject.getInt("cupNum"));
+            } else {
+                parseRQMsg.setCupNum(0);
+            }
+
             parseRQMsg.setPrice(responsesObject.getString("price"));
             parseRQMsg.setTimeStamp(responsesObject.getString("timeStamp"));
             parseRQMsg.setTradeCode(responsesObject.getString("tradeCode"));

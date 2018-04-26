@@ -129,24 +129,7 @@ public class BuyDialog extends Dialog implements ChooseCupListenner, MkCoffeeLis
 
     //上报交易给服务器
 
-    private void reportTradeToServer(DealRecorder dealRecorder, List<ReportBunker> bunkers) {
-        /*
-        {
-
-            tradeCode:"20163258865" // string 交易单号
-            machineCode:"20201700285513"//string 机器号
-            makeState: 0 //Number 0 代表制作失败 ， 1 代表制作成功
-
-            bunkers : [{
-            bunkerID:100,
-                    materialStock:256,
-        },{
-            bunkerID	:100,
-                    materialStock:256,
-        }]
-
-        }*/
-
+    private DealRecorder reportTradeToServer(DealRecorder dealRecorder, List<ReportBunker> bunkers) {
 
         Map<String, Object> params = ConstanceMethod.getParams();
         params.put("tradeCode", dealRecorder.getOrder());
@@ -182,11 +165,11 @@ public class BuyDialog extends Dialog implements ChooseCupListenner, MkCoffeeLis
             dealRecorder.setReportSuccess(false);
             dealRecorder.setReportMsg("请求返回为null");
         }
-
+        return dealRecorder;
     }
 
     //更新数据库原料表
-    protected List<ReportBunker> updateMaterial(DealRecorder dealRecorder) {
+    private List<ReportBunker> updateMaterial(DealRecorder dealRecorder) {
         List<ReportBunker> bunkers = new ArrayList<>();
         if (coffee == null || coffee.getStepList() == null || coffee.getStepList().size() <= 0) {
             return bunkers;
@@ -215,7 +198,8 @@ public class BuyDialog extends Dialog implements ChooseCupListenner, MkCoffeeLis
                             + ", stock=" + (sqlRestMaterialInt - mkUseMaterialInt));
 
                     ReportBunker reportBunker = new ReportBunker();
-                    //   reportBunker.setBunkerID();
+                    int bunkerId = Integer.parseInt(materialSql.getBunkerIDByMaterialD(step.getMaterial().getMaterialID() + ""));
+                    reportBunker.setBunkerID(bunkerId);
                     reportBunker.setMaterialStock((sqlRestMaterialInt - mkUseMaterialInt));
 
                     bunkers.add(reportBunker);
@@ -224,7 +208,7 @@ public class BuyDialog extends Dialog implements ChooseCupListenner, MkCoffeeLis
 
                 }
         }
-        return null;
+        return bunkers;
     }
 
     @Override
@@ -263,21 +247,21 @@ public class BuyDialog extends Dialog implements ChooseCupListenner, MkCoffeeLis
     public void getMkResult(DealRecorder dealRecorder, boolean makeSuccess) {
 
 
-        //更新本地交易记录
-        DealOrderInfoManager.getInstance(context).update(dealRecorder);
-
         //更新数据库原料表
 
         List<ReportBunker> bunkers = updateMaterial(dealRecorder);
 
         //上报交易结果给服务器
 
+        DealRecorder newDealRecorder = reportTradeToServer(dealRecorder, bunkers);
+
+        //更新本地交易记录
+        DealOrderInfoManager.getInstance(context).update(newDealRecorder);
 
         //更新BuyFragment ui
         if (fragment != null) {
             fragment.updateUi();
         }
-
 
         disDialog();
 

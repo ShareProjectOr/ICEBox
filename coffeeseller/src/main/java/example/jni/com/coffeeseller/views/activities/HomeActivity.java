@@ -66,7 +66,8 @@ public class HomeActivity extends AppCompatActivity implements IAddFragmentView 
 
     private void initViews() {
         mInstance = this;
-        FragmentFactory.curPage = MachineCheckFragment;
+//        FragmentFactory.curPage = MachineCheckFragment;
+        FragmentFactory.curPage = ChooseCupNumFragment;
         mAddFragmentPresenter = new AddFragmentPresenter(this);
         mAddFragmentPresenter.AddFragment();
 
