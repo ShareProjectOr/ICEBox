@@ -1,5 +1,7 @@
 package example.jni.com.coffeeseller.model.listeners;
 
+import example.jni.com.coffeeseller.MachineConfig.DealRecorder;
+import example.jni.com.coffeeseller.bean.Coffee;
 import example.jni.com.coffeeseller.bean.CoffeeFomat;
 
 /**
@@ -7,7 +9,7 @@ import example.jni.com.coffeeseller.bean.CoffeeFomat;
  */
 
 public interface ChooseCupListenner {
-    void cancle();
+    void cancle(String order);
 
-    void getResult(CoffeeFomat coffeeFomat);
+    void hasPay(CoffeeFomat coffeeFomat,DealRecorder dealRecorder);
 }

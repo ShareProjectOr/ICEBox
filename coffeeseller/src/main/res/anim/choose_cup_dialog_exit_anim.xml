@@ -3,17 +3,11 @@
     android:duration="1000"
     android:fillAfter="true"
     android:shareInterpolator="false">
-    <translate
-        android:fromXDelta="1"
-        android:fromYDelta="1"
-        android:interpolator="@android:anim/anticipate_interpolator"
-        android:toXDelta="-1200"
-        android:toYDelta="1200" />
     <scale
         android:fromXScale="1"
         android:fromYScale="1"
-        android:pivotX="0%"
-        android:pivotY="80%"
+        android:pivotX="50%"
+        android:pivotY="50%"
         android:toXScale="0.1"
         android:toYScale="0.1" />
 </set>

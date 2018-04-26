@@ -1,8 +1,10 @@
 package example.jni.com.coffeeseller.bean;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import cof.ac.inter.ContainerConfig;
+import cof.ac.inter.WaterType;
 import example.jni.com.coffeeseller.utils.CoffeeFomatInterface;
 
 /**
@@ -18,38 +20,12 @@ import example.jni.com.coffeeseller.utils.CoffeeFomatInterface;
     *   ...
     * */
 public class CoffeeFomat {
-    private Coffee coffee;
-    private int coffeeId;
     private int cup = 1;
-    private int temp;
+    private WaterType waterType;
     private List<ContainerConfig> containerConfigs;
-
-  /*  public void cupAdd() {
-        if (cup < coffee.restNum) {
-            cup += 1;
-        }
-    }*/
-
-    public void cupSub() {
-        if (cup > 1) {
-            cup -= 1;
-        }
-    }
-
-  /*  public boolean isMax() {
-        return cup == coffee.restNum;
-    }*/
 
     public boolean isMin() {
         return cup == 1;
-    }
-
-    public int getCoffeeId() {
-        return coffeeId;
-    }
-
-    public void setCoffeeId(int coffeeId) {
-        this.coffeeId = coffeeId;
     }
 
     public int getCup() {
@@ -60,27 +36,23 @@ public class CoffeeFomat {
         this.cup = cup;
     }
 
-    public void setCoffee(Coffee coffee) {
-        this.coffee = coffee;
+    public WaterType getWaterType() {
+        return waterType;
     }
 
-    public Coffee getCoffee() {
-        return coffee;
-    }
-
-    public int getTemp() {
-        return temp;
-    }
-
-    public void setTemp(int temp) {
-        this.temp = temp;
+    public void setWaterType(WaterType waterType) {
+        this.waterType = waterType;
     }
 
     public List<ContainerConfig> getContainerConfigs() {
+        if (containerConfigs == null) {
+            containerConfigs = new ArrayList<>();
+        }
         return containerConfigs;
     }
 
     public void setContainerConfigs(List<ContainerConfig> containerConfigs) {
         this.containerConfigs = containerConfigs;
     }
+
 }

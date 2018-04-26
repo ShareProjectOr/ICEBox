@@ -1,12 +1,9 @@
 package example.jni.com.coffeeseller.views.fragments;
 
-import android.app.Dialog;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.view.ViewPager;
-import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -19,31 +16,26 @@ import java.util.List;
 
 import example.jni.com.coffeeseller.R;
 import example.jni.com.coffeeseller.bean.Coffee;
-import example.jni.com.coffeeseller.bean.CoffeeFomat;
 import example.jni.com.coffeeseller.contentprovider.SingleMaterialLsit;
 import example.jni.com.coffeeseller.factory.FragmentEnum;
 import example.jni.com.coffeeseller.factory.FragmentFactory;
 import example.jni.com.coffeeseller.model.adapters.CoffeeViewPagerAdapter;
 import example.jni.com.coffeeseller.model.adapters.HomeViewPager;
-import example.jni.com.coffeeseller.model.listeners.ChooseCupListenner;
 import example.jni.com.coffeeseller.model.listeners.GridViewItemListener;
 import example.jni.com.coffeeseller.model.listeners.ViewpagerPageChangedListener;
 import example.jni.com.coffeeseller.utils.GridViewTransformation;
-import example.jni.com.coffeeseller.utils.MyLog;
 import example.jni.com.coffeeseller.views.activities.HomeActivity;
-import example.jni.com.coffeeseller.views.customviews.ChooseCupDialogTest;
-import example.jni.com.coffeeseller.views.customviews.MakeDialog;
+import example.jni.com.coffeeseller.views.customviews.BuyDialog;
 
 /**
  * Created by WH on 2018/3/30.
  */
 
-public class BuyFragment extends BasicFragment implements GridViewItemListener, View.OnClickListener, ChooseCupListenner {
+public class BuyFragment extends BasicFragment implements GridViewItemListener, View.OnClickListener {
     private static String TAG = "BuyFragment";
     private View content;
     private HomeActivity homeActivity;
     public static int DEFAULT_ONEPAGE_NUM = 8;
-    private LinearLayout mViewPagerParentLayout;
     private HomeViewPager mViewPager;
     private LinearLayout mPointGroup;
     public ImageView mLogo;
@@ -52,6 +44,8 @@ public class BuyFragment extends BasicFragment implements GridViewItemListener, 
     private CoffeeViewPagerAdapter mPagerAdapter;
     private List<Coffee> mCoffees;
     private long lastClickTime;
+
+    public static Coffee curSelectedCoffee;
 
     @Nullable
     @Override
@@ -73,7 +67,6 @@ public class BuyFragment extends BasicFragment implements GridViewItemListener, 
         mMachineCode = (TextView) content.findViewById(R.id.machineCode);
         mLogo.setOnClickListener(this);
 
-        mViewPagerParentLayout = (LinearLayout) content.findViewById(R.id.viewPagerParentLayout);
         mViewPager = (HomeViewPager) content.findViewById(R.id.viewPager);
         mPointGroup = (LinearLayout) content.findViewById(R.id.pointGroup);
         mViewPager.setPageTransformer(true, new GridViewTransformation());
@@ -134,21 +127,18 @@ public class BuyFragment extends BasicFragment implements GridViewItemListener, 
     @Override
     public void onGridItemClick(AdapterView<?> parent, View view, int position, long id) {
 
-        /*Coffee coffee = mCoffees.get(position);
-
-        ChooseCupDialogTest dialog = new ChooseCupDialogTest(homeActivity);
-        dialog.setData(coffee.getProcessList(), this);
-        dialog.showDialog();*/
-        MakeDialog dialog = new MakeDialog(homeActivity, R.style.dialog);
         Coffee coffee = mCoffees.get(position);
-        if (coffee != null) {
+        curSelectedCoffee = coffee;
+        BuyDialog.getInstance(homeActivity).setInitView();
+        BuyDialog.getInstance(homeActivity).showDialog();
 
-            dialog.initData(coffee.getProcessList());
+    }
 
-            dialog.showDialog();
-
-        } else {
-            MyLog.d(TAG, "coffee ==null ");
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (BuyDialog.getInstance(homeActivity).isShowing()) {
+            BuyDialog.getInstance(homeActivity).disDialog();
         }
     }
 
@@ -163,15 +153,5 @@ public class BuyFragment extends BasicFragment implements GridViewItemListener, 
                 }
                 break;
         }
-    }
-
-    @Override
-    public void cancle() {
-
-    }
-
-    @Override
-    public void getResult(CoffeeFomat coffeeFomat) {
-
     }
 }

@@ -5,9 +5,9 @@ package example.jni.com.coffeeseller.bean;
  */
 
 public class MachineConfig {
-    private static String HostUrl="";
-    private static String TcpIP="";
-    private static String machineCode="";
+    private static String HostUrl = "http://192.168.4.138:8083";
+    private static String TcpIP = "";
+    private static String machineCode = "20180423134200001";
 
     public static String getHostUrl() {
         return HostUrl;

@@ -8,6 +8,7 @@
     android:baselineAligned="false"
     android:orientation="vertical">
 
+
     <LinearLayout
         android:id="@+id/nameLayout"
         android:layout_width="match_parent"
@@ -43,22 +44,27 @@
             android:layout_weight="1"
             android:background="@color/white" />
 
+
     </LinearLayout>
+
 
     <LinearLayout
         android:id="@+id/choose_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@mipmap/dialog_bng">
+        android:background="@mipmap/dialog_bng"
+        android:orientation="horizontal">
 
         <LinearLayout
+            android:id="@+id/contentLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center_horizontal"
             android:orientation="vertical"
             android:paddingBottom="200dp"
             android:paddingLeft="40dp"
-            android:paddingRight="40dp">
+            android:paddingRight="40dp"
+            android:visibility="gone">
 
             <RelativeLayout
                 android:layout_width="match_parent"
@@ -113,6 +119,16 @@
 
 
         </LinearLayout>
+
+        <TextView
+            android:id="@+id/errTip"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:text="对不起，咖啡制作失败了...\n1、门口有杯子\n2、其他错误"
+            android:textColor="@color/white"
+            android:textSize="30sp"
+            android:visibility="gone" />
     </LinearLayout>
 
 
@@ -137,13 +153,28 @@
             android:textSize="25sp"
             android:textStyle="bold" />
 
-        <ImageView
-            android:id="@+id/qrCodeImage"
+        <RelativeLayout
             android:layout_width="200dp"
             android:layout_height="200dp"
-            android:background="@color/white"
-            android:gravity="center"
-            android:src="@mipmap/icon" />
+            android:background="@color/white">
+
+
+            <ImageView
+                android:id="@+id/qrCodeImage"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_centerInParent="true"
+                android:gravity="center" />
+
+            <ProgressBar
+                android:id="@+id/loadingBar"
+                style="@android:style/Widget.ProgressBar.Large"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_centerInParent="true"
+                android:indeterminateTint="@color/coffeeColor" />
+
+        </RelativeLayout>
 
         <TextView
             android:layout_width="0dp"
@@ -159,4 +190,28 @@
             android:textSize="25sp"
             android:textStyle="bold" />
     </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:layout_marginTop="-240dp"
+        android:gravity="end">
+
+        <TextView
+            android:id="@+id/countDownTime"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="50s"
+            android:textColor="@color/white"
+            android:textSize="20sp" />
+
+        <ImageView
+            android:id="@+id/close"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:src="@mipmap/no" />
+
+    </LinearLayout>
+
 </LinearLayout>

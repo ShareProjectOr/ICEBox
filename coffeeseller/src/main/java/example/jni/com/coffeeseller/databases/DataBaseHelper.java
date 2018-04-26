@@ -9,8 +9,8 @@ import android.util.Log;
 public class DataBaseHelper extends SQLiteOpenHelper {
 
     String sql_order_info = "create table order_info(_id integer primary key autoincrement," +
-            "order varchar(255),rqcup integer,price varchar(255),milk_format varchar(255),suger_format varchar(255),temp_format varchar(255)," +
-            "payed integer,make_success integer,customer_id varchar(255))";
+            "order varchar(255),rqcup integer,price varchar(255),taste varchar(255),taste_redio varchar(255),temp_format varchar(255)," +
+            "payed integer,make_success integer,customer_id varchar(255),formula_id integer,pay_time varchar(255))";
 
     static DataBaseHelper mInstance = null;
     static String TAG = "DataBaseHelper";

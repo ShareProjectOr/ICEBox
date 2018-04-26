@@ -4,14 +4,17 @@ public class DealRecorder {
 
     int Rqcup = 1;
     String RqTempFormat;
-    String RqSugerFormat;
-    String RqMilkFormat;
     String order;
     String price;
+    String taste;
+    String tasteRadio;
+    String payTime;
+    int formulaID;//Number 配方ID
     //消费者id
     String customerId;
     boolean payed = false;
     boolean makeSuccess = false;
+
 
     public DealRecorder() {
     }
@@ -32,20 +35,12 @@ public class DealRecorder {
         RqTempFormat = rqTempFormat;
     }
 
-    public String getRqSugerFormat() {
-        return RqSugerFormat;
+    public String getTaste() {
+        return taste;
     }
 
-    public void setRqSugerFormat(String rqSugerFormat) {
-        RqSugerFormat = rqSugerFormat;
-    }
-
-    public String getRqMilkFormat() {
-        return RqMilkFormat;
-    }
-
-    public void setRqMilkFormat(String rqMilkFormat) {
-        RqMilkFormat = rqMilkFormat;
+    public void setTaste(String taste) {
+        this.taste = taste;
     }
 
     public String getOrder() {
@@ -88,14 +83,35 @@ public class DealRecorder {
         this.customerId = customerId;
     }
 
+    public String getTasteRadio() {
+        return tasteRadio;
+    }
 
+    public void setTasteRadio(String tasteRadio) {
+        this.tasteRadio = tasteRadio;
+    }
+
+    public int getFormulaID() {
+        return formulaID;
+    }
+
+    public void setFormulaID(int formulaID) {
+        this.formulaID = formulaID;
+    }
+
+    public String getPayTime() {
+        return payTime;
+    }
+
+    public void setPayTime(String payTime) {
+        this.payTime = payTime;
+    }
 
     public void clear() {
 
         Rqcup = 1;
         price = null;
-        RqMilkFormat = null;
-        RqSugerFormat = null;
+        taste = null;
         RqTempFormat = null;
         order = null;
         payed = false;
