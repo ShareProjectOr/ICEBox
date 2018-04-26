@@ -31,6 +31,15 @@
                 <action android:name="example.jni.com.coffeeseller.communicate.taskservice" />
             </intent-filter>
         </service>
+
+        <receiver
+            android:name=".receiver.StartServiceReceiver"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.net.wifi.WIFI_STATE_CHANGED" />//监听wifi的打开和关闭
+                <action android:name="android.net.wifi.STATE_CHANGE" />//监听wifi的连接状态
+            </intent-filter>
+        </receiver>
     </application>
     <supports-screens
         android:anyDensity="true"

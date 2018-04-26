@@ -54,6 +54,30 @@ public class FragmentFactory {
         mFragList = new ArrayList<>();
     }
 
+    public String getPageType(FragmentEnum pageType) {
+        switch (pageType) {
+            case ChooseCupNumFragment:
+                return "chooseCup";
+
+            case MachineCheckFragment:
+                return "MachineCheck";
+            case LoginFragment:
+
+                return "login";
+            case ConfigFragment:
+
+                return "setting";
+            case DebugFragment:
+
+                return "Deug";
+            case HomeFragement:
+                return "Home";
+            default:
+                return "Home";
+
+        }
+    }
+
     public BasicFragment getFragment(FragmentEnum pageType) {
 
         BasicFragment mFrag = mFragMap.get(pageType);

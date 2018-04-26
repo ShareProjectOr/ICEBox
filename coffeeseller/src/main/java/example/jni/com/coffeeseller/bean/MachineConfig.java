@@ -5,9 +5,11 @@ package example.jni.com.coffeeseller.bean;
  */
 
 public class MachineConfig {
-    private static String HostUrl = "http://192.168.4.138:8083";
+    private static String HostUrl = "";
     private static String TcpIP = "";
-    private static String machineCode = "20180423134200001";
+    private static String machineCode = "";
+
+    private static int networkType;
 
     public static String getHostUrl() {
         return HostUrl;
@@ -27,6 +29,14 @@ public class MachineConfig {
 
     public static String getMachineCode() {
         return machineCode;
+    }
+
+    public static int getNetworkType() {
+        return networkType;
+    }
+
+    public static void setNetworkType(int networkType) {
+        MachineConfig.networkType = networkType;
     }
 
     public static void setMachineCode(String machineCode) {

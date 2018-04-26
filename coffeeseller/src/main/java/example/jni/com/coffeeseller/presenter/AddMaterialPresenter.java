@@ -20,7 +20,16 @@ public class AddMaterialPresenter {
     }
 
     public void AddMaterial() {
-        mIAddMaterial.addMaterial(iAddMaterialView.getContext(), iAddMaterialView.getBunkersID(), iAddMaterialView.getSql(), new OnAddMaterialCallBackListener() {
+        mIAddMaterial.addMaterial(iAddMaterialView.getcontext(), iAddMaterialView.getBunkersID(), iAddMaterialView.getSql(), new OnAddMaterialCallBackListener() {
+            @Override
+            public void addEnd(MaterialSql sql) {
+                iAddMaterialView.notifySetDataChange(sql);
+            }
+        });
+    }
+
+    public void addSepcialMaterial() {
+        mIAddMaterial.addSpecialMaterial(iAddMaterialView.getcontext(), iAddMaterialView.getBunkersID(), new OnAddMaterialCallBackListener() {
             @Override
             public void addEnd(MaterialSql sql) {
                 iAddMaterialView.notifySetDataChange(sql);

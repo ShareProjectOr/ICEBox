@@ -62,6 +62,41 @@ public class MaterialSql extends SQLiteOpenHelper {
 
     }
 
+    public ArrayList<String> getAllmaterialID() {
+        ArrayList<String> array_list = new ArrayList<>();
+
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor res = db.rawQuery("select * from " + MATERIALS_TABLE_NAME, null);
+        res.moveToFirst();
+
+        while (res.isAfterLast() == false) {
+            Log.e("原料编号", res.getString(res.getColumnIndex(MATERIALS_COLUMN_MATERIALID)) + "");
+            array_list.add(res.getString(res.getColumnIndex(MATERIALS_COLUMN_MATERIALID)));
+            res.moveToNext();
+        }
+        res.close();
+        db.close();
+        return array_list;
+    }
+
+    public String getMaterialDropSpeedBycontainerID(String containerID) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor res = db.rawQuery("select * from " + MATERIALS_TABLE_NAME + "where" + MATERIALS_COLUMN_CONTAINERID + "=" + containerID + "", null);
+        res.moveToFirst();
+        String MaterialDropSpeed = res.getString(res.getColumnIndex(MATERIALS_COLUMN_MATERIALDORPSPEED));
+        res.close();
+        return MaterialDropSpeed;
+    }
+
+    public String getBunkerIDByMaterialD(String MaterialD) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor res = db.rawQuery("select * from " + MATERIALS_TABLE_NAME + "where" + MATERIALS_COLUMN_MATERIALID + "=" + MaterialD + "", null);
+        res.moveToFirst();
+        String MaterialDropSpeed = res.getString(res.getColumnIndex(MATERIALS_COLUMN_BUNKERSID));
+        res.close();
+        return MaterialDropSpeed;
+    }
+
     public String getStorkByBunkersID(String bunkesID) {
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor res = db.rawQuery("select * from " + MATERIALS_TABLE_NAME + "where" + MATERIALS_COLUMN_BUNKERSID + "=" + bunkesID + "", null);

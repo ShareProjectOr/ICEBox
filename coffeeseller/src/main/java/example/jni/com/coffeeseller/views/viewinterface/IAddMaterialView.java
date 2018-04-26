@@ -11,7 +11,7 @@ import example.jni.com.coffeeseller.contentprovider.MaterialSql;
 public interface IAddMaterialView {
     MaterialSql getSql();
 
-    Context getContext();
+    Context getcontext();
 
     String getBunkersID();
 

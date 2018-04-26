@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.media.AudioManager;
 import android.net.ConnectivityManager;
+import android.os.AsyncTask;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
@@ -24,13 +25,24 @@ import org.eclipse.paho.client.mqttv3.MqttTopic;
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
 import org.json.JSONObject;
 
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.UUID;
 
+import cof.ac.inter.CoffMsger;
+import cof.ac.inter.MachineState;
+import cof.ac.inter.Result;
 import example.jni.com.coffeeseller.MachineConfig.MachineInitState;
 import example.jni.com.coffeeseller.bean.MachineConfig;
+import example.jni.com.coffeeseller.factory.FragmentFactory;
+import example.jni.com.coffeeseller.httputils.JsonUtil;
+import example.jni.com.coffeeseller.httputils.OkHttpUtil;
 import example.jni.com.coffeeseller.model.listeners.OnMachineCheckCallBackListener;
 import example.jni.com.coffeeseller.utils.MyLog;
+import example.jni.com.coffeeseller.utils.SecondToDate;
 
 
 public class TaskService extends Service implements MqttCallback {
@@ -44,13 +56,15 @@ public class TaskService extends Service implements MqttCallback {
     static String TAG = "TaskService";
     static Handler mHandler;
     Timer mTimer = null;
+
     TimerTask mTimerTask = null;
-    public static final long RUN_PERIOD = 5000;
+    public static final long RUN_PERIOD = 60000;
 
     //VersionManager versionManger;
 
     static TaskService mInstance;
     BroadcastReceiver mReceiver = null;
+    private String ServiceTopic;   //服务端TOPIC
 
     //SettingDataManager settingDataManager;
 
@@ -114,7 +128,7 @@ public class TaskService extends Service implements MqttCallback {
         mInstance = this;
         //settingDataManager = SettingDataManager.getSettingDataManager(mInstance);
 
-        //   checkNetState();
+        checkNetState();
     }
 
     public void breakClient() {
@@ -153,11 +167,17 @@ public class TaskService extends Service implements MqttCallback {
             options.setConnectionTimeout(10);
             // 设置会话心跳时间 单位为秒 服务器会每隔1.5*20秒的时间向客户端发送个消息判断客户端是否在线，但这个方法并没有重连的机制
             options.setKeepAliveInterval(20);
+            //   options.setWill();
             // 设置回调
             client.setCallback(new TaskService());
-            MqttTopic topic = client.getTopic("000");
+            MqttTopic topic = client.getTopic(ServiceTopic);
             // setWill方法，如果项目中需要知道客户端是否掉线可以调用该方法。设置最终端口的通知消息
-            options.setWill(topic, "close".getBytes(), 2, true);
+            Map<String, Object> bytejson = new HashMap<>();
+            bytejson.put("msgId", UUID.randomUUID().toString());
+            bytejson.put("msgType", "willMsgType");
+            bytejson.put("machineCode", MachineConfig.getMachineCode());
+            bytejson.put("sendTime", SecondToDate.getDateToString(System.currentTimeMillis()));
+            options.setWill(topic, JsonUtil.mapToJson(bytejson).getBytes(), 2, true);
             client.connect(options);
             // 订阅消息
             int[] Qos = {2};
@@ -326,8 +346,33 @@ public class TaskService extends Service implements MqttCallback {
 
 
     private void sendStateMsg() {
+        Map<String, Object> msg = new HashMap<>();
+        msg.put("msgId", UUID.randomUUID().toString());
+        msg.put("machineCode", MachineConfig.getMachineCode());
+        msg.put("pageType", FragmentFactory.getInstance().getPageType(FragmentFactory.curPage));
+        msg.put("msgType", "runningStateType");
+        msg.put("sendTime", SecondToDate.getDateToString(System.currentTimeMillis()));
+        msg.put("networkType", MachineConfig.getNetworkType());
+        msg.put("cupHouseState", null);
+        CoffMsger msger = CoffMsger.getInstance();
+        MachineState state = msger.getLastMachineState();
+        Result result = state.getResult();
 
-		/*SendMsg msg = new  SendMsg();
+        if (result.getCode() == Result.SUCCESS) {
+            if (state.hasCupOnShelf()) {
+                msg.put("cupHolderState", 1);
+            } else {
+                msg.put("cupHolderState", 0);
+            }
+            msg.put("boilerTemperature", (int) state.getPotTemp());
+            msg.put("boilerPressure", state.getPotPressure());
+           // if (state.isFrontDoorOpen())
+        } else {
+
+        }
+
+        //   msg.put("cupHouseState", CoffMsger.getInstance().getLastMachineState().)
+        /*SendMsg msg = new  SendMsg();
         BasicInfoRecorder mRecorder = BasicInfoRecorder.getInstance();
 		msg.setKey(mRecorder.getKey());
 		msg.setMachineCode(mRecorder.getMachineid());

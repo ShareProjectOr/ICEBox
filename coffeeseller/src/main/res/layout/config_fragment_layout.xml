@@ -291,7 +291,7 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="20个/100个"
+                        android:text="20个"
                         android:textSize="@dimen/text_size_one" />
 
                     <TextView
@@ -312,51 +312,7 @@
                         android:textSize="@dimen/text_size_one" />
                 </LinearLayout>
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:padding="@dimen/config_marial_list_margin">
 
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="咖啡豆料仓"
-                        android:textSize="@dimen/text_size_one" />
-
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="咖啡豆"
-                        android:textSize="@dimen/text_size_one" />
-
-                    <TextView
-                        android:id="@+id/coffee_bean_count"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="30ml/250ml"
-                        android:textSize="@dimen/text_size_one" />
-
-                    <TextView
-                        android:id="@+id/add_coffeebean_time"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="2018-04-13 13:50:55"
-                        android:textSize="@dimen/text_size_one" />
-
-                    <TextView
-                        android:id="@+id/add_coffeebean"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="补料"
-                        android:textColor="@color/blue"
-                        android:textSize="@dimen/text_size_one" />
-                </LinearLayout>
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -383,7 +339,7 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="20ml/250ml"
+                        android:text="20ml"
                         android:textSize="@dimen/text_size_one" />
 
                     <TextView

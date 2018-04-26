@@ -1,5 +1,7 @@
 package example.jni.com.coffeeseller.views.activities;
 
+import android.content.IntentFilter;
+import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
@@ -28,7 +30,9 @@ public class HomeActivity extends AppCompatActivity implements IAddFragmentView 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         init();
-
+         //动态注册，此广播只能动态注册才能接收到
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);//网络的连接（包括wifi和移动网络）
     }
 
     public static synchronized HomeActivity getInstance() {
@@ -38,6 +42,7 @@ public class HomeActivity extends AppCompatActivity implements IAddFragmentView 
     private void init() {
         initViews();
         initDatas();
+
     }
 
     private void initDatas() {
@@ -46,8 +51,7 @@ public class HomeActivity extends AppCompatActivity implements IAddFragmentView 
 
     private void initViews() {
         mInstance = this;
-//        FragmentFactory.curPage = MachineCheckFragment;
-        FragmentFactory.curPage = ChooseCupNumFragment;
+        FragmentFactory.curPage = MachineCheckFragment;
         mAddFragmentPresenter = new AddFragmentPresenter(this);
         mAddFragmentPresenter.AddFragment();
 

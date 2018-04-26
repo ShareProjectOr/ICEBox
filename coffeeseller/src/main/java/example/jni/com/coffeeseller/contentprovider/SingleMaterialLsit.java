@@ -58,7 +58,6 @@ public class SingleMaterialLsit {
             for (int i = 0; i < coffeeArray.length(); i++) {
                 org.json.JSONObject coffeeObject = (org.json.JSONObject) coffeeArray.opt(i);
                 Coffee coffee = new Coffee();
-
                 coffee.setCacheUrl(coffeeObject.getString("imageSource"));
                 coffee.setName(coffeeObject.getString("name"));
                 coffee.setPrice(coffeeObject.getInt("suggestedPrice") + "");
@@ -70,7 +69,22 @@ public class SingleMaterialLsit {
                     Cursor cursor = sql.getDataCursor("containerID", containerID);
                     cursor.moveToFirst();
                     String materialStock = cursor.getString(cursor.getColumnIndex(sql.MATERIALS_COLUMN_MATERIALSTOCK));//找到对应料仓编号的剩余量
-                    if (materialStock.equals("0")) {
+                    String materialID = stepObject.getJSONObject("material").getString("materialID");
+               /* for (String haveMaterialID : sql.getAllmaterialID()) {
+                    if (materialID)
+                }*/
+                    if (!sql.getAllmaterialID().contains(materialID)) { //本地料仓里面不含有这个原料
+                        coffee.setOver(true);
+                        break;
+                    }
+
+                    if (materialStock.equals("0")) { // 有原料但剩余量为0 则为售罄
+                        coffee.setOver(true);
+                        break;
+                    }
+                    int intMaterialStock = Integer.parseInt(materialStock);
+                    int needAccount = stepObject.getInt("Acount");
+                    if (needAccount > intMaterialStock) { //需要量 大于剩余量时
                         coffee.setOver(true);
                         break;
                     }
@@ -108,7 +122,7 @@ public class SingleMaterialLsit {
                     }
                     containerConfig.setWater_interval(stepObject.getInt("timeOut"));
                     containerConfig.setWater_capacity(stepObject.getInt("water"));
-                    containerConfig.setMaterial_time(stepObject.getInt("time"));
+                    containerConfig.setMaterial_time(stepObject.getInt("Acount") / Integer.parseInt(sql.getMaterialDropSpeedBycontainerID("" + stepObject.getInt("containerID"))) * 5 * 10 * (stepObject.getInt("loadingSpeed") / 127));
                     containerConfig.setRotate_speed(stepObject.getInt("loadingSpeed"));
                     containerConfig.setStir_speed(stepObject.getInt("mixingSpeed"));
                     switch (stepObject.getInt("waterType")) {

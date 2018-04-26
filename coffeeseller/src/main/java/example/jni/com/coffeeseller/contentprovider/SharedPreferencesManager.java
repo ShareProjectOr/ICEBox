@@ -90,6 +90,37 @@ public class SharedPreferencesManager {
         editor.apply();
     }
 
+    public void setAddBeanTime(String addBeanTime) {
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString("addBeanTime", addBeanTime);
+        editor.apply();
+    }
+
+    public String getAddBeanTime() {
+        return sharedPreferences.getString("addBeanTime", "");
+    }
+
+    public void setAddCupTime(String addCupTime) {
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString("addCupTime", addCupTime);
+        editor.apply();
+    }
+
+    public String getAddCupTime() {
+        return sharedPreferences.getString("addCupTime", "");
+    }
+
+
+    public void setAddWaterTime(String addWaterTime) {
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString("addWaterTime", addWaterTime);
+        editor.apply();
+    }
+
+    public String getAddWaterTime() {
+        return sharedPreferences.getString("addWaterTime", "");
+    }
+
     public String getWaterCount() {
         return sharedPreferences.getString("WaterCount", "");
     }

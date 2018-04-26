@@ -89,16 +89,22 @@ public class MachineCheck implements IMachineCheck {
 
                     JSONObject d = object.getJSONObject("d");
                     Log.e(TAG, d.toString());
-          /*          JSONArray array = d.getJSONArray("list2");
+                    JSONArray array = d.getJSONArray("list2");
                     for (int i = 0; i < array.length(); i++) {
                         JSONObject bunkerdata = (JSONObject) array.opt(i);
                         bunkerData data = new bunkerData();
-                        if (bunkerdata.getInt("containerID") == 0) {  //咖啡豆仓
+                    /*    if (bunkerdata.getInt("containerID") == 0) {  //咖啡豆仓
                             SharedPreferencesManager.getInstance(mContext).setCoffeeBeanAcount(bunkerdata.getInt("materialStock") + "");
-                        } else if (bunkerdata.getInt("containerID") == 7) {  //纸杯仓
+                            SharedPreferencesManager.getInstance(mContext).setAddBeanTime(bunkerdata.getString("lastLoadingTime"));
+
+
+                        } else*/
+                        if (bunkerdata.getInt("containerID") == 7) {  //纸杯仓
                             SharedPreferencesManager.getInstance(mContext).setCupNum(bunkerdata.getInt("materialStock"));
+                            SharedPreferencesManager.getInstance(mContext).setAddCupTime(bunkerdata.getString("lastLoadingTime"));
                         } else if (bunkerdata.getInt("containerID") == 8) {   //净水仓
                             SharedPreferencesManager.getInstance(mContext).setWaterCount(bunkerdata.getInt("materialStock") + "");
+                            SharedPreferencesManager.getInstance(mContext).setAddWaterTime(bunkerdata.getString("lastLoadingTime"));
                         } else {    //其情况它
                             data.setContainerID(bunkerdata.getInt("containerID") + "");
                             data.setBunkerID(bunkerdata.getInt("bunkerID") + "");
@@ -112,14 +118,14 @@ public class MachineCheck implements IMachineCheck {
                             list.add(i, data);
                         }
 
-                    }*/
+                    }
 
-                 /*   if (content.getAllbunkersIDs().size() == 0) {
+                    if (content.getAllbunkersIDs().size() == 0) {
                         for (int i = 0; i < list.size(); i++) {
                             content.insertContact(list.get(i).getBunkerID(), list.get(i).getMaterialID(), list.get(i).getMaterialType(), list.get(i).getMaterialName()
                                     , list.get(i).getMaterialUnit(), list.get(i).getMaterialStock(), list.get(i).getMaterialDropSpeed(), list.get(i).getContainerID(), list.get(i).getLastLoadingTime());
                         }
-                    }*/
+                    }
                     SingleMaterialLsit.getInstance(mContext).setCoffeeArray(d.getJSONArray("list"));
                     mOnMachineCheckCallBackListener.MaterialGroupGetSuccess();
                     MachineInitState.GET_FORMULA = MachineInitState.NORMAL;

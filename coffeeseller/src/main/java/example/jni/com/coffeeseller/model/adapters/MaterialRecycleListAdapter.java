@@ -67,7 +67,7 @@ public class MaterialRecycleListAdapter extends RecyclerView.Adapter<RecyclerVie
     }
 
     @Override
-    public Context getContext() {
+    public Context getcontext() {
         return mContext;
     }
 
@@ -79,6 +79,7 @@ public class MaterialRecycleListAdapter extends RecyclerView.Adapter<RecyclerVie
     @Override
     public void notifySetDataChange(MaterialSql sql) {
         this.sql = sql;
+        notifyDataSetChanged();
     }
 
 
