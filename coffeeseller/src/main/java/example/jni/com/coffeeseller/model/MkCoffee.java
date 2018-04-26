@@ -27,6 +27,7 @@ import example.jni.com.coffeeseller.MachineConfig.DealRecorder;
 import example.jni.com.coffeeseller.R;
 import example.jni.com.coffeeseller.bean.CoffeeFomat;
 import example.jni.com.coffeeseller.bean.CoffeeMakeStateRecorder;
+import example.jni.com.coffeeseller.databases.DealOrderInfoManager;
 import example.jni.com.coffeeseller.model.listeners.MkCoffeeListenner;
 import example.jni.com.coffeeseller.utils.MyLog;
 import example.jni.com.coffeeseller.utils.Waiter;
@@ -85,8 +86,23 @@ public class MkCoffee {
 
     public void initData() {
 
+
+        if (coffeeFomat != null && dealRecorder != null) {
+
+            dealRecorder.getContainerConfigs().clear();
+            dealRecorder.getContainerConfigs().addAll(coffeeFomat.getContainerConfigs());
+
+            String tasteNameAndRadio = "";
+            for (int i = 0; i < coffeeFomat.getTasteNameRatio().size(); i++) {
+                tasteNameAndRadio += (coffeeFomat.getTasteNameRatio().get(i) + ",");
+            }
+            dealRecorder.setTasteRadio(tasteNameAndRadio);
+        }
         coffMsger = CoffMsger.getInstance();
         buffer = new StringBuffer();
+
+        DealOrderInfoManager.getInstance(context).update(dealRecorder);
+
         updateProgressAnim(CONTAIN_MAKING_PROGRESS_TIME);
 //        startMkCoffee();
     }

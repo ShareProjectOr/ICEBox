@@ -123,6 +123,14 @@ public class BuyFragment extends BasicFragment implements GridViewItemListener, 
         }
     }
 
+    public void updateUi() {
+        if (mCoffees != null) {
+            mCoffees.addAll(SingleMaterialLsit.getInstance(homeActivity).getCoffeeList());
+        }
+        if (mPagerAdapter != null) {
+            mPagerAdapter.notifyDataSetChanged();
+        }
+    }
 
     @Override
     public void onGridItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -130,6 +138,7 @@ public class BuyFragment extends BasicFragment implements GridViewItemListener, 
         Coffee coffee = mCoffees.get(position);
         curSelectedCoffee = coffee;
         BuyDialog.getInstance(homeActivity).setInitView();
+        BuyDialog.getInstance(homeActivity).setFragment(this);
         BuyDialog.getInstance(homeActivity).showDialog();
 
     }

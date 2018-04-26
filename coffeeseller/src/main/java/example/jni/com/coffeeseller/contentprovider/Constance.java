@@ -12,6 +12,8 @@ public interface Constance {
 
     String CHECK_PAY = MachineConfig.getHostUrl() + "/trade/payResult";
 
+    String TRADE_UPLOAD = MachineConfig.getHostUrl() + "/trade/upload";
+
     String MachineAuthentication_URL = "http://192.168.4.152:8083" + "/machine/activate";
 
     String FORMULA_GET = "http://192.168.4.152:8083/formula/getFormula";

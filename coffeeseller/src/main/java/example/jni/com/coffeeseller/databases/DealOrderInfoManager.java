@@ -43,23 +43,22 @@ public class DealOrderInfoManager {
             SQLiteDatabase localSQLiteDatabase = mDataBaseHelper.getWritableDatabase();
 
 
-            Object[] arrayOfObject = new Object[11];
+            Object[] arrayOfObject = new Object[10];
             arrayOfObject[0] = orderRecorder.getRqcup();
             arrayOfObject[1] = orderRecorder.getRqTempFormat();
-            arrayOfObject[2] = orderRecorder.getTaste();
-            arrayOfObject[3] = orderRecorder.getTasteRadio();
-            arrayOfObject[4] = orderRecorder.getOrder();
-            arrayOfObject[5] = orderRecorder.getPrice();
-            arrayOfObject[6] = orderRecorder.getCustomerId();
-            arrayOfObject[7] = orderRecorder.isPayed();
-            arrayOfObject[8] = orderRecorder.isMakeSuccess();
+            arrayOfObject[2] = orderRecorder.getTasteRadio();
+            arrayOfObject[3] = orderRecorder.getOrder();
+            arrayOfObject[4] = orderRecorder.getPrice();
+            arrayOfObject[5] = orderRecorder.getCustomerId();
+            arrayOfObject[6] = orderRecorder.isPayed();
+            arrayOfObject[7] = orderRecorder.isMakeSuccess();
+            arrayOfObject[8] = orderRecorder.getFormulaID();
             arrayOfObject[9] = orderRecorder.getFormulaID();
-            arrayOfObject[10] = orderRecorder.getFormulaID();
 
             MyLog.d(TAG, "arrayOfObject=" + arrayOfObject);
             localSQLiteDatabase.execSQL("insert into order_info(rqcup,temp_format,taste,taste_redio,order,price,customer_id," +
                     "payed,make_success,formula_id,pay_time) " +
-                    "values(?,?,?,?,?,?,?,?,?,?,?)", arrayOfObject);
+                    "values(?,?,?,?,?,?,?,?,?,?)", arrayOfObject);
             localSQLiteDatabase.close();
         }
     }
@@ -118,7 +117,6 @@ public class DealOrderInfoManager {
                 mBean.setOrder(localCursor.getString(localCursor.getColumnIndex("order")));
                 mBean.setRqcup(localCursor.getInt(localCursor.getColumnIndex("rqcup")));
                 mBean.setRqTempFormat(localCursor.getString(localCursor.getColumnIndex("temp_format")));
-                mBean.setTaste(localCursor.getString(localCursor.getColumnIndex("taste")));
                 mBean.setTasteRadio(localCursor.getString(localCursor.getColumnIndex("taste_redio")));
                 mBean.setPrice(localCursor.getString(localCursor.getColumnIndex("price")));
                 mBean.setCustomerId(localCursor.getString(localCursor.getColumnIndex("customer_id")));

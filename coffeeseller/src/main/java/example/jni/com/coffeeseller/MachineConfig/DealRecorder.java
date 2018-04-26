@@ -1,20 +1,27 @@
 package example.jni.com.coffeeseller.MachineConfig;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import cof.ac.inter.ContainerConfig;
+
 public class DealRecorder {
 
     int Rqcup = 1;
     String RqTempFormat;
     String order;
     String price;
-    String taste;
-    String tasteRadio;
+    String tasteRadio;//口味：多糖-50
     String payTime;
     int formulaID;//Number 配方ID
     //消费者id
     String customerId;
     boolean payed = false;
     boolean makeSuccess = false;
+    boolean isReportSuccess = false;
+    String reportMsg;
 
+    List<ContainerConfig> containerConfigs;
 
     public DealRecorder() {
     }
@@ -33,14 +40,6 @@ public class DealRecorder {
 
     public void setRqTempFormat(String rqTempFormat) {
         RqTempFormat = rqTempFormat;
-    }
-
-    public String getTaste() {
-        return taste;
-    }
-
-    public void setTaste(String taste) {
-        this.taste = taste;
     }
 
     public String getOrder() {
@@ -107,11 +106,37 @@ public class DealRecorder {
         this.payTime = payTime;
     }
 
+    public List<ContainerConfig> getContainerConfigs() {
+        if (containerConfigs == null) {
+            containerConfigs = new ArrayList<>();
+        }
+        return containerConfigs;
+    }
+
+    public void setContainerConfigs(List<ContainerConfig> containerConfigs) {
+        this.containerConfigs = containerConfigs;
+    }
+
+    public boolean isReportSuccess() {
+        return isReportSuccess;
+    }
+
+    public void setReportSuccess(boolean reportSuccess) {
+        isReportSuccess = reportSuccess;
+    }
+
+    public String getReportMsg() {
+        return reportMsg;
+    }
+
+    public void setReportMsg(String reportMsg) {
+        this.reportMsg = reportMsg;
+    }
+
     public void clear() {
 
         Rqcup = 1;
         price = null;
-        taste = null;
         RqTempFormat = null;
         order = null;
         payed = false;

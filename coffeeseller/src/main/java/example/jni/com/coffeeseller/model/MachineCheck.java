@@ -120,7 +120,7 @@ public class MachineCheck implements IMachineCheck {
                                     , list.get(i).getMaterialUnit(), list.get(i).getMaterialStock(), list.get(i).getMaterialDropSpeed(), list.get(i).getContainerID(), list.get(i).getLastLoadingTime());
                         }
                     }*/
-                    SingleMaterialLsit.getInstance(mContext).setCoffeeList(d.getJSONArray("list"));
+                    SingleMaterialLsit.getInstance(mContext).setCoffeeArray(d.getJSONArray("list"));
                     mOnMachineCheckCallBackListener.MaterialGroupGetSuccess();
                     MachineInitState.GET_FORMULA = MachineInitState.NORMAL;
                 } else {
@@ -211,7 +211,7 @@ public class MachineCheck implements IMachineCheck {
                 mOnMachineCheckCallBackListener.MachineCodeCheckFailed(e.getMessage());
             }
         }
-         Waiter.doWait(2000);
+        Waiter.doWait(2000);
         checkMainCtrl();
     }
 

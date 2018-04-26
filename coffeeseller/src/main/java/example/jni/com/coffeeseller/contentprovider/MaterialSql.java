@@ -7,10 +7,12 @@ import android.database.DatabaseErrorHandler;
 import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.text.TextUtils;
 import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import example.jni.com.coffeeseller.bean.bunkerData;
 
@@ -68,6 +70,7 @@ public class MaterialSql extends SQLiteOpenHelper {
         res.close();
         return MaterialStock;
     }
+
     public String getStorkByMaterialID(String MaterialID) {
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor res = db.rawQuery("select * from " + MATERIALS_TABLE_NAME + "where" + MATERIALS_COLUMN_MATERIALID + "=" + MaterialID + "", null);
@@ -127,6 +130,8 @@ public class MaterialSql extends SQLiteOpenHelper {
     public boolean updateContact(String bunkersID, String MaterialID, String MaterialType, String MaterialName, String MaterialUnit, String MaterialStock, String MaterialDropSpeed, String containerID, String addMaterialTime) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
+
+
         if (!MaterialID.isEmpty()) {
             contentValues.put("MaterialID", MaterialID);
         }
@@ -154,6 +159,36 @@ public class MaterialSql extends SQLiteOpenHelper {
             contentValues.put("addMaterialTime", addMaterialTime);
         }
         db.update(MATERIALS_TABLE_NAME, contentValues, bunkersID + " = ? ", new String[]{bunkersID});
+        return true;
+    }
+
+
+    /*
+   * 更新数据库操作
+   * */
+    public boolean updateContactByMap(String materialID, Map<String, String> updateParams) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+
+        for (String key : updateParams.keySet()) {
+            if (!TextUtils.isEmpty(updateParams.get(key))) {
+                contentValues.put(key, updateParams.get(key));
+            }
+        }
+        db.update(MATERIALS_TABLE_NAME, contentValues, MATERIALS_COLUMN_MATERIALID + " = ? ", new String[]{materialID});
+        return true;
+    }
+
+
+    /*
+ * 更新数据库原料剩余量
+ * */
+    public boolean updateMaterialStockByMaterialId(String materialID, String materialStock) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(MATERIALS_COLUMN_MATERIALSTOCK, materialStock);
+        db.update(MATERIALS_TABLE_NAME, contentValues, MATERIALS_COLUMN_MATERIALID + " = ? ", new String[]{materialID});
+        db.close();
         return true;
     }
 

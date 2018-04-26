@@ -21,6 +21,7 @@ import example.jni.com.coffeeseller.utils.CoffeeFomatInterface;
     * */
 public class CoffeeFomat {
     private int cup = 1;
+    private List<String> tasteNameRatio;
     private WaterType waterType;
     private List<ContainerConfig> containerConfigs;
 
@@ -55,4 +56,14 @@ public class CoffeeFomat {
         this.containerConfigs = containerConfigs;
     }
 
+    public List<String> getTasteNameRatio() {
+        if (tasteNameRatio == null) {
+            tasteNameRatio = new ArrayList<>();
+        }
+        return tasteNameRatio;
+    }
+
+    public void setTasteNameRatio(List<String> tasteNameRatio) {
+        this.tasteNameRatio = tasteNameRatio;
+    }
 }

@@ -85,7 +85,7 @@ public class ChooseCup implements View.OnClickListener, MsgTransListener {
             mViewHolder.mErrTip.setVisibility(View.VISIBLE);
             mViewHolder.mErrTip.setText(CheckCurMachineState.getInstance().getStateTip());
         }*/
-
+        mViewHolder.mContentLayout.setVisibility(View.VISIBLE);
 
 
         initData();
@@ -276,8 +276,9 @@ public class ChooseCup implements View.OnClickListener, MsgTransListener {
             mDealRecorder.setPayTime(msg.getPayTime());
 
             if (mChooseCupListener != null) {
+                stopTaskCheckPay();
                 getFinalContainerConfig();
-                mChooseCupListener.hasPay(mCoffeeFomat,mDealRecorder);
+                mChooseCupListener.hasPay(mCoffeeFomat, mDealRecorder);
             }
 
         } else if (msg.getPayResult() == 1) {
@@ -302,6 +303,9 @@ public class ChooseCup implements View.OnClickListener, MsgTransListener {
                 int useMaterial = (step.getTastes().get(i).getAmount() / 100) * containerConfig.getMaterial_time();
                 containerConfig.setMaterial_time(useMaterial);
                 mCoffeeFomat.getContainerConfigs().set(index, containerConfig);
+
+                mCoffeeFomat.getTasteNameRatio().add(index, step.getTastes().get(i).getRemark() + "-" + step.getTastes().get(i).getAmount());
+
             }
         }
     }
@@ -335,6 +339,7 @@ public class ChooseCup implements View.OnClickListener, MsgTransListener {
                 if (!mDealRecorder.isPayed()) {
 
                     if (mChooseCupListener != null) {
+                        stopTaskCheckPay();
                         mChooseCupListener.cancle(mDealRecorder.getOrder());
                     }
                 }
@@ -350,7 +355,8 @@ public class ChooseCup implements View.OnClickListener, MsgTransListener {
     private List<ContainerConfig> getFinalContainerConfig() {
 
         for (int i = 0; i < mCoffeeFomat.getContainerConfigs().size(); i++) {
-            mCoffeeFomat.getContainerConfigs().get(i).setWater_type(mCoffeeFomat.getWaterType());
+            if (mCoffeeFomat.getContainerConfigs().get(i).getWater_capacity() != 0)
+                mCoffeeFomat.getContainerConfigs().get(i).setWater_type(mCoffeeFomat.getWaterType());
         }
         return mCoffeeFomat.getContainerConfigs();
     }
@@ -369,6 +375,7 @@ public class ChooseCup implements View.OnClickListener, MsgTransListener {
             case R.id.close:
 
                 if (mChooseCupListener != null) {
+                    stopTaskCheckPay();
                     mChooseCupListener.cancle(mDealRecorder.getOrder());
                 }
                 break;
