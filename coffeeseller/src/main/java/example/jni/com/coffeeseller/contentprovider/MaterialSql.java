@@ -54,16 +54,23 @@ public class MaterialSql extends SQLiteOpenHelper {
     }
     public String getContainerIDByBunkerID(String bunkesID){
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor res = db.rawQuery("select * from " + MATERIALS_TABLE_NAME + "where" + MATERIALS_COLUMN_BUNKERSID + "=" + bunkesID + "", null);
+        Cursor res = db.rawQuery("select * from " + MATERIALS_TABLE_NAME + " where " + MATERIALS_COLUMN_BUNKERSID + " = " + bunkesID + "", null);
         res.moveToFirst();
         String ContainerID = res.getString(res.getColumnIndex(MATERIALS_COLUMN_CONTAINERID));
         res.close();
         return ContainerID;
     }
-
+    public String getContainerIDByMaterialID(String MaterialID){
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor res = db.rawQuery("select * from " + MATERIALS_TABLE_NAME + " where " + MATERIALS_COLUMN_MATERIALID + " = " + MaterialID + "", null);
+        res.moveToFirst();
+        String ContainerID = res.getString(res.getColumnIndex(MATERIALS_COLUMN_CONTAINERID));
+        res.close();
+        return ContainerID;
+    }
     public String getBunkersNameByID(String bunkesID) {
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor res = db.rawQuery("select * from " + MATERIALS_TABLE_NAME + "where" + MATERIALS_COLUMN_BUNKERSID + "=" + bunkesID + "", null);
+        Cursor res = db.rawQuery("select * from " + MATERIALS_TABLE_NAME + " where " + MATERIALS_COLUMN_BUNKERSID + " = " + bunkesID + "", null);
         res.moveToFirst();
         String MaterialName = res.getString(res.getColumnIndex(MATERIALS_COLUMN_MATERIALNAME));
         res.close();
@@ -90,7 +97,7 @@ public class MaterialSql extends SQLiteOpenHelper {
 
     public String getMaterialDropSpeedBycontainerID(String containerID) {
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor res = db.rawQuery("select * from " + MATERIALS_TABLE_NAME + "where" + MATERIALS_COLUMN_CONTAINERID + "=" + containerID + "", null);
+        Cursor res = db.rawQuery("select * from " + MATERIALS_TABLE_NAME + " where " + MATERIALS_COLUMN_CONTAINERID + " = " + containerID + "", null);
         res.moveToFirst();
         String MaterialDropSpeed = res.getString(res.getColumnIndex(MATERIALS_COLUMN_MATERIALDORPSPEED));
         res.close();
@@ -99,7 +106,7 @@ public class MaterialSql extends SQLiteOpenHelper {
 
     public String getBunkerIDByMaterialD(String MaterialD) {
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor res = db.rawQuery("select * from " + MATERIALS_TABLE_NAME + "where" + MATERIALS_COLUMN_MATERIALID + "=" + MaterialD + "", null);
+        Cursor res = db.rawQuery("select * from " + MATERIALS_TABLE_NAME + " where " + MATERIALS_COLUMN_MATERIALID + " = " + MaterialD + "", null);
         res.moveToFirst();
         String MaterialDropSpeed = res.getString(res.getColumnIndex(MATERIALS_COLUMN_BUNKERSID));
         res.close();
@@ -108,7 +115,7 @@ public class MaterialSql extends SQLiteOpenHelper {
 
     public String getStorkByBunkersID(String bunkesID) {
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor res = db.rawQuery("select * from " + MATERIALS_TABLE_NAME + "where" + MATERIALS_COLUMN_BUNKERSID + "=" + bunkesID + "", null);
+        Cursor res = db.rawQuery("select * from " + MATERIALS_TABLE_NAME + " where " + MATERIALS_COLUMN_BUNKERSID + " = " + bunkesID + "", null);
         res.moveToFirst();
         String MaterialStock = res.getString(res.getColumnIndex(MATERIALS_COLUMN_MATERIALSTOCK));
         res.close();
@@ -117,7 +124,7 @@ public class MaterialSql extends SQLiteOpenHelper {
 
     public String getMaterialDropSpeedByBunkersID(String bunkesID) {
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor res = db.rawQuery("select * from " + MATERIALS_TABLE_NAME + "where" + MATERIALS_COLUMN_BUNKERSID + "=" + bunkesID + "", null);
+        Cursor res = db.rawQuery("select * from " + MATERIALS_TABLE_NAME + " where " + MATERIALS_COLUMN_BUNKERSID + " = " + bunkesID + "", null);
         res.moveToFirst();
         String MaterialStock = res.getString(res.getColumnIndex(MATERIALS_COLUMN_MATERIALDORPSPEED));
         return MaterialStock;
@@ -125,7 +132,7 @@ public class MaterialSql extends SQLiteOpenHelper {
 
     public String getStorkByMaterialID(String MaterialID) {
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor res = db.rawQuery("select * from " + MATERIALS_TABLE_NAME + "where" + MATERIALS_COLUMN_MATERIALID + "=" + MaterialID + "", null);
+        Cursor res = db.rawQuery("select * from " + MATERIALS_TABLE_NAME + " where " + MATERIALS_COLUMN_MATERIALID + " = " + MaterialID + "", null);
         res.moveToFirst();
         String MaterialStock = res.getString(res.getColumnIndex(MATERIALS_COLUMN_MATERIALSTOCK));
         res.close();
@@ -134,7 +141,7 @@ public class MaterialSql extends SQLiteOpenHelper {
 
     public String getMaterialIDByBunkerID(String BunkerID) {
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor res = db.rawQuery("select * from " + MATERIALS_TABLE_NAME + "where" + MATERIALS_COLUMN_BUNKERSID + "=" + BunkerID + "", null);
+        Cursor res = db.rawQuery("select * from " + MATERIALS_TABLE_NAME + " where " + MATERIALS_COLUMN_BUNKERSID + " = " + BunkerID + "", null);
         res.moveToFirst();
         String MaterialID = res.getString(res.getColumnIndex(MATERIALS_COLUMN_MATERIALID));
         res.close();
@@ -144,7 +151,7 @@ public class MaterialSql extends SQLiteOpenHelper {
     //获取查询条件的指针位置
     public Cursor getDataCursor(String whereKey, Object whereValue) {
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor res = db.rawQuery("select * from " + MATERIALS_TABLE_NAME + "where" + whereKey + "=" + whereValue + "", null);
+        Cursor res = db.rawQuery("select * from " + MATERIALS_TABLE_NAME + " where " + whereKey + " = " + whereValue + "", null);
         return res;
     }
 
@@ -312,7 +319,7 @@ public class MaterialSql extends SQLiteOpenHelper {
 
     public bunkerData getbunkerDataBycontainerID(String containerID) {
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor res = db.rawQuery("select * from " + MATERIALS_TABLE_NAME + "where" + MATERIALS_COLUMN_CONTAINERID + "=" + containerID + "", null);
+        Cursor res = db.rawQuery("select * from " + MATERIALS_TABLE_NAME + " where " + MATERIALS_COLUMN_CONTAINERID + " = " + containerID + "", null);
         res.moveToFirst();
         String bunkerID = res.getString(res.getColumnIndex(MATERIALS_COLUMN_BUNKERSID));
         String MaterialID = res.getString(res.getColumnIndex(MATERIALS_COLUMN_MATERIALID));

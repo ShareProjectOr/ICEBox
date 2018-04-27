@@ -188,7 +188,7 @@ public class TaskService extends Service implements MqttCallback {
             //   options.setWill();
             // 设置回调
             client.setCallback(new TaskService());
-            MqttTopic topic = client.getTopic(ServiceTopic);
+            MqttTopic topic = client.getTopic(MachineConfig.getTcpIP());
             // setWill方法，如果项目中需要知道客户端是否掉线可以调用该方法。设置最终端口的通知消息
             Map<String, Object> bytejson = new HashMap<>();
             bytejson.put("msgId", UUID.randomUUID().toString());
@@ -198,8 +198,8 @@ public class TaskService extends Service implements MqttCallback {
             options.setWill(topic, JsonUtil.mapToJson(bytejson).getBytes(), 2, true);
             client.connect(options);
             // 订阅消息
-            int[] Qos = {1,1};
-            String[] topic1 = {MachineConfig.getTopic(),"client/coffee/sc/#"};
+            int[] Qos = {1, 1};
+            String[] topic1 = {MachineConfig.getTopic(), "client/coffee/sc/#"};
 
             client.subscribe(topic1, Qos);
 

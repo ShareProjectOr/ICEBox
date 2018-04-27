@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
+import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -57,7 +58,12 @@ public class MachineCheck implements IMachineCheck {
       /*  Thread mcheckThread = new Thread(new checkRunnnable());
         mcheckThread.start();*/
         checkMachineCode();
-
+        Waiter.doWait(2000);
+      /*  checkMainCtrl();
+        Waiter.doWait(2000);*/
+       /* subMQTT();
+        Waiter.doWait(2000);*/
+        getFormula();
     }
 
    /* private class checkRunnnable implements Runnable {
@@ -79,6 +85,7 @@ public class MachineCheck implements IMachineCheck {
         } else {
             Map<String, Object> body = new HashMap<>();
             body.put("machineCode", MachineConfig.getMachineCode());
+            Log.e(TAG, MachineConfig.getMachineCode());
             try {
                 MaterialSql content = new MaterialSql(mContext);
 
@@ -88,9 +95,10 @@ public class MachineCheck implements IMachineCheck {
                 if (object.getString("err").equals("")) {
 
                     JSONObject d = object.getJSONObject("d");
-                    SingleMaterialLsit.getInstance(mContext).setCoffeeArray(d.getJSONArray("list"));
+
                     Log.e(TAG, d.toString());
                     JSONArray array = d.getJSONArray("list2");
+
                     for (int i = 0; i < array.length(); i++) {
                         JSONObject bunkerdata = (JSONObject) array.opt(i);
                         bunkerData data = new bunkerData();
@@ -101,45 +109,76 @@ public class MachineCheck implements IMachineCheck {
                             SharedPreferencesManager.getInstance(mContext).setWaterCount(bunkerdata.getInt("materialStock") + "");
                             SharedPreferencesManager.getInstance(mContext).setAddWaterTime(bunkerdata.getString("lastLoadingTime"));
                         } else {    //其情况它
-                            data.setContainerID(bunkerdata.getInt("containerID") + "");
-                            data.setBunkerID(bunkerdata.getInt("bunkerID") + "");
-                            data.setMaterialDropSpeed(bunkerdata.getInt("output") + "");
-                            data.setMaterialID(bunkerdata.getInt("materialID") + "");
+                            data.setContainerID(bunkerdata.getString("containerID"));
+                            data.setBunkerID(bunkerdata.getString("bunkerID"));
+                            data.setMaterialDropSpeed(bunkerdata.getString("output"));
+                            data.setMaterialID(bunkerdata.getString("materialID"));
                             data.setMaterialName(bunkerdata.getString("materialName"));
                             data.setMaterialUnit(bunkerdata.getString("materialunit"));
-                            data.setMaterialStock(bunkerdata.getInt("materialStock") + "");
-                            data.setMaterialType(bunkerdata.getInt("materialType") + "");
+                            data.setMaterialStock(bunkerdata.getString("materialStock"));
+                            data.setMaterialType(bunkerdata.getString("materialType"));
                             data.setLastLoadingTime(bunkerdata.getString("lastLoadingTime"));
                             list.add(i, data);
                         }
 
                     }
-
-                    if (content.getAllbunkersIDs().size() == 0) {//本地数据库为空的时候 ,需以服务端的数据进行绑定数据库
-                        for (int i = 0; i < list.size(); i++) {
-                            content.insertContact(list.get(i).getBunkerID(), list.get(i).getMaterialID(), list.get(i).getMaterialType(), list.get(i).getMaterialName()
-                                    , list.get(i).getMaterialUnit(), list.get(i).getMaterialStock(), list.get(i).getMaterialDropSpeed(), list.get(i).getContainerID(), list.get(i).getLastLoadingTime());
-                        }
-                    } else if (array.length() != content.getAllcontainerID().size()) {
-                        //本地数据库与服务端返回的料仓长度不一致时,需更新数据库
-                        for (int i = 0; i < list.size(); i++) {
-                            boolean isupdated = false;
-                            for (String ContainerID : content.getAllcontainerID()) {
-                                if (ContainerID.equals(list.get(i).getContainerID())) {  //假如数据库里面已经存在了这个料仓 则不做任何操作
-                                    isupdated = true;
-                                    break;
+                    if (isCanUse(list)) {
+                        if (content.getAllbunkersIDs().size() == 0) {//本地数据库为空的时候 ,需以服务端的数据进行绑定数据库
+                            for (int i = 0; i < list.size(); i++) {
+                                Log.e(TAG, "开始执行创建数据库");
+                                if (list.get(i).getContainerID().equals("3")){
+                                    Log.e(TAG,"糖的默认落料量为:"+list.get(i).getMaterialDropSpeed());
+                                }
+                                boolean b = content.insertContact(list.get(i).getBunkerID(), list.get(i).getMaterialID(), list.get(i).getMaterialType(), list.get(i).getMaterialName()
+                                        , list.get(i).getMaterialUnit(), list.get(i).getMaterialStock(), list.get(i).getMaterialDropSpeed(), list.get(i).getContainerID(), list.get(i).getLastLoadingTime());
+                                if (b) {
+                                    mOnMachineCheckCallBackListener.MaterialGroupGetSuccess();
+                                    MachineInitState.GET_FORMULA = MachineInitState.NORMAL;
+                                    SingleMaterialLsit.getInstance(mContext).setCoffeeArray(d.getJSONArray("list"));
+                                } else {
+                                    Log.e(TAG, "创建数据库插入时失败");
                                 }
                             }
 
-                            if (!isupdated) {//假如数据库里面不存在了这个料仓 则插入到数据库中
-                                content.insertContact(list.get(i).getBunkerID(), list.get(i).getMaterialID(), list.get(i).getMaterialType(), list.get(i).getMaterialName()
-                                        , list.get(i).getMaterialUnit(), list.get(i).getMaterialStock(), list.get(i).getMaterialDropSpeed(), list.get(i).getContainerID(), list.get(i).getLastLoadingTime());
+
+                        } else if (array.length() != content.getAllcontainerID().size()) {
+                            //本地数据库与服务端返回的料仓长度不一致时,需更新数据库
+                            for (int i = 0; i < list.size(); i++) {
+                                boolean isupdated = false;
+                                for (String ContainerID : content.getAllcontainerID()) {
+                                    if (ContainerID.equals(list.get(i).getContainerID())) {  //假如数据库里面已经存在了这个料仓 则不做任何操作
+                                        isupdated = true;
+                                        mOnMachineCheckCallBackListener.MaterialGroupGetSuccess();
+                                        MachineInitState.GET_FORMULA = MachineInitState.NORMAL;
+                                        SingleMaterialLsit.getInstance(mContext).setCoffeeArray(d.getJSONArray("list"));
+                                        break;
+                                    }
+                                }
+
+                                if (!isupdated) {//假如数据库里面不存在了这个料仓 则插入到数据库中
+                                    Log.e(TAG, "开始执行更新数据库");
+                                    boolean b = content.insertContact(list.get(i).getBunkerID(), list.get(i).getMaterialID(), list.get(i).getMaterialType(), list.get(i).getMaterialName()
+                                            , list.get(i).getMaterialUnit(), list.get(i).getMaterialStock(), list.get(i).getMaterialDropSpeed(), list.get(i).getContainerID(), list.get(i).getLastLoadingTime());
+                                    if (b) {
+                                        mOnMachineCheckCallBackListener.MaterialGroupGetSuccess();
+                                        MachineInitState.GET_FORMULA = MachineInitState.NORMAL;
+                                        SingleMaterialLsit.getInstance(mContext).setCoffeeArray(d.getJSONArray("list"));
+                                    } else {
+                                        Log.e(TAG, "更新数据库插入时失败");
+                                    }
+                                }
                             }
+                        } else {
+                            mOnMachineCheckCallBackListener.MaterialGroupGetSuccess();
+                            MachineInitState.GET_FORMULA = MachineInitState.NORMAL;
+                            Log.e(TAG, "不对数据库做任何操作");
                         }
+
+                    } else { //服务器返回的料仓不为空
+                        mOnMachineCheckCallBackListener.MaterialGroupGetFailed("机器未创建料仓,禁止使用");
                     }
 
-                    mOnMachineCheckCallBackListener.MaterialGroupGetSuccess();
-                    MachineInitState.GET_FORMULA = MachineInitState.NORMAL;
+
                 } else {
                     mOnMachineCheckCallBackListener.MaterialGroupGetFailed(object.getString("err"));
                 }
@@ -156,12 +195,18 @@ public class MachineCheck implements IMachineCheck {
         } else {
             mOnMachineCheckCallBackListener.MachineCheckEnd(false);
         }*/
-        if (MachineInitState.CHECK_MACHINECODE == MachineInitState.NORMAL && MachineInitState.SUB_MQTT_STATE == MachineInitState.NORMAL
-                && MachineInitState.GET_FORMULA == MachineInitState.NORMAL) {
+        if (MachineInitState.CHECK_MACHINECODE == MachineInitState.NORMAL && MachineInitState.GET_FORMULA == MachineInitState.NORMAL) {
             mOnMachineCheckCallBackListener.MachineCheckEnd(true);
         } else {
             mOnMachineCheckCallBackListener.MachineCheckEnd(false);
         }
+    }
+
+    private boolean isCanUse(List<bunkerData> list) {
+        if (list.size() == 0) {
+            return false;
+        }
+        return true;
     }
 
     private void subMQTT() {
@@ -179,8 +224,7 @@ public class MachineCheck implements IMachineCheck {
             }
         };
         handler.post(mRun);
-        Waiter.doWait(2000);
-        getFormula();
+
     }
 
     public void checkMainCtrl() {
@@ -200,8 +244,7 @@ public class MachineCheck implements IMachineCheck {
         } else {
             mOnMachineCheckCallBackListener.OpenMainCrilFailed("串口打开失败,请检测串口输入是否正确");
         }
-        Waiter.doWait(2000);
-        subMQTT();
+
     }
 
     public void checkMachineCode() {
@@ -211,8 +254,8 @@ public class MachineCheck implements IMachineCheck {
             mOnMachineCheckCallBackListener.MachineCodeCheckFailed("机器号未填写,鉴权失败");
 
         } else {
-            postBody.put("machineCode", "4545");
-            postBody.put("loginPassword", "123");
+            postBody.put("machineCode", MachineConfig.getMachineCode());
+            postBody.put("loginPassword", "123456");
             try {
                 String response = OkHttpUtil.post(Constance.MachineAuthentication_URL, JsonUtil.mapToJson(postBody));
                 JSONObject object = new JSONObject(response);
@@ -221,7 +264,7 @@ public class MachineCheck implements IMachineCheck {
                     Log.d("check", object.getJSONObject("d").toString());
                     SharedPreferencesManager.getInstance(mContext).setTopicIP(object.getJSONObject("d").getString("tcpIP"));
                     MachineConfig.setHostUrl(object.getJSONObject("d").getString("uRL"));
-                    MachineConfig.setMachineCode(SharedPreferencesManager.getInstance(mContext).getMachineCode());
+                    MachineConfig.setMachineCode(MachineConfig.getMachineCode());
                     MachineConfig.setTcpIP(object.getJSONObject("d").getString("tcpIP"));
                     MachineConfig.setTopic(object.getJSONObject("d").getString("topic"));
                     MachineInitState.CHECK_MACHINECODE = MachineInitState.NORMAL;
@@ -235,8 +278,7 @@ public class MachineCheck implements IMachineCheck {
                 mOnMachineCheckCallBackListener.MachineCodeCheckFailed(e.getMessage());
             }
         }
-        Waiter.doWait(2000);
-        checkMainCtrl();
+
     }
 
 /*    public void checkNetWorkState() {

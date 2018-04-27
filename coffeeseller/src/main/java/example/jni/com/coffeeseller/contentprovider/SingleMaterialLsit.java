@@ -38,7 +38,7 @@ public class SingleMaterialLsit {
 
     public SingleMaterialLsit(Context context) {
         mContext = context;
-        sql = new MaterialSql(mContext);
+
         coffeeList = new ArrayList<>();
        /* String arrayString = SharedPreferencesManager.getInstance(context).getCoffeeListArray();
         Log.d(TAG, arrayString);
@@ -68,11 +68,14 @@ public class SingleMaterialLsit {
                 org.json.JSONArray stepArray = coffeeObject.getJSONArray("process");
                 for (int j = 0; j < stepArray.length(); j++) {
                     org.json.JSONObject stepObject = (org.json.JSONObject) stepArray.opt(j);
-                    int containerID = stepObject.getInt("containerID");
-                    Cursor cursor = sql.getDataCursor("containerID", containerID);
-                    cursor.moveToFirst();
-                    String materialStock = cursor.getString(cursor.getColumnIndex(sql.MATERIALS_COLUMN_MATERIALSTOCK));//找到对应料仓编号的剩余量
                     String materialID = stepObject.getJSONObject("material").getString("materialID");
+                  /*  int containerID = stepObject.getInt("containerID");
+                    Cursor cursor = sql.getDataCursor("containerID", containerID);
+                    cursor.moveToFirst();*/
+                    sql = new MaterialSql(mContext);
+                    Log.e(TAG, "数据库长度" + sql.getAllbunkersIDs().size());
+                    String materialStock = sql.getStorkByMaterialID(materialID);//找到对应原料编号的剩余量
+
                /* for (String haveMaterialID : sql.getAllmaterialID()) {
                     if (materialID)
                 }*/
@@ -97,35 +100,47 @@ public class SingleMaterialLsit {
                     org.json.JSONObject stepObject = (org.json.JSONObject) stepArray.opt(j);
                     Step step = new Step();
                     ContainerConfig containerConfig = new ContainerConfig();
-                    switch (stepObject.getInt("containerID")) {
-                        case 0:
+                    switch (sql.getContainerIDByMaterialID(stepObject.getJSONObject("material").getString("materialID"))) {
+                        case "0":
                             containerConfig.setContainer(ContainerType.BEAN_CONTAINER);
                             break;
-                        case 1:
+                        case "1":
                             containerConfig.setContainer(ContainerType.NO_ONE);
                             break;
-                        case 2:
+                        case "2":
                             containerConfig.setContainer(ContainerType.NO_TOW);
                             break;
-                        case 3:
+                        case "3":
                             containerConfig.setContainer(ContainerType.NO_THREE);
                             break;
-                        case 4:
+                        case "4":
                             containerConfig.setContainer(ContainerType.NO_FOUR);
                             break;
-                        case 5:
+                        case "5":
                             containerConfig.setContainer(ContainerType.NO_FIVE);
                             break;
-                        case 6:
+                        case "6":
                             containerConfig.setContainer(ContainerType.NO_FIVE);
                             break;
-                        case 7:
+                        case "7":
                             containerConfig.setContainer(ContainerType.HOTWATER_CONTAINER);
                             break;
                     }
                     containerConfig.setWater_interval(stepObject.getInt("timeOut"));
                     containerConfig.setWater_capacity(stepObject.getInt("water"));
-                    containerConfig.setMaterial_time(stepObject.getInt("Acount") / Integer.parseInt(sql.getMaterialDropSpeedBycontainerID("" + stepObject.getInt("containerID"))) * 5 * 10 * (stepObject.getInt("loadingSpeed") / 127));
+                    int amount = stepObject.getInt("amount");
+                    Log.e(TAG, "出料总量=" + amount);
+                    String MaterialID = stepObject.getJSONObject("material").getString("materialID");
+                    Log.e(TAG, "MaterialID is " + MaterialID);
+                    String containerID = sql.getContainerIDByMaterialID(MaterialID);
+
+                    Log.e(TAG, "containerID is " + containerID);
+                    String MaterialDropSpeed = sql.getMaterialDropSpeedBycontainerID(containerID);
+                    Log.e(TAG, "默认落料速度=" + MaterialDropSpeed + "--此时的原料为:" + stepObject.getJSONObject("material").getString("name"));
+                    int DropSpeed = Integer.parseInt(MaterialDropSpeed);
+                    int loadPercent = stepObject.getInt("loadingSpeed") / 127;
+                    int materialTime = (amount / DropSpeed) * 5 * 10 * loadPercent;
+                    containerConfig.setMaterial_time(materialTime);
                     containerConfig.setRotate_speed(stepObject.getInt("loadingSpeed"));
                     containerConfig.setStir_speed(stepObject.getInt("mixingSpeed"));
                     switch (stepObject.getInt("waterType")) {
@@ -219,6 +234,7 @@ public class SingleMaterialLsit {
         mokaProcess3.setStir_speed(127);
         mokaProcess.add(3, mokaProcess3);
         moka.setProcessList(mokaProcess);
+
 
         kabuqiluo.setName("卡布奇洛(Card butch los)");
         kabuqiluo.setPrice("0.1");
@@ -435,6 +451,7 @@ public class SingleMaterialLsit {
     }
 
     public void setCoffeeArray(org.json.JSONArray coffeeArray) {
+
         this.coffeeArray = coffeeArray;
     }
 
