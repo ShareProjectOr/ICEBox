@@ -23,7 +23,6 @@ public class HomeFragment extends BasicFragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        DataBaseHelper dd = DataBaseHelper.getInstance(getActivity());
 
         return inflater.inflate(R.layout.progressbar_layout, null);
 

@@ -76,7 +76,7 @@ public class ChooseCup implements View.OnClickListener, MsgTransListener {
 
     private void init() {
         initView();
-      /*  if (CheckCurMachineState.getInstance().isCanMaking()) {
+   /*     if (CheckCurMachineState.getInstance().isCanMaking()) {
             MyLog.d(TAG, "machine is ok ");
             mViewHolder.mContentLayout.setVisibility(View.VISIBLE);
             mViewHolder.mErrTip.setVisibility(View.GONE);
@@ -107,9 +107,15 @@ public class ChooseCup implements View.OnClickListener, MsgTransListener {
         mViewHolder.mCoffeeHot.setOnClickListener(this);
         mViewHolder.mCoffeeCold.setOnClickListener(this);
         mViewHolder.mClose.setOnClickListener(this);
+
+        mCoffeeFomat = new CoffeeFomat();
+        mDealRecorder = new DealRecorder();
+        mMsgTransListener = this;
     }
 
     public void initData() {
+
+        MyLog.d(TAG, "coffee= " + mCoffee);
         if (mCoffee == null) {
             return;
         }
@@ -251,8 +257,8 @@ public class ChooseCup implements View.OnClickListener, MsgTransListener {
 
         mDealRecorder.setOrder(parseRqMsg.getTradeCode());
         mDealRecorder.setPrice(parseRqMsg.getPrice());
-        if (TextUtils.isEmpty(parseRqMsg.getPrice())) {
-            MyLog.d(TAG, "price is empty");
+        if (parseRqMsg == null) {
+            MyLog.d(TAG, "parseRqMsg is empty");
             setQR_Code(null);
             return;
         }

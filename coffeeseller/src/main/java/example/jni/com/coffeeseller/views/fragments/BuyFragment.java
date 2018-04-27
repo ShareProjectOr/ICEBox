@@ -46,7 +46,10 @@ public class BuyFragment extends BasicFragment implements GridViewItemListener, 
     private List<Coffee> mCoffees;
     private long lastClickTime;
 
-    public static Coffee curSelectedCoffee;
+    private BuyDialog buyDialog;
+
+
+    public Coffee curSelectedCoffee;
 
     @Nullable
     @Override
@@ -92,11 +95,13 @@ public class BuyFragment extends BasicFragment implements GridViewItemListener, 
 
     private void initDatas() {
 
+        buyDialog = new BuyDialog(homeActivity, R.style.dialog);
         mCoffees = new ArrayList<>();
         mCoffees = SingleMaterialLsit.getInstance(homeActivity).getCoffeeList();
         mPagerAdapter = new CoffeeViewPagerAdapter(homeActivity, mCoffees, this);
         mViewPager.addOnPageChangeListener(new ViewpagerPageChangedListener());
         mViewPager.setAdapter(mPagerAdapter);
+
     }
 
     public void addPoint(View pointView, final int index) {
@@ -139,17 +144,19 @@ public class BuyFragment extends BasicFragment implements GridViewItemListener, 
 
         Coffee coffee = mCoffees.get(position);
         curSelectedCoffee = coffee;
-        BuyDialog.getInstance(homeActivity).setInitView();
-        BuyDialog.getInstance(homeActivity).setFragment(this);
-        BuyDialog.getInstance(homeActivity).showDialog();
+        if (buyDialog == null) {
+            buyDialog = new BuyDialog(homeActivity, R.style.dialog);
+        }
+        buyDialog.setInitData(this,coffee);
+        buyDialog.showDialog();
 
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        if (BuyDialog.getInstance(homeActivity).isShowing()) {
-            BuyDialog.getInstance(homeActivity).disDialog();
+        if (buyDialog != null && buyDialog.isShowing()) {
+            buyDialog.disDialog();
         }
     }
 
@@ -161,6 +168,7 @@ public class BuyFragment extends BasicFragment implements GridViewItemListener, 
                     homeActivity.replaceFragment(FragmentEnum.ChooseCupNumFragment, FragmentEnum.LoginFragment);
                 } else {
                     lastClickTime = System.currentTimeMillis();
+                    homeActivity.replaceFragment(FragmentEnum.ChooseCupNumFragment, FragmentEnum.TradeFragment);
                 }
                 break;
         }

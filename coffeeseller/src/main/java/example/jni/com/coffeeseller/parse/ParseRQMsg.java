@@ -65,15 +65,27 @@ public class ParseRQMsg {
         if (TextUtils.isEmpty(response) || new JSONException(response) == null) {
             return null;
         }
+
+
         ParseRQMsg parseRQMsg = new ParseRQMsg();
         try {
             JSONObject responsesObject = new JSONObject(response);
 
+            if ("null".equals(responsesObject.getString("qRcode"))) {
+                return null;
+            }
+            if ("null".equals(responsesObject.getString("tradeCode"))) {
+                return null;
+            }
+
+            if ("null".equals(responsesObject.getString("timeStamp"))) {
+                return null;
+            }
             parseRQMsg.setQrCode(responsesObject.getString("qRcode"));
             if (!"null".equals(responsesObject.getString("cupNum"))) {
                 parseRQMsg.setCupNum(responsesObject.getInt("cupNum"));
             } else {
-                parseRQMsg.setCupNum(0);
+                return null;
             }
 
             parseRQMsg.setPrice(responsesObject.getString("price"));

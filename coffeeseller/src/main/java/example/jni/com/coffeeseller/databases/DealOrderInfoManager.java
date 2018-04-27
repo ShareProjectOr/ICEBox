@@ -1,5 +1,6 @@
 package example.jni.com.coffeeseller.databases;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -31,10 +32,11 @@ public class DealOrderInfoManager {
         return mInstance;
     }
 
-    private DealOrderInfoManager(Context context) {
+
+    public DealOrderInfoManager(Context context) {
 
         mContext = context;
-        mDataBaseHelper = DataBaseHelper.getInstance(context);
+        mDataBaseHelper = new DataBaseHelper(mContext);
     }
 
     public void addToTable(DealRecorder orderRecorder) {
@@ -58,7 +60,7 @@ public class DealOrderInfoManager {
             arrayOfObject[11] = orderRecorder.getReportMsg();
 
             MyLog.d(TAG, "arrayOfObject=" + arrayOfObject);
-            localSQLiteDatabase.execSQL("insert into order_info ( order ,cup,price,taste_redio,temp_format, payed ," +
+            localSQLiteDatabase.execSQL("insert into order_info ( trade_code ,cup,price,taste_redio,temp_format, payed ," +
                     "make_success,customer_id,formula_id,pay_time,is_report_success,report_msg ) " +
                     "values(?,?,?,?,?,?,?,?,?,?,?,?)", arrayOfObject);
             localSQLiteDatabase.close();
@@ -86,8 +88,14 @@ public class DealOrderInfoManager {
                 return;
             }
             SQLiteDatabase localSQLiteDatabase = mDataBaseHelper.getReadableDatabase();
-
+            Object[] arrayOfObject = new Object[4];
             MyLog.d(TAG, "isPayed=" + bean.isPayed());
+
+            arrayOfObject[0] = bean.isPayed() ? 1 : 0;
+            arrayOfObject[1] = bean.isMakeSuccess() ? 1 : 0;
+            arrayOfObject[2] = bean.isReportSuccess() ? 1 : 0;
+            arrayOfObject[3] = bean.getReportMsg();
+
 
             MyLog.d(TAG, "isMakeSuccess=" + bean.isMakeSuccess());
 
@@ -96,11 +104,17 @@ public class DealOrderInfoManager {
 
             MyLog.d(TAG, "getReportMsg=" + bean.getReportMsg());
 
-            localSQLiteDatabase.execSQL("update order_info set payed=" + (bean.isPayed() ? 1 : 0) +
+            ContentValues contentValues = new ContentValues();
+            contentValues.put("payed", bean.isPayed() ? 1 : 0);
+            contentValues.put("make_success", bean.isMakeSuccess() ? 1 : 0);
+            contentValues.put("is_report_success", bean.isReportSuccess() ? 1 : 0);
+            contentValues.put("report_msg", bean.getReportMsg());
+            /*localSQLiteDatabase.execSQL("update order_info set payed=" + (bean.isPayed() ? 1 : 0) +
                     ",make_success=" + (bean.isMakeSuccess() ? 1 : 0) +
                     ",is_report_success=" + (bean.isReportSuccess() ? 1 : 0) +
                     ",report_msg= " + bean.getReportMsg() +
-                    " where order=" + bean.getOrder());
+                    " where trade_code= " + bean.getOrder());*/
+            localSQLiteDatabase.update("order_info", contentValues, "trade_code = ? ", new String[]{bean.getOrder()});
 
             localSQLiteDatabase.close();
         }
@@ -113,12 +127,12 @@ public class DealOrderInfoManager {
             ArrayList<DealRecorder> mList = new ArrayList<DealRecorder>();
             SQLiteDatabase localSQLiteDatabase = mDataBaseHelper.getReadableDatabase();
 
-            Cursor localCursor = localSQLiteDatabase.rawQuery("select * from order_info order by _id desc", null);
+            Cursor localCursor = localSQLiteDatabase.rawQuery("select * from order_info order by id desc", null);
 
             while (localCursor.moveToNext()) {
 
                 DealRecorder mBean = new DealRecorder();
-                mBean.setOrder(localCursor.getString(localCursor.getColumnIndex("order")));
+                mBean.setOrder(localCursor.getString(localCursor.getColumnIndex("trade_code")));
                 mBean.setRqcup(localCursor.getInt(localCursor.getColumnIndex("cup")));
                 mBean.setRqTempFormat(localCursor.getString(localCursor.getColumnIndex("temp_format")));
                 mBean.setTasteRadio(localCursor.getString(localCursor.getColumnIndex("taste_redio")));

@@ -53,20 +53,12 @@ import static cof.ac.inter.ContainerType.BEAN_CONTAINER;
 
 public class BuyDialog extends Dialog implements ChooseCupListenner, MkCoffeeListenner {
     private static String TAG = "BuyDialog";
-    private static BuyDialog mInstance;
     private Context context;
     private Coffee coffee;
     private Handler handler;
     private ChooseCupListenner chooseCupListenner;
     private MkCoffeeListenner mkCoffeeListenner;
     private BuyFragment fragment;
-
-    public static BuyDialog getInstance(Context context) {
-        if (mInstance == null) {
-            mInstance = new BuyDialog(context, R.style.dialog);
-        }
-        return mInstance;
-    }
 
     public BuyDialog(Context context) {
         super(context);
@@ -103,7 +95,6 @@ public class BuyDialog extends Dialog implements ChooseCupListenner, MkCoffeeLis
 
     private void initData() {
         handler = new Handler();
-        coffee = BuyFragment.curSelectedCoffee;
         chooseCupListenner = this;
         mkCoffeeListenner = this;
     }
@@ -113,13 +104,15 @@ public class BuyDialog extends Dialog implements ChooseCupListenner, MkCoffeeLis
         setContentView(chooseCup.getView());
     }
 
-    public void setFragment(BuyFragment fragment) {
-        this.fragment = fragment;
+    public void setInitData(BuyFragment buyFragment, Coffee coffee) {
+        this.fragment = buyFragment;
+        this.coffee = coffee;
+        setInitView();
     }
 
-
     public void showDialog() {
-        show();
+        if (!isShowing())
+            show();
     }
 
     public void disDialog() {
@@ -276,41 +269,30 @@ public class BuyDialog extends Dialog implements ChooseCupListenner, MkCoffeeLis
                 setContentView(mkCoffee.getView());
             }
         });
-
-        //更新数据库原料表
-
-        List<ReportBunker> bunkers = updateMaterial(dealRecorder);
-
-        //上报交易结果给服务器
-
-        DealRecorder newDealRecorder = reportTradeToServer(dealRecorder, bunkers);
-
-        //更新本地交易记录
-        DealOrderInfoManager.getInstance(context).update(newDealRecorder);
-
-        //更新BuyFragment ui
-        if (fragment != null) {
-            fragment.updateUi();
-        }
-
     }
 
     @Override
-    public void getMkResult(DealRecorder dealRecorder, boolean makeSuccess) {
+    public void getMkResult(final DealRecorder dealRecorder, boolean makeSuccess) {
+
+        final DealRecorder recorder=dealRecorder;
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                //更新数据库原料表
+
+                List<ReportBunker> bunkers = updateMaterial(recorder);
+
+                //上报交易结果给服务器
+
+                DealRecorder newDealRecorder = reportTradeToServer(recorder, bunkers);
 
 
-        //更新数据库原料表
-
-        List<ReportBunker> bunkers = updateMaterial(dealRecorder);
-
-
-        //上报交易结果给服务器
-
-        DealRecorder newDealRecorder = reportTradeToServer(dealRecorder, bunkers);
+                //更新本地交易记录
+                DealOrderInfoManager.getInstance(context).update(newDealRecorder);
+            }
+        }).start();
 
 
-        //更新本地交易记录
-        DealOrderInfoManager.getInstance(context).update(newDealRecorder);
 
         //更新BuyFragment ui
         if (fragment != null) {
@@ -320,5 +302,6 @@ public class BuyDialog extends Dialog implements ChooseCupListenner, MkCoffeeLis
         disDialog();
 
     }
+
 
 }

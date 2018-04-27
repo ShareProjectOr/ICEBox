@@ -85,12 +85,7 @@ public class CheckCurMachineState {
             return false;
         }
 
-        MyLog.d(TAG, "----------" + machineState.isCupShelfRightPlace());
-        MyLog.d(TAG, "----------" + machineState.hasCupOnShelf());
-        MyLog.d(TAG, "----------" + machineState.isLittleDoorOpen());
-
         boolean isCheckCanMake = true;
-        //  StringBuffer buffer = new StringBuffer();
         mBuffer.append("提示：");
         if (machineState.getPotTemp() > 130) {
 
@@ -119,6 +114,11 @@ public class CheckCurMachineState {
             mBuffer.append("\n");
             mBuffer.append("污水仓已满");
 
+        }
+        if (!machineState.isWaterEnough()) {
+            isCheckCanMake = false;
+            mBuffer.append("\n");
+            mBuffer.append("水量不足");
         }
         if (machineState.isLittleDoorOpen()) {
             Log.d(TAG, "前门未关");

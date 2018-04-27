@@ -12,5 +12,6 @@ public enum FragmentEnum {
     ConfigFragment,
     ChooseCupNumFragment,
     DebugFragment,
-    HomeFragement
+    HomeFragement,
+    TradeFragment
 }

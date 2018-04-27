@@ -10,13 +10,13 @@ public interface Constance {
 
     String SERVER = MachineConfig.getHostUrl();
 
-    String GET_QR = "http://192.168.4.138:8083" + "/trade/getQrCode";
+    String GET_QR = "http://119.23.71.185:8083" + "/trade/getQrCode";
 
-    String CHECK_PAY = "http://192.168.4.138:8083" + "/trade/payResult";
+    String CHECK_PAY = "http://119.23.71.185:8083" + "/trade/payResult";
 
-    String TRADE_UPLOAD = "http://192.168.4.138:8083" + "/trade/upload";
+    String TRADE_UPLOAD = "http://119.23.71.185:8083" + "/trade/upload";
 
-    String TRADE_CLOSE = "http://192.168.4.138:8083" + "/trade/close";
+    String TRADE_CLOSE = "http://119.23.71.185:8083" + "/trade/close";
 
     String MachineAuthentication_URL = "http://192.168.4.152:8083" + "/machine/activate";
     String COMMIT_MATERIAL_URL = "http://192.168.4.152:8083" + "/material/save";

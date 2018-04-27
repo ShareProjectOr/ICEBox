@@ -7,7 +7,7 @@ package example.jni.com.coffeeseller.bean;
 public class MachineConfig {
     private static String HostUrl = "";
     private static String TcpIP = "";
-    private static String machineCode = "20180423134200001";
+    private static String machineCode = "20180427150000001";
     private static int networkType;
     private static String topic;
 

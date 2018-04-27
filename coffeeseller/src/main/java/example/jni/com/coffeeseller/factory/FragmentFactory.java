@@ -14,6 +14,7 @@ import example.jni.com.coffeeseller.views.fragments.DebugFragment;
 import example.jni.com.coffeeseller.views.fragments.HomeFragment;
 import example.jni.com.coffeeseller.views.fragments.LoginFragment;
 import example.jni.com.coffeeseller.views.fragments.MachineCheckFragment;
+import example.jni.com.coffeeseller.views.fragments.TradeFragment;
 
 /**
  * Created by Administrator on 2018/4/11.
@@ -72,6 +73,8 @@ public class FragmentFactory {
                 return "Deug";
             case HomeFragement:
                 return "Home";
+            case TradeFragment:
+                return "Trade";
             default:
                 return "Home";
 
@@ -101,6 +104,9 @@ public class FragmentFactory {
                     break;
                 case HomeFragement:
                     mFrag = new HomeFragment();
+                    break;
+                case TradeFragment:
+                    mFrag = new TradeFragment();
             }
             if (mFrag != null) {
 

@@ -56,6 +56,7 @@ public class MkCoffee {
     private CoffeeFomat coffeeFomat;
     private DealRecorder dealRecorder;
     private MkCoffeeListenner mkCoffeeListenner;
+    private DealOrderInfoManager dealOrderInfoManager;
 
     private boolean isStartMaking = false;
     private boolean makeSuccess = false;
@@ -86,11 +87,28 @@ public class MkCoffee {
 
     public void initData() {
 
-
+        dealOrderInfoManager = new DealOrderInfoManager(context);
         if (coffeeFomat != null && dealRecorder != null) {
 
             dealRecorder.getContainerConfigs().clear();
             dealRecorder.getContainerConfigs().addAll(coffeeFomat.getContainerConfigs());
+
+
+            /*
+            * 便于查看步骤
+            * */
+            for (int i = 0; i < dealRecorder.getContainerConfigs().size(); i++) {
+                ContainerConfig containerConfig = dealRecorder.getContainerConfigs().get(i);
+
+                MyLog.d(TAG, "getContainer=" + containerConfig.getContainer());
+                MyLog.d(TAG, "getWater_capacity=" + containerConfig.getWater_capacity());
+                MyLog.d(TAG, "getMaterial_time=" + containerConfig.getMaterial_time());
+                MyLog.d(TAG, "getWater_type=" + containerConfig.getWater_type());
+                MyLog.d(TAG, "getContainer_id=" + containerConfig.getContainer_id());
+                MyLog.d(TAG, "getRotate_speed=" + containerConfig.getRotate_speed());
+                MyLog.d(TAG, "getStir_speed=" + containerConfig.getStir_speed());
+                MyLog.d(TAG, "getWater_interval=" + containerConfig.getWater_interval());
+            }
 
             String tasteNameAndRadio = "";
             for (int i = 0; i < coffeeFomat.getTasteNameRatio().size(); i++) {
@@ -104,6 +122,10 @@ public class MkCoffee {
         DealOrderInfoManager.getInstance(context).update(dealRecorder);
 
         updateProgressAnim(CONTAIN_MAKING_PROGRESS_TIME);
+
+        if (mkCoffeeListenner != null) {
+            mkCoffeeListenner.getMkResult(dealRecorder, true);
+        }
 //        startMkCoffee();
     }
 
@@ -123,13 +145,15 @@ public class MkCoffee {
             buffer.append("\n");
             buffer.append("没有设置配方");
 
+            showErr(true);
+
             if (mkCoffeeListenner != null) {
                 dealRecorder.setMakeSuccess(false);
                 mkCoffeeListenner.getMkResult(dealRecorder, false);
             }
 
 
-            disDialog(true);
+//            disDialog(true);
             MyLog.d(TAG, "containerConfigs is null");
         }
     }
@@ -187,7 +211,7 @@ public class MkCoffee {
                             }
                         }
 
-                        disDialog(false);
+                        //     disDialog(false);
                         break;
                     }
                     if (DealMachineState(machineState)) {
@@ -259,14 +283,14 @@ public class MkCoffee {
                             mkCoffeeListenner.getMkResult(dealRecorder, true);
                         }
 
-                        disDialog(false);
+                        //disDialog(false);
 
                     }
                     if (coffeeMakeStateRecorder.state == CoffeeMakeState.COFFEEFINISHED_CUPISTAKEN) {
 
                         coffeeMakeStateRecorder.state = null;
 
-                        disDialog(false);
+                        //  disDialog(false);
                     }
                     if (coffeeMakeStateRecorder.state == CoffeeMakeState.COFFEEMAKING_FAILED) {
 
@@ -276,7 +300,8 @@ public class MkCoffee {
                         }
 
 
-                        disDialog(true);
+                        // disDialog(true);
+                        showErr(true);
                     }
                 }
             }
@@ -430,13 +455,10 @@ public class MkCoffee {
         }
     }
 
-    public void disDialog(boolean isErr) {
-        if (isErr) {
-            makingViewHolder.mErrTip.setVisibility(VISIBLE);
-            makingViewHolder.mProgressBarLayout.setVisibility(GONE);
-            makingViewHolder.mErrTip.setText(buffer.toString());
-        }
-        BuyDialog.getInstance(context).disDialog();
+    public void showErr(boolean isErr) {
+        makingViewHolder.mErrTip.setVisibility(VISIBLE);
+        makingViewHolder.mProgressBarLayout.setVisibility(GONE);
+        makingViewHolder.mErrTip.setText(buffer.toString());
     }
 
     class MakingViewHolder {
