@@ -76,7 +76,7 @@ public class ChooseCup implements View.OnClickListener, MsgTransListener {
 
     private void init() {
         initView();
-   /*     if (CheckCurMachineState.getInstance().isCanMaking()) {
+        if (CheckCurMachineState.getInstance().isCanMaking()) {
             MyLog.d(TAG, "machine is ok ");
             mViewHolder.mContentLayout.setVisibility(View.VISIBLE);
             mViewHolder.mErrTip.setVisibility(View.GONE);
@@ -85,8 +85,8 @@ public class ChooseCup implements View.OnClickListener, MsgTransListener {
             mViewHolder.mContentLayout.setVisibility(View.GONE);
             mViewHolder.mErrTip.setVisibility(View.VISIBLE);
             mViewHolder.mErrTip.setText(CheckCurMachineState.getInstance().getStateTip());
-        }*/
-        mViewHolder.mContentLayout.setVisibility(View.VISIBLE);
+        }
+//        mViewHolder.mContentLayout.setVisibility(View.VISIBLE);
 
 
         initData();

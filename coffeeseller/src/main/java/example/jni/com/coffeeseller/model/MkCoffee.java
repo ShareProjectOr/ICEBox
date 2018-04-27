@@ -121,12 +121,7 @@ public class MkCoffee {
 
         DealOrderInfoManager.getInstance(context).update(dealRecorder);
 
-        updateProgressAnim(CONTAIN_MAKING_PROGRESS_TIME);
-
-        if (mkCoffeeListenner != null) {
-            mkCoffeeListenner.getMkResult(dealRecorder, true);
-        }
-//        startMkCoffee();
+        startMkCoffee();
     }
 
     public View getView() {

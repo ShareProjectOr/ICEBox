@@ -55,6 +55,16 @@
         android:background="@mipmap/dialog_bng"
         android:orientation="horizontal">
 
+
+        <TextView
+            android:id="@+id/errTip"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:text="对不起，咖啡制作失败了...\n1、门口有杯子\n2、其他错误"
+            android:textColor="@color/white"
+            android:textSize="30sp"
+            android:visibility="gone" />
         <LinearLayout
             android:id="@+id/contentLayout"
             android:layout_width="match_parent"
@@ -120,15 +130,7 @@
 
         </LinearLayout>
 
-        <TextView
-            android:id="@+id/errTip"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:gravity="center"
-            android:text="对不起，咖啡制作失败了...\n1、门口有杯子\n2、其他错误"
-            android:textColor="@color/white"
-            android:textSize="30sp"
-            android:visibility="gone" />
+
     </LinearLayout>
 
 
