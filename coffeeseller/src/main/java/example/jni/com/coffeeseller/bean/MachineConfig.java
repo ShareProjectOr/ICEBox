@@ -9,6 +9,15 @@ public class MachineConfig {
     private static String TcpIP = "";
     private static String machineCode = "20180423134200001";
     private static int networkType;
+    private static String topic;
+
+    public static String getTopic() {
+        return topic;
+    }
+
+    public static void setTopic(String topic) {
+        MachineConfig.topic = topic;
+    }
 
     public static String getHostUrl() {
         return HostUrl;

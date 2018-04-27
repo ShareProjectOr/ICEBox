@@ -115,10 +115,26 @@ public class MachineCheck implements IMachineCheck {
 
                     }
 
-                    if (content.getAllbunkersIDs().size() == 0) {
+                    if (content.getAllbunkersIDs().size() == 0) {//本地数据库为空的时候 ,需以服务端的数据进行绑定数据库
                         for (int i = 0; i < list.size(); i++) {
                             content.insertContact(list.get(i).getBunkerID(), list.get(i).getMaterialID(), list.get(i).getMaterialType(), list.get(i).getMaterialName()
                                     , list.get(i).getMaterialUnit(), list.get(i).getMaterialStock(), list.get(i).getMaterialDropSpeed(), list.get(i).getContainerID(), list.get(i).getLastLoadingTime());
+                        }
+                    } else if (array.length() != content.getAllcontainerID().size()) {
+                        //本地数据库与服务端返回的料仓长度不一致时,需更新数据库
+                        for (int i = 0; i < list.size(); i++) {
+                            boolean isupdated = false;
+                            for (String ContainerID : content.getAllcontainerID()) {
+                                if (ContainerID.equals(list.get(i).getContainerID())) {  //假如数据库里面已经存在了这个料仓 则不做任何操作
+                                    isupdated = true;
+                                    break;
+                                }
+                            }
+
+                            if (!isupdated) {//假如数据库里面不存在了这个料仓 则插入到数据库中
+                                content.insertContact(list.get(i).getBunkerID(), list.get(i).getMaterialID(), list.get(i).getMaterialType(), list.get(i).getMaterialName()
+                                        , list.get(i).getMaterialUnit(), list.get(i).getMaterialStock(), list.get(i).getMaterialDropSpeed(), list.get(i).getContainerID(), list.get(i).getLastLoadingTime());
+                            }
                         }
                     }
 
@@ -134,8 +150,14 @@ public class MachineCheck implements IMachineCheck {
             }
         }
 
-        if (MachineInitState.CHECK_OPENMAINCTRL == MachineInitState.NORMAL && MachineInitState.CHECK_MACHINECODE == MachineInitState.NORMAL
+     /*   if (MachineInitState.CHECK_OPENMAINCTRL == MachineInitState.NORMAL && MachineInitState.CHECK_MACHINECODE == MachineInitState.NORMAL
                 && MachineInitState.SUB_MQTT_STATE == MachineInitState.NORMAL && MachineInitState.GET_FORMULA == MachineInitState.NORMAL) {
+            mOnMachineCheckCallBackListener.MachineCheckEnd(true);
+        } else {
+            mOnMachineCheckCallBackListener.MachineCheckEnd(false);
+        }*/
+        if (MachineInitState.CHECK_MACHINECODE == MachineInitState.NORMAL && MachineInitState.SUB_MQTT_STATE == MachineInitState.NORMAL
+                && MachineInitState.GET_FORMULA == MachineInitState.NORMAL) {
             mOnMachineCheckCallBackListener.MachineCheckEnd(true);
         } else {
             mOnMachineCheckCallBackListener.MachineCheckEnd(false);

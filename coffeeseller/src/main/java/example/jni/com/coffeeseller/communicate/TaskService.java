@@ -50,7 +50,7 @@ import example.jni.com.coffeeseller.views.activities.HomeActivity;
 
 
 public class TaskService extends Service implements MqttCallback {
-    public static final String HOST = "tcp://" + MachineConfig.getTcpIP() + ":61616";//tcp://127.0.0.1:61613
+    public static final String HOST = "tcp://" + "196.168.4.192" + ":61613";//tcp://127.0.0.1:616
     private static MqttClient client;
     private MqttConnectOptions options;
     private String userName = "admin";
@@ -198,8 +198,9 @@ public class TaskService extends Service implements MqttCallback {
             options.setWill(topic, JsonUtil.mapToJson(bytejson).getBytes(), 2, true);
             client.connect(options);
             // 订阅消息
-            int[] Qos = {2};
-            String[] topic1 = {"T-M-" + MachineConfig.getMachineCode()};
+            int[] Qos = {1,1};
+            String[] topic1 = {MachineConfig.getTopic(),"client/coffee/sc/#"};
+
             client.subscribe(topic1, Qos);
 
         } catch (Exception e) {

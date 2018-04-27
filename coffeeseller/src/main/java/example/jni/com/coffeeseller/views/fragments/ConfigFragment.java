@@ -11,8 +11,12 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import java.util.List;
 
 import example.jni.com.coffeeseller.R;
+import example.jni.com.coffeeseller.bean.CommitMaterialObject;
 import example.jni.com.coffeeseller.bean.Material;
 import example.jni.com.coffeeseller.contentprovider.MaterialSql;
 import example.jni.com.coffeeseller.contentprovider.SharedPreferencesManager;
@@ -20,16 +24,18 @@ import example.jni.com.coffeeseller.factory.FragmentEnum;
 import example.jni.com.coffeeseller.factory.FragmentFactory;
 import example.jni.com.coffeeseller.model.adapters.MaterialRecycleListAdapter;
 import example.jni.com.coffeeseller.presenter.AddMaterialPresenter;
+import example.jni.com.coffeeseller.presenter.CommitMaterialPresenter;
 import example.jni.com.coffeeseller.views.activities.HomeActivity;
 import example.jni.com.coffeeseller.views.viewinterface.IAddMaterialView;
+import example.jni.com.coffeeseller.views.viewinterface.ICommitMaterialView;
 
 /**
  * Created by Administrator on 2018/4/12.
  */
 
-public class ConfigFragment extends BasicFragment implements IAddMaterialView {
+public class ConfigFragment extends BasicFragment implements IAddMaterialView, ICommitMaterialView {
     private View mView;
-    private Button toDebug;
+    private Button toDebug, materialCommit;
     private HomeActivity homeActivity;
     private TextView back;
     private RecyclerView materialList;
@@ -40,6 +46,7 @@ public class ConfigFragment extends BasicFragment implements IAddMaterialView {
     private MaterialSql sql;
     private int BunkersID;
     private AddMaterialPresenter mPresenter;
+    private CommitMaterialPresenter materialPresenter;
 
     @Nullable
     @Override
@@ -63,10 +70,10 @@ public class ConfigFragment extends BasicFragment implements IAddMaterialView {
         back = (TextView) mView.findViewById(R.id.backToCheck);
         materialList = (RecyclerView) mView.findViewById(R.id.material_list);
         mAdapter = new MaterialRecycleListAdapter(getActivity());
-
+        materialCommit = (Button) mView.findViewById(R.id.material_commit);
         cupStock = (TextView) mView.findViewById(R.id.cup_num);
         waterStock = (TextView) mView.findViewById(R.id.water_count);
-
+        materialPresenter = new CommitMaterialPresenter(this);
         addCupTime = (TextView) mView.findViewById(R.id.add_cup_time);
         addWaterTime = (TextView) mView.findViewById(R.id.add_water_time);
 
@@ -82,6 +89,7 @@ public class ConfigFragment extends BasicFragment implements IAddMaterialView {
         toDebug.setOnClickListener(this);
         addCup.setOnClickListener(this);
         addWater.setOnClickListener(this);
+        materialCommit.setOnClickListener(this);
     }
 
     @Override
@@ -98,6 +106,9 @@ public class ConfigFragment extends BasicFragment implements IAddMaterialView {
                 break;
             case R.id.add_water:
                 BunkersID = 7;
+                break;
+            case R.id.material_commit:
+                materialPresenter.CommitMaterial();
                 break;
         }
     }
@@ -126,5 +137,15 @@ public class ConfigFragment extends BasicFragment implements IAddMaterialView {
         addWaterTime.setText(SharedPreferencesManager.getInstance(getActivity()).getAddWaterTime());
     }
 
+    @Override
+    public List<CommitMaterialObject> getList() {
+
+        return sql.getCommitMaterialObjectList();
+    }
+
+    @Override
+    public void ShowResult(String result) {
+        Toast.makeText(getActivity(), result, Toast.LENGTH_LONG).show();
+    }
 }
 

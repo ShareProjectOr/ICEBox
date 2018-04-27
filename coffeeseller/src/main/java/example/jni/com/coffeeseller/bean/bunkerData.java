@@ -7,6 +7,7 @@ package example.jni.com.coffeeseller.bean;
 public class bunkerData {
     String bunkerID;//料仓编号
     String MaterialID;//原料编号
+    String bunkersName;//料仓名字
     String MaterialType;//原料种类
     String MaterialName;//原料名字
     String MaterialUnit;//原料单位
@@ -21,6 +22,14 @@ public class bunkerData {
 
     public void setLastLoadingTime(String lastLoadingTime) {
         this.lastLoadingTime = lastLoadingTime;
+    }
+
+    public String getBunkersName() {
+        return bunkersName;
+    }
+
+    public void setBunkersName(String bunkersName) {
+        this.bunkersName = bunkersName;
     }
 
     public String getBunkerID() {

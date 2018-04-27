@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import example.jni.com.coffeeseller.R;
@@ -26,10 +27,18 @@ public class MaterialRecycleListAdapter extends RecyclerView.Adapter<RecyclerVie
     private String bunkersID;
     private AddMaterialPresenter presenter;
 
+    private List<bunkerData> list = new ArrayList<>();
+
     public MaterialRecycleListAdapter(Activity mContext) {
+
         sql = new MaterialSql(mContext);
         this.mContext = mContext;
         presenter = new AddMaterialPresenter(this);
+        if (list.size() != 0) {
+            list.clear();
+        } else {
+            list = sql.getRecycleBunkersList();
+        }
     }
 
     @Override
@@ -42,23 +51,26 @@ public class MaterialRecycleListAdapter extends RecyclerView.Adapter<RecyclerVie
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, final int position) {
         ContentViewHolder mHolder = (ContentViewHolder) holder;
-        final List<bunkerData> list = sql.getBunkersList();
         mHolder.bankersName.setText(list.get(position).getContainerID() + "-" + list.get(position).getMaterialName() + "仓");
         mHolder.Material.setText(list.get(position).getMaterialName());
         mHolder.AddTime.setText(list.get(position).getLastLoadingTime());
-        mHolder.Opration.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                bunkersID = list.get(position).getBunkerID();
-                presenter.AddMaterial();
-            }
-        });
+        if (!mHolder.AddTime.getText().toString().isEmpty()) {
+            mHolder.Opration.setText("补料");
+            mHolder.Opration.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    bunkersID = list.get(position).getBunkerID();
+                    presenter.AddMaterial();
+                }
+            });
+        }
+
 
     }
 
     @Override
     public int getItemCount() {
-        return sql.getBunkersList().size();
+        return sql.getRecycleBunkersList().size();
     }
 
     @Override
@@ -78,7 +90,12 @@ public class MaterialRecycleListAdapter extends RecyclerView.Adapter<RecyclerVie
 
     @Override
     public void notifySetDataChange(MaterialSql sql) {
-        this.sql = sql;
+        if (list.size() != 0) {
+            list.clear();
+            list = sql.getRecycleBunkersList();
+        } else {
+            list = sql.getRecycleBunkersList();
+        }
         notifyDataSetChanged();
     }
 

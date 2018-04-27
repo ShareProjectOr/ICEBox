@@ -169,9 +169,9 @@ public class MachineCheckFragment extends BasicFragment implements ICheckMachine
 
                         @Override
                         protected Integer doInBackground(Void... params) {
-                            for (int i = 0; i <= 100; i += 20) {
+                            for (int i = 0; i <= 100; i += 10) {
                                 publishProgress(i);
-                                Waiter.doWait(250);
+                                Waiter.doWait(200);
                             }
 
                             return null;

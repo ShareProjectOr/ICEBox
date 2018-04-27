@@ -211,13 +211,33 @@
                 android:background="@drawable/yuanjiaobiankuang"
                 android:orientation="vertical">
 
-                <TextView
-                    android:layout_width="wrap_content"
+                <LinearLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_margin="20dp"
-                    android:text="料仓状态"
-                    android:textSize="@dimen/text_size_two"
-                    android:textStyle="bold" />
+                    android:layout_margin="20dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="料仓状态"
+                        android:textSize="@dimen/text_size_two"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1" />
+
+                    <Button
+                        android:id="@+id/material_commit"
+                        android:layout_width="200dp"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/shape_botton"
+                        android:text="原料提交"
+                        android:textColor="@color/white"
+                        android:textSize="@dimen/text_size_one" />
+                </LinearLayout>
+
 
                 <TextView
                     android:layout_width="match_parent"
@@ -311,7 +331,6 @@
                         android:textColor="@color/blue"
                         android:textSize="@dimen/text_size_one" />
                 </LinearLayout>
-
 
 
                 <LinearLayout
@@ -530,6 +549,23 @@
                     android:textColor="@color/gray"
                     android:textSize="@dimen/text_size_one" />
             </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:layout_marginTop="40dp"
+                android:orientation="horizontal">
+
+                <EditText
+                    android:id="@+id/passWord"
+                    android:layout_width="600dp"
+                    android:layout_height="60dp"
+                    android:background="@drawable/shape_config_edit" />
+
+            </LinearLayout>
+
 
             <Button
                 android:id="@+id/saveConfig"

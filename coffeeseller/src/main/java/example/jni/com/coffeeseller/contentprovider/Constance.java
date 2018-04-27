@@ -19,6 +19,8 @@ public interface Constance {
     String TRADE_CLOSE = "http://192.168.4.138:8083" + "/trade/close";
 
     String MachineAuthentication_URL = "http://192.168.4.152:8083" + "/machine/activate";
+    String COMMIT_MATERIAL_URL = "http://192.168.4.152:8083" + "/material/save";
+    String PASSWORD_CHANGE = "http://192.168.4.152:8083/machine/updatePassword";
 
     String FORMULA_GET = "http://192.168.4.152:8083/formula/getFormula";
 

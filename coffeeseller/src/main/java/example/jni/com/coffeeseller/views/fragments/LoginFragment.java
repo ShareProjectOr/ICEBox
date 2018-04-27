@@ -2,6 +2,7 @@ package example.jni.com.coffeeseller.views.fragments;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,10 +11,17 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+
 import example.jni.com.coffeeseller.R;
 
+import example.jni.com.coffeeseller.contentprovider.Constance;
 import example.jni.com.coffeeseller.factory.FragmentEnum;
 import example.jni.com.coffeeseller.factory.FragmentFactory;
+import example.jni.com.coffeeseller.httputils.JsonUtil;
+import example.jni.com.coffeeseller.httputils.OkHttpUtil;
 import example.jni.com.coffeeseller.presenter.UserLoginPresenter;
 import example.jni.com.coffeeseller.views.activities.HomeActivity;
 import example.jni.com.coffeeseller.views.viewinterface.Iloginview;
@@ -84,10 +92,25 @@ public class LoginFragment extends BasicFragment implements Iloginview {
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.login:
-                mUserLoginPresenter.PresenterLogin();
+                //   mUserLoginPresenter.PresenterLogin();
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Map<String, Object> post = new HashMap<>();
+                        post.put("machineCode", "4545");
+                        post.put("loginPassword", PassWord.getText().toString());
+                        try {
+                            String resonse = OkHttpUtil.post(Constance.PASSWORD_CHANGE, JsonUtil.mapToJson(post));
+                            Log.e("--------",resonse );
+
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }).start();
                 break;
             case R.id.backToCheck:
-                homeActivity.replaceFragment(FragmentEnum.LoginFragment,FragmentEnum.MachineCheckFragment);
+                homeActivity.replaceFragment(FragmentEnum.LoginFragment, FragmentEnum.MachineCheckFragment);
                 break;
         }
     }
