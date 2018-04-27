@@ -2,11 +2,13 @@ package example.jni.com.coffeeseller.model.adapters;
 
 import android.app.Activity;
 import android.content.Context;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,18 +17,20 @@ import example.jni.com.coffeeseller.R;
 import example.jni.com.coffeeseller.bean.bunkerData;
 import example.jni.com.coffeeseller.contentprovider.MaterialSql;
 import example.jni.com.coffeeseller.presenter.AddMaterialPresenter;
+import example.jni.com.coffeeseller.presenter.BindMaterialPresenter;
 import example.jni.com.coffeeseller.views.viewinterface.IAddMaterialView;
+import example.jni.com.coffeeseller.views.viewinterface.IBindMaterialView;
 
 /**
  * Created by Administrator on 2018/4/16.
  */
 
-public class MaterialRecycleListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> implements IAddMaterialView {
+public class MaterialRecycleListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> implements IAddMaterialView, IBindMaterialView {
     private Activity mContext;
     private MaterialSql sql;
     private String bunkersID;
     private AddMaterialPresenter presenter;
-
+    private BindMaterialPresenter bindMaterialPresenter;
     private List<bunkerData> list = new ArrayList<>();
 
     public MaterialRecycleListAdapter(Activity mContext) {
@@ -34,6 +38,7 @@ public class MaterialRecycleListAdapter extends RecyclerView.Adapter<RecyclerVie
         sql = new MaterialSql(mContext);
         this.mContext = mContext;
         presenter = new AddMaterialPresenter(this);
+        bindMaterialPresenter = new BindMaterialPresenter(this, this);
         if (list.size() != 0) {
             list.clear();
         } else {
@@ -51,10 +56,22 @@ public class MaterialRecycleListAdapter extends RecyclerView.Adapter<RecyclerVie
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, final int position) {
         ContentViewHolder mHolder = (ContentViewHolder) holder;
-        mHolder.bankersName.setText(list.get(position).getContainerID() + "-" + list.get(position).getMaterialName() + "仓");
+        mHolder.bankersName.setText(list.get(position).getBunkersName());
         mHolder.Material.setText(list.get(position).getMaterialName());
         mHolder.AddTime.setText(list.get(position).getLastLoadingTime());
-        if (!mHolder.AddTime.getText().toString().isEmpty()) {
+
+        if (!list.get(position).getLastLoadingTime().equals("")) {
+            mHolder.bankersName.setTextColor(ContextCompat.getColor(mContext, R.color.black));//已经启用了的料仓才能重新绑定原料
+            mHolder.bankersName.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    bindMaterialPresenter.BindMaterial(list.get(position).getBunkerID());
+                }
+            });
+        } else {
+            mHolder.bankersName.setTextColor(ContextCompat.getColor(mContext, R.color.login_black_gray));//未绑定原料的料仓
+        }
+        if (!mHolder.AddTime.getText().toString().isEmpty()) { // 启用了的料仓才能补料
             mHolder.Opration.setText("补料");
             mHolder.Opration.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -68,8 +85,15 @@ public class MaterialRecycleListAdapter extends RecyclerView.Adapter<RecyclerVie
 
     }
 
+
+    public void notifyListChange() {
+        list.clear();
+        list = sql.getRecycleBunkersList();
+    }
+
     @Override
     public int getItemCount() {
+
         return sql.getRecycleBunkersList().size();
     }
 
@@ -88,6 +112,7 @@ public class MaterialRecycleListAdapter extends RecyclerView.Adapter<RecyclerVie
         return bunkersID;
     }
 
+
     @Override
     public void notifySetDataChange(MaterialSql sql) {
         if (list.size() != 0) {
@@ -97,6 +122,17 @@ public class MaterialRecycleListAdapter extends RecyclerView.Adapter<RecyclerVie
             list = sql.getRecycleBunkersList();
         }
         notifyDataSetChanged();
+    }
+
+    @Override
+    public void ShowResult(String Result) {
+        Toast.makeText(mContext, Result, Toast.LENGTH_LONG).show();
+    }
+
+
+    @Override
+    public TextView getview() {
+        return null;
     }
 
 

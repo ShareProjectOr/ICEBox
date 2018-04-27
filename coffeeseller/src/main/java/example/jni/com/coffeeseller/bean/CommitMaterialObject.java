@@ -8,6 +8,7 @@ public class CommitMaterialObject {
     int bunkerID;
     int output;
     int materialStock;
+    int materialID;
 
     public int getBunkerID() {
         return bunkerID;
@@ -31,5 +32,13 @@ public class CommitMaterialObject {
 
     public void setMaterialStock(int materialStock) {
         this.materialStock = materialStock;
+    }
+
+    public int getMaterialID() {
+        return materialID;
+    }
+
+    public void setMaterialID(int materialID) {
+        this.materialID = materialID;
     }
 }

@@ -223,6 +223,7 @@ public class MachineCheck implements IMachineCheck {
                     MachineConfig.setHostUrl(object.getJSONObject("d").getString("uRL"));
                     MachineConfig.setMachineCode(SharedPreferencesManager.getInstance(mContext).getMachineCode());
                     MachineConfig.setTcpIP(object.getJSONObject("d").getString("tcpIP"));
+                    MachineConfig.setTopic(object.getJSONObject("d").getString("topic"));
                     MachineInitState.CHECK_MACHINECODE = MachineInitState.NORMAL;
                     mOnMachineCheckCallBackListener.MachineCodeCheckSuccess();
                 } else {

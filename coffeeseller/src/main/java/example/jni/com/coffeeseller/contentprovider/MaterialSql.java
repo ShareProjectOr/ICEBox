@@ -52,6 +52,14 @@ public class MaterialSql extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS" + MATERIALS_TABLE_NAME);
         onCreate(db);
     }
+    public String getContainerIDByBunkerID(String bunkesID){
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor res = db.rawQuery("select * from " + MATERIALS_TABLE_NAME + "where" + MATERIALS_COLUMN_BUNKERSID + "=" + bunkesID + "", null);
+        res.moveToFirst();
+        String ContainerID = res.getString(res.getColumnIndex(MATERIALS_COLUMN_CONTAINERID));
+        res.close();
+        return ContainerID;
+    }
 
     public String getBunkersNameByID(String bunkesID) {
         SQLiteDatabase db = this.getReadableDatabase();
@@ -122,6 +130,15 @@ public class MaterialSql extends SQLiteOpenHelper {
         String MaterialStock = res.getString(res.getColumnIndex(MATERIALS_COLUMN_MATERIALSTOCK));
         res.close();
         return MaterialStock;
+    }
+
+    public String getMaterialIDByBunkerID(String BunkerID) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor res = db.rawQuery("select * from " + MATERIALS_TABLE_NAME + "where" + MATERIALS_COLUMN_BUNKERSID + "=" + BunkerID + "", null);
+        res.moveToFirst();
+        String MaterialID = res.getString(res.getColumnIndex(MATERIALS_COLUMN_MATERIALID));
+        res.close();
+        return MaterialID;
     }
 
     //获取查询条件的指针位置
@@ -354,6 +371,7 @@ public class MaterialSql extends SQLiteOpenHelper {
             object.setBunkerID(Integer.parseInt(bunkerID));
             object.setMaterialStock(Integer.parseInt(getStorkByBunkersID(bunkerID)));
             object.setOutput(Integer.parseInt(getMaterialDropSpeedByBunkersID(bunkerID)));
+            object.setMaterialID(Integer.parseInt(getMaterialIDByBunkerID(bunkerID)));
             list.add(object);
         }
         return list;
@@ -377,6 +395,7 @@ public class MaterialSql extends SQLiteOpenHelper {
                 data.setMaterialDropSpeed("");
                 data.setContainerID("0");
                 data.setLastLoadingTime("");
+                data.setBunkersName(bankesName[0]);
                 bunkersList.add(0, data);
             }
             if (getAllcontainerID().contains("1")) { //如果含有这个料仓则从数据库中找到数据加入
@@ -392,6 +411,7 @@ public class MaterialSql extends SQLiteOpenHelper {
                 data.setMaterialDropSpeed("");
                 data.setContainerID("1");
                 data.setLastLoadingTime("");
+                data.setBunkersName(bankesName[1]);
                 bunkersList.add(1, data);
             }
 
@@ -408,6 +428,7 @@ public class MaterialSql extends SQLiteOpenHelper {
                 data.setMaterialDropSpeed("");
                 data.setContainerID("2");
                 data.setLastLoadingTime("");
+                data.setBunkersName(bankesName[2]);
                 bunkersList.add(2, data);
             }
 
@@ -424,6 +445,7 @@ public class MaterialSql extends SQLiteOpenHelper {
                 data.setMaterialDropSpeed("");
                 data.setContainerID("3");
                 data.setLastLoadingTime("");
+                data.setBunkersName(bankesName[3]);
                 bunkersList.add(3, data);
             }
             if (getAllcontainerID().contains("4")) { //如果含有这个料仓则从数据库中找到数据加入
@@ -439,6 +461,7 @@ public class MaterialSql extends SQLiteOpenHelper {
                 data.setMaterialDropSpeed("");
                 data.setContainerID("4");
                 data.setLastLoadingTime("");
+                data.setBunkersName(bankesName[4]);
                 bunkersList.add(4, data);
             }
 
@@ -455,6 +478,7 @@ public class MaterialSql extends SQLiteOpenHelper {
                 data.setMaterialDropSpeed("");
                 data.setContainerID("5");
                 data.setLastLoadingTime("");
+                data.setBunkersName(bankesName[5]);
                 bunkersList.add(5, data);
             }
 
@@ -471,6 +495,7 @@ public class MaterialSql extends SQLiteOpenHelper {
                 data.setMaterialDropSpeed("");
                 data.setContainerID("6");
                 data.setLastLoadingTime("");
+                data.setBunkersName(bankesName[6]);
                 bunkersList.add(6, data);
             }
             return bunkersList;

@@ -232,8 +232,18 @@
                         android:id="@+id/material_commit"
                         android:layout_width="200dp"
                         android:layout_height="wrap_content"
+                        android:layout_marginRight="40dp"
                         android:background="@drawable/shape_botton"
                         android:text="原料提交"
+                        android:textColor="@color/white"
+                        android:textSize="@dimen/text_size_one" />
+
+                    <Button
+                        android:id="@+id/search_trade"
+                        android:layout_width="200dp"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/shape_botton"
+                        android:text="查看交易"
                         android:textColor="@color/white"
                         android:textSize="@dimen/text_size_one" />
                 </LinearLayout>
