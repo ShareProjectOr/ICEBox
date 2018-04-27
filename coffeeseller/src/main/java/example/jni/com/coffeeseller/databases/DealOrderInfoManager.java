@@ -58,10 +58,11 @@ public class DealOrderInfoManager {
             arrayOfObject[11] = orderRecorder.getReportMsg();
 
             MyLog.d(TAG, "arrayOfObject=" + arrayOfObject);
-            localSQLiteDatabase.execSQL("insert into order_info(order,rqcup,price,taste_redio,temp_format,payed," +
-                    "make_success,customer_id,formula_id,pay_time,is_report_success,report_msg) " +
+            localSQLiteDatabase.execSQL("insert into order_info ( order ,cup,price,taste_redio,temp_format, payed ," +
+                    "make_success,customer_id,formula_id,pay_time,is_report_success,report_msg ) " +
                     "values(?,?,?,?,?,?,?,?,?,?,?,?)", arrayOfObject);
             localSQLiteDatabase.close();
+
         }
     }
 
@@ -86,30 +87,24 @@ public class DealOrderInfoManager {
             }
             SQLiteDatabase localSQLiteDatabase = mDataBaseHelper.getReadableDatabase();
 
-            Object[] arrayOfObject = new Object[1];
-            if (bean.isPayed()) {
-                arrayOfObject[0] = 1;
-            } else {
-                arrayOfObject[0] = 0;
-            }
+            MyLog.d(TAG, "isPayed=" + bean.isPayed());
 
-            if (bean.isMakeSuccess()) {
-                arrayOfObject[1] = 1;
-            } else {
-                arrayOfObject[1] = 0;
-            }
+            MyLog.d(TAG, "isMakeSuccess=" + bean.isMakeSuccess());
 
-            if (bean.isMakeSuccess()) {
-                arrayOfObject[2] = 1;
-            } else {
-                arrayOfObject[2] = 0;
-            }
-            arrayOfObject[3] = bean.getReportMsg();
+            MyLog.d(TAG, "isReportSuccess=" + bean.isReportSuccess());
 
-            localSQLiteDatabase.execSQL("update order_info set payed=?,make_success=?,is_report_uccess=?,report_msg=?", arrayOfObject);
+
+            MyLog.d(TAG, "getReportMsg=" + bean.getReportMsg());
+
+            localSQLiteDatabase.execSQL("update order_info set payed=" + (bean.isPayed() ? 1 : 0) +
+                    ",make_success=" + (bean.isMakeSuccess() ? 1 : 0) +
+                    ",is_report_success=" + (bean.isReportSuccess() ? 1 : 0) +
+                    ",report_msg= " + bean.getReportMsg() +
+                    " where order=" + bean.getOrder());
 
             localSQLiteDatabase.close();
         }
+        MyLog.W(TAG, "update is over");
     }
 
     public List<DealRecorder> getLocalTableDatas() {
@@ -124,7 +119,7 @@ public class DealOrderInfoManager {
 
                 DealRecorder mBean = new DealRecorder();
                 mBean.setOrder(localCursor.getString(localCursor.getColumnIndex("order")));
-                mBean.setRqcup(localCursor.getInt(localCursor.getColumnIndex("rqcup")));
+                mBean.setRqcup(localCursor.getInt(localCursor.getColumnIndex("cup")));
                 mBean.setRqTempFormat(localCursor.getString(localCursor.getColumnIndex("temp_format")));
                 mBean.setTasteRadio(localCursor.getString(localCursor.getColumnIndex("taste_redio")));
                 mBean.setPrice(localCursor.getString(localCursor.getColumnIndex("price")));

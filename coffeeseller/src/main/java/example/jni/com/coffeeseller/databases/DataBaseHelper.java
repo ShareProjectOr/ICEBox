@@ -6,19 +6,21 @@ import android.database.sqlite.SQLiteDatabase.CursorFactory;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
+import example.jni.com.coffeeseller.utils.MyLog;
+
 public class DataBaseHelper extends SQLiteOpenHelper {
 
 
-    String sql_order_info = "create table order_info(_id integer primary key autoincrement," +
-            "order text,rqcup integer,price text,taste_redio text,temp_format text," +
-            "payed integer,make_success integer,customer_id text,formula_id integer,pay_time text," +
-            "is_report_success integer,report_msg text)";
+    String sql_order_info = "create table order_info ( id integer primary key," +
+            " order text,cup integer,price varchar(255),taste_redio varchar(255),temp_format varchar(255)," +
+            "payed integer,make_success integer,customer_id varchar(255),formula_id integer,pay_time varchar(255)," +
+            "is_report_success integer,report_msg varchar(255))";
 
     static DataBaseHelper mInstance = null;
     static String TAG = "DataBaseHelper";
 
 
-    protected static DataBaseHelper getInstance(Context context) {
+    public static DataBaseHelper getInstance(Context context) {
 
         if (mInstance == null) {
 
@@ -37,6 +39,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         // TODO Auto-generated method stub
 
+        MyLog.d(TAG, "--------------------");
         db.execSQL(sql_order_info);
     }
 

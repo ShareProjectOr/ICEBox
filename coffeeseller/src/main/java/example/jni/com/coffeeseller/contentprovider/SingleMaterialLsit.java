@@ -54,6 +54,9 @@ public class SingleMaterialLsit {
     }
 
     public void setCoffeeList() {
+        if (coffeeArray == null) {
+            return;
+        }
         try {
             for (int i = 0; i < coffeeArray.length(); i++) {
                 org.json.JSONObject coffeeObject = (org.json.JSONObject) coffeeArray.opt(i);

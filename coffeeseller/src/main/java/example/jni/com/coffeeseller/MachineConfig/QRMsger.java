@@ -59,6 +59,7 @@ public class QRMsger {
                     try {
                         RESPONSE_TEXT = OkHttpUtil.post(Constance.GET_QR, JsonUtil.mapToJson(params));
                     } catch (IOException e) {
+
                         e.printStackTrace();
                     }
                     if (!TextUtils.isEmpty(RESPONSE_TEXT)) {

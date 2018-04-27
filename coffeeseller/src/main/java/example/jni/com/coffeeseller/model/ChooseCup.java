@@ -33,6 +33,7 @@ import example.jni.com.coffeeseller.bean.CoffeeFomat;
 import example.jni.com.coffeeseller.bean.Material;
 import example.jni.com.coffeeseller.bean.Step;
 import example.jni.com.coffeeseller.bean.Taste;
+import example.jni.com.coffeeseller.communicate.TaskService;
 import example.jni.com.coffeeseller.contentprovider.MaterialSql;
 import example.jni.com.coffeeseller.model.listeners.ChooseCupListenner;
 import example.jni.com.coffeeseller.model.listeners.MsgTransListener;
@@ -126,6 +127,8 @@ public class ChooseCup implements View.OnClickListener, MsgTransListener {
 
         mViewHolder.mCoffeeName.setText(mCoffee.name);
 
+        TaskService.getInstance().SetOnMsgListener(mMsgTransListener);
+
         checkHotOrCold(true);
 
         initTaste(mCoffee.getStepList());
@@ -210,6 +213,7 @@ public class ChooseCup implements View.OnClickListener, MsgTransListener {
 * 开始检查订单是否支付
 * */
     private void beginTaskCheckPay() {
+
         mCurRequest = REQUEST_CHECK_PAY;
 
         if (mTimer == null) {
@@ -224,7 +228,7 @@ public class ChooseCup implements View.OnClickListener, MsgTransListener {
                 public void run() {
                     // TODO Auto-generated method stub
 
-                    if (!mDealRecorder.isPayed()) {
+                    if (!mDealRecorder.isPayed() && mDealRecorder.isVlide()) {
                         QRMsger qrMsger = new QRMsger();
                         qrMsger.checkPay(mMsgTransListener, mDealRecorder.getOrder());
                     } else {

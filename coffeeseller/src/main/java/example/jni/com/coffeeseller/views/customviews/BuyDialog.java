@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Handler;
 import android.support.annotation.StyleRes;
+import android.text.TextUtils;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -149,7 +150,7 @@ public class BuyDialog extends Dialog implements ChooseCupListenner, MkCoffeeLis
 
         MyLog.W(TAG, "reportTradeToServer data" + RESPONSE_TEXT);
 
-        if (RESPONSE_TEXT != null) {
+        if (RESPONSE_TEXT != null || !TextUtils.isEmpty(RESPONSE_TEXT)) {
 
             try {
                 JSONObject response = new JSONObject(RESPONSE_TEXT);
@@ -165,11 +166,16 @@ public class BuyDialog extends Dialog implements ChooseCupListenner, MkCoffeeLis
             dealRecorder.setReportSuccess(false);
             dealRecorder.setReportMsg("请求返回为null");
         }
+
+        MyLog.d(TAG, " reportTradeToServer  is  over");
+
         return dealRecorder;
     }
 
     //更新数据库原料表
     private List<ReportBunker> updateMaterial(DealRecorder dealRecorder) {
+
+
         List<ReportBunker> bunkers = new ArrayList<>();
         if (coffee == null || coffee.getStepList() == null || coffee.getStepList().size() <= 0) {
             return bunkers;
@@ -197,6 +203,9 @@ public class BuyDialog extends Dialog implements ChooseCupListenner, MkCoffeeLis
                     MyLog.W(TAG, "update material is " + isUpdateSuccess + ", materialId=" + step.getMaterial().getMaterialID()
                             + ", stock=" + (sqlRestMaterialInt - mkUseMaterialInt));
 
+                    MyLog.d(TAG, "update material is " + isUpdateSuccess + ", materialId=" + step.getMaterial().getMaterialID()
+                            + ", stock=" + (sqlRestMaterialInt - mkUseMaterialInt));
+
                     ReportBunker reportBunker = new ReportBunker();
                     int bunkerId = Integer.parseInt(materialSql.getBunkerIDByMaterialD(step.getMaterial().getMaterialID() + ""));
                     reportBunker.setBunkerID(bunkerId);
@@ -208,12 +217,45 @@ public class BuyDialog extends Dialog implements ChooseCupListenner, MkCoffeeLis
 
                 }
         }
+        MyLog.W(TAG, "updateMaterial is over");
         return bunkers;
     }
 
+
+    private void cancleOrder(String order) {
+        Map<String, Object> params = ConstanceMethod.getParams();
+        params.put("tradeCode", order);
+
+        MyLog.d(TAG, "cancleOrder RQ_URL = " + Constance.TRADE_CLOSE);
+        MyLog.d(TAG, "cancleOrder params = " + JsonUtil.mapToJson(params));
+
+        String RESPONSE_TEXT = null;
+        try {
+            RESPONSE_TEXT = OkHttpUtil.post(Constance.TRADE_CLOSE, JsonUtil.mapToJson(params));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        MyLog.W(TAG, "cancleOrder data" + RESPONSE_TEXT);
+
+        if (RESPONSE_TEXT != null) {
+
+
+        } else {
+
+        }
+    }
+
     @Override
-    public void cancle(String order) {
+    public void cancle(final String order) {
         //通知服务器取消订单
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                cancleOrder(order);
+            }
+        }).start();
 
         MyLog.d(TAG, "choosecup is cancle");
 
@@ -235,11 +277,21 @@ public class BuyDialog extends Dialog implements ChooseCupListenner, MkCoffeeLis
             }
         });
 
-    }
+        //更新数据库原料表
 
-    public void updateUi(List<Coffee> coffees) {
-        coffees.clear();
-        coffees.addAll(SingleMaterialLsit.getInstance(context).getCoffeeList());
+        List<ReportBunker> bunkers = updateMaterial(dealRecorder);
+
+        //上报交易结果给服务器
+
+        DealRecorder newDealRecorder = reportTradeToServer(dealRecorder, bunkers);
+
+        //更新本地交易记录
+        DealOrderInfoManager.getInstance(context).update(newDealRecorder);
+
+        //更新BuyFragment ui
+        if (fragment != null) {
+            fragment.updateUi();
+        }
 
     }
 
@@ -251,9 +303,11 @@ public class BuyDialog extends Dialog implements ChooseCupListenner, MkCoffeeLis
 
         List<ReportBunker> bunkers = updateMaterial(dealRecorder);
 
+
         //上报交易结果给服务器
 
         DealRecorder newDealRecorder = reportTradeToServer(dealRecorder, bunkers);
+
 
         //更新本地交易记录
         DealOrderInfoManager.getInstance(context).update(newDealRecorder);

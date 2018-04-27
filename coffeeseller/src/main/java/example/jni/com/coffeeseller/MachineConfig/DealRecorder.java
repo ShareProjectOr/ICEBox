@@ -133,6 +133,18 @@ public class DealRecorder {
         this.reportMsg = reportMsg;
     }
 
+    public boolean isVlide() {
+        if ("null".equals(getOrder())) {
+            return false;
+        }
+        if ("null".equals(getPrice())) {
+            return false;
+        }
+
+
+        return true;
+    }
+
     public void clear() {
 
         Rqcup = 1;

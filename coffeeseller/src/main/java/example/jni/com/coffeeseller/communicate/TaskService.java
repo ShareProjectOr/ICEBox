@@ -23,6 +23,7 @@ import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.eclipse.paho.client.mqttv3.MqttTopic;
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
@@ -42,6 +43,7 @@ import example.jni.com.coffeeseller.httputils.JsonUtil;
 import example.jni.com.coffeeseller.httputils.OkHttpUtil;
 import example.jni.com.coffeeseller.model.listeners.MsgTransListener;
 import example.jni.com.coffeeseller.model.listeners.OnMachineCheckCallBackListener;
+import example.jni.com.coffeeseller.parse.PayResult;
 import example.jni.com.coffeeseller.utils.MyLog;
 import example.jni.com.coffeeseller.utils.SecondToDate;
 import example.jni.com.coffeeseller.views.activities.HomeActivity;
@@ -80,6 +82,20 @@ public class TaskService extends Service implements MqttCallback {
                     isSubSuccess = false;
 
                 } else {
+
+                    JSONObject msgObject = (JSONObject) msg.obj;
+                    try {
+                        switch (msgObject.getString("msgType")) {
+                            case "payResult":
+                                PayResult payResult = PayResult.getPayResult(msg.obj.toString());
+                                if (msgTransListener != null) {
+                                    msgTransListener.onMsgArrived(payResult);
+                                }
+                                break;
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
 
                 }
             }

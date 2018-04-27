@@ -17,6 +17,7 @@ import java.util.List;
 import example.jni.com.coffeeseller.R;
 import example.jni.com.coffeeseller.bean.Coffee;
 import example.jni.com.coffeeseller.contentprovider.SingleMaterialLsit;
+import example.jni.com.coffeeseller.databases.DataBaseHelper;
 import example.jni.com.coffeeseller.factory.FragmentEnum;
 import example.jni.com.coffeeseller.factory.FragmentFactory;
 import example.jni.com.coffeeseller.model.adapters.CoffeeViewPagerAdapter;
@@ -92,7 +93,7 @@ public class BuyFragment extends BasicFragment implements GridViewItemListener, 
     private void initDatas() {
 
         mCoffees = new ArrayList<>();
-        mCoffees = SingleMaterialLsit.getInstance(homeActivity).getyoubaoCoffeeList();
+        mCoffees = SingleMaterialLsit.getInstance(homeActivity).getCoffeeList();
         mPagerAdapter = new CoffeeViewPagerAdapter(homeActivity, mCoffees, this);
         mViewPager.addOnPageChangeListener(new ViewpagerPageChangedListener());
         mViewPager.setAdapter(mPagerAdapter);
@@ -134,6 +135,7 @@ public class BuyFragment extends BasicFragment implements GridViewItemListener, 
 
     @Override
     public void onGridItemClick(AdapterView<?> parent, View view, int position, long id) {
+
 
         Coffee coffee = mCoffees.get(position);
         curSelectedCoffee = coffee;
