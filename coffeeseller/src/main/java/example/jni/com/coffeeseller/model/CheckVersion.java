@@ -28,6 +28,7 @@ public class CheckVersion implements ICheckVersion {
     public void CheckVersion(final String locationVersion, final OnCheckVersionCallBackListener onCheckVersionCallBackListener) {
         new AsyncTask<Void, Boolean, Boolean>() {
             String result;
+            String downLoadFileUrl;
 
             @Override
             protected Boolean doInBackground(Void... params) {
@@ -41,7 +42,10 @@ public class CheckVersion implements ICheckVersion {
                         String netVersion = object.getJSONObject("d").getString("version");
                         if (!locationVersion.equals(netVersion)) { //版本不一致,更新
                             Log.e(TAG, "begin load file");
-
+                            downLoadFileUrl = object.getJSONObject("d").getString("fileUrl");
+                            return true;
+                        } else {
+                            result = "目前已经是最新的版本了!!!";
                         }
 
                     }
@@ -56,7 +60,7 @@ public class CheckVersion implements ICheckVersion {
             @Override
             protected void onPostExecute(Boolean aBoolean) {
                 if (aBoolean) {
-
+                    onCheckVersionCallBackListener.checkSuccess(downLoadFileUrl, true);
                 } else {
                     onCheckVersionCallBackListener.checkFailed(result);
                 }

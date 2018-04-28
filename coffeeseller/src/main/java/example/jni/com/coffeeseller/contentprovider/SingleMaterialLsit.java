@@ -55,8 +55,12 @@ public class SingleMaterialLsit {
     }
 
     public void setCoffeeList() {
+
         if (coffeeArray == null) {
             return;
+        }
+        if (coffeeList.size() != 0) {
+            coffeeList.clear();
         }
         try {
             for (int i = 0; i < coffeeArray.length(); i++) {

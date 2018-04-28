@@ -5,7 +5,7 @@ package example.jni.com.coffeeseller.model.listeners;
  */
 
 public interface OnCheckVersionCallBackListener {
-    void checkSuccess(boolean isupdate);
+    void checkSuccess(String loadfileUrl, boolean isupdate);
 
     void checkFailed(String Result);
 }
