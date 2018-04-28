@@ -5,5 +5,5 @@ package example.jni.com.coffeeseller.model.listeners;
  */
 
 public interface ICheckVersion {
-    void CheckVersion();
+    void CheckVersion(String locationVersion, OnCheckVersionCallBackListener onCheckVersionCallBackListener);
 }

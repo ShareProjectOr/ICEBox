@@ -10,6 +10,7 @@ import com.alibaba.fastjson.JSONObject;
 
 import org.json.JSONException;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -63,7 +64,7 @@ public class SingleMaterialLsit {
                 Coffee coffee = new Coffee();
                 coffee.setCacheUrl(coffeeObject.getString("imageSource"));
                 coffee.setName(coffeeObject.getString("name"));
-                coffee.setPrice(coffeeObject.getInt("suggestedPrice") + "");
+                coffee.setPrice(coffeeObject.getString("suggestedPrice"));
                 coffee.setFormulaID(coffeeObject.getInt("formulaID"));
                 org.json.JSONArray stepArray = coffeeObject.getJSONArray("process");
                 for (int j = 0; j < stepArray.length(); j++) {
@@ -79,19 +80,26 @@ public class SingleMaterialLsit {
                /* for (String haveMaterialID : sql.getAllmaterialID()) {
                     if (materialID)
                 }*/
+                    Log.e(TAG, "currentStep need materialID is " + materialID);
+                    Log.e(TAG, "location all materialID is " + sql.getAllmaterialID().toString());
                     if (!sql.getAllmaterialID().contains(materialID)) { //本地料仓里面不含有这个原料
+                        Log.e(TAG, "location have not this material");
                         coffee.setOver(true);
                         break;
                     }
 
                     if (materialStock.equals("0")) { // 有原料但剩余量为0 则为售罄
+                        Log.e(TAG, "location materialStock is 0  ");
                         coffee.setOver(true);
                         break;
                     }
                     int intMaterialStock = Integer.parseInt(materialStock);
-                    int needAccount = stepObject.getInt("Acount");
+                    Log.e(TAG, "location MaterialStock is" + intMaterialStock);
+                    int needAccount = stepObject.getInt("amount");
+                    Log.e(TAG, "need MaterialStock is" + needAccount);
                     if (needAccount > intMaterialStock) { //需要量 大于剩余量时
                         coffee.setOver(true);
+                        Log.e(TAG, "location materialStock is not enough");
                         break;
                     }
                 }
@@ -138,9 +146,17 @@ public class SingleMaterialLsit {
                     String MaterialDropSpeed = sql.getMaterialDropSpeedBycontainerID(containerID);
                     Log.e(TAG, "默认落料速度=" + MaterialDropSpeed + "--此时的原料为:" + stepObject.getJSONObject("material").getString("name"));
                     int DropSpeed = Integer.parseInt(MaterialDropSpeed);
-                    int loadPercent = stepObject.getInt("loadingSpeed") / 127;
-                    int materialTime = (amount / DropSpeed) * 5 * 10 * loadPercent;
-                    containerConfig.setMaterial_time(materialTime);
+                    Log.e(TAG, "DropSpeed is " + DropSpeed);
+                    double loadPercent = new BigDecimal((float) (stepObject.getInt("loadingSpeed") / 127)).setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
+                    Log.e(TAG, "double loadPercent is " + loadPercent);
+                    double materialTime = new BigDecimal((float) amount / DropSpeed).setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
+                    Log.e(TAG, "double materialTime is " + materialTime);
+                    Double dealprecentTime = materialTime * loadPercent * 5 * 10;
+                    Log.e(TAG, "Double dealprecentTime is " + dealprecentTime);
+
+                    int intmaterialTime = dealprecentTime.intValue();
+                    Log.e(TAG, "intmaterialTime is " + intmaterialTime);
+                    containerConfig.setMaterial_time(intmaterialTime);
                     containerConfig.setRotate_speed(stepObject.getInt("loadingSpeed"));
                     containerConfig.setStir_speed(stepObject.getInt("mixingSpeed"));
                     switch (stepObject.getInt("waterType")) {

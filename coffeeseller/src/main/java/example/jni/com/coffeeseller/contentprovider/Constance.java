@@ -21,7 +21,7 @@ public interface Constance {
     String MachineAuthentication_URL = "http://192.168.4.152:8083" + "/machine/activate";
     String COMMIT_MATERIAL_URL = "http://192.168.4.152:8083" + "/material/save";
     String PASSWORD_CHANGE = "http://192.168.4.152:8083/machine/updatePassword";
-
+    String CHECK_VERSION_URL = "http://192.168.4.152:8083/app/versioncheck";
     String FORMULA_GET = "http://192.168.4.152:8083/formula/getFormula";
     String MATERIAL_LIST_GET_URL = "http://192.168.4.152:8083/materials/get";
     // String[] bunkersName = {"咖啡豆仓", "热水仓", "料仓1", "料仓2", "料仓3", "料仓4", "料仓5", "料仓6"};
