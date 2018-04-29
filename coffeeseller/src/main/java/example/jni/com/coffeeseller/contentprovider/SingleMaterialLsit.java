@@ -444,6 +444,7 @@ public class SingleMaterialLsit {
 
     public List<Coffee> getCoffeeList() {
 
+        coffeeList.clear();
         setCoffeeList();
 
         return coffeeList;

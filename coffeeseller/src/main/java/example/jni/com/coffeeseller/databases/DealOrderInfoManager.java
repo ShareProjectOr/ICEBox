@@ -91,12 +91,6 @@ public class DealOrderInfoManager {
             Object[] arrayOfObject = new Object[4];
             MyLog.d(TAG, "isPayed=" + bean.isPayed());
 
-            arrayOfObject[0] = bean.isPayed() ? 1 : 0;
-            arrayOfObject[1] = bean.isMakeSuccess() ? 1 : 0;
-            arrayOfObject[2] = bean.isReportSuccess() ? 1 : 0;
-            arrayOfObject[3] = bean.getReportMsg();
-
-
             MyLog.d(TAG, "isMakeSuccess=" + bean.isMakeSuccess());
 
             MyLog.d(TAG, "isReportSuccess=" + bean.isReportSuccess());
@@ -104,11 +98,14 @@ public class DealOrderInfoManager {
 
             MyLog.d(TAG, "getReportMsg=" + bean.getReportMsg());
 
+
             ContentValues contentValues = new ContentValues();
             contentValues.put("payed", bean.isPayed() ? 1 : 0);
             contentValues.put("make_success", bean.isMakeSuccess() ? 1 : 0);
             contentValues.put("is_report_success", bean.isReportSuccess() ? 1 : 0);
             contentValues.put("report_msg", bean.getReportMsg());
+            contentValues.put("taste_redio", bean.getTasteRadio());
+            contentValues.put("temp_format", bean.getRqTempFormat());
             /*localSQLiteDatabase.execSQL("update order_info set payed=" + (bean.isPayed() ? 1 : 0) +
                     ",make_success=" + (bean.isMakeSuccess() ? 1 : 0) +
                     ",is_report_success=" + (bean.isReportSuccess() ? 1 : 0) +
@@ -137,6 +134,7 @@ public class DealOrderInfoManager {
                 mBean.setRqTempFormat(localCursor.getString(localCursor.getColumnIndex("temp_format")));
                 mBean.setTasteRadio(localCursor.getString(localCursor.getColumnIndex("taste_redio")));
                 mBean.setPrice(localCursor.getString(localCursor.getColumnIndex("price")));
+                mBean.setPayTime(localCursor.getString(localCursor.getColumnIndex("pay_time")));
                 mBean.setCustomerId(localCursor.getString(localCursor.getColumnIndex("customer_id")));
                 mBean.setFormulaID(localCursor.getInt(localCursor.getColumnIndex("formula_id")));
 

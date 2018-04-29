@@ -7,5 +7,9 @@ import example.jni.com.coffeeseller.MachineConfig.DealRecorder;
  */
 
 public interface MkCoffeeListenner {
-    void getMkResult(DealRecorder dealRecorder, boolean makeSuccess);
+    /*
+    * success :是否制作成功
+    * isCalculateMaterial：是否需要更新原料库
+    * */
+    void getMkResult(DealRecorder dealRecorder, boolean success, boolean isCalculateMaterial);
 }

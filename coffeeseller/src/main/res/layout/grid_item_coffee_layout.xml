@@ -87,15 +87,16 @@
             android:visibility="gone" />
 
         <LinearLayout
+            android:id="@+id/sellOver"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_alignBottom="@id/coffeeLayout"
             android:layout_alignTop="@id/coffeeLayout"
-            android:background="@android:color/transparent"
+            android:alpha="0.4"
+            android:background="@drawable/shape_is_over"
             android:visibility="gone">
 
             <ImageView
-                android:id="@+id/sellOver"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_gravity="center"

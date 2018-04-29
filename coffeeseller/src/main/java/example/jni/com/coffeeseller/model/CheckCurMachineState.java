@@ -31,7 +31,11 @@ public class CheckCurMachineState {
     }
 
     public boolean isCanMaking() {
+
+        MyLog.d(TAG, "isCanMaking");
+
         mBuffer.setLength(0);
+        mCoffMsger = CoffMsger.getInstance();
         MachineState machineState = mCoffMsger.getLastMachineState();
 
         if (!checkMaterial(machineState)) {
@@ -82,6 +86,9 @@ public class CheckCurMachineState {
     //检查其他状态,原料状态
     private boolean checkMaterial(MachineState machineState) {
         if (machineState == null) {
+            mBuffer.append("\n");
+            mBuffer.append("机器状态获取失败！");
+            MyLog.d(TAG, "machineState= " + machineState);
             return false;
         }
 
@@ -101,7 +108,12 @@ public class CheckCurMachineState {
             mBuffer.append("锅炉压力大于1500");
 
         }
-        if (!machineState.isBeanEnough()) {
+   /*     if (!machineState.isWaterEnough()) {
+            isCheckCanMake = false;
+            mBuffer.append("\n");
+            mBuffer.append("水量不足");
+        }*/
+       /* if (!machineState.isBeanEnough()) {
 
             isCheckCanMake = false;
             mBuffer.append("\n");
@@ -114,12 +126,7 @@ public class CheckCurMachineState {
             mBuffer.append("\n");
             mBuffer.append("污水仓已满");
 
-        }
-        if (!machineState.isWaterEnough()) {
-            isCheckCanMake = false;
-            mBuffer.append("\n");
-            mBuffer.append("水量不足");
-        }
+        }*/
         if (machineState.isLittleDoorOpen()) {
             Log.d(TAG, "前门未关");
             isCheckCanMake = false;

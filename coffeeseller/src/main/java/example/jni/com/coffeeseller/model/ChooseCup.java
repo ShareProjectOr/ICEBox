@@ -82,11 +82,12 @@ public class ChooseCup implements View.OnClickListener, MsgTransListener {
             mViewHolder.mErrTip.setVisibility(View.GONE);
         } else {
             MyLog.d(TAG, "machine is has error ");
-            mViewHolder.mContentLayout.setVisibility(View.GONE);
             mViewHolder.mErrTip.setVisibility(View.VISIBLE);
+            mViewHolder.mContentLayout.setVisibility(View.GONE);
+            MyLog.d(TAG,CheckCurMachineState.getInstance().getStateTip());
             mViewHolder.mErrTip.setText(CheckCurMachineState.getInstance().getStateTip());
         }
-//        mViewHolder.mContentLayout.setVisibility(View.VISIBLE);
+     //   mViewHolder.mContentLayout.setVisibility(View.VISIBLE);
 
 
         initData();
@@ -284,6 +285,7 @@ public class ChooseCup implements View.OnClickListener, MsgTransListener {
 
             mDealRecorder.setPayed(true);
             mDealRecorder.setPayTime(msg.getPayTime());
+            MyLog.d(TAG, "msg.getPayTime()= " + mDealRecorder.getPayTime());
 
             if (mChooseCupListener != null) {
                 stopTaskCheckPay();
@@ -310,11 +312,21 @@ public class ChooseCup implements View.OnClickListener, MsgTransListener {
                 button.setSelected(false);
             } else {
                 button.setSelected(true);
-                int useMaterial = (step.getTastes().get(i).getAmount() / 100) * containerConfig.getMaterial_time();
-                containerConfig.setMaterial_time(useMaterial);
-                mCoffeeFomat.getContainerConfigs().set(index, containerConfig);
 
-                mCoffeeFomat.getTasteNameRatio().add(index, step.getTastes().get(i).getRemark() + "-" + step.getTastes().get(i).getAmount());
+                double materialTime = new BigDecimal((float) step.getTastes().get(i).getAmount() / 100)
+                        .setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
+                int useMaterial = (int) (materialTime * containerConfig.getMaterial_time());
+
+                MyLog.d(TAG, "amount= " + step.getTastes().get(i).getAmount() + "getMaterial_time= " + useMaterial + " ----i= " + i);
+
+                containerConfig.setMaterial_time(useMaterial);
+                MyLog.d(TAG, "containerConfig.setMaterial_time= " + containerConfig.getMaterial_time());
+
+                mCoffeeFomat.getContainerConfigs().add(index, containerConfig);
+
+                MyLog.d(TAG, "containerConfig.setMaterial_time= " + mCoffeeFomat.getContainerConfigs().get(index).getMaterial_time());
+
+                mCoffeeFomat.getTasteNameRatio().add(step.getTastes().get(i).getRemark() + "-" + step.getTastes().get(i).getAmount());
 
             }
         }
@@ -377,10 +389,12 @@ public class ChooseCup implements View.OnClickListener, MsgTransListener {
             case R.id.coffeeCold:
                 mViewHolder.mCoffeeCold.setSelected(true);
                 mViewHolder.mCoffeeHot.setSelected(false);
+                mCoffeeFomat.setWaterType(WaterType.COLD_WATER);
                 break;
             case R.id.coffeeHot:
                 mViewHolder.mCoffeeCold.setSelected(false);
                 mViewHolder.mCoffeeHot.setSelected(true);
+                mCoffeeFomat.setWaterType(WaterType.HOT_WATER);
                 break;
             case R.id.close:
 
@@ -481,6 +495,7 @@ public class ChooseCup implements View.OnClickListener, MsgTransListener {
                 Taste taste = tastes.get(i);
                 View childView = LayoutInflater.from(mContext).inflate(R.layout.radio_btn, null);
                 RadioButton radioButton = (RadioButton) childView.findViewById(R.id.tasteChild);
+                radioButton.setId(Integer.MAX_VALUE - i);
                 radioButton.setText(taste.getRemark());
                 group.addView(childView);
             }
@@ -519,7 +534,8 @@ public class ChooseCup implements View.OnClickListener, MsgTransListener {
                 RadioButton button = (RadioButton) group.getChildAt(i);
                 if (stockInt < useMaterial) {
                     button.setEnabled(false);
-                    button.setAlpha(0.8f);
+                    button.setAlpha(0.3f);
+                    button.setClickable(false);
                 }
            /* else {
                 group.check(button.getId());

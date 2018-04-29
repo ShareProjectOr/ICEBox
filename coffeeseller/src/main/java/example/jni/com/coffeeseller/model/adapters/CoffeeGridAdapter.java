@@ -12,11 +12,14 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+
 import java.util.ArrayList;
 import java.util.List;
 
 import example.jni.com.coffeeseller.R;
 import example.jni.com.coffeeseller.bean.Coffee;
+import example.jni.com.coffeeseller.utils.CornersTransmation;
 import example.jni.com.coffeeseller.utils.ImageUtil;
 
 /**
@@ -74,28 +77,30 @@ public class CoffeeGridAdapter extends BaseAdapter {
             viewHolder.coffeeName.setText(coffee.name);
             viewHolder.coffeePrice.setText(coffee.price);
 
-          /*  Glide.with(context)
-                    .load("http://ww4.sinaimg.cn/large/610dc034gw1f96kp6faayj20u00jywg9.jpg")
+            Glide.with(context)
+                    .load(coffee.cacheUrl)
                     .transform(new CornersTransmation(context, 10))
                     .placeholder(R.mipmap.ic_launcher)
-                    .error(R.mipmap.ic_launcher).into(viewHolder.coffeeImage);*/
-
+                    .error(R.mipmap.ic_launcher).into(viewHolder.coffeeImage);
+/*
             Bitmap bitmap = BitmapFactory.decodeResource(context.getResources(), images[position]);
             bitmap = ImageUtil.getCornerBitmap(bitmap, 10);
             if (bitmap == null) {
                 viewHolder.coffeeImage.setImageResource(R.mipmap.no_coffee);
             } else {
                 viewHolder.coffeeImage.setImageBitmap(bitmap);
-            }
+            }*/
 
             if (coffee.isOver) {
                 viewHolder.overLayout.setVisibility(View.VISIBLE);
                 viewHolder.sellOver.setVisibility(View.VISIBLE);
                 convertView.setEnabled(false);
+                convertView.setClickable(false);
             } else {
                 viewHolder.overLayout.setVisibility(View.GONE);
                 viewHolder.sellOver.setVisibility(View.GONE);
                 convertView.setEnabled(true);
+                convertView.setClickable(true);
             }
         }
         return convertView;
@@ -106,14 +111,14 @@ public class CoffeeGridAdapter extends BaseAdapter {
         public ImageView coffeeImage;
         public TextView coffeeName;
         public TextView coffeePrice;
-        public ImageView sellOver;
+        public LinearLayout sellOver;
 
         public ViewHolder(View view) {
             overLayout = (LinearLayout) view.findViewById(R.id.overLayout);
             coffeeImage = (ImageView) view.findViewById(R.id.coffeeImage);
             coffeeName = (TextView) view.findViewById(R.id.coffeeName);
             coffeePrice = (TextView) view.findViewById(R.id.coffeePrice);
-            sellOver = (ImageView) view.findViewById(R.id.sellOver);
+            sellOver = (LinearLayout) view.findViewById(R.id.sellOver);
         }
     }
 }

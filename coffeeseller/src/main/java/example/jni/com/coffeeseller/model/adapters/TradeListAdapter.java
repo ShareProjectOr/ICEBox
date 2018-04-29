@@ -55,20 +55,20 @@ public class TradeListAdapter extends BaseAdapter {
         ViewHolder viewHolder;
         if (convertView == null) {
             viewHolder = new ViewHolder();
-
+            convertView = viewHolder.view;
             convertView.setTag(viewHolder);
         } else {
             viewHolder = (ViewHolder) convertView.getTag();
         }
         DealRecorder dealRecorder = DealRecorders.get(position);
         if (dealRecorder != null) {
-            viewHolder.mRqCup.setText(dealRecorder.getRqcup());
+            viewHolder.mRqCup.setText(dealRecorder.getRqcup()+"");
             viewHolder.mRqTempFormat.setText(dealRecorder.getRqTempFormat());
             viewHolder.mOrder.setText(dealRecorder.getOrder());
             viewHolder.mPrice.setText(dealRecorder.getPrice());
             viewHolder.mTaste.setText(dealRecorder.getTasteRadio());
             viewHolder.mPayTime.setText(dealRecorder.getPayTime());
-            viewHolder.mFormulaID.setText(dealRecorder.getFormulaID());
+            viewHolder.mFormulaID.setText(dealRecorder.getFormulaID()+"");
             viewHolder.mPayed.setText(dealRecorder.isPayed() + "");
             viewHolder.mMakeSuccess.setText(dealRecorder.isMakeSuccess() + "");
             viewHolder.mIsReportSuccess.setText(dealRecorder.isReportSuccess() + "");

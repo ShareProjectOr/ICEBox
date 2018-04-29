@@ -2,37 +2,30 @@ package example.jni.com.coffeeseller.views.customviews;
 
 import android.app.Dialog;
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.os.Handler;
 import android.support.annotation.StyleRes;
 import android.text.TextUtils;
-import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.LinearLayout;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import cof.ac.inter.CoffMsger;
 import example.jni.com.coffeeseller.MachineConfig.DealRecorder;
 import example.jni.com.coffeeseller.R;
 import example.jni.com.coffeeseller.bean.Coffee;
 import example.jni.com.coffeeseller.bean.CoffeeFomat;
-import example.jni.com.coffeeseller.bean.Material;
 import example.jni.com.coffeeseller.bean.ReportBunker;
 import example.jni.com.coffeeseller.bean.Step;
 import example.jni.com.coffeeseller.contentprovider.Constance;
 import example.jni.com.coffeeseller.contentprovider.ConstanceMethod;
 import example.jni.com.coffeeseller.contentprovider.MaterialSql;
 import example.jni.com.coffeeseller.contentprovider.SharedPreferencesManager;
-import example.jni.com.coffeeseller.contentprovider.SingleMaterialLsit;
 import example.jni.com.coffeeseller.databases.DealOrderInfoManager;
 import example.jni.com.coffeeseller.httputils.JsonUtil;
 import example.jni.com.coffeeseller.httputils.OkHttpUtil;
@@ -40,12 +33,9 @@ import example.jni.com.coffeeseller.model.ChooseCup;
 import example.jni.com.coffeeseller.model.MkCoffee;
 import example.jni.com.coffeeseller.model.listeners.ChooseCupListenner;
 import example.jni.com.coffeeseller.model.listeners.MkCoffeeListenner;
-import example.jni.com.coffeeseller.parse.PayResult;
 import example.jni.com.coffeeseller.utils.MyLog;
 import example.jni.com.coffeeseller.utils.ScreenUtil;
 import example.jni.com.coffeeseller.views.fragments.BuyFragment;
-
-import static cof.ac.inter.ContainerType.BEAN_CONTAINER;
 
 /**
  * Created by WH on 2018/3/22.
@@ -272,15 +262,20 @@ public class BuyDialog extends Dialog implements ChooseCupListenner, MkCoffeeLis
     }
 
     @Override
-    public void getMkResult(final DealRecorder dealRecorder, boolean makeSuccess) {
+    public void getMkResult(final DealRecorder dealRecorder, boolean success, final boolean isCalculateMaterial) {
 
-        final DealRecorder recorder=dealRecorder;
+        final DealRecorder recorder = dealRecorder;
         new Thread(new Runnable() {
             @Override
             public void run() {
-                //更新数据库原料表
+                List<ReportBunker> bunkers = new ArrayList<ReportBunker>();
+                if (isCalculateMaterial) {
 
-                List<ReportBunker> bunkers = updateMaterial(recorder);
+                    MyLog.d(TAG, "isCalculateMaterial= " + isCalculateMaterial);
+
+                    //更新数据库原料表
+                    bunkers = updateMaterial(recorder);
+                }
 
                 //上报交易结果给服务器
 
@@ -291,7 +286,6 @@ public class BuyDialog extends Dialog implements ChooseCupListenner, MkCoffeeLis
                 DealOrderInfoManager.getInstance(context).update(newDealRecorder);
             }
         }).start();
-
 
 
         //更新BuyFragment ui

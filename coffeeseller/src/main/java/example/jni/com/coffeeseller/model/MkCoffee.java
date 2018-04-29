@@ -1,12 +1,7 @@
 package example.jni.com.coffeeseller.model;
 
 import android.content.Context;
-import android.content.DialogInterface;
-import android.graphics.Color;
 import android.os.AsyncTask;
-import android.os.Handler;
-import android.os.Looper;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
@@ -14,12 +9,9 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import java.util.List;
-
 import cof.ac.inter.CoffMsger;
 import cof.ac.inter.ContainerConfig;
 import cof.ac.inter.MachineState;
-import cof.ac.inter.MajorState;
 import cof.ac.inter.Result;
 import cof.ac.inter.StateEnum;
 import example.jni.com.coffeeseller.MachineConfig.CoffeeMakeState;
@@ -31,7 +23,6 @@ import example.jni.com.coffeeseller.databases.DealOrderInfoManager;
 import example.jni.com.coffeeseller.model.listeners.MkCoffeeListenner;
 import example.jni.com.coffeeseller.utils.MyLog;
 import example.jni.com.coffeeseller.utils.Waiter;
-import example.jni.com.coffeeseller.views.customviews.BuyDialog;
 
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
@@ -60,6 +51,7 @@ public class MkCoffee {
 
     private boolean isStartMaking = false;
     private boolean makeSuccess = false;
+    private boolean isCalculateMaterial = true;
 
     private long lastStateTime;
     private long totalMakingTime;
@@ -115,12 +107,14 @@ public class MkCoffee {
                 tasteNameAndRadio += (coffeeFomat.getTasteNameRatio().get(i) + ",");
             }
             dealRecorder.setTasteRadio(tasteNameAndRadio);
+            dealRecorder.setRqTempFormat(coffeeFomat.getWaterType() + "");
+            DealOrderInfoManager.getInstance(context).update(dealRecorder);
         }
         coffMsger = CoffMsger.getInstance();
         buffer = new StringBuffer();
 
-        DealOrderInfoManager.getInstance(context).update(dealRecorder);
 
+//        updateProgressAnim(CONTAIN_MAKING_PROGRESS_TIME);
         startMkCoffee();
     }
 
@@ -134,6 +128,7 @@ public class MkCoffee {
         }
         coffeeMakeStateRecorder.init();
         if (coffeeFomat != null && coffeeFomat.getContainerConfigs().size() >= 0) {
+            buffer.setLength(0);
             mkCoffee();
         } else {
 
@@ -144,7 +139,7 @@ public class MkCoffee {
 
             if (mkCoffeeListenner != null) {
                 dealRecorder.setMakeSuccess(false);
-                mkCoffeeListenner.getMkResult(dealRecorder, false);
+                mkCoffeeListenner.getMkResult(dealRecorder, false, isCalculateMaterial);
             }
 
 
@@ -191,7 +186,6 @@ public class MkCoffee {
                 totalMakingTime = System.currentTimeMillis();
                 while (true) {
 
-
                     machineState = coffMsger.getLastMachineState();
 
                     if (isMkTimeOut()) {
@@ -202,7 +196,15 @@ public class MkCoffee {
 
                             if (mkCoffeeListenner != null) {
                                 dealRecorder.setMakeSuccess(false);
-                                mkCoffeeListenner.getMkResult(dealRecorder, false);
+                                mkCoffeeListenner.getMkResult(dealRecorder, false, isCalculateMaterial);
+                            }
+                        } else {
+                            if (coffeeMakeStateRecorder.state == CoffeeMakeState.COFFEE_DOWN_CUP) {
+                                if (mkCoffeeListenner != null) {
+                                    dealRecorder.setMakeSuccess(false);
+                                    isCalculateMaterial = false;
+                                    mkCoffeeListenner.getMkResult(dealRecorder, false, isCalculateMaterial);
+                                }
                             }
                         }
 
@@ -214,6 +216,8 @@ public class MkCoffee {
                         if (machineState.getMajorState().getCurStateEnum() == StateEnum.HAS_ERR) {
 
                             coffeeMakeStateRecorder.state = CoffeeMakeState.COFFEEMAKING_FAILED;
+                            isCalculateMaterial = false;
+
                             buffer.append("/n");
                             buffer.append("制作过程中接收到0a");
                         }
@@ -232,6 +236,7 @@ public class MkCoffee {
                         } else {
 
                             coffeeMakeStateRecorder.state = CoffeeMakeState.COFFEEMAKING_FAILED;
+                            isCalculateMaterial = false;
                             buffer.append("/n");
                             buffer.append("发送咖啡制作指令，返回" + result.getErrDes());
                         }
@@ -275,7 +280,7 @@ public class MkCoffee {
 
                         if (mkCoffeeListenner != null) {
                             dealRecorder.setMakeSuccess(true);
-                            mkCoffeeListenner.getMkResult(dealRecorder, true);
+                            mkCoffeeListenner.getMkResult(dealRecorder, true, isCalculateMaterial);
                         }
 
                         //disDialog(false);
@@ -291,7 +296,7 @@ public class MkCoffee {
 
                         if (mkCoffeeListenner != null) {
                             dealRecorder.setMakeSuccess(false);
-                            mkCoffeeListenner.getMkResult(dealRecorder, false);
+                            mkCoffeeListenner.getMkResult(dealRecorder, false, isCalculateMaterial);
                         }
 
 
@@ -317,11 +322,12 @@ public class MkCoffee {
         } else if (machineState.getMajorState().getCurStateEnum() == StateEnum.FINISH) {
 
             coffeeMakeStateRecorder.state = CoffeeMakeState.COFFEEFINISHED_CUPNOTAKEN;
-        } else if (machineState.getMajorState().getCurStateEnum() == StateEnum.HAS_ERR) {
+        }
+        /*else if (machineState.getMajorState().getCurStateEnum() == StateEnum.HAS_ERR) {
 
             coffeeMakeStateRecorder.state = CoffeeMakeState.COFFEEMAKING_FAILED;
 
-        }
+        }*/
     }
 
     private boolean dealMakingState(MachineState machineState) {
@@ -366,7 +372,7 @@ public class MkCoffee {
             if (isTimeOut()) {
 
                 coffeeMakeStateRecorder.state = CoffeeMakeState.COFFEEMAKING_FAILED;
-
+                isCalculateMaterial = false;
             }
             return false;
         }
@@ -377,6 +383,8 @@ public class MkCoffee {
         long curTime = System.currentTimeMillis();
         if (curTime - lastStateTime > MAX_STATE_TIME) {
 
+            buffer.append("\n");
+            buffer.append("5s内接收的状态没有更新");
             return true;
         }
         return false;
