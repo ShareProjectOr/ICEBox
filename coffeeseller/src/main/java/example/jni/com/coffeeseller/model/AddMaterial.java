@@ -12,6 +12,8 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.math.BigDecimal;
+
 import example.jni.com.coffeeseller.R;
 import example.jni.com.coffeeseller.contentprovider.MaterialSql;
 import example.jni.com.coffeeseller.contentprovider.SharedPreferencesManager;
@@ -42,10 +44,13 @@ public class AddMaterial implements IAddMaterial {
         mCancel = (Button) view.findViewById(R.id.cancel);
         mSure = (Button) view.findViewById(R.id.sure);
         mAdd_bunker_name.setText(sql.getBunkersNameByID(bunkersID));
-        String beforeAddStorktext = sql.getStorkByBunkersID(bunkersID);
-        mBefore_add_stock.setText("补料前余量:" + beforeAddStorktext);
 
-        final int beforeAddStork = Integer.parseInt(beforeAddStorktext);
+        String beforeAddStorktext = sql.getStorkByBunkersID(bunkersID);
+        int beforeAddStork = Integer.parseInt(beforeAddStorktext);
+        final long dobeforeAddStork = new BigDecimal( ((float)beforeAddStork / 1000)).setScale(2, BigDecimal.ROUND_HALF_UP).longValue();
+
+        mBefore_add_stock.setText("补料前余量:" + dobeforeAddStork + "g");
+
 
         final String[] befores = {mAdd_account.getText().toString()};
         mAdd_account.addTextChangedListener(new TextWatcher() {
@@ -62,54 +67,23 @@ public class AddMaterial implements IAddMaterial {
             @Override
             public void afterTextChanged(Editable s) {
                 String lasts = s.toString();
-                Long addAccount;
+                int addAccount;
                 if (s.length() == 0) {
-                    addAccount = Long.valueOf(0);
+                    addAccount = 0;
                 } else {
-                    addAccount = Long.parseLong(s.toString());
+                    addAccount = Integer.parseInt(s.toString());
                 }
 
                 if (!lasts.equals(befores[0])) {
-                    mLast_add_stock.setText(addAccount + beforeAddStork + "");
+                    mLast_add_stock.setText(addAccount + dobeforeAddStork + "");
                     befores[0] = lasts;
                 }
-                Log.e(TAG, "now add stock is " + s.toString() + " and beforeAddStock is " + beforeAddStork + " and lastAddstock is " + (addAccount + beforeAddStork));
+                Log.e(TAG, "now add stock is " + s.toString() + " and beforeAddStock is " + dobeforeAddStork + " and lastAddstock is " + (addAccount + dobeforeAddStork));
 
 
             }
         });
 
-        final String[] befores2 = {mLast_add_stock.getText().toString()};
-        mLast_add_stock.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                Integer lastAddStork;
-                if (s.length() == 0) {
-                    lastAddStork = 0;
-                } else {
-
-                    lastAddStork = Integer.valueOf(s.toString());
-                }
-            /*    String lasts = s.toString();
-                if (!lasts.equals(befores2[0])) {
-                    mAdd_account.setText(Math.abs(lastAddStork - beforeAddStork) + "");
-                    befores2[0] = lasts;
-                }
-            */
-
-
-            }
-        });
         final AlertDialog alertDialog = builder.create();
         alertDialog.show();
         mCancel.setOnClickListener(new View.OnClickListener() {
@@ -127,7 +101,7 @@ public class AddMaterial implements IAddMaterial {
                     return;
                 }
 
-                if (sql.updateContact(bunkersID, "", "", "", "", mLast_add_stock.getText().toString(), "", "", SecondToDate.getDateToString(System.currentTimeMillis()))) {
+                if (sql.updateContact(bunkersID, "", "", "", "", Long.parseLong(mLast_add_stock.getText().toString()) * 1000 + "", "", "", SecondToDate.getDateToString(System.currentTimeMillis()))) {
                     onAddMaterialCallBackListener.addEnd(sql);
                     Toast.makeText(context, "补料成功", Toast.LENGTH_LONG).show();
                 } else {

@@ -57,6 +57,7 @@
             android:id="@+id/add_account"
             android:layout_width="400dp"
             android:layout_height="wrap_content"
+            android:hint="单位(g)"
             android:inputType="number" />
     </LinearLayout>
 
@@ -77,13 +78,26 @@
             android:textColor="@color/black"
             android:textSize="@dimen/text_size_one" />
 
-        <TextView
-            android:id="@+id/last_add_stock"
-            android:layout_width="400dp"
-            android:textColor="@color/black"
-            android:textSize="@dimen/text_size_one"
+        <LinearLayout
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:inputType="number" />
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/last_add_stock"
+                android:layout_width="400dp"
+                android:layout_height="wrap_content"
+
+                android:textColor="@color/black"
+                android:textSize="@dimen/text_size_one" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="g"
+                android:textColor="@color/black"
+                android:textSize="@dimen/text_size_one" />
+        </LinearLayout>
     </LinearLayout>
 
     <LinearLayout

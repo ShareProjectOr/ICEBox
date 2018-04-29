@@ -204,9 +204,9 @@ public class MachineCheck implements IMachineCheck {
             Result result = mCoffmsger.Debug(DebugAction.RESET, 0, 0);//复位机器
             Waiter.doWait(700);
             if (result.getCode() == Result.SUCCESS) {
-                       synchronized (mCoffmsger){
-                           mCoffmsger.startCheckState();
-                       }
+                synchronized (mCoffmsger) {
+                    mCoffmsger.startCheckState();
+                }
 
                 MachineInitState.CHECK_OPENMAINCTRL = MachineInitState.NORMAL;
                 mOnMachineCheckCallBackListener.OpenMainCrilSuccess();

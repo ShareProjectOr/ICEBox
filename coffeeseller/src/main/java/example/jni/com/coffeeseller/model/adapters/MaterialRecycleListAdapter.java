@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -62,7 +63,10 @@ public class MaterialRecycleListAdapter extends RecyclerView.Adapter<RecyclerVie
         mHolder.bankersName.setText(list.get(position).getBunkersName());
         mHolder.Material.setText(list.get(position).getMaterialName());
         mHolder.AddTime.setText(list.get(position).getLastLoadingTime());
-        mHolder.CountAndLess.setText(list.get(position).getMaterialStock() + "mg");
+        int stockmg = Integer.parseInt(list.get(position).getMaterialStock());
+
+        double realstock = new BigDecimal( ((float)stockmg / 1000)).setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
+        mHolder.CountAndLess.setText(realstock + "g");
         if (!list.get(position).getMaterialName().equals("未启用")) {
             mHolder.bankersName.setTextColor(ContextCompat.getColor(mContext, R.color.black));//已经启用了的料仓才能重新绑定原料
             mHolder.Opration.setText("补料");
