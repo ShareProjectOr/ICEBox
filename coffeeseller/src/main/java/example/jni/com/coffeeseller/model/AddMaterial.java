@@ -62,11 +62,11 @@ public class AddMaterial implements IAddMaterial {
             @Override
             public void afterTextChanged(Editable s) {
                 String lasts = s.toString();
-                Integer addAccount;
+                Long addAccount;
                 if (s.length() == 0) {
-                    addAccount = 0;
+                    addAccount = Long.valueOf(0);
                 } else {
-                    addAccount = Integer.parseInt(s.toString());
+                    addAccount = Long.parseLong(s.toString());
                 }
 
                 if (!lasts.equals(befores[0])) {

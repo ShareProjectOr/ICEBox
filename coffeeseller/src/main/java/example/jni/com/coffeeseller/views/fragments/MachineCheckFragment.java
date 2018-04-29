@@ -268,6 +268,9 @@ public class MachineCheckFragment extends BasicFragment implements ICheckMachine
                         protected void onProgressUpdate(Integer... values) {
                             Log.d("changeProgress", values + "");
                             getMaterial.setProgress(values[0]);
+                            if (values[0] == 100) {
+                                homeActivity.replaceFragment(FragmentEnum.MachineCheckFragment, FragmentEnum.ChooseCupNumFragment);
+                            }
                             super.onProgressUpdate(values);
                         }
                     }.execute();

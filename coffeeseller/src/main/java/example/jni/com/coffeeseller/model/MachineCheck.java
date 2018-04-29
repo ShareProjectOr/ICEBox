@@ -55,15 +55,9 @@ public class MachineCheck implements IMachineCheck {
     @Override
     public void MachineCheck(OnMachineCheckCallBackListener onMachineCheckCallBackListener) {
         this.mOnMachineCheckCallBackListener = onMachineCheckCallBackListener;
-      /*  Thread mcheckThread = new Thread(new checkRunnnable());
-        mcheckThread.start();*/
-        checkMachineCode();
-        Waiter.doWait(2000);
-      /*  checkMainCtrl();
-        Waiter.doWait(2000);*/
-        getFormula();
-        Waiter.doWait(2000);
-        subMQTT();
+        Thread mcheckThread = new Thread(new checkRunnnable());
+        mcheckThread.start();
+
     }
 
     private void getFormula() {
@@ -189,6 +183,11 @@ public class MachineCheck implements IMachineCheck {
                 mContext.startService(intent);
                 if (MachineConfig.getTcpIP().isEmpty()) {
                     mOnMachineCheckCallBackListener.MQTTSubcribeFailed();
+                    if (MachineInitState.CHECK_MACHINECODE == MachineInitState.NORMAL && MachineInitState.SUB_MQTT_STATE == MachineInitState.NORMAL && MachineInitState.GET_FORMULA == MachineInitState.NORMAL) {
+                        mOnMachineCheckCallBackListener.MachineCheckEnd(true);
+                    } else {
+                        mOnMachineCheckCallBackListener.MachineCheckEnd(false);
+                    }
                 } else {
                     TaskService.getInstance().start(mOnMachineCheckCallBackListener);
                 }
@@ -205,9 +204,12 @@ public class MachineCheck implements IMachineCheck {
             Result result = mCoffmsger.Debug(DebugAction.RESET, 0, 0);//复位机器
             Waiter.doWait(700);
             if (result.getCode() == Result.SUCCESS) {
-                mOnMachineCheckCallBackListener.OpenMainCrilSuccess();
-                mCoffmsger.startCheckState();
+                       synchronized (mCoffmsger){
+                           mCoffmsger.startCheckState();
+                       }
+
                 MachineInitState.CHECK_OPENMAINCTRL = MachineInitState.NORMAL;
+                mOnMachineCheckCallBackListener.OpenMainCrilSuccess();
             } else {
                 mOnMachineCheckCallBackListener.OpenMainCrilFailed("主控板检测出错,错误:" + result.getErrDes());
             }
@@ -251,6 +253,25 @@ public class MachineCheck implements IMachineCheck {
             }
         }
 
+    }
+
+    private class checkRunnnable implements Runnable {
+
+        @Override
+        public void run() {
+            checkMachineCode();
+            Waiter.doWait(2000);
+            checkMainCtrl();
+            Waiter.doWait(2000);
+            getFormula();
+           /* Waiter.doWait(2000);
+            subMQTT();*/
+            if (MachineInitState.CHECK_MACHINECODE == MachineInitState.NORMAL && MachineInitState.GET_FORMULA == MachineInitState.NORMAL) {
+                mOnMachineCheckCallBackListener.MachineCheckEnd(true);
+            } else {
+                mOnMachineCheckCallBackListener.MachineCheckEnd(false);
+            }
+        }
     }
 
 /*    public void checkNetWorkState() {
