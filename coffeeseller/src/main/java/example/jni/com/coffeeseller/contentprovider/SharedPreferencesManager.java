@@ -3,6 +3,8 @@ package example.jni.com.coffeeseller.contentprovider;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+import example.jni.com.coffeeseller.utils.SecondToDate;
+
 /**
  * Created by Administrator on 2018/4/12.
  */
@@ -79,9 +81,11 @@ public class SharedPreferencesManager {
         editor.putString("LastAppUpdateTime", date);
         editor.apply();
     }
- public String getLastAppUpdateTime(){
-     return   sharedPreferences.getString("LastAppUpdateTime", "1.0.0");
- }
+
+    public String getLastAppUpdateTime() {
+        return sharedPreferences.getString("LastAppUpdateTime", SecondToDate.getDateToString(System.currentTimeMillis()));
+    }
+
     public void setCupNum(int CupNum) {
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putInt("CupNum", CupNum);

@@ -3,6 +3,7 @@ package example.jni.com.coffeeseller.views.fragments;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,6 +17,7 @@ import java.util.List;
 
 import example.jni.com.coffeeseller.R;
 import example.jni.com.coffeeseller.bean.Coffee;
+import example.jni.com.coffeeseller.contentprovider.MaterialSql;
 import example.jni.com.coffeeseller.contentprovider.SingleMaterialLsit;
 import example.jni.com.coffeeseller.databases.DataBaseHelper;
 import example.jni.com.coffeeseller.factory.FragmentEnum;
@@ -62,6 +64,7 @@ public class BuyFragment extends BasicFragment implements GridViewItemListener, 
     private void init() {
         initViews();
         initDatas();
+        Log.e(TAG, "37 剩余量: " + new MaterialSql(getActivity()).getStorkByMaterialID("37"));
     }
 
     private void initViews() {

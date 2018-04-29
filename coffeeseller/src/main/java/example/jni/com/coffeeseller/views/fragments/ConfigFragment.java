@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -18,8 +19,13 @@ import android.widget.Toast;
 
 import java.util.List;
 
+import cof.ac.inter.CoffMsger;
+import cof.ac.inter.MachineState;
+import cof.ac.inter.StateListener;
+import cof.ac.util.DataSwitcher;
 import example.jni.com.coffeeseller.R;
 import example.jni.com.coffeeseller.bean.CommitMaterialObject;
+import example.jni.com.coffeeseller.bean.MachineConfig;
 import example.jni.com.coffeeseller.bean.Material;
 import example.jni.com.coffeeseller.contentprovider.MaterialSql;
 import example.jni.com.coffeeseller.contentprovider.SharedPreferencesManager;
@@ -27,10 +33,12 @@ import example.jni.com.coffeeseller.factory.FragmentEnum;
 import example.jni.com.coffeeseller.factory.FragmentFactory;
 import example.jni.com.coffeeseller.httputils.UpdateAppManager;
 import example.jni.com.coffeeseller.model.adapters.MaterialRecycleListAdapter;
+import example.jni.com.coffeeseller.presenter.AddCupPresenter;
 import example.jni.com.coffeeseller.presenter.AddMaterialPresenter;
 import example.jni.com.coffeeseller.presenter.CheckVersionPresenter;
 import example.jni.com.coffeeseller.presenter.CommitMaterialPresenter;
 import example.jni.com.coffeeseller.views.activities.HomeActivity;
+import example.jni.com.coffeeseller.views.viewinterface.IAddCupView;
 import example.jni.com.coffeeseller.views.viewinterface.IAddMaterialView;
 import example.jni.com.coffeeseller.views.viewinterface.ICheckVersionView;
 import example.jni.com.coffeeseller.views.viewinterface.ICommitMaterialView;
@@ -39,7 +47,7 @@ import example.jni.com.coffeeseller.views.viewinterface.ICommitMaterialView;
  * Created by Administrator on 2018/4/12.
  */
 
-public class ConfigFragment extends BasicFragment implements IAddMaterialView, ICommitMaterialView, ICheckVersionView {
+public class ConfigFragment extends BasicFragment implements IAddMaterialView, ICommitMaterialView, ICheckVersionView, StateListener, IAddCupView {
     private View mView;
     private Button toDebug, materialCommit, checkVersion;
     private HomeActivity homeActivity;
@@ -55,6 +63,9 @@ public class ConfigFragment extends BasicFragment implements IAddMaterialView, I
     private UpdateAppManager updateAppManager;
     private CheckVersionPresenter checkVersionPresenter;
     private TextView errCode, runState, netWorkState, CupNum, cupShelfState, boilerTemperature, boilerPressure, doorState, cupDoorState, driverVersion, updateTimeAndVersion;
+    private CoffMsger msger;
+    private Handler mHandler = new Handler();
+    private AddCupPresenter addCupPresenter;
 
     @Nullable
     @Override
@@ -70,11 +81,33 @@ public class ConfigFragment extends BasicFragment implements IAddMaterialView, I
         waterStock.setText(SharedPreferencesManager.getInstance(getActivity()).getWaterCount() + "ml");
         addCupTime.setText(SharedPreferencesManager.getInstance(getActivity()).getAddCupTime());
         addWaterTime.setText(SharedPreferencesManager.getInstance(getActivity()).getAddWaterTime());
+   /*     if (msger != null) {
+
+            driverVersion.setText("驱动版本:" + msger.getCurState().getVersion());
+            if (msger.getLastMachineState().isWasteContainerFull()) {
+                waterStock.setText("充足");
+            } else {
+                waterStock.setText("不足");
+            }
+        } else {
+
+        }*/
+
+        updateTimeAndVersion.setText("最后更新于 " + SharedPreferencesManager.getInstance(getActivity()).getLastAppUpdateTime() + " 当前版本: " + getVersion());
+
+        CupNum.setText("仓杯余量:" + SharedPreferencesManager.getInstance(getActivity()).getCupNum());
+
 
     }
 
 
     private void initView() {
+
+        msger = CoffMsger.getInstance();
+        if (msger != null) {
+            msger.setStateListener(this);
+        }
+        addCupPresenter = new AddCupPresenter(this);
         errCode = (TextView) mView.findViewById(R.id.errCode);
         runState = (TextView) mView.findViewById(R.id.runState);
         netWorkState = (TextView) mView.findViewById(R.id.netWorkState);
@@ -124,7 +157,7 @@ public class ConfigFragment extends BasicFragment implements IAddMaterialView, I
                 homeActivity.replaceFragment(FragmentEnum.ConfigFragment, FragmentEnum.MachineCheckFragment);
                 break;
             case R.id.add_cup:
-                BunkersID = 8;
+                addCupPresenter.AddCup();
                 break;
             case R.id.add_water:
                 BunkersID = 7;
@@ -211,6 +244,58 @@ public class ConfigFragment extends BasicFragment implements IAddMaterialView, I
             e.printStackTrace();
             return "";
         }
+    }
+
+    @Override
+    public void stateArrived(final MachineState machineState) {
+        if (machineState != null) {
+            mHandler.post(new Runnable() {
+                @Override
+                public void run() {
+
+                    switch (machineState.getMajorState().getStateCode()) {
+                        case 0:
+                            errCode.setText("异常状态:无异常");
+                            break;
+                        case 0x0a:
+                            errCode.setText("异常状态:" + DataSwitcher.byte2Hex(machineState.getMajorState().getLowErr_byte()));
+                            break;
+                    }
+                    runState.setText("运行状态:" + DataSwitcher.byte2Hex(machineState.getMajorState().getState_byte()));
+                    netWorkState.setText("网络状态:" + MachineConfig.getNetworkType());
+                    if (machineState.isCupShelfRightPlace()) {
+                        cupShelfState.setText("杯架状态:正常");
+                    } else {
+                        cupShelfState.setText("杯架状态:杯架未初始化");
+                    }
+
+                    boilerTemperature.setText("锅炉温度:" + machineState.getPotTemp());
+                    boilerPressure.setText("锅炉压力:" + machineState.getPotPressure());
+                    if (machineState.isFrontDoorOpen()) {
+                        doorState.setText("大门状态:开启");
+                    } else {
+                        doorState.setText("大门状态:关闭");
+                    }
+
+                    if (machineState.isLittleDoorOpen()) {
+                        doorState.setText("取杯门状态:开启");
+                    } else {
+                        doorState.setText("取杯门状态:关闭");
+                    }
+                }
+            });
+        }
+    }
+
+    @Override
+    public Context getThis() {
+        return getActivity();
+    }
+
+    @Override
+    public void showResultAndUpdateView() {
+        Toast.makeText(getActivity(), "添加成功", Toast.LENGTH_LONG).show();
+        CupNum.setText(SharedPreferencesManager.getInstance(getActivity()).getCupNum() + "");
     }
 }
 

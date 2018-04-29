@@ -204,10 +204,7 @@ public class MachineCheck implements IMachineCheck {
             Result result = mCoffmsger.Debug(DebugAction.RESET, 0, 0);//复位机器
             Waiter.doWait(700);
             if (result.getCode() == Result.SUCCESS) {
-                synchronized (mCoffmsger) {
-                    mCoffmsger.startCheckState();
-                }
-
+                mCoffmsger.startCheckState();
                 MachineInitState.CHECK_OPENMAINCTRL = MachineInitState.NORMAL;
                 mOnMachineCheckCallBackListener.OpenMainCrilSuccess();
             } else {
@@ -261,16 +258,16 @@ public class MachineCheck implements IMachineCheck {
         public void run() {
             checkMachineCode();
             Waiter.doWait(2000);
-            checkMainCtrl();
-            Waiter.doWait(2000);
+        /*    checkMainCtrl();
+           Waiter.doWait(2000);*/
             getFormula();
-           /* Waiter.doWait(2000);
-            subMQTT();*/
-            if (MachineInitState.CHECK_MACHINECODE == MachineInitState.NORMAL && MachineInitState.GET_FORMULA == MachineInitState.NORMAL) {
+            Waiter.doWait(2000);
+            subMQTT();
+           /* if (MachineInitState.CHECK_MACHINECODE == MachineInitState.NORMAL && MachineInitState.GET_FORMULA == MachineInitState.NORMAL) {
                 mOnMachineCheckCallBackListener.MachineCheckEnd(true);
             } else {
                 mOnMachineCheckCallBackListener.MachineCheckEnd(false);
-            }
+            }*/
         }
     }
 

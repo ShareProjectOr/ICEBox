@@ -85,7 +85,7 @@ public class BindMaterial implements IBindMaterial {
                         final ListPopupWindow window = new ListPopupWindow(context);
                         window.setAdapter(new ArrayAdapter<>(context, android.R.layout.simple_expandable_list_item_1, materialNameList));
                         window.setAnchorView(textView);
-                        window.setHorizontalOffset(textView.getWidth() / 2);
+                        window.setHorizontalOffset(textView.getWidth() /4);
                         window.setModal(true);
                         window.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                             @Override
@@ -114,7 +114,7 @@ public class BindMaterial implements IBindMaterial {
             final ListPopupWindow window = new ListPopupWindow(context);
             window.setAdapter(new ArrayAdapter<>(context, android.R.layout.simple_expandable_list_item_1, materialNameList));
             window.setAnchorView(textView);
-            window.setHorizontalOffset(textView.getWidth());
+            window.setHorizontalOffset(textView.getWidth()/4);
             window.setModal(true);
             window.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override

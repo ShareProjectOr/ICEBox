@@ -366,6 +366,7 @@ public class MaterialSql extends SQLiteOpenHelper {
         String MaterialName = res.getString(res.getColumnIndex(MATERIALS_COLUMN_MATERIALNAME));
         String MaterialUnit = res.getString(res.getColumnIndex(MATERIALS_COLUMN_MATERIALUNIT));
         String MaterialStock = res.getString(res.getColumnIndex(MATERIALS_COLUMN_MATERIALSTOCK));
+        Log.e(TAG, "剩余量:" + MaterialStock);
         String MaterialDropSpeed = res.getString(res.getColumnIndex(MATERIALS_COLUMN_MATERIALDORPSPEED));
         //   String containerID = res.getString(res.getColumnIndex(MATERIALS_COLUMN_CONTAINERID));
         String lastLoadingTime = res.getString(res.getColumnIndex(MATERIALS_COLUMN_ADDMATERIALTIME));

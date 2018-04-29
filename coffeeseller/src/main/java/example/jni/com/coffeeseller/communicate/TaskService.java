@@ -41,6 +41,7 @@ import example.jni.com.coffeeseller.bean.MachineConfig;
 import example.jni.com.coffeeseller.factory.FragmentFactory;
 import example.jni.com.coffeeseller.httputils.JsonUtil;
 import example.jni.com.coffeeseller.httputils.OkHttpUtil;
+import example.jni.com.coffeeseller.listener.MessageReceviedListener;
 import example.jni.com.coffeeseller.model.listeners.MsgTransListener;
 import example.jni.com.coffeeseller.model.listeners.OnMachineCheckCallBackListener;
 import example.jni.com.coffeeseller.parse.PayResult;
@@ -61,9 +62,9 @@ public class TaskService extends Service implements MqttCallback {
     static String TAG = "TaskService";
     static Handler mHandler;
     Timer mTimer = null;
-
+    private
     TimerTask mTimerTask = null;
-    public static final long RUN_PERIOD = 60000;
+    public static final long RUN_PERIOD = 4000;
 
     //VersionManager versionManger;
 
@@ -76,15 +77,17 @@ public class TaskService extends Service implements MqttCallback {
 
     public TaskService() {
         mHandler = new Handler() {
+
             @Override
             public void handleMessage(Message msg) {
                 super.handleMessage(msg);
                 if (msg.obj == null) {
                     isSubSuccess = false;
-
+                    init();
                 } else {
 
                     JSONObject msgObject = (JSONObject) msg.obj;
+                    Log.e(TAG, "收到消息  msg is " + msgObject.toString());
                     try {
                         switch (msgObject.getString("msgType")) {
                             case "payResult":
@@ -92,6 +95,15 @@ public class TaskService extends Service implements MqttCallback {
                                 if (msgTransListener != null) {
                                     msgTransListener.onMsgArrived(payResult);
                                 }
+                                break;
+                            case "updateFormula":
+                                messageReceviedListener.getMsgType("updateFormula");
+                                break;
+                            case "machineOrder":
+                                messageReceviedListener.getMsgType("machineOrder");
+                                break;
+                            case "relayType":
+                                Log.e(TAG, "收到回执 uuid is " + msgObject.getString("msgId"));
                                 break;
                         }
                     } catch (JSONException e) {
@@ -201,8 +213,12 @@ public class TaskService extends Service implements MqttCallback {
             client.connect(options);
             // 订阅消息
             int[] Qos = {1, 1};
-            String[] topic1 = {MachineConfig.getTopic(), "client/coffee/sc/#"};
-
+            if (MachineConfig.getTopic().equals("") || MachineConfig.getTopic().equals("null")) {
+                mOnMachineCheckCallBackListener.MQTTSubcribeFailed();
+                return;
+            }
+            String[] topic1 = {MachineConfig.getTopic() + "#", "client/coffee/sc/#"};
+            Log.e(TAG, topic1[0]);
             client.subscribe(topic1, Qos);
 
         } catch (Exception e) {
@@ -260,8 +276,11 @@ public class TaskService extends Service implements MqttCallback {
 
         MyLog.d(TAG, "TaskService has been started");
         if (!hasTimerTask()) {
+            if (isConnected()) {
+                Log.e(TAG, "订阅成功" + "开始发送消息");
+                createTimerTask();
+            }
 
-            createTimerTask();
         }
         //manageVersion();
         return super.onStartCommand(intent, flags, startId);
@@ -272,6 +291,12 @@ public class TaskService extends Service implements MqttCallback {
 
     public void SetOnMsgListener(MsgTransListener msgTransListener) {
         this.msgTransListener = msgTransListener;
+    }
+
+    private MessageReceviedListener messageReceviedListener;
+
+    public void setOnMessageReceviedListener(MessageReceviedListener listener) {
+        messageReceviedListener = listener;
     }
 
     /**
@@ -328,7 +353,7 @@ public class TaskService extends Service implements MqttCallback {
                     //videoScreenCheck();//开关屏检测
 
                     //	LocalDataBaseUtil.deleteOutDateItem();
-                    //sendStateMsg();
+                    sendStateMsg();
                     if (COUNT % 3 == 0) {//本地交易记录上传
 
                         //sendLocDealMsg();
@@ -373,18 +398,23 @@ public class TaskService extends Service implements MqttCallback {
 
 
     private void sendStateMsg() {
+        MqttMessage message = new MqttMessage();
+        message.setQos(1);
+        message.setRetained(false);
+
         Map<String, Object> msg = new HashMap<>();
         msg.put("msgId", UUID.randomUUID().toString());
         msg.put("machineCode", MachineConfig.getMachineCode());
         msg.put("pageType", FragmentFactory.getInstance().getPageType(FragmentFactory.curPage));
         msg.put("msgType", "runningStateType");
         msg.put("sendTime", SecondToDate.getDateToString(System.currentTimeMillis()));
+        Log.e(TAG, SecondToDate.getDateToString(System.currentTimeMillis()));
         msg.put("networkType", MachineConfig.getNetworkType());
         msg.put("cupHouseState", null);
-        CoffMsger msger = CoffMsger.getInstance();
+      /*  CoffMsger msger = CoffMsger.getInstance();
         MachineState state = msger.getLastMachineState();
-        Result result = state.getResult();
-
+        Result result = state.getResult();*/
+/*
         if (result.getCode() == Result.SUCCESS) {
             if (state.hasCupOnShelf()) {
                 msg.put("cupHolderState", 1);
@@ -407,86 +437,32 @@ public class TaskService extends Service implements MqttCallback {
             msg.put("driverVersion", state.getVersion());
             msg.put("errCode", state.getMajorState().getState_byte() + "");
 
-        } else {
+        } else {*/
 
-            msg.put("cupHolderState", null);
-
-
-            msg.put("boilerTemperature", null);
-            msg.put("boilerPressure", null);
-
-            msg.put("doorState", null);
+        msg.put("cupHolderState", null);
 
 
-            msg.put("cupDoorState", null);
+        msg.put("boilerTemperature", null);
+        msg.put("boilerPressure", null);
 
-            msg.put("driverVersion", state.getVersion());
-            msg.put("errCode", null);
-        }
+        msg.put("doorState", null);
+
+
+        msg.put("cupDoorState", null);
+
+        msg.put("driverVersion", "1.0.0");
+        msg.put("errCode", 51);
+        // }
         msg.put("clientVersion", HomeActivity.getInstance().getVersion());
         msg.put("mediaVersion", "1.0.0");
-
-        //   msg.put("cupHouseState", CoffMsger.getInstance().getLastMachineState().)
-        /*SendMsg msg = new  SendMsg();
-        BasicInfoRecorder mRecorder = BasicInfoRecorder.getInstance();
-		msg.setKey(mRecorder.getKey());
-		msg.setMachineCode(mRecorder.getMachineid());
-		SimpleDateFormat dateformat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss",Locale.US);
-		String sendTime = dateformat.format(new Date());
-		msg.setSendTime(sendTime);
-		msg.setMsgId(System.currentTimeMillis()+"");
-		msg.setMsgTypeCode(MsgTypeCode.State_Type);
-		msg.setMsgCode(MsgFCodeType.State_Code);
-		SStateBean stateBean = new SStateBean();
-		stateBean.setStateMachineCode(mRecorder.getMachineid());
-		stateBean.setStateCupNum(LocalDataManager.getInstance(this).getCupNum());
-	//	MachineState state = CPUMsger.getCPUMsger().getMachineState();
-		CPUMsger cpuMsger = CPUMsger.getCPUMsger();
-		MachineState state = cpuMsger.getMachineState();
-
-		if (state != null && cpuMsger.isCurStateValid()) {
-			stateBean.setStateExceptionType(state.getStateByte());
-			stateBean.setStateOrangeNum(state.getOrangeNum());
-			stateBean.setStateCapNum(state.getCoverNum());
-			stateBean.setStateMachineType(state.getErrCode());
-			MyLog.d(TAG, "error of machineState is " + state.getErrCode());
-			stateBean.setStateDriver(state.getMVersion() + "." + state.getLVersion());
-		} else {
-
-			MyLog.W(TAG, "MachineState==" + state);
-			MyLog.W(TAG, "cpuMsger.isCurStateValid()==" + cpuMsger.isCurStateValid());
-			stateBean.setStateExceptionType("1000");
-			stateBean.setStateOrangeNum(0);
-			stateBean.setStateCupNum(0);
-			stateBean.setStateCapNum(0);
-			stateBean.setStateMachineType("1000");
-			stateBean.setStateDriver("0.0");
-
-		}
-*/
-    /*	if(state != null) {
-
-			stateBean.setStateExceptionType(state.getStateByte());
-			stateBean.setStateOrangeNum(state.getOrangeNum());			
-			stateBean.setStateCapNum(state.getCoverNum());
-			stateBean.setStateMachineType(state.getErrCode());
-			MyLog.d(TAG, "error of machineState is "+state.getErrCode());
-			stateBean.setStateDriver(state.getMVersion()+"."+state.getLVersion());
-		}else {
-			
-			stateBean.setStateExceptionType("1000");
-			stateBean.setStateOrangeNum(0);
-			stateBean.setStateCupNum(0);
-			stateBean.setStateCapNum(0);
-			stateBean.setStateMachineType("1000");
-			stateBean.setStateDriver("0.0");
-		}*/
-    /*	stateBean.setStateMediaVersion("0.0");
-        CurVersionProvider versionProvider = new CurVersionProvider(this);
-		String versionName = versionProvider.getVersionName();
-		stateBean.setStateClientVersion(versionName);
-		msg.setState(stateBean);
-		DeliverMsger.getInstance().sendMessage(msg, DeliverMsger.secQuick);*/
+        message.setPayload(JsonUtil.mapToJson(msg).getBytes());
+        MqttTopic topic = client.getTopic("server/coffee/" + MachineConfig.getMachineCode());
+        try {
+            Log.e(TAG, "start publish message");
+            topic.publish(message);
+        } catch (MqttException e) {
+            e.printStackTrace();
+        }
     }
 
     /**

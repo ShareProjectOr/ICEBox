@@ -47,7 +47,7 @@ public class AddMaterial implements IAddMaterial {
 
         String beforeAddStorktext = sql.getStorkByBunkersID(bunkersID);
         long beforeAddStork = Long.parseLong(beforeAddStorktext);
-        final double dobeforeAddStork = new BigDecimal(((float) beforeAddStork / 1000)).setScale(2, BigDecimal.ROUND_HALF_UP).longValue();
+        final double dobeforeAddStork = new BigDecimal(((float) beforeAddStork / 1000)).setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
 
         mBefore_add_stock.setText("补料前余量:" + dobeforeAddStork + "g");
 

@@ -25,6 +25,8 @@ import java.net.MalformedURLException;
 import java.net.URL;
 
 import example.jni.com.coffeeseller.R;
+import example.jni.com.coffeeseller.contentprovider.SharedPreferencesManager;
+import example.jni.com.coffeeseller.utils.SecondToDate;
 
 public class UpdateAppManager {
     // 分位符
@@ -204,6 +206,7 @@ public class UpdateAppManager {
     }
 
     private void installApp() {
+        SharedPreferencesManager.getInstance(context).setLastAppUpdateTime(SecondToDate.getDateToString(System.currentTimeMillis()));
         File appFile = new File(FILE_NAME);
         if (!appFile.exists()) {
             return;

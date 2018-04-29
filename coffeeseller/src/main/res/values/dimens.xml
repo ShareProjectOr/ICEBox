@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <dimen name="text_size_one">25sp</dimen>
+    <dimen name="text_size_one">20sp</dimen>
     <dimen name="text_size_two">30sp</dimen>
-    <dimen name="config_marial_list_margin">5dp</dimen>
+    <dimen name="config_marial_list_margin">15dp</dimen>
     <dimen name="shape_width">2.5dp</dimen>
 </resources>

@@ -48,6 +48,7 @@ public class MachineCheckFragment extends BasicFragment implements ICheckMachine
     private TextView mSub_Mqtt_Tips;
     private ProgressBar getMaterial;
     private TextView getMaterialTips;
+    private boolean isCheckSuccess = false;
 
     @Nullable
     @Override
@@ -160,7 +161,7 @@ public class MachineCheckFragment extends BasicFragment implements ICheckMachine
     }
 
     @Override
-    public void ChangeProgressBar(MachineCheckState state, boolean isSuccess) {
+    public void ChangeProgressBar(MachineCheckState state, final boolean isSuccess) {
         switch (state) {
             case MACHINECODECHECK:
                 if (isSuccess) {
@@ -238,7 +239,8 @@ public class MachineCheckFragment extends BasicFragment implements ICheckMachine
                             Log.d("changeProgress", values + "");
                             mSub_Mqtt.setProgress(values[0]);
                             if (values[0] == 100) {
-                                homeActivity.replaceFragment(FragmentEnum.MachineCheckFragment, FragmentEnum.ChooseCupNumFragment);
+                                if (isCheckSuccess)
+                                    homeActivity.replaceFragment(FragmentEnum.MachineCheckFragment, FragmentEnum.ChooseCupNumFragment);
                             }
                             super.onProgressUpdate(values);
                         }
@@ -268,9 +270,9 @@ public class MachineCheckFragment extends BasicFragment implements ICheckMachine
                         protected void onProgressUpdate(Integer... values) {
                             Log.d("changeProgress", values + "");
                             getMaterial.setProgress(values[0]);
-                            if (values[0] == 100) {
+                          /*  if (values[0] == 100) {
                                 homeActivity.replaceFragment(FragmentEnum.MachineCheckFragment, FragmentEnum.ChooseCupNumFragment);
-                            }
+                            }*/
                             super.onProgressUpdate(values);
                         }
                     }.execute();
@@ -298,9 +300,11 @@ public class MachineCheckFragment extends BasicFragment implements ICheckMachine
     @Override
     public void ChangePage(final FragmentEnum fragment) {
         hasTurned = true;
+        isCheckSuccess = true;
         handler.post(new Runnable() {
             @Override
             public void run() {
+
                 //   homeActivity.replaceFragment(FragmentEnum.MachineCheckFragment, fragment);
             }
         });
