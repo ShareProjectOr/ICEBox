@@ -46,8 +46,8 @@ public class AddMaterial implements IAddMaterial {
         mAdd_bunker_name.setText(sql.getBunkersNameByID(bunkersID));
 
         String beforeAddStorktext = sql.getStorkByBunkersID(bunkersID);
-        int beforeAddStork = Integer.parseInt(beforeAddStorktext);
-        final long dobeforeAddStork = new BigDecimal( ((float)beforeAddStork / 1000)).setScale(2, BigDecimal.ROUND_HALF_UP).longValue();
+        long beforeAddStork = Long.parseLong(beforeAddStorktext);
+        final double dobeforeAddStork = new BigDecimal(((float) beforeAddStork / 1000)).setScale(2, BigDecimal.ROUND_HALF_UP).longValue();
 
         mBefore_add_stock.setText("补料前余量:" + dobeforeAddStork + "g");
 
@@ -101,7 +101,7 @@ public class AddMaterial implements IAddMaterial {
                     return;
                 }
 
-                if (sql.updateContact(bunkersID, "", "", "", "", Long.parseLong(mLast_add_stock.getText().toString()) * 1000 + "", "", "", SecondToDate.getDateToString(System.currentTimeMillis()))) {
+                if (sql.updateContact(bunkersID, "", "", "", "", (long) (Double.parseDouble(mLast_add_stock.getText().toString()) * 1000) + "", "", "", SecondToDate.getDateToString(System.currentTimeMillis()))) {
                     onAddMaterialCallBackListener.addEnd(sql);
                     Toast.makeText(context, "补料成功", Toast.LENGTH_LONG).show();
                 } else {
