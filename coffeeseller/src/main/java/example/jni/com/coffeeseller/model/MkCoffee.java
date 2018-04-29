@@ -2,6 +2,7 @@ package example.jni.com.coffeeseller.model;
 
 import android.content.Context;
 import android.os.AsyncTask;
+import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
@@ -48,6 +49,7 @@ public class MkCoffee {
     private DealRecorder dealRecorder;
     private MkCoffeeListenner mkCoffeeListenner;
     private DealOrderInfoManager dealOrderInfoManager;
+    private Handler handler;
 
     private boolean isStartMaking = false;
     private boolean makeSuccess = false;
@@ -57,11 +59,12 @@ public class MkCoffee {
     private long totalMakingTime;
     private StringBuffer buffer;
 
-    public MkCoffee(Context context, CoffeeFomat coffeeFomat, DealRecorder dealRecorder, MkCoffeeListenner mkCoffeeListenner) {
+    public MkCoffee(Context context, CoffeeFomat coffeeFomat, DealRecorder dealRecorder, MkCoffeeListenner mkCoffeeListenner, Handler handler) {
         this.context = context;
         this.coffeeFomat = coffeeFomat;
         this.dealRecorder = dealRecorder;
         this.mkCoffeeListenner = mkCoffeeListenner;
+        this.handler = handler;
         init();
     }
 
@@ -134,6 +137,7 @@ public class MkCoffee {
 
             buffer.append("\n");
             buffer.append("没有设置配方");
+
 
             showErr(true);
 
@@ -459,9 +463,15 @@ public class MkCoffee {
     }
 
     public void showErr(boolean isErr) {
-        makingViewHolder.mErrTip.setVisibility(VISIBLE);
-        makingViewHolder.mProgressBarLayout.setVisibility(GONE);
-        makingViewHolder.mErrTip.setText(buffer.toString());
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                makingViewHolder.mErrTip.setVisibility(VISIBLE);
+                makingViewHolder.mProgressBarLayout.setVisibility(GONE);
+                makingViewHolder.mErrTip.setText(buffer.toString());
+            }
+        });
+
     }
 
     class MakingViewHolder {

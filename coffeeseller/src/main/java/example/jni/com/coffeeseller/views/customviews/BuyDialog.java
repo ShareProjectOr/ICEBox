@@ -252,10 +252,11 @@ public class BuyDialog extends Dialog implements ChooseCupListenner, MkCoffeeLis
         DealOrderInfoManager.getInstance(context).addToTable(dealRecorder);
 
         final CoffeeFomat fomat = coffeeFomat;
+
         handler.post(new Runnable() {
             @Override
             public void run() {
-                MkCoffee mkCoffee = new MkCoffee(context, fomat, dealRecorder, mkCoffeeListenner);
+                MkCoffee mkCoffee = new MkCoffee(context, fomat, dealRecorder, mkCoffeeListenner,handler);
                 setContentView(mkCoffee.getView());
             }
         });

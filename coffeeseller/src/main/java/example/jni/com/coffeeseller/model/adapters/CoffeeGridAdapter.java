@@ -95,12 +95,10 @@ public class CoffeeGridAdapter extends BaseAdapter {
                 viewHolder.overLayout.setVisibility(View.VISIBLE);
                 viewHolder.sellOver.setVisibility(View.VISIBLE);
                 convertView.setEnabled(false);
-                convertView.setClickable(false);
             } else {
                 viewHolder.overLayout.setVisibility(View.GONE);
                 viewHolder.sellOver.setVisibility(View.GONE);
                 convertView.setEnabled(true);
-                convertView.setClickable(true);
             }
         }
         return convertView;

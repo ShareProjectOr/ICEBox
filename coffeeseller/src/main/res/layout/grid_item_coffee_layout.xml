@@ -7,11 +7,11 @@
     android:layout_marginRight="30dp"
     android:gravity="center">
 
-    <!--@android:color/transparent-->
+    <!--   android:background="@drawable/shape_shadow"-->
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/shape_shadow">
+        android:background="@drawable/shape_img_round_corner">
 
         <LinearLayout
             android:id="@+id/coffeeLayout"
@@ -26,7 +26,7 @@
                 android:layout_height="180dp"
                 android:layout_marginBottom="5dp"
                 android:layout_marginLeft="5dp"
-                android:layout_marginRight="7dp"
+                android:layout_marginRight="5dp"
                 android:layout_marginTop="5dp"
                 android:scaleType="fitXY"
                 android:src="@mipmap/no_coffee" />
@@ -82,7 +82,7 @@
             android:layout_alignBottom="@id/coffeeLayout"
             android:layout_alignTop="@id/coffeeLayout"
             android:alpha="0.5"
-            android:background="@color/gray"
+            android:background="@drawable/shape_is_over"
             android:orientation="vertical"
             android:visibility="gone" />
 
@@ -93,7 +93,7 @@
             android:layout_alignBottom="@id/coffeeLayout"
             android:layout_alignTop="@id/coffeeLayout"
             android:alpha="0.4"
-            android:background="@drawable/shape_is_over"
+            android:background="@android:color/transparent"
             android:visibility="gone">
 
             <ImageView
