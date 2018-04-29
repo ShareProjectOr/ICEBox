@@ -475,7 +475,11 @@ public class SingleMaterialLsit {
         this.coffeeArray = coffeeArray;
     }
 
+
+
     public List<Coffee> getyoubaoCoffeeList() {
         return youbaoCoffeeList;
     }
+
+
 }

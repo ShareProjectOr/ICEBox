@@ -61,22 +61,10 @@ public class MachineCheck implements IMachineCheck {
         Waiter.doWait(2000);
       /*  checkMainCtrl();
         Waiter.doWait(2000);*/
-       /* subMQTT();
-        Waiter.doWait(2000);*/
         getFormula();
+        Waiter.doWait(2000);
+        subMQTT();
     }
-
-   /* private class checkRunnnable implements Runnable {
-
-        @Override
-        public void run() {
-
-
-
-
-
-        }
-    }*/
 
     private void getFormula() {
 
@@ -126,15 +114,12 @@ public class MachineCheck implements IMachineCheck {
                         if (content.getAllbunkersIDs().size() == 0) {//本地数据库为空的时候 ,需以服务端的数据进行绑定数据库
                             for (int i = 0; i < list.size(); i++) {
                                 Log.e(TAG, "开始执行创建数据库");
-                                if (list.get(i).getContainerID().equals("3")){
-                                    Log.e(TAG,"糖的默认落料量为:"+list.get(i).getMaterialDropSpeed());
+                                if (list.get(i).getContainerID().equals("3")) {
+                                    Log.e(TAG, "糖的默认落料量为:" + list.get(i).getMaterialDropSpeed());
                                 }
                                 boolean b = content.insertContact(list.get(i).getBunkerID(), list.get(i).getMaterialID(), list.get(i).getMaterialType(), list.get(i).getMaterialName()
                                         , list.get(i).getMaterialUnit(), list.get(i).getMaterialStock(), list.get(i).getMaterialDropSpeed(), list.get(i).getContainerID(), list.get(i).getLastLoadingTime());
                                 if (b) {
-                                    mOnMachineCheckCallBackListener.MaterialGroupGetSuccess();
-                                    MachineInitState.GET_FORMULA = MachineInitState.NORMAL;
-                                    SingleMaterialLsit.getInstance(mContext).setCoffeeArray(d.getJSONArray("list"));
                                 } else {
                                     Log.e(TAG, "创建数据库插入时失败");
                                 }
@@ -148,9 +133,6 @@ public class MachineCheck implements IMachineCheck {
                                 for (String ContainerID : content.getAllcontainerID()) {
                                     if (ContainerID.equals(list.get(i).getContainerID())) {  //假如数据库里面已经存在了这个料仓 则不做任何操作
                                         isupdated = true;
-                                        mOnMachineCheckCallBackListener.MaterialGroupGetSuccess();
-                                        MachineInitState.GET_FORMULA = MachineInitState.NORMAL;
-                                        SingleMaterialLsit.getInstance(mContext).setCoffeeArray(d.getJSONArray("list"));
                                         break;
                                     }
                                 }
@@ -160,20 +142,19 @@ public class MachineCheck implements IMachineCheck {
                                     boolean b = content.insertContact(list.get(i).getBunkerID(), list.get(i).getMaterialID(), list.get(i).getMaterialType(), list.get(i).getMaterialName()
                                             , list.get(i).getMaterialUnit(), list.get(i).getMaterialStock(), list.get(i).getMaterialDropSpeed(), list.get(i).getContainerID(), list.get(i).getLastLoadingTime());
                                     if (b) {
-                                        mOnMachineCheckCallBackListener.MaterialGroupGetSuccess();
-                                        MachineInitState.GET_FORMULA = MachineInitState.NORMAL;
-                                        SingleMaterialLsit.getInstance(mContext).setCoffeeArray(d.getJSONArray("list"));
                                     } else {
                                         Log.e(TAG, "更新数据库插入时失败");
                                     }
                                 }
                             }
-                        } else {
-                            mOnMachineCheckCallBackListener.MaterialGroupGetSuccess();
-                            MachineInitState.GET_FORMULA = MachineInitState.NORMAL;
-                            Log.e(TAG, "不对数据库做任何操作");
-                        }
 
+                        } else {
+
+                        }
+                        SingleMaterialLsit.getInstance(mContext).setCoffeeArray(d.getJSONArray("list"));
+                        mOnMachineCheckCallBackListener.MaterialGroupGetSuccess();
+                        MachineInitState.GET_FORMULA = MachineInitState.NORMAL;
+                        Log.e(TAG, "不对数据库做任何操作");
                     } else { //服务器返回的料仓不为空
                         mOnMachineCheckCallBackListener.MaterialGroupGetFailed("机器未创建料仓,禁止使用");
                     }
@@ -189,17 +170,7 @@ public class MachineCheck implements IMachineCheck {
             }
         }
 
-     /*   if (MachineInitState.CHECK_OPENMAINCTRL == MachineInitState.NORMAL && MachineInitState.CHECK_MACHINECODE == MachineInitState.NORMAL
-                && MachineInitState.SUB_MQTT_STATE == MachineInitState.NORMAL && MachineInitState.GET_FORMULA == MachineInitState.NORMAL) {
-            mOnMachineCheckCallBackListener.MachineCheckEnd(true);
-        } else {
-            mOnMachineCheckCallBackListener.MachineCheckEnd(false);
-        }*/
-        if (MachineInitState.CHECK_MACHINECODE == MachineInitState.NORMAL && MachineInitState.GET_FORMULA == MachineInitState.NORMAL) {
-            mOnMachineCheckCallBackListener.MachineCheckEnd(true);
-        } else {
-            mOnMachineCheckCallBackListener.MachineCheckEnd(false);
-        }
+
     }
 
     private boolean isCanUse(List<bunkerData> list) {
@@ -229,6 +200,7 @@ public class MachineCheck implements IMachineCheck {
 
     public void checkMainCtrl() {
         CoffMsger mCoffmsger = CoffMsger.getInstance();
+
         if (mCoffmsger.init()) {
             Result result = mCoffmsger.Debug(DebugAction.RESET, 0, 0);//复位机器
             Waiter.doWait(700);

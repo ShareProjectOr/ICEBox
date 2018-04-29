@@ -92,8 +92,8 @@ public class LoginFragment extends BasicFragment implements Iloginview {
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.login:
-                //   mUserLoginPresenter.PresenterLogin();
-                new Thread(new Runnable() {
+                mUserLoginPresenter.PresenterLogin();
+            /*    new Thread(new Runnable() {
                     @Override
                     public void run() {
                         Map<String, Object> post = new HashMap<>();
@@ -107,7 +107,7 @@ public class LoginFragment extends BasicFragment implements Iloginview {
                             e.printStackTrace();
                         }
                     }
-                }).start();
+                }).start();*/
                 break;
             case R.id.backToCheck:
                 homeActivity.replaceFragment(FragmentEnum.LoginFragment, FragmentEnum.MachineCheckFragment);

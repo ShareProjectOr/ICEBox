@@ -4,6 +4,7 @@ import android.content.Context;
 import android.support.v7.app.AlertDialog;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
@@ -23,11 +24,13 @@ import example.jni.com.coffeeseller.utils.SecondToDate;
  */
 
 public class AddMaterial implements IAddMaterial {
+    private String TAG = "AddMaterial";
 
     @Override
     public void addMaterial(final Context context, final String bunkersID, final MaterialSql sql, final OnAddMaterialCallBackListener onAddMaterialCallBackListener) {
         TextView mAdd_bunker_name, mBefore_add_stock;
-        final EditText mAdd_account, mLast_add_stock;
+        final EditText mAdd_account;
+        final TextView mLast_add_stock;
         Button mCancel, mSure;
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
         View view = LayoutInflater.from(context).inflate(R.layout.add_material_dialog_layout, null);
@@ -35,13 +38,16 @@ public class AddMaterial implements IAddMaterial {
         mAdd_bunker_name = (TextView) view.findViewById(R.id.add_bunker_name);
         mBefore_add_stock = (TextView) view.findViewById(R.id.before_add_stock);
         mAdd_account = (EditText) view.findViewById(R.id.add_account);
-        mLast_add_stock = (EditText) view.findViewById(R.id.last_add_stock);
+        mLast_add_stock = (TextView) view.findViewById(R.id.last_add_stock);
         mCancel = (Button) view.findViewById(R.id.cancel);
         mSure = (Button) view.findViewById(R.id.sure);
         mAdd_bunker_name.setText(sql.getBunkersNameByID(bunkersID));
-        mBefore_add_stock.setText(sql.getStorkByBunkersID(bunkersID));
-        final int beforeAddStork = Integer.parseInt(mBefore_add_stock.getText().toString());
+        String beforeAddStorktext = sql.getStorkByBunkersID(bunkersID);
+        mBefore_add_stock.setText("补料前余量:" + beforeAddStorktext);
 
+        final int beforeAddStork = Integer.parseInt(beforeAddStorktext);
+
+        final String[] befores = {mAdd_account.getText().toString()};
         mAdd_account.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -51,22 +57,29 @@ public class AddMaterial implements IAddMaterial {
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
 
-
             }
 
             @Override
             public void afterTextChanged(Editable s) {
-                int addAccount;
+                String lasts = s.toString();
+                Integer addAccount;
                 if (s.length() == 0) {
                     addAccount = 0;
                 } else {
                     addAccount = Integer.parseInt(s.toString());
                 }
 
-                mLast_add_stock.setText(addAccount + beforeAddStork + "");
+                if (!lasts.equals(befores[0])) {
+                    mLast_add_stock.setText(addAccount + beforeAddStork + "");
+                    befores[0] = lasts;
+                }
+                Log.e(TAG, "now add stock is " + s.toString() + " and beforeAddStock is " + beforeAddStork + " and lastAddstock is " + (addAccount + beforeAddStork));
+
+
             }
         });
 
+        final String[] befores2 = {mLast_add_stock.getText().toString()};
         mLast_add_stock.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -80,13 +93,21 @@ public class AddMaterial implements IAddMaterial {
 
             @Override
             public void afterTextChanged(Editable s) {
-                int lastAddStork;
+                Integer lastAddStork;
                 if (s.length() == 0) {
                     lastAddStork = 0;
                 } else {
-                    lastAddStork = Integer.parseInt(s.toString());
+
+                    lastAddStork = Integer.valueOf(s.toString());
                 }
-                mAdd_account.setText(lastAddStork - beforeAddStork + "");
+            /*    String lasts = s.toString();
+                if (!lasts.equals(befores2[0])) {
+                    mAdd_account.setText(Math.abs(lastAddStork - beforeAddStork) + "");
+                    befores2[0] = lasts;
+                }
+            */
+
+
             }
         });
         final AlertDialog alertDialog = builder.create();
@@ -112,6 +133,7 @@ public class AddMaterial implements IAddMaterial {
                 } else {
                     Toast.makeText(context, "补料失败", Toast.LENGTH_LONG).show();
                 }
+                alertDialog.dismiss();
             }
         });
     }

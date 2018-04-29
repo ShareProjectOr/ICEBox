@@ -84,44 +84,7 @@
         android:layout_height="wrap_content"
         android:textSize="@dimen/text_size_one" />
 
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="20dp"
-            android:text="通信检测:"
-            android:textColor="@color/white"
-            android:textSize="40sp" />
-
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@drawable/progressbackground"
-            android:gravity="center_vertical"
-            android:paddingBottom="25dp"
-            android:paddingLeft="50dp"
-            android:paddingRight="50dp"
-            android:paddingTop="23dp">
-
-            <ProgressBar
-                android:id="@+id/sub_Mqtt"
-                style="@style/Widget.AppCompat.ProgressBar.Horizontal"
-                android:layout_width="1200dp"
-                android:layout_height="40dp"
-                android:max="100"
-                android:progressDrawable="@drawable/machine_checkprogress_layer" />
-        </LinearLayout>
-    </LinearLayout>
-
-    <TextView
-        android:id="@+id/sub_Mqtt_Tips"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textSize="@dimen/text_size_one" />
 
     <LinearLayout
         android:layout_width="wrap_content"
@@ -161,7 +124,44 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="@dimen/text_size_one" />
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
 
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:text="通信检测:"
+            android:textColor="@color/white"
+            android:textSize="40sp" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/progressbackground"
+            android:gravity="center_vertical"
+            android:paddingBottom="25dp"
+            android:paddingLeft="50dp"
+            android:paddingRight="50dp"
+            android:paddingTop="23dp">
+
+            <ProgressBar
+                android:id="@+id/sub_Mqtt"
+                style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+                android:layout_width="1200dp"
+                android:layout_height="40dp"
+                android:max="100"
+                android:progressDrawable="@drawable/machine_checkprogress_layer" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/sub_Mqtt_Tips"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/text_size_one" />
     <TextView
         android:id="@+id/timeDownText"
         android:layout_width="wrap_content"

@@ -164,12 +164,13 @@ public class BuyFragment extends BasicFragment implements GridViewItemListener, 
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.logo:
-                if (System.currentTimeMillis() - lastClickTime <= 2 * 1000) {
+                homeActivity.replaceFragment(FragmentEnum.ChooseCupNumFragment, FragmentEnum.LoginFragment);
+               /* if (System.currentTimeMillis() - lastClickTime <= 2 * 1000) {
                     homeActivity.replaceFragment(FragmentEnum.ChooseCupNumFragment, FragmentEnum.LoginFragment);
                 } else {
                     lastClickTime = System.currentTimeMillis();
                     homeActivity.replaceFragment(FragmentEnum.ChooseCupNumFragment, FragmentEnum.TradeFragment);
-                }
+                }*/
                 break;
         }
     }

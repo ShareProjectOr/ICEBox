@@ -19,14 +19,18 @@ public class CommitMaterialPresenter {
     }
 
     public void CommitMaterial() {
+        iCommitMaterialView.ShowLoading();
+        ;
         iCommitMaterial.Commit(iCommitMaterialView.getList(), new OnCommitMaterialCallBackListener() {
             @Override
             public void commitSuccess() {
+                iCommitMaterialView.HideLoading();
                 iCommitMaterialView.ShowResult("提交成功");
             }
 
             @Override
             public void commitFailed(String response) {
+                iCommitMaterialView.HideLoading();
                 iCommitMaterialView.ShowResult(response);
             }
         });

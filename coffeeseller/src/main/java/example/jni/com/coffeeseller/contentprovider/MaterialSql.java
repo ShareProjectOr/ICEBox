@@ -16,6 +16,7 @@ import java.util.Map;
 
 import example.jni.com.coffeeseller.bean.CommitMaterialObject;
 import example.jni.com.coffeeseller.bean.bunkerData;
+import example.jni.com.coffeeseller.model.adapters.MaterialRecycleListAdapter;
 
 /**
  * Created by Administrator on 2018/4/11.
@@ -34,6 +35,8 @@ public class MaterialSql extends SQLiteOpenHelper {
     public static final String MATERIALS_COLUMN_MATERIALDORPSPEED = "MaterialDropSpeed";//单位落料量
     public static final String MATERIALS_COLUMN_CONTAINERID = "containerID";//机器真正的料仓编号
     public static final String MATERIALS_COLUMN_ADDMATERIALTIME = "addMaterialTime"; //最后补料时间
+    private String TAG = "MaterialSql";
+    private MaterialRecycleListAdapter adapter;
 
     public MaterialSql(Context context) {
         super(context, DATABASE_NAME, null, 1);
@@ -52,28 +55,37 @@ public class MaterialSql extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS" + MATERIALS_TABLE_NAME);
         onCreate(db);
     }
-    public String getContainerIDByBunkerID(String bunkesID){
+
+    public String getContainerIDByBunkerID(String bunkesID) {
         SQLiteDatabase db = this.getReadableDatabase();
+        String ContainerID = "";
         Cursor res = db.rawQuery("select * from " + MATERIALS_TABLE_NAME + " where " + MATERIALS_COLUMN_BUNKERSID + " = " + bunkesID + "", null);
-        res.moveToFirst();
-        String ContainerID = res.getString(res.getColumnIndex(MATERIALS_COLUMN_CONTAINERID));
+        if (res.moveToFirst()) {
+            ContainerID = res.getString(res.getColumnIndex(MATERIALS_COLUMN_CONTAINERID));
+        }
+
         res.close();
+        db.close();
         return ContainerID;
     }
-    public String getContainerIDByMaterialID(String MaterialID){
+
+    public String getContainerIDByMaterialID(String MaterialID) {
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor res = db.rawQuery("select * from " + MATERIALS_TABLE_NAME + " where " + MATERIALS_COLUMN_MATERIALID + " = " + MaterialID + "", null);
+        Cursor res = db.rawQuery("select * from " + MATERIALS_TABLE_NAME + " where " + MATERIALS_COLUMN_MATERIALID + " = " + MaterialID + " limit 1 ", null);
         res.moveToFirst();
         String ContainerID = res.getString(res.getColumnIndex(MATERIALS_COLUMN_CONTAINERID));
         res.close();
+        db.close();
         return ContainerID;
     }
+
     public String getBunkersNameByID(String bunkesID) {
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor res = db.rawQuery("select * from " + MATERIALS_TABLE_NAME + " where " + MATERIALS_COLUMN_BUNKERSID + " = " + bunkesID + "", null);
         res.moveToFirst();
         String MaterialName = res.getString(res.getColumnIndex(MATERIALS_COLUMN_MATERIALNAME));
         res.close();
+        db.close();
         return MaterialName + "仓";
 
     }
@@ -101,6 +113,7 @@ public class MaterialSql extends SQLiteOpenHelper {
         res.moveToFirst();
         String MaterialDropSpeed = res.getString(res.getColumnIndex(MATERIALS_COLUMN_MATERIALDORPSPEED));
         res.close();
+        db.close();
         return MaterialDropSpeed;
     }
 
@@ -110,6 +123,7 @@ public class MaterialSql extends SQLiteOpenHelper {
         res.moveToFirst();
         String MaterialDropSpeed = res.getString(res.getColumnIndex(MATERIALS_COLUMN_BUNKERSID));
         res.close();
+        db.close();
         return MaterialDropSpeed;
     }
 
@@ -119,6 +133,7 @@ public class MaterialSql extends SQLiteOpenHelper {
         res.moveToFirst();
         String MaterialStock = res.getString(res.getColumnIndex(MATERIALS_COLUMN_MATERIALSTOCK));
         res.close();
+        db.close();
         return MaterialStock;
     }
 
@@ -127,7 +142,19 @@ public class MaterialSql extends SQLiteOpenHelper {
         Cursor res = db.rawQuery("select * from " + MATERIALS_TABLE_NAME + " where " + MATERIALS_COLUMN_BUNKERSID + " = " + bunkesID + "", null);
         res.moveToFirst();
         String MaterialStock = res.getString(res.getColumnIndex(MATERIALS_COLUMN_MATERIALDORPSPEED));
+        db.close();
+        res.close();
         return MaterialStock;
+    }
+
+    public String getMaterialDropSpeedByContainerID(String ContainerID) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor res = db.rawQuery("select * from " + MATERIALS_TABLE_NAME + " where " + MATERIALS_COLUMN_CONTAINERID + " = " + ContainerID + "", null);
+        res.moveToFirst();
+        String MaterialDropSpeed = res.getString(res.getColumnIndex(MATERIALS_COLUMN_MATERIALDORPSPEED));
+        db.close();
+        res.close();
+        return MaterialDropSpeed;
     }
 
     public String getStorkByMaterialID(String MaterialID) {
@@ -136,6 +163,7 @@ public class MaterialSql extends SQLiteOpenHelper {
         res.moveToFirst();
         String MaterialStock = res.getString(res.getColumnIndex(MATERIALS_COLUMN_MATERIALSTOCK));
         res.close();
+        db.close();
         return MaterialStock;
     }
 
@@ -145,6 +173,7 @@ public class MaterialSql extends SQLiteOpenHelper {
         res.moveToFirst();
         String MaterialID = res.getString(res.getColumnIndex(MATERIALS_COLUMN_MATERIALID));
         res.close();
+        db.close();
         return MaterialID;
     }
 
@@ -174,16 +203,17 @@ public class MaterialSql extends SQLiteOpenHelper {
     public boolean insertContact(String bunkersID, String MaterialID, String MaterialType, String MaterialName, String MaterialUnit, String MaterialStock, String MaterialDropSpeed, String containerID, String addMaterialTime) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
-        contentValues.put("bunkersID", bunkersID);
-        contentValues.put("MaterialID", MaterialID);
-        contentValues.put("MaterialType", MaterialType);
-        contentValues.put("MaterialName", MaterialName);
-        contentValues.put("MaterialUnit", MaterialUnit);
-        contentValues.put("MaterialStock", MaterialStock);
-        contentValues.put("MaterialDropSpeed", MaterialDropSpeed);
-        contentValues.put("containerID", containerID);
-        contentValues.put("addMaterialTime", addMaterialTime);
+        contentValues.put(MATERIALS_COLUMN_BUNKERSID, bunkersID);
+        contentValues.put(MATERIALS_COLUMN_MATERIALID, MaterialID);
+        contentValues.put(MATERIALS_COLUMN_MATERIALTYPE, MaterialType);
+        contentValues.put(MATERIALS_COLUMN_MATERIALNAME, MaterialName);
+        contentValues.put(MATERIALS_COLUMN_MATERIALUNIT, MaterialUnit);
+        contentValues.put(MATERIALS_COLUMN_MATERIALSTOCK, MaterialStock);
+        contentValues.put(MATERIALS_COLUMN_MATERIALDORPSPEED, MaterialDropSpeed);
+        contentValues.put(MATERIALS_COLUMN_CONTAINERID, containerID);
+        contentValues.put(MATERIALS_COLUMN_ADDMATERIALTIME, addMaterialTime);
         long result = db.insert(MATERIALS_TABLE_NAME, null, contentValues);
+        db.close();
         if (result == -1) {
             return false;
         } else {
@@ -198,7 +228,7 @@ public class MaterialSql extends SQLiteOpenHelper {
     public boolean updateContact(String bunkersID, String MaterialID, String MaterialType, String MaterialName, String MaterialUnit, String MaterialStock, String MaterialDropSpeed, String containerID, String addMaterialTime) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
-
+        Log.e(TAG, "update: bunkersID is " + bunkersID + "and  MaterialName is " + MaterialName + " and MaterialID is " + MaterialID);
 
         if (!MaterialID.isEmpty()) {
             contentValues.put("MaterialID", MaterialID);
@@ -226,7 +256,8 @@ public class MaterialSql extends SQLiteOpenHelper {
         if (!addMaterialTime.isEmpty()) {
             contentValues.put("addMaterialTime", addMaterialTime);
         }
-        db.update(MATERIALS_TABLE_NAME, contentValues, bunkersID + " = ? ", new String[]{bunkersID});
+        db.update(MATERIALS_TABLE_NAME, contentValues, "" + MATERIALS_COLUMN_BUNKERSID + "=?", new String[]{bunkersID});
+        db.close();
         return true;
     }
 
@@ -244,6 +275,7 @@ public class MaterialSql extends SQLiteOpenHelper {
             }
         }
         db.update(MATERIALS_TABLE_NAME, contentValues, MATERIALS_COLUMN_MATERIALID + " = ? ", new String[]{materialID});
+        db.close();
         return true;
     }
 
@@ -277,13 +309,15 @@ public class MaterialSql extends SQLiteOpenHelper {
 
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor res = db.rawQuery("select * from " + MATERIALS_TABLE_NAME, null);
-        res.moveToFirst();
-
-        while (res.isAfterLast() == false) {
-            Log.e("料仓编号", res.getString(res.getColumnIndex(MATERIALS_COLUMN_CONTAINERID)) + "");
-            array_list.add(res.getString(res.getColumnIndex(MATERIALS_COLUMN_CONTAINERID)));
-            res.moveToNext();
+        if (res.moveToFirst()) {
+            while (res.isAfterLast() == false) {
+                Log.e("料仓实际编号", res.getString(res.getColumnIndex(MATERIALS_COLUMN_CONTAINERID)) + "");
+                array_list.add(res.getString(res.getColumnIndex(MATERIALS_COLUMN_CONTAINERID)));
+                res.moveToNext();
+            }
         }
+        db.close();
+        res.close();
         return array_list;
     }
 
@@ -292,28 +326,33 @@ public class MaterialSql extends SQLiteOpenHelper {
 
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor res = db.rawQuery("select * from " + MATERIALS_TABLE_NAME, null);
-        res.moveToFirst();
+        if (res.moveToFirst()) {
+            while (res.isAfterLast() == false) {
 
-        while (res.isAfterLast() == false) {
-            Log.e("料仓编号", res.getInt(res.getColumnIndex(MATERIALS_COLUMN_BUNKERSID)) + "");
-            array_list.add(res.getString(res.getColumnIndex(MATERIALS_COLUMN_BUNKERSID)));
-            res.moveToNext();
+                array_list.add(res.getString(res.getColumnIndex(MATERIALS_COLUMN_BUNKERSID)));
+                res.moveToNext();
+            }
         }
+        db.close();
+        res.close();
+        Log.e(TAG, "location allAllbunkersID is" + array_list.toString());
         return array_list;
     }
 
     public ArrayList<String> getAllCotacts() {
         ArrayList<String> array_list = new ArrayList<>();
-
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor res = db.rawQuery("select * from " + MATERIALS_TABLE_NAME, null);
-        res.moveToFirst();
-
-        while (res.isAfterLast() == false) {
-            Log.e("料仓编号", res.getInt(res.getColumnIndex(MATERIALS_COLUMN_ID)) + "");
-            array_list.add(res.getString(res.getColumnIndex(MATERIALS_COLUMN_ID)));
-            res.moveToNext();
+        if (res.moveToFirst()) {
+            while (!res.isAfterLast()) {
+                Log.e("数据库ID", res.getInt(res.getColumnIndex(MATERIALS_COLUMN_ID)) + "");
+                int index = res.getColumnIndex(MATERIALS_COLUMN_ID);
+                array_list.add(res.getString(index));
+                res.moveToNext();
+            }
         }
+        db.close();
+        res.close();
         return array_list;
     }
 
@@ -358,6 +397,7 @@ public class MaterialSql extends SQLiteOpenHelper {
         bunkerdata.setMaterialID(MaterialID);
         bunkerdata.setMaterialType(MaterialType);
         bunkerdata.setMaterialName(MaterialName);
+
         bunkerdata.setMaterialUnit(MaterialUnit);
         bunkerdata.setMaterialStock(MaterialStock);
         bunkerdata.setMaterialDropSpeed(MaterialDropSpeed);
@@ -372,24 +412,34 @@ public class MaterialSql extends SQLiteOpenHelper {
 
     public List<CommitMaterialObject> getCommitMaterialObjectList() {
         List<CommitMaterialObject> list = new ArrayList<>();
-        for (int i = 0; i < getAllbunkersIDs().size(); i++) {
+        List<String> AllbunkersIDs = getAllbunkersIDs();
+        for (int i = 0; i < AllbunkersIDs.size(); i++) {
             CommitMaterialObject object = new CommitMaterialObject();
-            String bunkerID = getAllbunkersIDs().get(i);
+            String bunkerID = AllbunkersIDs.get(i);
             object.setBunkerID(Integer.parseInt(bunkerID));
             object.setMaterialStock(Integer.parseInt(getStorkByBunkersID(bunkerID)));
             object.setOutput(Integer.parseInt(getMaterialDropSpeedByBunkersID(bunkerID)));
-            object.setMaterialID(Integer.parseInt(getMaterialIDByBunkerID(bunkerID)));
+            if (getMaterialIDByBunkerID(bunkerID).equals("null")) {
+                object.setMaterialID(null);
+            } else {
+                object.setMaterialID(Integer.parseInt(getMaterialIDByBunkerID(bunkerID)));
+            }
+
             list.add(object);
         }
+        Log.e(TAG, "commit list is " + list.size());
         return list;
     }
 
     public List<bunkerData> getRecycleBunkersList() {
-        if (getAllbunkersIDs().size() == 0) {
+        List<String> AllcontainerID = getAllcontainerID();
+        if (AllcontainerID.size() == 0) {
             return null;
         } else {
+            Log.e(TAG, "location AllcontainerID is " + AllcontainerID.toString());
             List<bunkerData> bunkersList = new ArrayList<>();
-            if (getAllcontainerID().contains("0")) { //如果含有这个料仓则从数据库中找到数据加入
+
+            if (AllcontainerID.contains("0")) { //如果含有这个料仓则从数据库中找到数据加入
                 bunkersList.add(0, getbunkerDataBycontainerID("0"));
             } else {//如果不含有这个料仓则加入空的数据
                 bunkerData data = new bunkerData();
@@ -405,7 +455,7 @@ public class MaterialSql extends SQLiteOpenHelper {
                 data.setBunkersName(bankesName[0]);
                 bunkersList.add(0, data);
             }
-            if (getAllcontainerID().contains("1")) { //如果含有这个料仓则从数据库中找到数据加入
+            if (AllcontainerID.contains("1")) { //如果含有这个料仓则从数据库中找到数据加入
                 bunkersList.add(1, getbunkerDataBycontainerID("1"));
             } else {//如果不含有这个料仓则加入空的数据
                 bunkerData data = new bunkerData();
@@ -422,7 +472,7 @@ public class MaterialSql extends SQLiteOpenHelper {
                 bunkersList.add(1, data);
             }
 
-            if (getAllcontainerID().contains("2")) { //如果含有这个料仓则从数据库中找到数据加入
+            if (AllcontainerID.contains("2")) { //如果含有这个料仓则从数据库中找到数据加入
                 bunkersList.add(2, getbunkerDataBycontainerID("2"));
             } else {//如果不含有这个料仓则加入空的数据
                 bunkerData data = new bunkerData();
@@ -439,7 +489,7 @@ public class MaterialSql extends SQLiteOpenHelper {
                 bunkersList.add(2, data);
             }
 
-            if (getAllcontainerID().contains("3")) { //如果含有这个料仓则从数据库中找到数据加入
+            if (AllcontainerID.contains("3")) { //如果含有这个料仓则从数据库中找到数据加入
                 bunkersList.add(3, getbunkerDataBycontainerID("3"));
             } else {//如果不含有这个料仓则加入空的数据
                 bunkerData data = new bunkerData();
@@ -455,7 +505,7 @@ public class MaterialSql extends SQLiteOpenHelper {
                 data.setBunkersName(bankesName[3]);
                 bunkersList.add(3, data);
             }
-            if (getAllcontainerID().contains("4")) { //如果含有这个料仓则从数据库中找到数据加入
+            if (AllcontainerID.contains("4")) { //如果含有这个料仓则从数据库中找到数据加入
                 bunkersList.add(4, getbunkerDataBycontainerID("4"));
             } else {//如果不含有这个料仓则加入空的数据
                 bunkerData data = new bunkerData();
@@ -472,7 +522,7 @@ public class MaterialSql extends SQLiteOpenHelper {
                 bunkersList.add(4, data);
             }
 
-            if (getAllcontainerID().contains("5")) { //如果含有这个料仓则从数据库中找到数据加入
+            if (AllcontainerID.contains("5")) { //如果含有这个料仓则从数据库中找到数据加入
                 bunkersList.add(5, getbunkerDataBycontainerID("5"));
             } else {//如果不含有这个料仓则加入空的数据
                 bunkerData data = new bunkerData();
@@ -489,7 +539,7 @@ public class MaterialSql extends SQLiteOpenHelper {
                 bunkersList.add(5, data);
             }
 
-            if (getAllcontainerID().contains("6")) { //如果含有这个料仓则从数据库中找到数据加入
+            if (AllcontainerID.contains("6")) { //如果含有这个料仓则从数据库中找到数据加入
                 bunkersList.add(6, getbunkerDataBycontainerID("6"));
             } else {//如果不含有这个料仓则加入空的数据
                 bunkerData data = new bunkerData();
@@ -517,6 +567,7 @@ public class MaterialSql extends SQLiteOpenHelper {
 
             //    int id = getAllCotacts().size();
             for (int id = 1; id < getAllCotacts().size() + 1; id++) {
+
                 Cursor cursor = getDataCursor(MATERIALS_COLUMN_ID, id);
                 cursor.moveToFirst();
                 String bunkerID = cursor.getString(cursor.getColumnIndex(MATERIALS_COLUMN_BUNKERSID));
@@ -539,9 +590,14 @@ public class MaterialSql extends SQLiteOpenHelper {
                 bunkerdata.setContainerID(containerID);
                 bunkerdata.setLastLoadingTime(lastLoadingTime);
                 bunkersList.add(bunkerdata);
+                cursor.close();
             }
 
             return bunkersList;
         }
+    }
+
+    public void setAdapter(MaterialRecycleListAdapter materialRecycleListAdapter) {
+        adapter = materialRecycleListAdapter;
     }
 }

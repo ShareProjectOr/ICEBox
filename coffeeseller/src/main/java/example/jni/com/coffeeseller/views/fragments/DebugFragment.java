@@ -70,6 +70,7 @@ public class DebugFragment extends BasicFragment implements IDebugDropMaterialVi
         mView = inflater.inflate(R.layout.debug_fragment_layout,null,false);
         initview();
         initdata();
+
         return mView;
     }
 

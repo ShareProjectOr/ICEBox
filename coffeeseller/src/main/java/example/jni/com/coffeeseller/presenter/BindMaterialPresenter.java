@@ -1,5 +1,7 @@
 package example.jni.com.coffeeseller.presenter;
 
+import android.widget.TextView;
+
 import java.util.List;
 
 import example.jni.com.coffeeseller.bean.Material;
@@ -25,8 +27,8 @@ public class BindMaterialPresenter {
         this.addMaterialView = addMaterialView;
     }
 
-    public void BindMaterial(String binkerID) {
-        iBindMaterial.bindMaterial(addMaterialView.getcontext(), iBindMaterialView.getview(), binkerID, new OnBindMaterialCallBackListener() {
+    public void BindMaterial(TextView textView, String binkerID) {
+        iBindMaterial.bindMaterial(iBindMaterialView, addMaterialView.getcontext(), textView, binkerID, new OnBindMaterialCallBackListener() {
             @Override
             public void BindSuccess(List<Material> list) {
                 addMaterialView.notifySetDataChange(new MaterialSql(addMaterialView.getcontext()));

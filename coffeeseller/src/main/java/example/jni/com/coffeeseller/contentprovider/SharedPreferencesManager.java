@@ -74,6 +74,14 @@ public class SharedPreferencesManager {
         return password;
     }
 
+    public void setLastAppUpdateTime(String date) {
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString("LastAppUpdateTime", date);
+        editor.apply();
+    }
+ public String getLastAppUpdateTime(){
+     return   sharedPreferences.getString("LastAppUpdateTime", "1.0.0");
+ }
     public void setCupNum(int CupNum) {
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putInt("CupNum", CupNum);

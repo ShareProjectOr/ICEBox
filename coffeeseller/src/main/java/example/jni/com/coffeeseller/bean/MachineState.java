@@ -5,22 +5,22 @@ package example.jni.com.coffeeseller.bean;
  */
 
 public class MachineState {
-    String msgId;
-    String machineCode;
-    String pageType;
-    String msgType;
-    String sendTime ;
-    int networkType = 1;//int 0-掉线 1-移动蜂窝 2-wifi
-    int cupHouseState = 0;// int  杯仓状态 1-有杯   0-无杯
-    int cupHolderState = 1;//int  杯架状态 1-有杯(未取杯)  0-无杯
-    int boilerTemperature;// int  锅炉温度,单位℃
-    int boilerPressure ; //int 锅炉压力，单位pa
-    int doorState; // int 大门状态 0-关闭 1-开启
-    int cupDoorState; // int 0-关闭 1-开启
-    String driverVersion;// string 机器驱动软件版本
-    String clientVersion; // string 机器售卖（客户端）软件版本
-    String mediaVersion;// string 机器媒体软件版本（目前没有）
-    String errCode; //   string 设备错误码 00 代表正常  参照咖啡机WEB和服务器接口异常类型列表
+    public static String msgId;
+    public static String machineCode;
+    public static String pageType;
+    public static String msgType;
+    public static String sendTime;
+    public static int networkType = 1;//int 0-掉线 1-移动蜂窝 2-wifi
+    public static int cupHouseState = 0;// int  杯仓状态 1-有杯   0-无杯
+    public static int cupHolderState = 1;//int  杯架状态 1-有杯(未取杯)  0-无杯
+    public static int boilerTemperature;// int  锅炉温度,单位℃
+    public static int boilerPressure; //int 锅炉压力，单位pa
+    public static int doorState; // int 大门状态 0-关闭 1-开启
+    public static int cupDoorState; // int 0-关闭 1-开启
+    public static String driverVersion;// string 机器驱动软件版本
+    public static String clientVersion; // string 机器售卖（客户端）软件版本
+    public static String mediaVersion;// string 机器媒体软件版本（目前没有）
+    public static String errCode; //   string 设备错误码 00 代表正常  参照咖啡机WEB和服务器接口异常类型列表
 
     public String getMsgId() {
         return msgId;

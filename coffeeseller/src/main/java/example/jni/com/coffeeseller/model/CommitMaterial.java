@@ -1,6 +1,7 @@
 package example.jni.com.coffeeseller.model;
 
 import android.os.AsyncTask;
+import android.util.Log;
 
 import com.alibaba.fastjson.JSONObject;
 
@@ -24,11 +25,14 @@ import example.jni.com.coffeeseller.model.listeners.OnCommitMaterialCallBackList
  */
 
 public class CommitMaterial implements ICommitMaterial {
+    private String TAG = "CommitMaterial";
+
     @Override
     public void Commit(List<CommitMaterialObject> list, final OnCommitMaterialCallBackListener onCommitMaterialCallBackListener) {
         final Map<String, Object> postBody = new HashMap<>();
         postBody.put("machineCode", MachineConfig.getMachineCode());
         postBody.put("bunkers", list);
+        Log.e(TAG, "commit list is " + list.toString());
         new AsyncTask<Void, Boolean, Boolean>() {
             String response;
 
@@ -36,6 +40,8 @@ public class CommitMaterial implements ICommitMaterial {
             protected Boolean doInBackground(Void... params) {
                 try {
                     org.json.JSONObject object = new org.json.JSONObject(OkHttpUtil.post(Constance.COMMIT_MATERIAL_URL, JsonUtil.mapToJson(postBody)));
+                    Log.e(TAG, "start commit");
+                    Log.e(TAG, "result is " + object.toString());
                     if (object.getString("err").equals("")) {
                         response = "";
                         return true;

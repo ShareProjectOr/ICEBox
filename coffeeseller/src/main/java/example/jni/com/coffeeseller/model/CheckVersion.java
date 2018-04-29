@@ -35,9 +35,11 @@ public class CheckVersion implements ICheckVersion {
                 Map<String, Object> post = new HashMap<>();
                 post.put("version", locationVersion);
                 post.put("machineCode", MachineConfig.getMachineCode());
+                Log.e(TAG, " post params is " + post.toString());
                 try {
                     String response = OkHttpUtil.post(Constance.CHECK_VERSION_URL, JsonUtil.mapToJson(post));
                     JSONObject object = new JSONObject(response);
+                    Log.e(TAG, "result is " + object);
                     if (object.getString("err").equals("")) {
                         String netVersion = object.getJSONObject("d").getString("version");
                         if (!locationVersion.equals(netVersion)) { //版本不一致,更新
@@ -48,6 +50,8 @@ public class CheckVersion implements ICheckVersion {
                             result = "目前已经是最新的版本了!!!";
                         }
 
+                    } else {
+                        result = object.getString("err");
                     }
                 } catch (IOException e) {
                     result = e.getMessage();

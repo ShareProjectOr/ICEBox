@@ -12,4 +12,8 @@ public interface ICommitMaterialView {
     List<CommitMaterialObject> getList();
 
     void ShowResult(String result);
+
+    void ShowLoading();
+
+    void HideLoading();
 }

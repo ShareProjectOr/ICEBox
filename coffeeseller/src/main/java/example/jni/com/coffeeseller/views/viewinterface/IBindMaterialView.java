@@ -10,8 +10,9 @@ import android.widget.TextView;
 public interface IBindMaterialView {
     void ShowResult(String Result);
 
+    void ShowLoading();
 
-
+    void HideLoading();
 
     TextView getview();
 }

@@ -46,6 +46,7 @@ import example.jni.com.coffeeseller.model.listeners.OnMachineCheckCallBackListen
 import example.jni.com.coffeeseller.parse.PayResult;
 import example.jni.com.coffeeseller.utils.MyLog;
 import example.jni.com.coffeeseller.utils.SecondToDate;
+import example.jni.com.coffeeseller.utils.Waiter;
 import example.jni.com.coffeeseller.views.activities.HomeActivity;
 
 
@@ -106,17 +107,16 @@ public class TaskService extends Service implements MqttCallback {
     private void checkSubSuccess() {
         if (!isConnected()) {
             mOnMachineCheckCallBackListener.MQTTSubcribeFailed();
-            return;
+
+        } else {
+            mOnMachineCheckCallBackListener.MQTTSubcribeSuccess();
+            MachineInitState.SUB_MQTT_STATE = MachineInitState.NORMAL;
         }
-        long startTime = System.currentTimeMillis();
-        while (System.currentTimeMillis() - startTime < 3000) {
-            if (!isSubSuccess) {
-                mOnMachineCheckCallBackListener.MQTTSubcribeFailed();
-                return;
-            }
+        if (MachineInitState.CHECK_MACHINECODE == MachineInitState.NORMAL && MachineInitState.SUB_MQTT_STATE == MachineInitState.NORMAL && MachineInitState.GET_FORMULA == MachineInitState.NORMAL) {
+            mOnMachineCheckCallBackListener.MachineCheckEnd(true);
+        } else {
+            mOnMachineCheckCallBackListener.MachineCheckEnd(false);
         }
-        mOnMachineCheckCallBackListener.MQTTSubcribeSuccess();
-        MachineInitState.SUB_MQTT_STATE = MachineInitState.NORMAL;
     }
 
     @Override
@@ -172,7 +172,8 @@ public class TaskService extends Service implements MqttCallback {
     private void init() {
         try {
             // host为主机名，clientid即连接MQTT的客户端ID，一般以唯一标识符表示，MemoryPersistence设置clientid的保存形式，默认为以内存保存
-            client = new MqttClient(HOST, String.valueOf(MachineConfig.getMachineCode()), new MemoryPersistence());
+
+            client = new MqttClient(MachineConfig.getTcpIP(), MachineConfig.getMachineCode(), new MemoryPersistence());
             // MQTT的连接设置
             options = new MqttConnectOptions();
             // 设置是否清空session,这里如果设置为false表示服务器会保留客户端的连接记录，这里设置为true表示每次连接到服务器都以新的身份连接
@@ -188,6 +189,7 @@ public class TaskService extends Service implements MqttCallback {
             //   options.setWill();
             // 设置回调
             client.setCallback(new TaskService());
+            Log.e(TAG, "topic is " + MachineConfig.getTcpIP());
             MqttTopic topic = client.getTopic(MachineConfig.getTcpIP());
             // setWill方法，如果项目中需要知道客户端是否掉线可以调用该方法。设置最终端口的通知消息
             Map<String, Object> bytejson = new HashMap<>();
@@ -386,6 +388,7 @@ public class TaskService extends Service implements MqttCallback {
         if (result.getCode() == Result.SUCCESS) {
             if (state.hasCupOnShelf()) {
                 msg.put("cupHolderState", 1);
+
             } else {
                 msg.put("cupHolderState", 0);
             }
