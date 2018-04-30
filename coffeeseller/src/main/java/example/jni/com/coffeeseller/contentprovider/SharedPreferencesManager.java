@@ -82,6 +82,24 @@ public class SharedPreferencesManager {
         editor.apply();
     }
 
+    public void setIsOnClear(boolean b) {
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putBoolean("isOnClear", b);
+        editor.apply();
+    }
+
+    public boolean getIsOnClear() {//开机自动清洗
+        return sharedPreferences.getBoolean("isOnClear", false);
+    }
+    public void setOutCupAutoClear(boolean b) {
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putBoolean("outCupAutoClear", b);
+        editor.apply();
+    }
+
+    public boolean getOutCupAutoClear() {//出杯自动清洗
+        return sharedPreferences.getBoolean("outCupAutoClear", false);
+    }
     public String getLastAppUpdateTime() {
         return sharedPreferences.getString("LastAppUpdateTime", SecondToDate.getDateToString(System.currentTimeMillis()));
     }

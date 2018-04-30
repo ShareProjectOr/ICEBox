@@ -13,6 +13,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -47,7 +50,7 @@ import example.jni.com.coffeeseller.views.viewinterface.ICommitMaterialView;
  * Created by Administrator on 2018/4/12.
  */
 
-public class ConfigFragment extends BasicFragment implements IAddMaterialView, ICommitMaterialView, ICheckVersionView, StateListener, IAddCupView {
+public class ConfigFragment extends BasicFragment implements IAddMaterialView, ICommitMaterialView, ICheckVersionView, StateListener, IAddCupView, CompoundButton.OnCheckedChangeListener {
     private View mView;
     private Button toDebug, materialCommit, checkVersion;
     private HomeActivity homeActivity;
@@ -66,6 +69,8 @@ public class ConfigFragment extends BasicFragment implements IAddMaterialView, I
     private CoffMsger msger;
     private Handler mHandler = new Handler();
     private AddCupPresenter addCupPresenter;
+    private EditText mMachineCode, mTime, mWaterPercent;
+    private CheckBox isOutCupAutoClear, onClear, usuallyWaterType, hotAndColdWaterType;
 
     @Nullable
     @Override
@@ -121,6 +126,15 @@ public class ConfigFragment extends BasicFragment implements IAddMaterialView, I
         driverVersion = (TextView) mView.findViewById(R.id.driverVersion);
         toDebug = (Button) mView.findViewById(R.id.debug_machine);
         back = (TextView) mView.findViewById(R.id.backToCheck);
+        mMachineCode = (EditText) mView.findViewById(R.id.machineCode);
+        mTime = (EditText) mView.findViewById(R.id.time);
+        mWaterPercent = (EditText) mView.findViewById(R.id.waterPercent);
+        isOutCupAutoClear = (CheckBox) mView.findViewById(R.id.isOutCupAutoClear);
+        isOutCupAutoClear.setOnCheckedChangeListener(this);
+        onClear = (CheckBox) mView.findViewById(R.id.onClear);
+        onClear.setOnCheckedChangeListener(this);
+        usuallyWaterType = (CheckBox) mView.findViewById(R.id.usuallyWaterType);
+        hotAndColdWaterType = (CheckBox) mView.findViewById(R.id.hotAndColdWaterType);
         materialList = (RecyclerView) mView.findViewById(R.id.material_list);
         mAdapter = new MaterialRecycleListAdapter(getActivity());
         checkVersionPresenter = new CheckVersionPresenter(this);
@@ -296,6 +310,26 @@ public class ConfigFragment extends BasicFragment implements IAddMaterialView, I
     public void showResultAndUpdateView() {
         Toast.makeText(getActivity(), "添加成功", Toast.LENGTH_LONG).show();
         CupNum.setText(SharedPreferencesManager.getInstance(getActivity()).getCupNum() + "");
+    }
+
+    @Override
+    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+        switch (buttonView.getId()) {
+            case R.id.isOutCupAutoClear:
+                if (isChecked) {
+                    SharedPreferencesManager.getInstance(getActivity()).setOutCupAutoClear(true);
+                } else {
+                    SharedPreferencesManager.getInstance(getActivity()).setOutCupAutoClear(false);
+                }
+                break;
+            case R.id.onClear:
+                if (isChecked) {
+                    SharedPreferencesManager.getInstance(getActivity()).setIsOnClear(true);
+                } else {
+                    SharedPreferencesManager.getInstance(getActivity()).setIsOnClear(false);
+                }
+                break;
+        }
     }
 }
 
