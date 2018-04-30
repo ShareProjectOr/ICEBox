@@ -194,22 +194,28 @@ public class MkCoffee {
 
                     if (isMkTimeOut()) {
 
-                        if (coffeeMakeStateRecorder.state != null
-                                && coffeeMakeStateRecorder.state != CoffeeMakeState.COFFEEFINISHED_CUPNOTAKEN
-                                && coffeeMakeStateRecorder.state != CoffeeMakeState.COFFEEFINISHED_CUPISTAKEN) {
+                        if (coffeeMakeStateRecorder.state == null
+                                || coffeeMakeStateRecorder.state == CoffeeMakeState.COFFEEFINISHED_CUPNOTAKEN
+                                || coffeeMakeStateRecorder.state == CoffeeMakeState.COFFEEFINISHED_CUPISTAKEN) {
+                            MyLog.d(TAG, " make successed but time is too long ");
 
                             if (mkCoffeeListenner != null) {
-                                dealRecorder.setMakeSuccess(false);
+                                dealRecorder.setMakeSuccess(true);
                                 mkCoffeeListenner.getMkResult(dealRecorder, false, isCalculateMaterial);
                             }
                         } else {
                             if (coffeeMakeStateRecorder.state == CoffeeMakeState.COFFEE_DOWN_CUP) {
+
+                                MyLog.d(TAG, " make failed and time is too long,down cup state is remaining ");
+
                                 if (mkCoffeeListenner != null) {
                                     dealRecorder.setMakeSuccess(false);
                                     isCalculateMaterial = false;
                                     mkCoffeeListenner.getMkResult(dealRecorder, false, isCalculateMaterial);
                                 }
+
                             }
+                            break;
                         }
 
                         //     disDialog(false);
@@ -287,6 +293,8 @@ public class MkCoffee {
                             mkCoffeeListenner.getMkResult(dealRecorder, true, isCalculateMaterial);
                         }
 
+                        break;
+
                         //disDialog(false);
 
                     }
@@ -294,9 +302,13 @@ public class MkCoffee {
 
                         coffeeMakeStateRecorder.state = null;
 
+                        break;
+
                         //  disDialog(false);
                     }
                     if (coffeeMakeStateRecorder.state == CoffeeMakeState.COFFEEMAKING_FAILED) {
+
+                        showErr(true);
 
                         if (mkCoffeeListenner != null) {
                             dealRecorder.setMakeSuccess(false);
@@ -305,7 +317,9 @@ public class MkCoffee {
 
 
                         // disDialog(true);
-                        showErr(true);
+
+
+                        break;
                     }
                 }
             }

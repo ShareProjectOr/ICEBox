@@ -86,11 +86,11 @@ public class CoffeeViewPagerAdapter extends PagerAdapter {
     private void getGridViews() {
         gridViewNum = coffees.size() % onePageCount == 0 ? coffees.size() / onePageCount : coffees.size() / onePageCount + 1;
         for (int i = 0; i < gridViewNum; i++) {
-            final List<Coffee> gridCoffees;
+            final List<Coffee> gridCoffees = new ArrayList<>();
             if (i != gridViewNum - 1) {
-                gridCoffees = coffees.subList(i * onePageCount, (i + 1) * onePageCount);
+                gridCoffees.addAll(coffees.subList(i * onePageCount, (i + 1) * onePageCount));
             } else {
-                gridCoffees = coffees.subList(i * onePageCount, coffees.size());
+                gridCoffees.addAll(coffees.subList(i * onePageCount, coffees.size()));
             }
             View view = LayoutInflater.from(homeActivity).inflate(R.layout.coffee_grid_layout, null, false);
             final HomeGridView gridView = (HomeGridView) view.findViewById(R.id.coffeeGrid);

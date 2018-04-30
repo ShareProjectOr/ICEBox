@@ -48,7 +48,7 @@ public class CoffeeGridAdapter extends BaseAdapter {
 
     @Override
     public int getCount() {
-        return coffees.size();
+        return coffees.size() > 0 ? coffees.size() : 0;
     }
 
     @Override

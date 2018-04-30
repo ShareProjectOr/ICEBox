@@ -5,6 +5,7 @@ import android.content.Context;
 import android.os.Handler;
 import android.support.annotation.StyleRes;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.Window;
 import android.view.WindowManager;
 
@@ -125,13 +126,17 @@ public class BuyDialog extends Dialog implements ChooseCupListenner, MkCoffeeLis
         MyLog.d(TAG, "reportTradeToServer params = " + JsonUtil.mapToJson(params));
 
         String RESPONSE_TEXT = null;
+
         try {
+
             RESPONSE_TEXT = OkHttpUtil.post(Constance.TRADE_UPLOAD, JsonUtil.mapToJson(params));
+
         } catch (IOException e) {
+
             e.printStackTrace();
         }
 
-        MyLog.W(TAG, "reportTradeToServer data" + RESPONSE_TEXT);
+        MyLog.W(TAG, "reportTradeToServer data : " + RESPONSE_TEXT);
 
         if (RESPONSE_TEXT != null || !TextUtils.isEmpty(RESPONSE_TEXT)) {
 
@@ -174,24 +179,25 @@ public class BuyDialog extends Dialog implements ChooseCupListenner, MkCoffeeLis
             if (step != null && step.getContainerConfig().getWater_capacity() == 0)
 
                 if (step.getMaterial() != null) {
+                    Log.e(TAG, "materialID is " + step.getMaterial().getMaterialID());
 
                     String sqlRestMaterial = materialSql.getStorkByMaterialID(step.getMaterial().getMaterialID() + "");
+
                     int sqlRestMaterialInt = Integer.parseInt(sqlRestMaterial);
 
                     int mkUseMaterialInt = dealRecorder.getContainerConfigs().get(i).getMaterial_time() * step.getMaterial().getOutput();
 
+                    Log.e(TAG, " materialID is  " + step.getMaterial().getMaterialID() + " stock is " + sqlRestMaterial + ",used= " + mkUseMaterialInt);
 
                     boolean isUpdateSuccess = materialSql.updateMaterialStockByMaterialId(step.getMaterial().getMaterialID() + "", (sqlRestMaterialInt - mkUseMaterialInt) + "");
 
                     MyLog.W(TAG, "update material is " + isUpdateSuccess + ", materialId=" + step.getMaterial().getMaterialID()
                             + ", stock=" + (sqlRestMaterialInt - mkUseMaterialInt));
 
-                    MyLog.d(TAG, "update material is " + isUpdateSuccess + ", materialId=" + step.getMaterial().getMaterialID()
-                            + ", stock=" + (sqlRestMaterialInt - mkUseMaterialInt));
-
                     ReportBunker reportBunker = new ReportBunker();
                     int bunkerId = Integer.parseInt(materialSql.getBunkerIDByMaterialD(step.getMaterial().getMaterialID() + ""));
                     reportBunker.setBunkerID(bunkerId);
+                    reportBunker.setUnit(mkUseMaterialInt);
                     reportBunker.setMaterialStock((sqlRestMaterialInt - mkUseMaterialInt));
 
                     bunkers.add(reportBunker);
@@ -256,7 +262,7 @@ public class BuyDialog extends Dialog implements ChooseCupListenner, MkCoffeeLis
         handler.post(new Runnable() {
             @Override
             public void run() {
-                MkCoffee mkCoffee = new MkCoffee(context, fomat, dealRecorder, mkCoffeeListenner,handler);
+                MkCoffee mkCoffee = new MkCoffee(context, fomat, dealRecorder, mkCoffeeListenner, handler);
                 setContentView(mkCoffee.getView());
             }
         });

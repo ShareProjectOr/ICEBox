@@ -108,11 +108,11 @@ public class CheckCurMachineState {
             mBuffer.append("锅炉压力大于1500");
 
         }
-   /*     if (!machineState.isWaterEnough()) {
+        if (!machineState.isWaterEnough()) {
             isCheckCanMake = false;
             mBuffer.append("\n");
             mBuffer.append("水量不足");
-        }*/
+        }
        /* if (!machineState.isBeanEnough()) {
 
             isCheckCanMake = false;

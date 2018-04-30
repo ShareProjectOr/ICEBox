@@ -137,6 +137,8 @@ public class DealOrderInfoManager {
                 mBean.setPayTime(localCursor.getString(localCursor.getColumnIndex("pay_time")));
                 mBean.setCustomerId(localCursor.getString(localCursor.getColumnIndex("customer_id")));
                 mBean.setFormulaID(localCursor.getInt(localCursor.getColumnIndex("formula_id")));
+                mBean.setReportMsg(localCursor.getString(localCursor.getColumnIndex("report_msg")));
+
 
                 boolean isPay = localCursor.getInt(localCursor.getColumnIndex("payed")) == 0 ? false : true;
 
@@ -145,6 +147,10 @@ public class DealOrderInfoManager {
                 boolean isMakeSuccess = localCursor.getInt(localCursor.getColumnIndex("make_success")) == 0 ? false : true;
 
                 mBean.setMakeSuccess(isMakeSuccess);
+
+                boolean isReportSuccess = localCursor.getInt(localCursor.getColumnIndex("is_report_success")) == 0 ? false : true;
+
+                mBean.setReportSuccess(isReportSuccess);
 
                 mList.add(mBean);
             }

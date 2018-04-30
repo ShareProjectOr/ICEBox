@@ -238,10 +238,10 @@ public class MachineCheckFragment extends BasicFragment implements ICheckMachine
                         protected void onProgressUpdate(Integer... values) {
                             Log.d("changeProgress", values + "");
                             mSub_Mqtt.setProgress(values[0]);
-                            if (values[0] == 100) {
+                         /*   if (values[0] == 100) {
                                 if (isCheckSuccess)
                                     homeActivity.replaceFragment(FragmentEnum.MachineCheckFragment, FragmentEnum.ChooseCupNumFragment);
-                            }
+                            }*/
                             super.onProgressUpdate(values);
                         }
                     }.execute();
@@ -305,7 +305,7 @@ public class MachineCheckFragment extends BasicFragment implements ICheckMachine
             @Override
             public void run() {
 
-                //   homeActivity.replaceFragment(FragmentEnum.MachineCheckFragment, fragment);
+               homeActivity.replaceFragment(FragmentEnum.MachineCheckFragment, fragment);
             }
         });
 

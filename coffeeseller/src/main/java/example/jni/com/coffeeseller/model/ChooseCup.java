@@ -1,14 +1,18 @@
 package example.jni.com.coffeeseller.model;
 
 import android.content.Context;
+import android.content.res.ColorStateList;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
+import android.os.Build;
 import android.os.CountDownTimer;
 import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.IdRes;
+import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
@@ -18,6 +22,7 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 
+import java.lang.reflect.Field;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Timer;
@@ -43,6 +48,9 @@ import example.jni.com.coffeeseller.utils.MyLog;
 import example.jni.com.coffeeseller.utils.QRMaker;
 import example.jni.com.coffeeseller.views.customviews.BuyDialog;
 
+import static android.R.attr.button;
+import static android.R.attr.track;
+
 /**
  * Created by WH on 2018/4/25.
  */
@@ -61,6 +69,7 @@ public class ChooseCup implements View.OnClickListener, MsgTransListener {
     private ChooseCupListenner mChooseCupListener;
     private MsgTransListener mMsgTransListener;
     private TimerTask mCheckPayTask = null;
+    private CountDownTimer countDownTimer;
     private Timer mTimer = null;
     private Handler mHandler;
     private int mCurRequest;
@@ -76,27 +85,33 @@ public class ChooseCup implements View.OnClickListener, MsgTransListener {
 
     private void init() {
         initView();
-        if (CheckCurMachineState.getInstance().isCanMaking()) {
-            MyLog.d(TAG, "machine is ok ");
-            mViewHolder.mContentLayout.setVisibility(View.VISIBLE);
-            mViewHolder.mErrTip.setVisibility(View.GONE);
-        } else {
-            MyLog.d(TAG, "machine is has error ");
-            mViewHolder.mErrTip.setVisibility(View.VISIBLE);
-            mViewHolder.mContentLayout.setVisibility(View.GONE);
-            MyLog.d(TAG,CheckCurMachineState.getInstance().getStateTip());
-            mViewHolder.mErrTip.setText(CheckCurMachineState.getInstance().getStateTip());
+        if (isMachineRight()){
+            initData();
         }
-     //   mViewHolder.mContentLayout.setVisibility(View.VISIBLE);
-
-
-        initData();
+        countDownTime();
     }
 
     public View getView() {
         return mView;
     }
 
+    private boolean isMachineRight() {
+        if (CheckCurMachineState.getInstance().isCanMaking()) {
+            MyLog.d(TAG, "machine is ok ");
+            mViewHolder.mContentLayout.setVisibility(View.VISIBLE);
+            mViewHolder.mQrLayout.setVisibility(View.VISIBLE);
+            mViewHolder.mErrTip.setVisibility(View.GONE);
+            return true;
+        } else {
+            MyLog.d(TAG, "machine is has error ");
+            mViewHolder.mErrTip.setVisibility(View.VISIBLE);
+            mViewHolder.mContentLayout.setVisibility(View.GONE);
+            mViewHolder.mQrLayout.setVisibility(View.GONE);
+            mViewHolder.mErrTip.setText(CheckCurMachineState.getInstance().getStateTip());
+            return false;
+        }
+
+    }
 
     private void initView() {
 
@@ -142,7 +157,6 @@ public class ChooseCup implements View.OnClickListener, MsgTransListener {
 
         requestQRCode();
 
-        countDownTime();
     }
 
 
@@ -302,17 +316,17 @@ public class ChooseCup implements View.OnClickListener, MsgTransListener {
         }
     }
 
-    private void updateTextColor(RadioGroup group, int checkedId, Step step, int index) {
+    private void updateTextColor(LinearLayout tasteLayout, View checkedView, Step step, int index) {
 
         ContainerConfig containerConfig = mCoffeeFomat.getContainerConfigs().get(index);
 
-        for (int i = 0; i < group.getChildCount(); i++) {
-            RadioButton button = (RadioButton) group.getChildAt(i);
-            if (button.getId() != checkedId) {
-                button.setSelected(false);
+        for (int i = 0; i < tasteLayout.getChildCount(); i++) {
+            LinearLayout childLayout = (LinearLayout) tasteLayout.getChildAt(i);
+            TextView textView = (TextView) childLayout.getChildAt(0);
+            if (textView != checkedView) {
+                textView.setSelected(false);
             } else {
-                button.setSelected(true);
-
+                textView.setSelected(true);
                 double materialTime = new BigDecimal((float) step.getTastes().get(i).getAmount() / 100)
                         .setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
                 int useMaterial = (int) (materialTime * containerConfig.getMaterial_time());
@@ -347,12 +361,19 @@ public class ChooseCup implements View.OnClickListener, MsgTransListener {
    * */
     private void countDownTime() {
 
+        stopCountDownTimer();
 
-        CountDownTimer timer = new CountDownTimer(VIEW_SHOW_TIME, 1000) {
+        countDownTimer = new CountDownTimer(VIEW_SHOW_TIME, 1000) {
             @Override
             public void onTick(final long millisUntilFinished) {
 
                 mViewHolder.mCountDownTime.setText(millisUntilFinished / 1000 + " s");
+
+                if (mDealRecorder.isPayed()) {
+                    stopTaskCheckPay();
+                    stopCountDownTimer();
+                    return;
+                }
 
             }
 
@@ -361,14 +382,22 @@ public class ChooseCup implements View.OnClickListener, MsgTransListener {
                 if (!mDealRecorder.isPayed()) {
 
                     if (mChooseCupListener != null) {
+
+                        stopCountDownTimer();
                         stopTaskCheckPay();
                         mChooseCupListener.cancle(mDealRecorder.getOrder());
                     }
                 }
             }
         };
-        timer.start();
+        countDownTimer.start();
+    }
 
+    private void stopCountDownTimer() {
+        if (countDownTimer != null) {
+            countDownTimer.cancel();
+            countDownTimer = null;
+        }
     }
 
     /*
@@ -449,6 +478,8 @@ public class ChooseCup implements View.OnClickListener, MsgTransListener {
         public TextView mCountDownTime;
         public TextView mErrTip;
         public LinearLayout mContentLayout;
+        private LinearLayout mQrLayout;
+
 
         public ViewHolder(View view) {
             initView(view);
@@ -466,9 +497,7 @@ public class ChooseCup implements View.OnClickListener, MsgTransListener {
             mCountDownTime = (TextView) view.findViewById(R.id.countDownTime);
             mErrTip = (TextView) view.findViewById(R.id.errTip);
             mContentLayout = (LinearLayout) view.findViewById(R.id.contentLayout);
-
-
-            mQrCodeImage.setVisibility(View.GONE);
+            mQrLayout = (LinearLayout) view.findViewById(R.id.qr_layout);
         }
 
         public void addView(final Step step, final int index) {
@@ -483,30 +512,22 @@ public class ChooseCup implements View.OnClickListener, MsgTransListener {
 
             View tasteView = LayoutInflater.from(mContext).inflate(R.layout.coffee_taste_suger_choose, null);
             TextView tasteName = (TextView) tasteView.findViewById(R.id.taste_name);
-            RadioGroup group = (RadioGroup) tasteView.findViewById(R.id.taste_suger);
-            group.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
-                @Override
-                public void onCheckedChanged(RadioGroup group, @IdRes int checkedId) {
-                    updateTextColor(group, checkedId, step, index);
-                }
-            });
+            LinearLayout tasteLayout = (LinearLayout) tasteView.findViewById(R.id.taste_suger);
+
             tasteName.setText(material.getName());
-            for (int i = 0; i < tastes.size(); i++) {
-                Taste taste = tastes.get(i);
-                View childView = LayoutInflater.from(mContext).inflate(R.layout.radio_btn, null);
-                RadioButton radioButton = (RadioButton) childView.findViewById(R.id.tasteChild);
-                radioButton.setId(Integer.MAX_VALUE - i);
-                radioButton.setText(taste.getRemark());
-                group.addView(childView);
-            }
-            setEnable(group, step);
+
+            LinearLayout layout = setTast(tasteLayout, tastes, step, index);
+
+            setEnable(layout, step);
+
             mTastLayout.addView(tasteView);
+
         }
 
         /*
           * 根据数据库剩余量计算RadioButton是否可用
           * */
-        private void setEnable(RadioGroup group, Step step) {
+        private void setEnable(LinearLayout tasteLayout, Step step) {
 
             List<Taste> tastes = step.getTastes();
             Material material = step.getMaterial();
@@ -524,23 +545,64 @@ public class ChooseCup implements View.OnClickListener, MsgTransListener {
 
             int stockInt = Integer.parseInt(stock);
 
-            for (int i = 0; i < group.getChildCount(); i++) {
+            for (int i = 0; i < tasteLayout.getChildCount(); i++) {
 
                 Taste taste = tastes.get(i);
                 if (taste == null) {
                     continue;
                 }
-                int useMaterial = (taste.getAmount() / 100) * step.getContainerConfig().getMaterial_time();
-                RadioButton button = (RadioButton) group.getChildAt(i);
+                int useMaterial = (int) (((float) taste.getAmount() / 100) * step.getContainerConfig().getMaterial_time());
+                LinearLayout layout = (LinearLayout) tasteLayout.getChildAt(i);
+                TextView textView = (TextView) layout.getChildAt(0);
                 if (stockInt < useMaterial) {
-                    button.setEnabled(false);
-                    button.setAlpha(0.3f);
-                    button.setClickable(false);
+                    textView.setEnabled(false);
+                    textView.setAlpha(0.7f);
+                    textView.setClickable(false);
                 }
-           /* else {
-                group.check(button.getId());
-            }*/
             }
         }
+    }
+
+    private LinearLayout setTast(LinearLayout layout, List<Taste> tastes, final Step step, final int index) {
+        final LinearLayout linearLayout = new LinearLayout(mContext);
+        LinearLayout.LayoutParams linearLayoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT);
+        linearLayout.setOrientation(LinearLayout.HORIZONTAL);
+        linearLayout.setLayoutParams(linearLayoutParams);
+        for (int i = 0; i < tastes.size(); i++) {
+            Taste taste = tastes.get(i);
+
+            final LinearLayout childLayout = new LinearLayout(mContext);
+            LinearLayout.LayoutParams childLayoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,
+                    LinearLayout.LayoutParams.WRAP_CONTENT);
+            childLayout.setLayoutParams(childLayoutParams);
+
+            TextView textView = new TextView(mContext);
+            LinearLayout.LayoutParams textViewParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,
+                    LinearLayout.LayoutParams.WRAP_CONTENT);
+            textViewParams.setMargins(10, 20, 10, 10);
+            textView.setPadding(20, 10, 20, 10);
+            textView.setBackgroundResource(R.drawable.selector_taste_bng_shape);
+            textView.setTextColor(mContext.getResources().getColorStateList(R.color.selector_taste_text_color));
+            textView.setText(taste.getRemark());
+            textView.setTextSize(22);
+            textView.setLayoutParams(textViewParams);
+            textView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    updateTextColor(linearLayout, v, step, index);
+                }
+            });
+
+            if (taste.getAmount() == 100) {
+                textView.setSelected(true);
+            }
+
+            childLayout.addView(textView);
+
+            linearLayout.addView(childLayout);
+        }
+        layout.addView(linearLayout);
+        return linearLayout;
     }
 }

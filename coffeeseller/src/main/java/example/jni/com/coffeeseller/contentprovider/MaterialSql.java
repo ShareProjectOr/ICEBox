@@ -449,7 +449,7 @@ public class MaterialSql extends SQLiteOpenHelper {
                 data.setMaterialType("");
                 data.setMaterialName("未启用");
                 data.setMaterialUnit("");
-                data.setMaterialStock("");
+                data.setMaterialStock("0");
                 data.setMaterialDropSpeed("");
                 data.setContainerID("0");
                 data.setLastLoadingTime("");
@@ -465,7 +465,7 @@ public class MaterialSql extends SQLiteOpenHelper {
                 data.setMaterialType("");
                 data.setMaterialName("未启用");
                 data.setMaterialUnit("");
-                data.setMaterialStock("");
+                data.setMaterialStock("0");
                 data.setMaterialDropSpeed("");
                 data.setContainerID("1");
                 data.setLastLoadingTime("");
@@ -482,7 +482,7 @@ public class MaterialSql extends SQLiteOpenHelper {
                 data.setMaterialType("");
                 data.setMaterialName("未启用");
                 data.setMaterialUnit("");
-                data.setMaterialStock("");
+                data.setMaterialStock("0");
                 data.setMaterialDropSpeed("");
                 data.setContainerID("2");
                 data.setLastLoadingTime("");
@@ -499,7 +499,7 @@ public class MaterialSql extends SQLiteOpenHelper {
                 data.setMaterialType("");
                 data.setMaterialName("未启用");
                 data.setMaterialUnit("");
-                data.setMaterialStock("");
+                data.setMaterialStock("0");
                 data.setMaterialDropSpeed("");
                 data.setContainerID("3");
                 data.setLastLoadingTime("");
@@ -515,7 +515,7 @@ public class MaterialSql extends SQLiteOpenHelper {
                 data.setMaterialType("");
                 data.setMaterialName("未启用");
                 data.setMaterialUnit("");
-                data.setMaterialStock("");
+                data.setMaterialStock("0");
                 data.setMaterialDropSpeed("");
                 data.setContainerID("4");
                 data.setLastLoadingTime("");
@@ -532,7 +532,7 @@ public class MaterialSql extends SQLiteOpenHelper {
                 data.setMaterialType("");
                 data.setMaterialName("未启用");
                 data.setMaterialUnit("");
-                data.setMaterialStock("");
+                data.setMaterialStock("0");
                 data.setMaterialDropSpeed("");
                 data.setContainerID("5");
                 data.setLastLoadingTime("");
@@ -549,7 +549,7 @@ public class MaterialSql extends SQLiteOpenHelper {
                 data.setMaterialType("");
                 data.setMaterialName("未启用");
                 data.setMaterialUnit("");
-                data.setMaterialStock("");
+                data.setMaterialStock("0");
                 data.setMaterialDropSpeed("");
                 data.setContainerID("6");
                 data.setLastLoadingTime("");

@@ -8,8 +8,8 @@ import example.jni.com.coffeeseller.bean.MachineConfig;
 
 public interface Constance {
 
-    //    String SERVER = MachineConfig.getHostUrl();
-    String SERVER = "http://192.168.4.192:8083";
+    //    String SERVER = MachineConfig.getHostUrl();192.168.4.192
+    String SERVER = "http://119.23.71.185:8083";
 
     String GET_QR = SERVER + "/trade/getQrCode";
 
