@@ -1,6 +1,7 @@
 package example.jni.com.coffeeseller.views.fragments;
 
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
@@ -36,6 +37,7 @@ import example.jni.com.coffeeseller.model.listeners.GridViewItemListener;
 import example.jni.com.coffeeseller.model.listeners.ViewpagerPageChangedListener;
 import example.jni.com.coffeeseller.parse.PayResult;
 import example.jni.com.coffeeseller.utils.GridViewTransformation;
+import example.jni.com.coffeeseller.utils.Waiter;
 import example.jni.com.coffeeseller.views.activities.HomeActivity;
 import example.jni.com.coffeeseller.views.customviews.BuyDialog;
 
@@ -50,13 +52,13 @@ public class BuyFragment extends BasicFragment implements GridViewItemListener, 
     public static int DEFAULT_ONEPAGE_NUM = 8;
     private HomeViewPager mViewPager;
     private LinearLayout mPointGroup;
-    public ImageView mLogo;
+    public ImageView mLogo, mIsOnLineImg;
     public TextView mMachineCode;
     public ImageView mHelp;
     private RelativeLayout mHelpLayout;
     private CoffeeViewPagerAdapter mPagerAdapter;
     private List<Coffee> mCoffees;
-    private long lastClickTime;
+    private Handler handler;
 
     private BuyDialog buyDialog;
 
@@ -79,6 +81,7 @@ public class BuyFragment extends BasicFragment implements GridViewItemListener, 
     private void initViews() {
         homeActivity = HomeActivity.getInstance();
         mLogo = (ImageView) content.findViewById(R.id.logo);
+        mIsOnLineImg = (ImageView) content.findViewById(R.id.isOnLineImg);
         mHelp = (ImageView) content.findViewById(R.id.help);
         mHelpLayout = (RelativeLayout) content.findViewById(R.id.helpLayout);
         mMachineCode = (TextView) content.findViewById(R.id.machineCode);
@@ -111,11 +114,13 @@ public class BuyFragment extends BasicFragment implements GridViewItemListener, 
 
         buyDialog = new BuyDialog(homeActivity, R.style.dialog);
         mCoffees = new ArrayList<>();
+        handler = new Handler();
         TaskService.getInstance().setOnMessageReceviedListener(this);
         mCoffees = SingleMaterialLsit.getInstance(homeActivity).getCoffeeList();
         mPagerAdapter = new CoffeeViewPagerAdapter(homeActivity, mCoffees, this);
         mViewPager.addOnPageChangeListener(new ViewpagerPageChangedListener());
         mViewPager.setAdapter(mPagerAdapter);
+        mMachineCode.setText(MachineConfig.getMachineCode() + "");
 
     }
 
@@ -151,6 +156,28 @@ public class BuyFragment extends BasicFragment implements GridViewItemListener, 
         if (mPagerAdapter != null) {
             mPagerAdapter.notifyDataSetChanged();
         }
+    }
+
+    private void updateOnLine() {
+
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                handler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (MachineConfig.getNetworkType() == 0) {
+                            mIsOnLineImg.setImageResource(R.mipmap.on_line);
+                        } else {
+                            mIsOnLineImg.setImageResource(R.mipmap.on_line);
+                        }
+                    }
+                });
+
+                Waiter.doWait(5000);
+            }
+        }).start();
     }
 
     @Override
