@@ -15,9 +15,6 @@ import example.jni.com.coffeeseller.presenter.AddFragmentPresenter;
 import example.jni.com.coffeeseller.views.fragments.BasicFragment;
 import example.jni.com.coffeeseller.views.viewinterface.IAddFragmentView;
 
-import static example.jni.com.coffeeseller.factory.FragmentEnum.ChooseCupNumFragment;
-import static example.jni.com.coffeeseller.factory.FragmentEnum.ConfigFragment;
-import static example.jni.com.coffeeseller.factory.FragmentEnum.HomeFragement;
 import static example.jni.com.coffeeseller.factory.FragmentEnum.MachineCheckFragment;
 
 /**

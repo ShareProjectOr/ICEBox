@@ -13,20 +13,28 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.List;
 
+import cof.ac.inter.StateEnum;
 import example.jni.com.coffeeseller.R;
 import example.jni.com.coffeeseller.bean.Coffee;
+import example.jni.com.coffeeseller.bean.MachineConfig;
+import example.jni.com.coffeeseller.communicate.TaskService;
 import example.jni.com.coffeeseller.contentprovider.MaterialSql;
 import example.jni.com.coffeeseller.contentprovider.SingleMaterialLsit;
 import example.jni.com.coffeeseller.databases.DataBaseHelper;
 import example.jni.com.coffeeseller.factory.FragmentEnum;
 import example.jni.com.coffeeseller.factory.FragmentFactory;
+import example.jni.com.coffeeseller.listener.MessageReceviedListener;
 import example.jni.com.coffeeseller.model.adapters.CoffeeViewPagerAdapter;
 import example.jni.com.coffeeseller.model.adapters.HomeViewPager;
 import example.jni.com.coffeeseller.model.listeners.GridViewItemListener;
 import example.jni.com.coffeeseller.model.listeners.ViewpagerPageChangedListener;
+import example.jni.com.coffeeseller.parse.PayResult;
 import example.jni.com.coffeeseller.utils.GridViewTransformation;
 import example.jni.com.coffeeseller.views.activities.HomeActivity;
 import example.jni.com.coffeeseller.views.customviews.BuyDialog;
@@ -35,7 +43,7 @@ import example.jni.com.coffeeseller.views.customviews.BuyDialog;
  * Created by WH on 2018/3/30.
  */
 
-public class BuyFragment extends BasicFragment implements GridViewItemListener, View.OnClickListener {
+public class BuyFragment extends BasicFragment implements GridViewItemListener, View.OnClickListener, MessageReceviedListener {
     private static String TAG = "BuyFragment";
     private View content;
     private HomeActivity homeActivity;
@@ -104,6 +112,7 @@ public class BuyFragment extends BasicFragment implements GridViewItemListener, 
 
         buyDialog = new BuyDialog(homeActivity, R.style.dialog);
         mCoffees = new ArrayList<>();
+        TaskService.getInstance().setOnMessageReceviedListener(this);
         mCoffees = SingleMaterialLsit.getInstance(homeActivity).getCoffeeList();
         mPagerAdapter = new CoffeeViewPagerAdapter(homeActivity, mCoffees, this);
         mViewPager.addOnPageChangeListener(new ViewpagerPageChangedListener());
@@ -187,5 +196,26 @@ public class BuyFragment extends BasicFragment implements GridViewItemListener, 
                 buyDialog.showDialog();
                 break;
         }
+    }
+
+    @Override
+    public void getMsgType(String msgType) {
+        try {
+            JSONObject object = new JSONObject(msgType);
+            switch (object.getString("msgType")) {
+
+                case "updateFormula":
+
+                    break;
+                case "machineOrder":
+
+                    break;
+                case "relayType":
+                    break;
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
     }
 }

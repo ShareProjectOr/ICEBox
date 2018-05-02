@@ -2,10 +2,12 @@ package example.jni.com.coffeeseller.views.fragments;
 
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Handler;
+import android.provider.Settings;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -40,7 +42,9 @@ import example.jni.com.coffeeseller.presenter.AddCupPresenter;
 import example.jni.com.coffeeseller.presenter.AddMaterialPresenter;
 import example.jni.com.coffeeseller.presenter.CheckVersionPresenter;
 import example.jni.com.coffeeseller.presenter.CommitMaterialPresenter;
+import example.jni.com.coffeeseller.utils.MyLog;
 import example.jni.com.coffeeseller.views.activities.HomeActivity;
+import example.jni.com.coffeeseller.views.customviews.SetFloatButton;
 import example.jni.com.coffeeseller.views.viewinterface.IAddCupView;
 import example.jni.com.coffeeseller.views.viewinterface.IAddMaterialView;
 import example.jni.com.coffeeseller.views.viewinterface.ICheckVersionView;
@@ -59,7 +63,7 @@ public class ConfigFragment extends BasicFragment implements IAddMaterialView, I
     private MaterialRecycleListAdapter mAdapter;
     private TextView cupStock, waterStock;
     private TextView addCupTime, addWaterTime;
-    private TextView addCup, addWater;
+    private TextView addCup, addWater, mMachineName, listCupNum;
     private MaterialSql sql;
     private int BunkersID;
     private CommitMaterialPresenter materialPresenter;
@@ -117,6 +121,9 @@ public class ConfigFragment extends BasicFragment implements IAddMaterialView, I
         runState = (TextView) mView.findViewById(R.id.runState);
         netWorkState = (TextView) mView.findViewById(R.id.netWorkState);
         CupNum = (TextView) mView.findViewById(R.id.CupNum);
+        listCupNum = (TextView) mView.findViewById(R.id.cup_num);
+        mMachineName = (TextView) mView.findViewById(R.id.machineName);
+        mMachineName.setOnClickListener(this);
         passWord = (EditText) mView.findViewById(R.id.passWord);
         saveConfig = (Button) mView.findViewById(R.id.saveConfig);
         searchTrade = (Button) mView.findViewById(R.id.search_trade);
@@ -190,25 +197,50 @@ public class ConfigFragment extends BasicFragment implements IAddMaterialView, I
                 checkVersionPresenter.CheckVersion();
                 break;
             case R.id.saveConfig:
+                if (passWord.getText().toString().isEmpty() || passWord.getText().length() < 6) {
+                    Toast.makeText(getActivity(), "密码不能为空或不能短于6位", Toast.LENGTH_LONG).show();
+                    return;
+                }
                 if (mMachineCode.getText().toString().isEmpty()) {
                     Toast.makeText(getActivity(), "机器号未填写", Toast.LENGTH_LONG).show();
                     return;
                 }
                 SharedPreferencesManager.getInstance(getActivity()).setMachineCode(mMachineCode.getText().toString());
                 Toast.makeText(getActivity(), "配置信息已保存", Toast.LENGTH_LONG).show();
+                homeActivity.replaceFragment(FragmentEnum.ConfigFragment, FragmentEnum.MachineCheckFragment);
                 break;
             case R.id.changePassword:
                 if (passWord.getText().toString().isEmpty() || passWord.getText().length() < 6) {
                     Toast.makeText(getActivity(), "密码不能为空或不能短于6位", Toast.LENGTH_LONG).show();
                     return;
                 }
-                SharedPreferencesManager.getInstance(getActivity()).setMachineCode(mMachineCode.getText().toString());
+                SharedPreferencesManager.getInstance(getActivity()).setLoginPassword(passWord.getText().toString());
                 Toast.makeText(getActivity(), "密码修改成功", Toast.LENGTH_LONG).show();
-                homeActivity.replaceFragment(FragmentEnum.ConfigFragment, FragmentEnum.MachineCheckFragment);
+                //
                 break;
+
             case R.id.search_trade:
                 homeActivity.replaceFragment(FragmentEnum.ConfigFragment, FragmentEnum.TradeFragment);
                 break;
+            case R.id.machineName:
+                SetFloatButton.getInstance(getActivity()).showFlowButton();
+                goSystemSetting();
+                break;
+        }
+    }
+
+    /***
+     * 进入系统设置界面
+     */
+    private void goSystemSetting() {
+
+        try {
+            getActivity().sendBroadcast(new Intent("com.allwinner.show_nav_bar"));//显示系统导航栏
+            Intent it1 = new Intent(Settings.ACTION_SETTINGS);
+            startActivity(it1);
+        } catch (Exception e) {
+
+            MyLog.d("configFragment", "error occured opening system setting");
         }
     }
 
@@ -337,6 +369,7 @@ public class ConfigFragment extends BasicFragment implements IAddMaterialView, I
     public void showResultAndUpdateView() {
         Toast.makeText(getActivity(), "添加成功", Toast.LENGTH_LONG).show();
         CupNum.setText(SharedPreferencesManager.getInstance(getActivity()).getCupNum() + "");
+        listCupNum.setText(SharedPreferencesManager.getInstance(getActivity()).getCupNum() + "个");
     }
 
     @Override

@@ -37,6 +37,7 @@ import java.util.UUID;
 import cof.ac.inter.CoffMsger;
 import cof.ac.inter.MachineState;
 import cof.ac.inter.Result;
+import cof.ac.inter.StateEnum;
 import example.jni.com.coffeeseller.MachineConfig.DealRecorder;
 import example.jni.com.coffeeseller.MachineConfig.MachineInitState;
 import example.jni.com.coffeeseller.MachineConfig.QRMsger;
@@ -101,10 +102,21 @@ public class TaskService extends Service implements MqttCallback {
                                 }
                                 break;
                             case "updateFormula":
-                                messageReceviedListener.getMsgType("updateFormula");
+                                if (MachineConfig.getCurrentState() == StateEnum.IDLE) {//空闲状态更新配方
+                                    JSONObject d = msgObject.getJSONObject("d");
+                                    if (d.getString("updateType").equals("remove")) {
+                                        JSONObject formulaObject = d.getJSONObject("formula") ;
+
+                                    } else if (d.getString("updateType").equals("update")) {
+
+                                    } else if (d.getString("updateType").equals("add")) {
+
+                                    }
+                                }
+                                messageReceviedListener.getMsgType(msgObject.toString());
                                 break;
                             case "machineOrder":
-                                messageReceviedListener.getMsgType("machineOrder");
+                                messageReceviedListener.getMsgType(msgObject.toString());
                                 break;
                             case "relayType":
                                 Log.e(TAG, "收到回执 uuid is " + msgObject.getString("msgId"));

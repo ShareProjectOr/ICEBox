@@ -90,6 +90,7 @@ public class MachineCheckFragment extends BasicFragment implements ICheckMachine
 
 
     private void startMachineCheck() {
+
         Handler handler = new Handler(Looper.getMainLooper());
         Runnable runnable = new Runnable() {
             @Override
@@ -131,8 +132,9 @@ public class MachineCheckFragment extends BasicFragment implements ICheckMachine
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.tologin:
-                endCheck();
+
                 mMachineCheckPresenter.toLoginFragment();
+                endCheck();
                 break;
         }
     }
@@ -338,6 +340,7 @@ public class MachineCheckFragment extends BasicFragment implements ICheckMachine
     public void StartTimeCount() {
         checkThread = null;
         doCountDown = true;
+        hasTurned = false;
         timeDownText.setVisibility(View.VISIBLE);
         tologin.setVisibility(View.VISIBLE);
         Thread countThr = new Thread(new Runnable() {
@@ -347,6 +350,7 @@ public class MachineCheckFragment extends BasicFragment implements ICheckMachine
                 int count = 20;
                 while (doCountDown) {
 
+                    Log.e("machineCheckFragment", count + "");
                     MyLog.d("machineCheckFragment", "count--" + count);
                     if (count >= 0) {
                         setCountDown(count);

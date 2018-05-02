@@ -593,7 +593,7 @@
 
                 <EditText
                     android:id="@+id/passWord"
-                    android:layout_width="500dp"
+                    android:layout_width="300dp"
                     android:layout_height="60dp"
                     android:background="@drawable/shape_config_edit" />
 
@@ -614,7 +614,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="20dp"
                 android:layout_marginRight="20dp"
-                android:layout_marginTop="150dp"
+                android:layout_marginTop="100dp"
                 android:background="@drawable/shape_botton"
                 android:text="保存配置"
                 android:textColor="@color/white"

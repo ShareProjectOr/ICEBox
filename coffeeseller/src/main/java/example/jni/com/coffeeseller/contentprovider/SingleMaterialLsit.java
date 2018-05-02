@@ -139,6 +139,7 @@ public class SingleMaterialLsit {
                             break;
                     }
                     containerConfig.setWater_interval(stepObject.getInt("timeOut"));
+                    //   int Water_capacity = stepObject.getInt("water");
                     containerConfig.setWater_capacity(stepObject.getInt("water"));
                     int amount = stepObject.getInt("amount");
                     Log.e(TAG, "出料总量=" + amount);
@@ -438,14 +439,24 @@ public class SingleMaterialLsit {
         }
     }
 
-    public void RemoveCoffeeList(int position) {
-        coffeeList.remove(position);
+
+    public List<Coffee> RemoveCoffeeList(int formulaID) {
+        if (coffeeList.size() == 0) {
+            return null;
+        }
+        for (int i = 0; i < coffeeList.size(); i++) {
+            if (formulaID == coffeeList.get(i).getFormulaID()) {//遍历找到对应需要删除的项
+                coffeeList.remove(i);
+            }
+        }
+        return coffeeList;
     }
 
     public synchronized List<Coffee> getCoffeeList() {
 
         coffeeList.clear();
         setCoffeeList();
+
 
         return coffeeList;
     }
@@ -472,7 +483,7 @@ public class SingleMaterialLsit {
     }
 
     public synchronized void setCoffeeArray(org.json.JSONArray coffeeArray) {
-
+        Log.e(TAG, "all coffee list size is " + coffeeArray.length());
         this.coffeeArray = coffeeArray;
     }
 

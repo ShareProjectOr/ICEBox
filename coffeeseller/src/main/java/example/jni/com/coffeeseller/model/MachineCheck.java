@@ -201,17 +201,20 @@ public class MachineCheck implements IMachineCheck {
         CoffMsger mCoffmsger = CoffMsger.getInstance();
 
         if (mCoffmsger.init()) {
-            Result result = mCoffmsger.Debug(DebugAction.RESET, 0, 0);//复位机器
+         //   Result result = mCoffmsger.Debug(DebugAction.RESET, 0, 0);//复位机器
             Waiter.doWait(700);
-            if (result.getCode() == Result.SUCCESS) {
-                synchronized (mCoffmsger){
+            mCoffmsger.startCheckState();
+            MachineInitState.CHECK_OPENMAINCTRL = MachineInitState.NORMAL;
+            mOnMachineCheckCallBackListener.OpenMainCrilSuccess();
+        /*    if (result.getCode() == Result.SUCCESS) {
+                synchronized (mCoffmsger) {
                     mCoffmsger.startCheckState();
                 }
                 MachineInitState.CHECK_OPENMAINCTRL = MachineInitState.NORMAL;
                 mOnMachineCheckCallBackListener.OpenMainCrilSuccess();
             } else {
                 mOnMachineCheckCallBackListener.OpenMainCrilFailed("主控板检测出错,错误:" + result.getErrDes());
-            }
+            }*/
 
 
         } else {
@@ -229,6 +232,7 @@ public class MachineCheck implements IMachineCheck {
         } else {
             postBody.put("machineCode", SharedPreferencesManager.getInstance(mContext).getMachineCode());
             postBody.put("loginPassword", SharedPreferencesManager.getInstance(mContext).getLoginPassword());
+            Log.e(TAG,"machineCode is "+ SharedPreferencesManager.getInstance(mContext).getMachineCode() + "password is "+ SharedPreferencesManager.getInstance(mContext).getLoginPassword());
             try {
                 String response = OkHttpUtil.post(Constance.MachineAuthentication_URL, JsonUtil.mapToJson(postBody));
                 JSONObject object = new JSONObject(response);
@@ -261,11 +265,12 @@ public class MachineCheck implements IMachineCheck {
             checkMachineCode();
             Waiter.doWait(2000);
             checkMainCtrl();
-           Waiter.doWait(2000);
+            Waiter.doWait(2000);
             getFormula();
             Waiter.doWait(2000);
 //            subMQTT();
-            if (MachineInitState.CHECK_MACHINECODE == MachineInitState.NORMAL && MachineInitState.GET_FORMULA == MachineInitState.NORMAL) {
+            if (MachineInitState.CHECK_MACHINECODE == MachineInitState.NORMAL && MachineInitState.GET_FORMULA == MachineInitState.NORMAL &&
+                    MachineInitState.CHECK_OPENMAINCTRL == MachineInitState.NORMAL) {
                 mOnMachineCheckCallBackListener.MachineCheckEnd(true);
             } else {
                 mOnMachineCheckCallBackListener.MachineCheckEnd(false);
@@ -273,16 +278,5 @@ public class MachineCheck implements IMachineCheck {
         }
     }
 
-/*    public void checkNetWorkState() {
-        try {
-            String response = OkHttpUtil.getStringFromServer("www.baidu.com");
-            if (!response.isEmpty()) {
-                mOnMachineCheckCallBackListener.NetWorkState(true);
-                MachineInitState.CHECK_NETWORK_STATE = MachineInitState.NORMAL;
-            }
-        } catch (IOException e) {
-            mOnMachineCheckCallBackListener.NetWorkState(false);
-            MachineInitState.CHECK_NETWORK_STATE = MachineInitState.UNNORMAL;
-        }
-    }*/
+
 }
