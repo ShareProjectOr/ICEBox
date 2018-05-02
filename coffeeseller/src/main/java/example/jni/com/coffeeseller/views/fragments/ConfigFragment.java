@@ -52,7 +52,7 @@ import example.jni.com.coffeeseller.views.viewinterface.ICommitMaterialView;
 
 public class ConfigFragment extends BasicFragment implements IAddMaterialView, ICommitMaterialView, ICheckVersionView, StateListener, IAddCupView, CompoundButton.OnCheckedChangeListener {
     private View mView;
-    private Button toDebug, materialCommit, checkVersion, saveConfig, changePassword;
+    private Button toDebug, materialCommit, checkVersion, saveConfig, changePassword, searchTrade;
     private HomeActivity homeActivity;
     private TextView back;
     private RecyclerView materialList;
@@ -120,6 +120,7 @@ public class ConfigFragment extends BasicFragment implements IAddMaterialView, I
         CupNum = (TextView) mView.findViewById(R.id.CupNum);
         passWord = (EditText) mView.findViewById(R.id.passWord);
         saveConfig = (Button) mView.findViewById(R.id.saveConfig);
+        searchTrade = (Button) mView.findViewById(R.id.search_trade);
         updateTimeAndVersion = (TextView) mView.findViewById(R.id.updateTimeAndVersion);
         cupShelfState = (TextView) mView.findViewById(R.id.cupShelfState);
         boilerTemperature = (TextView) mView.findViewById(R.id.boilerTemperature);
@@ -159,6 +160,7 @@ public class ConfigFragment extends BasicFragment implements IAddMaterialView, I
         saveConfig.setOnClickListener(this);
         checkVersion.setOnClickListener(this);
         homeActivity = HomeActivity.getInstance();
+        searchTrade.setOnClickListener(this);
         sql = new MaterialSql(getActivity());
         toDebug.setOnClickListener(this);
         addCup.setOnClickListener(this);
@@ -203,6 +205,9 @@ public class ConfigFragment extends BasicFragment implements IAddMaterialView, I
                 }
                 SharedPreferencesManager.getInstance(getActivity()).setMachineCode(mMachineCode.getText().toString());
                 Toast.makeText(getActivity(), "密码修改成功", Toast.LENGTH_LONG).show();
+                break;
+            case R.id.search_trade:
+                homeActivity.replaceFragment(FragmentEnum.ConfigFragment, FragmentEnum.TradeFragment);
                 break;
         }
     }

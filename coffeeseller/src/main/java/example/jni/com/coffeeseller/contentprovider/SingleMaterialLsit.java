@@ -54,7 +54,7 @@ public class SingleMaterialLsit {
         setyoubaoList();
     }
 
-    public void setCoffeeList() {
+    public synchronized void setCoffeeList() {
 
         if (coffeeArray == null) {
             return;
@@ -442,7 +442,7 @@ public class SingleMaterialLsit {
         coffeeList.remove(position);
     }
 
-    public List<Coffee> getCoffeeList() {
+    public synchronized List<Coffee> getCoffeeList() {
 
         coffeeList.clear();
         setCoffeeList();
@@ -471,11 +471,10 @@ public class SingleMaterialLsit {
         return coffeeArray;
     }
 
-    public void setCoffeeArray(org.json.JSONArray coffeeArray) {
+    public synchronized void setCoffeeArray(org.json.JSONArray coffeeArray) {
 
         this.coffeeArray = coffeeArray;
     }
-
 
 
     public List<Coffee> getyoubaoCoffeeList() {
