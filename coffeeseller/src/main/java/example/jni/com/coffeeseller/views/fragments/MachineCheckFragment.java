@@ -132,6 +132,7 @@ public class MachineCheckFragment extends BasicFragment implements ICheckMachine
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.tologin:
+                endCheck();
                 mMachineCheckPresenter.toLoginFragment();
                 break;
         }
@@ -156,6 +157,8 @@ public class MachineCheckFragment extends BasicFragment implements ICheckMachine
         synchronized (this) {
 
             isChecking = false;
+            doCountDown = false;
+            hasTurned = true;
         }
         checkThread = null;
     }
@@ -305,7 +308,7 @@ public class MachineCheckFragment extends BasicFragment implements ICheckMachine
             @Override
             public void run() {
 
-               homeActivity.replaceFragment(FragmentEnum.MachineCheckFragment, fragment);
+                homeActivity.replaceFragment(FragmentEnum.MachineCheckFragment, fragment);
             }
         });
 

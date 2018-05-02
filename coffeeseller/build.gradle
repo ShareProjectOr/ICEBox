@@ -39,5 +39,6 @@ dependencies {
     compile 'com.google.code.gson:gson:2.6.2'
     compile files('libs/org.eclipse.paho.client.mqttv3-1.0.2.jar')
     compile files('libs/core.jar')
+    compile 'com.neovisionaries:nv-websocket-client:2.2'
     compile files('libs/coff2018042915.jar')
 }

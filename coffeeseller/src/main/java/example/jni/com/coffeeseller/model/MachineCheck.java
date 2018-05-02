@@ -227,8 +227,8 @@ public class MachineCheck implements IMachineCheck {
             mOnMachineCheckCallBackListener.MachineCodeCheckFailed("机器号未填写,鉴权失败");
 
         } else {
-            postBody.put("machineCode", MachineConfig.getMachineCode());
-            postBody.put("loginPassword", "123456");
+            postBody.put("machineCode", SharedPreferencesManager.getInstance(mContext).getMachineCode());
+            postBody.put("loginPassword", SharedPreferencesManager.getInstance(mContext).getLoginPassword());
             try {
                 String response = OkHttpUtil.post(Constance.MachineAuthentication_URL, JsonUtil.mapToJson(postBody));
                 JSONObject object = new JSONObject(response);

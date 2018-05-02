@@ -15,6 +15,7 @@ public class AddCupPresenter {
 
     public AddCupPresenter(IAddCupView iAddCupView) {
         iAddCup = new AddCup();
+        this.iAddCupView = iAddCupView;
     }
 
     public void AddCup() {

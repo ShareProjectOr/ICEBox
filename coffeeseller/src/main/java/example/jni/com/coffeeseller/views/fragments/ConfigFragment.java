@@ -52,7 +52,7 @@ import example.jni.com.coffeeseller.views.viewinterface.ICommitMaterialView;
 
 public class ConfigFragment extends BasicFragment implements IAddMaterialView, ICommitMaterialView, ICheckVersionView, StateListener, IAddCupView, CompoundButton.OnCheckedChangeListener {
     private View mView;
-    private Button toDebug, materialCommit, checkVersion;
+    private Button toDebug, materialCommit, checkVersion, saveConfig, changePassword;
     private HomeActivity homeActivity;
     private TextView back;
     private RecyclerView materialList;
@@ -69,7 +69,7 @@ public class ConfigFragment extends BasicFragment implements IAddMaterialView, I
     private CoffMsger msger;
     private Handler mHandler = new Handler();
     private AddCupPresenter addCupPresenter;
-    private EditText mMachineCode, mTime, mWaterPercent;
+    private EditText mMachineCode, mTime, mWaterPercent, passWord;
     private CheckBox isOutCupAutoClear, onClear, usuallyWaterType, hotAndColdWaterType;
 
     @Nullable
@@ -86,6 +86,7 @@ public class ConfigFragment extends BasicFragment implements IAddMaterialView, I
         waterStock.setText(SharedPreferencesManager.getInstance(getActivity()).getWaterCount() + "ml");
         addCupTime.setText(SharedPreferencesManager.getInstance(getActivity()).getAddCupTime());
         addWaterTime.setText(SharedPreferencesManager.getInstance(getActivity()).getAddWaterTime());
+        mMachineCode.setText(SharedPreferencesManager.getInstance(getActivity()).getMachineCode());
    /*     if (msger != null) {
 
             driverVersion.setText("驱动版本:" + msger.getCurState().getVersion());
@@ -117,11 +118,14 @@ public class ConfigFragment extends BasicFragment implements IAddMaterialView, I
         runState = (TextView) mView.findViewById(R.id.runState);
         netWorkState = (TextView) mView.findViewById(R.id.netWorkState);
         CupNum = (TextView) mView.findViewById(R.id.CupNum);
+        passWord = (EditText) mView.findViewById(R.id.passWord);
+        saveConfig = (Button) mView.findViewById(R.id.saveConfig);
         updateTimeAndVersion = (TextView) mView.findViewById(R.id.updateTimeAndVersion);
         cupShelfState = (TextView) mView.findViewById(R.id.cupShelfState);
         boilerTemperature = (TextView) mView.findViewById(R.id.boilerTemperature);
         boilerPressure = (TextView) mView.findViewById(R.id.boilerPressure);
         doorState = (TextView) mView.findViewById(R.id.doorState);
+        changePassword = (Button) mView.findViewById(R.id.changePassword);
         cupDoorState = (TextView) mView.findViewById(R.id.cupDoorState);
         driverVersion = (TextView) mView.findViewById(R.id.driverVersion);
         toDebug = (Button) mView.findViewById(R.id.debug_machine);
@@ -152,6 +156,7 @@ public class ConfigFragment extends BasicFragment implements IAddMaterialView, I
         materialList.setLayoutManager(new LinearLayoutManager(getActivity()));
         materialList.setHasFixedSize(true);
         back.setOnClickListener(this);
+        saveConfig.setOnClickListener(this);
         checkVersion.setOnClickListener(this);
         homeActivity = HomeActivity.getInstance();
         sql = new MaterialSql(getActivity());
@@ -159,6 +164,7 @@ public class ConfigFragment extends BasicFragment implements IAddMaterialView, I
         addCup.setOnClickListener(this);
         addWater.setOnClickListener(this);
         materialCommit.setOnClickListener(this);
+        changePassword.setOnClickListener(this);
     }
 
     @Override
@@ -181,6 +187,22 @@ public class ConfigFragment extends BasicFragment implements IAddMaterialView, I
                 break;
             case R.id.check_update:
                 checkVersionPresenter.CheckVersion();
+                break;
+            case R.id.saveConfig:
+                if (mMachineCode.getText().toString().isEmpty()) {
+                    Toast.makeText(getActivity(), "机器号未填写", Toast.LENGTH_LONG).show();
+                    return;
+                }
+                SharedPreferencesManager.getInstance(getActivity()).setMachineCode(mMachineCode.getText().toString());
+                Toast.makeText(getActivity(), "配置信息以保存", Toast.LENGTH_LONG).show();
+                break;
+            case R.id.changePassword:
+                if (passWord.getText().toString().isEmpty() || passWord.getText().length() < 6) {
+                    Toast.makeText(getActivity(), "密码不能为空或不能短于6位", Toast.LENGTH_LONG).show();
+                    return;
+                }
+                SharedPreferencesManager.getInstance(getActivity()).setMachineCode(mMachineCode.getText().toString());
+                Toast.makeText(getActivity(), "密码修改成功", Toast.LENGTH_LONG).show();
                 break;
         }
     }
