@@ -80,8 +80,8 @@ public class CoffeeGridAdapter extends BaseAdapter {
             Glide.with(context)
                     .load(coffee.cacheUrl)
                     .transform(new CornersTransmation(context, 10))
-                    .placeholder(R.mipmap.ic_launcher)
-                    .error(R.mipmap.ic_launcher).into(viewHolder.coffeeImage);
+                    .placeholder(R.mipmap.no_coffee)
+                    .error(R.mipmap.no_coffee).into(viewHolder.coffeeImage);
 /*
             Bitmap bitmap = BitmapFactory.decodeResource(context.getResources(), images[position]);
             bitmap = ImageUtil.getCornerBitmap(bitmap, 10);

@@ -9,9 +9,10 @@
     <LinearLayout
         android:id="@+id/timerLayout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="60dp"
         android:layout_alignParentRight="true"
-        android:gravity="end"
+        android:layout_marginRight="20dp"
+        android:gravity="end|center"
         android:padding="10dp">
 
         <TextView
@@ -26,8 +27,8 @@
 
         <ImageView
             android:id="@+id/close"
-            android:layout_width="60dp"
-            android:layout_height="60dp"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
             android:src="@mipmap/no" />
 
     </LinearLayout>
@@ -37,8 +38,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@mipmap/dialog_bng"
-        android:paddingTop="20dp"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:paddingTop="20dp">
 
         <TextView
             android:id="@+id/errTip"
