@@ -135,7 +135,6 @@ public class TaskService extends Service implements MqttCallback {
     private void checkSubSuccess() {
         if (!isConnected()) {
             mOnMachineCheckCallBackListener.MQTTSubcribeFailed();
-
         } else {
             mOnMachineCheckCallBackListener.MQTTSubcribeSuccess();
             MachineInitState.SUB_MQTT_STATE = MachineInitState.NORMAL;

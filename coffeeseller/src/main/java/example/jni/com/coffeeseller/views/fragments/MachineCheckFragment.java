@@ -132,7 +132,6 @@ public class MachineCheckFragment extends BasicFragment implements ICheckMachine
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.tologin:
-
                 mMachineCheckPresenter.toLoginFragment();
                 endCheck();
                 break;

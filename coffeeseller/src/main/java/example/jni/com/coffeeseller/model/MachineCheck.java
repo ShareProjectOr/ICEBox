@@ -179,11 +179,16 @@ public class MachineCheck implements IMachineCheck {
 
             @Override
             public void run() {
+                Intent intent = new Intent(mContext, TaskService.class);
+                mContext.startService(intent);
                 if (MachineConfig.getTcpIP().isEmpty()) {
                     mOnMachineCheckCallBackListener.MQTTSubcribeFailed();
+                    if (MachineInitState.CHECK_OPENMAINCTRL == MachineInitState.NORMAL && MachineInitState.CHECK_MACHINECODE == MachineInitState.NORMAL && MachineInitState.SUB_MQTT_STATE == MachineInitState.NORMAL && MachineInitState.GET_FORMULA == MachineInitState.NORMAL) {
+                        mOnMachineCheckCallBackListener.MachineCheckEnd(true);
+                    } else {
+                        mOnMachineCheckCallBackListener.MachineCheckEnd(false);
+                    }
                 } else {
-                    Intent intent = new Intent(mContext, TaskService.class);
-                    mContext.startService(intent);
                     TaskService.getInstance().start(mOnMachineCheckCallBackListener);
                 }
             }
@@ -231,6 +236,7 @@ public class MachineCheck implements IMachineCheck {
             try {
                 String response = OkHttpUtil.post(Constance.MachineAuthentication_URL, JsonUtil.mapToJson(postBody));
                 JSONObject object = new JSONObject(response);
+                Log.d(TAG, object.getJSONObject("d").toString());
                 if (object.getString("err").equals("")) {
 
                     Log.d("check", object.getJSONObject("d").toString());
@@ -263,7 +269,7 @@ public class MachineCheck implements IMachineCheck {
             Waiter.doWait(2000);
             getFormula();
             Waiter.doWait(2000);
-             subMQTT();
+            subMQTT();
         /*    if (MachineInitState.CHECK_MACHINECODE == MachineInitState.NORMAL && MachineInitState.GET_FORMULA == MachineInitState.NORMAL &&
                     MachineInitState.CHECK_OPENMAINCTRL == MachineInitState.NORMAL&&MachineInitState.SUB_MQTT_STATE == MachineInitState.NORMAL) {
                 mOnMachineCheckCallBackListener.MachineCheckEnd(true);
