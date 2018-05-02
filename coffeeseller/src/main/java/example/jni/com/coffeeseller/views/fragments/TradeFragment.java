@@ -57,7 +57,7 @@ public class TradeFragment extends BasicFragment implements View.OnClickListener
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.back:
-                homeActivity.replaceFragment(FragmentEnum.TradeFragment, FragmentEnum.ChooseCupNumFragment);
+                homeActivity.replaceFragment(FragmentEnum.TradeFragment, FragmentEnum.ConfigFragment);
                 break;
         }
     }

@@ -26,16 +26,32 @@
         android:textColor="@color/black"
         android:textSize="@dimen/text_size_one" />
 
-    <TextView
-        android:id="@+id/before_add_stock"
-        android:layout_width="204dp"
+    <LinearLayout
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="100dp"
         android:layout_marginTop="40dp"
-        android:gravity="right"
-        android:text="补料前余量:"
-        android:textColor="@color/black"
-        android:textSize="@dimen/text_size_one" />
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="204dp"
+            android:layout_height="wrap_content"
+
+            android:gravity="right"
+            android:text="补料前余量:"
+            android:textColor="@color/black"
+            android:textSize="@dimen/text_size_one" />
+
+        <TextView
+            android:id="@+id/before_add_stock"
+            android:layout_width="204dp"
+            android:layout_height="wrap_content"
+            android:gravity="right"
+            android:text=""
+            android:textColor="@color/black"
+            android:textSize="@dimen/text_size_one" />
+    </LinearLayout>
+
 
     <LinearLayout
         android:layout_width="wrap_content"
@@ -56,8 +72,10 @@
         <EditText
             android:id="@+id/add_account"
             android:layout_width="400dp"
-            android:layout_height="wrap_content"
+            android:layout_height="40dp"
+            android:background="@drawable/shape_config_edit"
             android:hint="单位(g)"
+            android:imeOptions="actionDone"
             android:inputType="number" />
     </LinearLayout>
 
@@ -83,26 +101,25 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal">
 
-            <TextView
+            <EditText
                 android:id="@+id/last_add_stock"
                 android:layout_width="400dp"
-                android:layout_height="wrap_content"
-
+                android:layout_height="40dp"
+                android:background="@drawable/shape_config_edit"
+                android:hint="单位(g)"
+                android:imeOptions="actionDone"
+                android:inputType="number"
                 android:textColor="@color/black"
                 android:textSize="@dimen/text_size_one" />
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="g"
-                android:textColor="@color/black"
-                android:textSize="@dimen/text_size_one" />
+
         </LinearLayout>
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="600dp"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="50dp"
         android:layout_marginLeft="100dp"
         android:layout_marginTop="50dp"
         android:gravity="end|center_vertical"
@@ -122,6 +139,7 @@
             android:id="@+id/sure"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+
             android:background="@drawable/shape_botton"
             android:text="确定"
             android:textColor="@color/white"

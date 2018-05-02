@@ -1,5 +1,7 @@
 package example.jni.com.coffeeseller.bean;
 
+import cof.ac.inter.*;
+
 /**
  * Created by Administrator on 2018/4/23.
  */
@@ -11,9 +13,22 @@ public class MachineConfig {
     private static int networkType;
     private static String topic;
 
+    private static StateEnum currentState;
+
     public static String getTopic() {
         return topic;
     }
+
+    public static StateEnum getCurrentState() {
+        CoffMsger msger = CoffMsger.getInstance();
+        cof.ac.inter.MachineState state = msger.getLastMachineState();
+        if (state != null) {
+            currentState = state.getMajorState().getCurStateEnum();
+        }
+
+        return currentState;
+    }
+
 
     public static void setTopic(String topic) {
         MachineConfig.topic = topic;

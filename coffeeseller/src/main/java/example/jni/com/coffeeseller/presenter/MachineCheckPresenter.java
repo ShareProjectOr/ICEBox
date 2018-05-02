@@ -127,9 +127,10 @@ public class MachineCheckPresenter {
 
             @Override
             public void MachineCheckEnd(boolean isCheckSuccess) {
-                mICheckMachineView.endCheck();
+
 
                 if (isCheckSuccess) {
+                    mICheckMachineView.endCheck();
                     mICheckMachineView.ChangePage(FragmentEnum.ChooseCupNumFragment);
                 } else {
                     mHandler.post(new Runnable() {

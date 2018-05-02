@@ -53,7 +53,6 @@ public class MachineCheckFragment extends BasicFragment implements ICheckMachine
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        // mView = super.onCreateView(inflater, container, FragmentFactory.getInstance().putLayoutId(R.layout.machinecheck_fragment_layout));
         mView = inflater.inflate(R.layout.machinecheck_fragment_layout, null);
         initview();
         FragmentFactory.curPage = FragmentEnum.MachineCheckFragment;

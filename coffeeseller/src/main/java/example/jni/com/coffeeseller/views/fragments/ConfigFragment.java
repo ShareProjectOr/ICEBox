@@ -100,7 +100,6 @@ public class ConfigFragment extends BasicFragment implements IAddMaterialView, I
         }*/
 
         updateTimeAndVersion.setText("最后更新于 " + SharedPreferencesManager.getInstance(getActivity()).getLastAppUpdateTime() + " 当前版本: " + getVersion());
-
         CupNum.setText("仓杯余量:" + SharedPreferencesManager.getInstance(getActivity()).getCupNum());
 
 
@@ -196,7 +195,7 @@ public class ConfigFragment extends BasicFragment implements IAddMaterialView, I
                     return;
                 }
                 SharedPreferencesManager.getInstance(getActivity()).setMachineCode(mMachineCode.getText().toString());
-                Toast.makeText(getActivity(), "配置信息以保存", Toast.LENGTH_LONG).show();
+                Toast.makeText(getActivity(), "配置信息已保存", Toast.LENGTH_LONG).show();
                 break;
             case R.id.changePassword:
                 if (passWord.getText().toString().isEmpty() || passWord.getText().length() < 6) {
@@ -205,6 +204,7 @@ public class ConfigFragment extends BasicFragment implements IAddMaterialView, I
                 }
                 SharedPreferencesManager.getInstance(getActivity()).setMachineCode(mMachineCode.getText().toString());
                 Toast.makeText(getActivity(), "密码修改成功", Toast.LENGTH_LONG).show();
+                homeActivity.replaceFragment(FragmentEnum.ConfigFragment, FragmentEnum.MachineCheckFragment);
                 break;
             case R.id.search_trade:
                 homeActivity.replaceFragment(FragmentEnum.ConfigFragment, FragmentEnum.TradeFragment);
