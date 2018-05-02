@@ -212,8 +212,34 @@ public class MkCoffee {
                                     mkCoffeeListenner.getMkResult(dealRecorder, false, isCalculateMaterial);
                                 }
 
+                            }else {
+
+                                MyLog.W(TAG, " make failed and time is too long,down cup state is remaining ");
+
+                                if (mkCoffeeListenner != null) {
+                                    dealRecorder.setMakeSuccess(false);
+                                    isCalculateMaterial = true;
+                                    mkCoffeeListenner.getMkResult(dealRecorder, false, isCalculateMaterial);
+                                }
+
                             }
-                            break;
+                          /*  else if (coffeeMakeStateRecorder.state == CoffeeMakeState.COFFEE_DOWN_POWER) {
+
+                                if (mkCoffeeListenner != null) {
+                                    dealRecorder.setMakeSuccess(false);
+                                    isCalculateMaterial = true;
+                                    mkCoffeeListenner.getMkResult(dealRecorder, false, isCalculateMaterial);
+                                }
+
+                            } else if (coffeeMakeStateRecorder.state == CoffeeMakeState.COFFEE_ISMAKING) {
+
+                                if (mkCoffeeListenner != null) {
+                                    dealRecorder.setMakeSuccess(false);
+                                    isCalculateMaterial = true;
+                                    mkCoffeeListenner.getMkResult(dealRecorder, false, isCalculateMaterial);
+                                }
+
+                            }*/
                         }
 
                         break;
@@ -223,7 +249,7 @@ public class MkCoffee {
                         if (machineState.getMajorState().getCurStateEnum() == StateEnum.HAS_ERR) {
 
                             coffeeMakeStateRecorder.state = CoffeeMakeState.COFFEEMAKING_FAILED;
-                            isCalculateMaterial = false;
+                            //     isCalculateMaterial = false;
 
                             buffer.append("/n");
                             buffer.append("制作过程中接收到0a");
@@ -253,12 +279,14 @@ public class MkCoffee {
                     if (coffeeMakeStateRecorder.state == CoffeeMakeState.COFFEE_MAKE_INIT) {
 
                         dealStateMakeInit(machineState);
+
+                        MyLog.W(TAG, " cur state is init");
                         continue;
                     }
                     if (coffeeMakeStateRecorder.state == CoffeeMakeState.COFFEE_DOWN_CUP) {
 
                         dealStateDownCup(machineState);
-
+                        MyLog.W(TAG, " cur state is down cup");
                         continue;
                     }
 
@@ -268,6 +296,8 @@ public class MkCoffee {
 
                         updateProgress();
 
+                        MyLog.W(TAG, " cur state is making");
+
                         continue;
                     }
 
@@ -276,6 +306,8 @@ public class MkCoffee {
                         dealStateDownPower(machineState);
 
                         updateProgress();
+
+                        MyLog.W(TAG, " cur state is down power");
 
                         continue;
                     }
@@ -290,7 +322,7 @@ public class MkCoffee {
                             mkCoffeeListenner.getMkResult(dealRecorder, true, isCalculateMaterial);
                         }
 
-                        MyLog.d(TAG, "cur state is COFFEEFINISHED_CUPNOTAKEN ");
+                        MyLog.W(TAG, "cur state is finish ");
 
                         break;
 
@@ -299,7 +331,7 @@ public class MkCoffee {
 
                         coffeeMakeStateRecorder.state = null;
 
-                        MyLog.d(TAG, "cur state is COFFEEFINISHED_CUPISTAKEN ");
+                        MyLog.d(TAG, "cur state is take cup ");
 
                         break;
 
@@ -313,7 +345,7 @@ public class MkCoffee {
                             mkCoffeeListenner.getMkResult(dealRecorder, false, isCalculateMaterial);
                         }
 
-                        MyLog.d(TAG, "cur state is COFFEEMAKING_FAILED ");
+                        MyLog.d(TAG, "cur state is failed ");
                         break;
                     }
                 }
