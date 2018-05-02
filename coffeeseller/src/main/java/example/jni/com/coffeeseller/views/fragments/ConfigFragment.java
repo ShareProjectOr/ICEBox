@@ -206,6 +206,7 @@ public class ConfigFragment extends BasicFragment implements IAddMaterialView, I
                     return;
                 }
                 SharedPreferencesManager.getInstance(getActivity()).setMachineCode(mMachineCode.getText().toString());
+                SharedPreferencesManager.getInstance(getActivity()).setLoginPassword(passWord.getText().toString());
                 Toast.makeText(getActivity(), "配置信息已保存", Toast.LENGTH_LONG).show();
                 homeActivity.replaceFragment(FragmentEnum.ConfigFragment, FragmentEnum.MachineCheckFragment);
                 break;

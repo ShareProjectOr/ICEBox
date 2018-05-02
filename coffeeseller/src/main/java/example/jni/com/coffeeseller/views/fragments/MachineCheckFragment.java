@@ -155,7 +155,6 @@ public class MachineCheckFragment extends BasicFragment implements ICheckMachine
     @Override
     public void endCheck() {
         synchronized (this) {
-
             isChecking = false;
             doCountDown = false;
             hasTurned = true;
@@ -304,11 +303,12 @@ public class MachineCheckFragment extends BasicFragment implements ICheckMachine
     public void ChangePage(final FragmentEnum fragment) {
         hasTurned = true;
         isCheckSuccess = true;
+        endCheck();
         handler.post(new Runnable() {
             @Override
             public void run() {
 
-          //      homeActivity.replaceFragment(FragmentEnum.MachineCheckFragment, fragment);
+                homeActivity.replaceFragment(FragmentEnum.MachineCheckFragment, fragment);
             }
         });
 

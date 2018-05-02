@@ -63,11 +63,11 @@ public class MaterialRecycleListAdapter extends RecyclerView.Adapter<RecyclerVie
         mHolder.bankersName.setText(list.get(position).getBunkersName());
         mHolder.Material.setText(list.get(position).getMaterialName());
         mHolder.AddTime.setText(list.get(position).getLastLoadingTime());
-        int stockmg;
+        long stockmg;
         if (list.get(position).getMaterialStock().equals("")) {
             stockmg = 0;
         } else {
-            stockmg = Integer.parseInt(list.get(position).getMaterialStock());
+            stockmg = Long.parseLong(list.get(position).getMaterialStock());
         }
 
 

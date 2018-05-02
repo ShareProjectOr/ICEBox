@@ -183,7 +183,7 @@ public class MachineCheck implements IMachineCheck {
                 mContext.startService(intent);
                 if (MachineConfig.getTcpIP().isEmpty()) {
                     mOnMachineCheckCallBackListener.MQTTSubcribeFailed();
-                    if (MachineInitState.CHECK_OPENMAINCTRL == MachineInitState.NORMAL && MachineInitState.CHECK_MACHINECODE == MachineInitState.NORMAL && MachineInitState.SUB_MQTT_STATE == MachineInitState.NORMAL && MachineInitState.GET_FORMULA == MachineInitState.NORMAL) {
+                    if (MachineInitState.CHECK_MACHINECODE == MachineInitState.NORMAL && MachineInitState.CHECK_OPENMAINCTRL == MachineInitState.NORMAL && MachineInitState.SUB_MQTT_STATE == MachineInitState.NORMAL && MachineInitState.GET_FORMULA == MachineInitState.NORMAL) {
                         mOnMachineCheckCallBackListener.MachineCheckEnd(true);
                     } else {
                         mOnMachineCheckCallBackListener.MachineCheckEnd(false);
@@ -236,10 +236,11 @@ public class MachineCheck implements IMachineCheck {
             try {
                 String response = OkHttpUtil.post(Constance.MachineAuthentication_URL, JsonUtil.mapToJson(postBody));
                 JSONObject object = new JSONObject(response);
-                Log.d(TAG, object.getJSONObject("d").toString());
+
+                Log.d(TAG, " onject is " + object.toString());
                 if (object.getString("err").equals("")) {
 
-                    Log.d("check", object.getJSONObject("d").toString());
+                    Log.d(TAG, "machineCofig is " + object.getJSONObject("d"));
                     SharedPreferencesManager.getInstance(mContext).setTopicIP(object.getJSONObject("d").getString("tcpIP"));
                     MachineConfig.setHostUrl(object.getJSONObject("d").getString("uRL"));
                     MachineConfig.setMachineCode(MachineConfig.getMachineCode());
@@ -269,7 +270,12 @@ public class MachineCheck implements IMachineCheck {
             Waiter.doWait(2000);
             getFormula();
             Waiter.doWait(2000);
-            subMQTT();
+            if (MachineInitState.CHECK_OPENMAINCTRL == MachineInitState.NORMAL  && MachineInitState.GET_FORMULA == MachineInitState.NORMAL) {
+                mOnMachineCheckCallBackListener.MachineCheckEnd(true);
+            } else {
+                mOnMachineCheckCallBackListener.MachineCheckEnd(false);
+            }
+          //  subMQTT();
         /*    if (MachineInitState.CHECK_MACHINECODE == MachineInitState.NORMAL && MachineInitState.GET_FORMULA == MachineInitState.NORMAL &&
                     MachineInitState.CHECK_OPENMAINCTRL == MachineInitState.NORMAL&&MachineInitState.SUB_MQTT_STATE == MachineInitState.NORMAL) {
                 mOnMachineCheckCallBackListener.MachineCheckEnd(true);

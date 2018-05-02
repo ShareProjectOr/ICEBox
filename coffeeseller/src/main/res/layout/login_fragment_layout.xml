@@ -89,7 +89,6 @@
                 android:background="@android:color/transparent"
                 android:gravity="left|center_vertical"
                 android:paddingLeft="20dp"
-                android:text="chjsyjs-jj"
                 android:imeOptions="actionDone"
                 android:textSize="25sp" />
         </LinearLayout>

@@ -97,7 +97,7 @@ public class SingleMaterialLsit {
                         coffee.setOver(true);
                         break;
                     }
-                    int intMaterialStock = Integer.parseInt(materialStock);
+                    long intMaterialStock = Long.parseLong(materialStock);
                     Log.e(TAG, "location MaterialStock is" + intMaterialStock);
                     int needAccount = stepObject.getInt("amount");
                     Log.e(TAG, "need MaterialStock is" + needAccount);

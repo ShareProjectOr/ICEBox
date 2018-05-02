@@ -61,7 +61,7 @@ public class AddMaterial implements IAddMaterial {
 
                 } else {
                     if (!mLast_add_stock.getText().toString().isEmpty()) {
-                        long lastAddAccount = Long.parseLong(mLast_add_stock.getText().toString());
+                        double lastAddAccount = Double.parseDouble(mLast_add_stock.getText().toString());
                         final double lastAddStork = new BigDecimal(((float) lastAddAccount)).setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
                         if (lastAddStork >= dobeforeAddStork) {
                             mAdd_account.setText((lastAddStork - dobeforeAddStork) + "");
@@ -80,7 +80,7 @@ public class AddMaterial implements IAddMaterial {
 
                 } else {
                     if (!mAdd_account.getText().toString().isEmpty()) {
-                        long addAccount = Long.parseLong(mAdd_account.getText().toString());
+                        double addAccount = Double.parseDouble(mAdd_account.getText().toString());
                         mLast_add_stock.setText(addAccount + dobeforeAddStork + "");
                     }
 
@@ -105,7 +105,7 @@ public class AddMaterial implements IAddMaterial {
                     Toast.makeText(context, "请输入补料量或补料量后余量", Toast.LENGTH_LONG).show();
                     return;
                 }
-                long addAccount = Long.parseLong(mAdd_account.getText().toString());
+                double addAccount = Double.parseDouble(mAdd_account.getText().toString());
                 mLast_add_stock.setText(addAccount + dobeforeAddStork + "");
                 if (sql.updateContact(bunkersID, "", "", "", "", (long) (Double.parseDouble(mLast_add_stock.getText().toString()) * 1000) + "", "", "", SecondToDate.getDateToString(System.currentTimeMillis()))) {
                     onAddMaterialCallBackListener.addEnd(sql);

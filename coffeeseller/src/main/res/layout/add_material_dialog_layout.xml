@@ -76,7 +76,8 @@
             android:background="@drawable/shape_config_edit"
             android:hint="单位(g)"
             android:imeOptions="actionDone"
-            android:inputType="number" />
+            android:inputType="number"
+            android:maxLength="8" />
     </LinearLayout>
 
     <LinearLayout
@@ -109,6 +110,7 @@
                 android:hint="单位(g)"
                 android:imeOptions="actionDone"
                 android:inputType="number"
+                android:maxLength="8"
                 android:textColor="@color/black"
                 android:textSize="@dimen/text_size_one" />
 

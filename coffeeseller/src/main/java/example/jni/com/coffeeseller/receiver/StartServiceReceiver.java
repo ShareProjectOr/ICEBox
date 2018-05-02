@@ -42,6 +42,7 @@ public class StartServiceReceiver extends BroadcastReceiver {
                     if (networkInfo.isAvailable()) {//并且网络可用
                         Log.d("netstatus", "wifi 已连接网络，并且可用");
                     } else {//并且网络不可用
+                        MachineConfig.setNetworkType(0);
                         Log.d("netstatus", "wifi 已连接网络，但不可用");
                     }
                 } else {//网络未连接

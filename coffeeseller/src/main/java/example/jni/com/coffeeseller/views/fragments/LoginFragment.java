@@ -18,6 +18,7 @@ import java.util.Map;
 import example.jni.com.coffeeseller.R;
 
 import example.jni.com.coffeeseller.contentprovider.Constance;
+import example.jni.com.coffeeseller.contentprovider.SharedPreferencesManager;
 import example.jni.com.coffeeseller.factory.FragmentEnum;
 import example.jni.com.coffeeseller.factory.FragmentFactory;
 import example.jni.com.coffeeseller.httputils.JsonUtil;
@@ -52,6 +53,7 @@ public class LoginFragment extends BasicFragment implements Iloginview {
         PassWord = (EditText) view.findViewById(R.id.passWord);
         login = (Button) view.findViewById(R.id.login);
         backToCheck = (TextView) view.findViewById(R.id.backToCheck);
+        PassWord.setText(SharedPreferencesManager.getInstance(getActivity()).getLoginPassword());
         homeActivity = HomeActivity.getInstance();
         login.setOnClickListener(this);
         backToCheck.setOnClickListener(this);

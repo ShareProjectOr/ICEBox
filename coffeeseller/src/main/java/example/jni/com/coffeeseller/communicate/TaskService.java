@@ -69,7 +69,7 @@ public class TaskService extends Service implements MqttCallback {
     Timer mTimer = null;
     private
     TimerTask mTimerTask = null;
-    public static final long RUN_PERIOD = 4000;
+    public static final long RUN_PERIOD = 60000;
 
     //VersionManager versionManger;
 
