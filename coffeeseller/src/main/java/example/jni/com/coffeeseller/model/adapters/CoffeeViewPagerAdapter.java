@@ -107,9 +107,9 @@ public class CoffeeViewPagerAdapter extends PagerAdapter {
                         lastClickTime = System.currentTimeMillis();
                     }
 
-                 /*   if (!view.isEnabled()) {
+                    if (!view.isEnabled()) {
                         return;
-                    }*/
+                    }
                     if (gridViewItemListener != null) {
                         MyLog.d(TAG, "gridViewItemListener has been called");
                         gridViewItemListener.onGridItemClick(parent, view, position, id);

@@ -114,9 +114,11 @@ public class MkCoffee {
         coffMsger = CoffMsger.getInstance();
         buffer = new StringBuffer();
 
+        MyLog.W(TAG, "enter mkCoffee page");
+
         startMkCoffee();
 
-        MyLog.W(TAG, "enter mkCoffee page");
+
     }
 
     public View getView() {

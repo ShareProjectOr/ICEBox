@@ -66,7 +66,6 @@ public class BuyFragment extends BasicFragment implements GridViewItemListener, 
     private void init() {
         initViews();
         initDatas();
-        Log.e(TAG, "37 剩余量: " + new MaterialSql(getActivity()).getStorkByMaterialID("37"));
     }
 
     private void initViews() {
