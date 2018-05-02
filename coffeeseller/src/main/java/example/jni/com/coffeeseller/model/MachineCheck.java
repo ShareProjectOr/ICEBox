@@ -179,16 +179,11 @@ public class MachineCheck implements IMachineCheck {
 
             @Override
             public void run() {
-                Intent intent = new Intent(mContext, TaskService.class);
-                mContext.startService(intent);
                 if (MachineConfig.getTcpIP().isEmpty()) {
                     mOnMachineCheckCallBackListener.MQTTSubcribeFailed();
-                    if (MachineInitState.CHECK_MACHINECODE == MachineInitState.NORMAL && MachineInitState.SUB_MQTT_STATE == MachineInitState.NORMAL && MachineInitState.GET_FORMULA == MachineInitState.NORMAL) {
-                        mOnMachineCheckCallBackListener.MachineCheckEnd(true);
-                    } else {
-                        mOnMachineCheckCallBackListener.MachineCheckEnd(false);
-                    }
                 } else {
+                    Intent intent = new Intent(mContext, TaskService.class);
+                    mContext.startService(intent);
                     TaskService.getInstance().start(mOnMachineCheckCallBackListener);
                 }
             }
@@ -201,7 +196,7 @@ public class MachineCheck implements IMachineCheck {
         CoffMsger mCoffmsger = CoffMsger.getInstance();
 
         if (mCoffmsger.init()) {
-         //   Result result = mCoffmsger.Debug(DebugAction.RESET, 0, 0);//复位机器
+            //   Result result = mCoffmsger.Debug(DebugAction.RESET, 0, 0);//复位机器
             Waiter.doWait(700);
             mCoffmsger.startCheckState();
             MachineInitState.CHECK_OPENMAINCTRL = MachineInitState.NORMAL;
@@ -232,7 +227,7 @@ public class MachineCheck implements IMachineCheck {
         } else {
             postBody.put("machineCode", SharedPreferencesManager.getInstance(mContext).getMachineCode());
             postBody.put("loginPassword", SharedPreferencesManager.getInstance(mContext).getLoginPassword());
-            Log.e(TAG,"machineCode is "+ SharedPreferencesManager.getInstance(mContext).getMachineCode() + "password is "+ SharedPreferencesManager.getInstance(mContext).getLoginPassword());
+            Log.e(TAG, "machineCode is " + SharedPreferencesManager.getInstance(mContext).getMachineCode() + "password is " + SharedPreferencesManager.getInstance(mContext).getLoginPassword());
             try {
                 String response = OkHttpUtil.post(Constance.MachineAuthentication_URL, JsonUtil.mapToJson(postBody));
                 JSONObject object = new JSONObject(response);
@@ -268,13 +263,13 @@ public class MachineCheck implements IMachineCheck {
             Waiter.doWait(2000);
             getFormula();
             Waiter.doWait(2000);
-//            subMQTT();
-            if (MachineInitState.CHECK_MACHINECODE == MachineInitState.NORMAL && MachineInitState.GET_FORMULA == MachineInitState.NORMAL &&
-                    MachineInitState.CHECK_OPENMAINCTRL == MachineInitState.NORMAL) {
+             subMQTT();
+        /*    if (MachineInitState.CHECK_MACHINECODE == MachineInitState.NORMAL && MachineInitState.GET_FORMULA == MachineInitState.NORMAL &&
+                    MachineInitState.CHECK_OPENMAINCTRL == MachineInitState.NORMAL&&MachineInitState.SUB_MQTT_STATE == MachineInitState.NORMAL) {
                 mOnMachineCheckCallBackListener.MachineCheckEnd(true);
             } else {
                 mOnMachineCheckCallBackListener.MachineCheckEnd(false);
-            }
+            }*/
         }
     }
 

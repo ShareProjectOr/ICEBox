@@ -105,7 +105,7 @@ public class TaskService extends Service implements MqttCallback {
                                 if (MachineConfig.getCurrentState() == StateEnum.IDLE) {//空闲状态更新配方
                                     JSONObject d = msgObject.getJSONObject("d");
                                     if (d.getString("updateType").equals("remove")) {
-                                        JSONObject formulaObject = d.getJSONObject("formula") ;
+                                        JSONObject formulaObject = d.getJSONObject("formula");
 
                                     } else if (d.getString("updateType").equals("update")) {
 
@@ -140,7 +140,7 @@ public class TaskService extends Service implements MqttCallback {
             mOnMachineCheckCallBackListener.MQTTSubcribeSuccess();
             MachineInitState.SUB_MQTT_STATE = MachineInitState.NORMAL;
         }
-        if (MachineInitState.CHECK_MACHINECODE == MachineInitState.NORMAL && MachineInitState.SUB_MQTT_STATE == MachineInitState.NORMAL && MachineInitState.GET_FORMULA == MachineInitState.NORMAL) {
+        if (MachineInitState.CHECK_OPENMAINCTRL == MachineInitState.NORMAL && MachineInitState.CHECK_MACHINECODE == MachineInitState.NORMAL && MachineInitState.SUB_MQTT_STATE == MachineInitState.NORMAL && MachineInitState.GET_FORMULA == MachineInitState.NORMAL) {
             mOnMachineCheckCallBackListener.MachineCheckEnd(true);
         } else {
             mOnMachineCheckCallBackListener.MachineCheckEnd(false);
