@@ -67,6 +67,29 @@ public class CheckCurMachineState {
                     case HEAT_POT:
                         mBuffer.append("错误:锅炉加热中");
                         break;
+                    case MAKING:
+                        mBuffer.append("接收到的指令为制作中");
+                        break;
+
+                    case HAS_ERR:
+                        mBuffer.append("机器故障");
+                        break;
+
+                    case WARNING:
+                        mBuffer.append("机器有警告信息");
+                        break;
+
+                    case STERILIZING:
+                        mBuffer.append("机器消毒中");
+                        break;
+                    case CLEANING:
+                        mBuffer.append("机器清洗中");
+                        break;
+
+                    case TESTING:
+                        mBuffer.append("机器测试中");
+                        break;
+
                     case UNKNOW_STATE:
                         mBuffer.append("错误:未知错误");
                         break;
