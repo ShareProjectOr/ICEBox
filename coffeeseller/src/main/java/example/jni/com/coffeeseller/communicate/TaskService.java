@@ -28,6 +28,7 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -36,8 +37,11 @@ import java.util.UUID;
 import cof.ac.inter.CoffMsger;
 import cof.ac.inter.MachineState;
 import cof.ac.inter.Result;
+import example.jni.com.coffeeseller.MachineConfig.DealRecorder;
 import example.jni.com.coffeeseller.MachineConfig.MachineInitState;
+import example.jni.com.coffeeseller.MachineConfig.QRMsger;
 import example.jni.com.coffeeseller.bean.MachineConfig;
+import example.jni.com.coffeeseller.databases.DealOrderInfoManager;
 import example.jni.com.coffeeseller.factory.FragmentFactory;
 import example.jni.com.coffeeseller.httputils.JsonUtil;
 import example.jni.com.coffeeseller.httputils.OkHttpUtil;
@@ -356,7 +360,7 @@ public class TaskService extends Service implements MqttCallback {
                     sendStateMsg();
                     if (COUNT % 3 == 0) {//本地交易记录上传
 
-                        //sendLocDealMsg();
+                        sendLocDealMsg();
                     }
                     if (COUNT % 120 == 0) {//版本检测
 
@@ -470,6 +474,17 @@ public class TaskService extends Service implements MqttCallback {
      */
     private void sendLocDealMsg() {
 
+        QRMsger qrMsger = new QRMsger();
+        List<DealRecorder> dealRecorderList = DealOrderInfoManager.getInstance(mInstance).getLocalTableDatas();
+        for (int i = 0; i < dealRecorderList.size(); i++) {
+            DealRecorder dealRecorder = dealRecorderList.get(i);
+            if (dealRecorder.isReportSuccess()) {
+                continue;
+            } else {
+                qrMsger.reportTradeToServer(dealRecorder, dealRecorder.getBunkers());
+                MyLog.d(TAG, "order= " + dealRecorder.getOrder() + ", report to server into taskservice");
+            }
+        }
 
     }
 

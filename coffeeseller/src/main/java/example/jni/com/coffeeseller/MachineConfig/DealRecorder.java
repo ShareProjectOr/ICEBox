@@ -14,6 +14,9 @@ public class DealRecorder {
     String tasteRadio;//口味：多糖-50
     String payTime;
     int formulaID;//Number 配方ID
+
+    String bunkers;
+
     //消费者id
     String customerId;
     boolean payed = false;
@@ -131,6 +134,14 @@ public class DealRecorder {
 
     public void setReportMsg(String reportMsg) {
         this.reportMsg = reportMsg;
+    }
+
+    public String getBunkers() {
+        return bunkers;
+    }
+
+    public void setBunkers(String bunkers) {
+        this.bunkers = bunkers;
     }
 
     public boolean isVlide() {

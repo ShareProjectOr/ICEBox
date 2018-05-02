@@ -9,15 +9,19 @@ import android.util.Log;
 import android.view.Window;
 import android.view.WindowManager;
 
+import com.alibaba.fastjson.JSONArray;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import example.jni.com.coffeeseller.MachineConfig.DealRecorder;
+import example.jni.com.coffeeseller.MachineConfig.QRMsger;
 import example.jni.com.coffeeseller.R;
 import example.jni.com.coffeeseller.bean.Coffee;
 import example.jni.com.coffeeseller.bean.CoffeeFomat;
@@ -31,6 +35,7 @@ import example.jni.com.coffeeseller.databases.DealOrderInfoManager;
 import example.jni.com.coffeeseller.httputils.JsonUtil;
 import example.jni.com.coffeeseller.httputils.OkHttpUtil;
 import example.jni.com.coffeeseller.model.ChooseCup;
+import example.jni.com.coffeeseller.model.Help;
 import example.jni.com.coffeeseller.model.MkCoffee;
 import example.jni.com.coffeeseller.model.listeners.ChooseCupListenner;
 import example.jni.com.coffeeseller.model.listeners.MkCoffeeListenner;
@@ -44,6 +49,8 @@ import example.jni.com.coffeeseller.views.fragments.BuyFragment;
 
 public class BuyDialog extends Dialog implements ChooseCupListenner, MkCoffeeListenner {
     private static String TAG = "BuyDialog";
+    public static int VIEW_CHOOSE_CUP = 0;
+    public static int VIEW_HELP = 1;
     private Context context;
     private Coffee coffee;
     private Handler handler;
@@ -65,7 +72,9 @@ public class BuyDialog extends Dialog implements ChooseCupListenner, MkCoffeeLis
 
     public void init() {
 
-        initView();
+        /*initView();*/
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
+        setCanceledOnTouchOutside(false);
         initData();
     }
 
@@ -80,8 +89,7 @@ public class BuyDialog extends Dialog implements ChooseCupListenner, MkCoffeeLis
         wl.height = WindowManager.LayoutParams.WRAP_CONTENT;
         wl.alpha = 0.9f;
         window.setAttributes(wl);
-        requestWindowFeature(Window.FEATURE_NO_TITLE);
-        setCanceledOnTouchOutside(false);
+
     }
 
     private void initData() {
@@ -90,20 +98,34 @@ public class BuyDialog extends Dialog implements ChooseCupListenner, MkCoffeeLis
         mkCoffeeListenner = this;
     }
 
-    public void setInitView() {
-        ChooseCup chooseCup = new ChooseCup(context, coffee, chooseCupListenner, handler);
-        setContentView(chooseCup.getView());
+    public void setInitView(int viewID) {
+        if (viewID == VIEW_CHOOSE_CUP) {
+            ChooseCup chooseCup = new ChooseCup(context, coffee, chooseCupListenner, handler);
+            setContentView(chooseCup.getView());
+
+            MyLog.W(TAG,"choose cup view is added");
+
+        } else if (viewID == VIEW_HELP) {
+            Help help = new Help(context, this);
+            setContentView(help.getView());
+
+            MyLog.W(TAG,"help view is added");
+        }
     }
 
     public void setInitData(BuyFragment buyFragment, Coffee coffee) {
         this.fragment = buyFragment;
         this.coffee = coffee;
-        setInitView();
+        setInitView(VIEW_CHOOSE_CUP);
+
+        MyLog.W(TAG,coffee.getName()+" has been selected !");
     }
 
     public void showDialog() {
         if (!isShowing())
             show();
+
+        initView();
     }
 
     public void disDialog() {
@@ -112,64 +134,16 @@ public class BuyDialog extends Dialog implements ChooseCupListenner, MkCoffeeLis
         }
     }
 
-    //上报交易给服务器
-
-    private DealRecorder reportTradeToServer(DealRecorder dealRecorder, List<ReportBunker> bunkers) {
-
-        Map<String, Object> params = ConstanceMethod.getParams();
-        params.put("tradeCode", dealRecorder.getOrder());
-        params.put("makeState", (dealRecorder.isMakeSuccess() ? 1 : 0));
-        params.put("bunkers", bunkers);
-
-
-        MyLog.d(TAG, "reportTradeToServer RQ_URL = " + Constance.TRADE_UPLOAD);
-        MyLog.d(TAG, "reportTradeToServer params = " + JsonUtil.mapToJson(params));
-
-        String RESPONSE_TEXT = null;
-
-        try {
-
-            RESPONSE_TEXT = OkHttpUtil.post(Constance.TRADE_UPLOAD, JsonUtil.mapToJson(params));
-
-        } catch (IOException e) {
-
-            e.printStackTrace();
-        }
-
-        MyLog.W(TAG, "reportTradeToServer data : " + RESPONSE_TEXT);
-
-        if (RESPONSE_TEXT != null || !TextUtils.isEmpty(RESPONSE_TEXT)) {
-
-            try {
-                JSONObject response = new JSONObject(RESPONSE_TEXT);
-                dealRecorder.setReportSuccess(response.getBoolean("uploadState"));
-                dealRecorder.setReportMsg(response.getString("err"));
-            } catch (JSONException e) {
-                dealRecorder.setReportSuccess(false);
-                dealRecorder.setReportMsg("JSONException");
-                e.printStackTrace();
-            }
-
-        } else {
-            dealRecorder.setReportSuccess(false);
-            dealRecorder.setReportMsg("请求返回为null");
-        }
-
-        MyLog.d(TAG, " reportTradeToServer  is  over");
-
-        return dealRecorder;
-    }
-
     //更新数据库原料表
-    private List<ReportBunker> updateMaterial(DealRecorder dealRecorder) {
+    private String updateMaterial(DealRecorder dealRecorder) {
 
 
         List<ReportBunker> bunkers = new ArrayList<>();
         if (coffee == null || coffee.getStepList() == null || coffee.getStepList().size() <= 0) {
-            return bunkers;
+            return "";
         }
         if (dealRecorder == null || dealRecorder.getContainerConfigs() == null || dealRecorder.getContainerConfigs().size() <= 0) {
-            return bunkers;
+            return "";
         }
         MaterialSql materialSql = new MaterialSql(context);
 
@@ -192,7 +166,7 @@ public class BuyDialog extends Dialog implements ChooseCupListenner, MkCoffeeLis
                     boolean isUpdateSuccess = materialSql.updateMaterialStockByMaterialId(step.getMaterial().getMaterialID() + "", (sqlRestMaterialInt - mkUseMaterialInt) + "");
 
                     MyLog.W(TAG, "update material is " + isUpdateSuccess + ", materialId=" + step.getMaterial().getMaterialID()
-                            + ", stock=" + (sqlRestMaterialInt - mkUseMaterialInt));
+                            + ", usedMaterial = " +mkUseMaterialInt +" sqlRestMaterial= "+sqlRestMaterialInt+", stock=" + (sqlRestMaterialInt - mkUseMaterialInt));
 
                     ReportBunker reportBunker = new ReportBunker();
                     int bunkerId = Integer.parseInt(materialSql.getBunkerIDByMaterialD(step.getMaterial().getMaterialID() + ""));
@@ -206,8 +180,18 @@ public class BuyDialog extends Dialog implements ChooseCupListenner, MkCoffeeLis
 
                 }
         }
+
+        /*
+        * 更新数据库本地交易数据库bunker
+        * */
+        JSONArray jsonArray = (JSONArray) com.alibaba.fastjson.JSONObject.toJSON(bunkers);
+        String array = jsonArray.toString();
+        dealRecorder.setBunkers(array);
+
+        DealOrderInfoManager.getInstance(context).update(dealRecorder);
+
         MyLog.W(TAG, "updateMaterial is over");
-        return bunkers;
+        return array;
     }
 
 
@@ -264,6 +248,7 @@ public class BuyDialog extends Dialog implements ChooseCupListenner, MkCoffeeLis
             public void run() {
                 MkCoffee mkCoffee = new MkCoffee(context, fomat, dealRecorder, mkCoffeeListenner, handler);
                 setContentView(mkCoffee.getView());
+
             }
         });
     }
@@ -275,18 +260,21 @@ public class BuyDialog extends Dialog implements ChooseCupListenner, MkCoffeeLis
         new Thread(new Runnable() {
             @Override
             public void run() {
-                List<ReportBunker> bunkers = new ArrayList<ReportBunker>();
+//                List<ReportBunker> bunkers = new ArrayList<ReportBunker>();
+                String bunkers = "";
                 if (isCalculateMaterial) {
 
                     MyLog.d(TAG, "isCalculateMaterial= " + isCalculateMaterial);
 
                     //更新数据库原料表
                     bunkers = updateMaterial(recorder);
+
                 }
 
                 //上报交易结果给服务器
 
-                DealRecorder newDealRecorder = reportTradeToServer(recorder, bunkers);
+                QRMsger qrMsger = new QRMsger();
+                DealRecorder newDealRecorder = qrMsger.reportTradeToServer(recorder, bunkers);
 
 
                 //更新本地交易记录

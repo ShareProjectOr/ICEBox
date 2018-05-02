@@ -27,6 +27,8 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import cof.ac.inter.ContainerConfig;
 import cof.ac.inter.WaterType;
@@ -46,6 +48,7 @@ import example.jni.com.coffeeseller.parse.ParseRQMsg;
 import example.jni.com.coffeeseller.parse.PayResult;
 import example.jni.com.coffeeseller.utils.MyLog;
 import example.jni.com.coffeeseller.utils.QRMaker;
+import example.jni.com.coffeeseller.utils.TextUtil;
 import example.jni.com.coffeeseller.views.customviews.BuyDialog;
 
 import static android.R.attr.button;
@@ -57,8 +60,6 @@ import static android.R.attr.track;
 
 public class ChooseCup implements View.OnClickListener, MsgTransListener {
     private static String TAG = "ChooseCup";
-    private static int REQUEST_QR_CODE = 0;
-    private static int REQUEST_CHECK_PAY = 1;
     private static int VIEW_SHOW_TIME = 2 * 60 * 1000;
     private Context mContext;
     private View mView;
@@ -68,11 +69,9 @@ public class ChooseCup implements View.OnClickListener, MsgTransListener {
     private CoffeeFomat mCoffeeFomat;
     private ChooseCupListenner mChooseCupListener;
     private MsgTransListener mMsgTransListener;
-    private TimerTask mCheckPayTask = null;
     private CountDownTimer countDownTimer;
-    private Timer mTimer = null;
     private Handler mHandler;
-    private int mCurRequest;
+    private TradeMsgRequest tradeMsgRequest;
 
 
     public ChooseCup(Context context, Coffee coffee, ChooseCupListenner listenner, Handler handler) {
@@ -85,7 +84,7 @@ public class ChooseCup implements View.OnClickListener, MsgTransListener {
 
     private void init() {
         initView();
-        if (isMachineRight()){
+        if (isMachineRight()) {
             initData();
         }
         countDownTime();
@@ -101,6 +100,7 @@ public class ChooseCup implements View.OnClickListener, MsgTransListener {
             mViewHolder.mContentLayout.setVisibility(View.VISIBLE);
             mViewHolder.mQrLayout.setVisibility(View.VISIBLE);
             mViewHolder.mErrTip.setVisibility(View.GONE);
+            mViewHolder.mFailedLayout.setVisibility(View.GONE);
             return true;
         } else {
             MyLog.d(TAG, "machine is has error ");
@@ -108,6 +108,7 @@ public class ChooseCup implements View.OnClickListener, MsgTransListener {
             mViewHolder.mContentLayout.setVisibility(View.GONE);
             mViewHolder.mQrLayout.setVisibility(View.GONE);
             mViewHolder.mErrTip.setText(CheckCurMachineState.getInstance().getStateTip());
+            mViewHolder.mFailedLayout.setVisibility(View.VISIBLE);
             return false;
         }
 
@@ -126,7 +127,12 @@ public class ChooseCup implements View.OnClickListener, MsgTransListener {
 
         mCoffeeFomat = new CoffeeFomat();
         mDealRecorder = new DealRecorder();
+        tradeMsgRequest = new TradeMsgRequest();
         mMsgTransListener = this;
+
+        mViewHolder.mCoffeeName.setText(mCoffee.name);
+        mViewHolder.mCoffeeName.setTextSize(TextUtil.textSize(mCoffee.name));
+
     }
 
     public void initData() {
@@ -139,15 +145,15 @@ public class ChooseCup implements View.OnClickListener, MsgTransListener {
         * 初始化数据
         * */
 
-        mCoffeeFomat = new CoffeeFomat();
-        mDealRecorder = new DealRecorder();
-        mMsgTransListener = this;
+        mDealRecorder.setRqcup(1);
+        mDealRecorder.setFormulaID(mCoffee.getFormulaID());
 
         BigDecimal bigDecimal = new BigDecimal(Float.parseFloat(mCoffee.price));
         float pay = bigDecimal.setScale(2, BigDecimal.ROUND_HALF_UP).floatValue();
         mViewHolder.mCoffeePrice.setText("￥ " + pay + "");
 
         mViewHolder.mCoffeeName.setText(mCoffee.name);
+        mViewHolder.mCoffeeName.setTextSize(TextUtil.textSize(mCoffee.name));
 
         TaskService.getInstance().SetOnMsgListener(mMsgTransListener);
 
@@ -155,7 +161,7 @@ public class ChooseCup implements View.OnClickListener, MsgTransListener {
 
         initTaste(mCoffee.getStepList());
 
-        requestQRCode();
+        tradeMsgRequest.requestQRCode(this, mDealRecorder, mCoffee);
 
     }
 
@@ -190,18 +196,6 @@ public class ChooseCup implements View.OnClickListener, MsgTransListener {
 
     }
 
-    /*
-* 请求二维码
-* */
-    private void requestQRCode() {
-
-        MyLog.d(TAG, "requestQRCode");
-        mCurRequest = REQUEST_QR_CODE;
-        mDealRecorder.setRqcup(1);
-        mDealRecorder.setFormulaID(mCoffee.getFormulaID());
-        QRMsger qrMsger = new QRMsger(mDealRecorder);
-        qrMsger.reqQR(this, null);
-    }
 
     /**
      * 将二维码设置为loadingView的背景
@@ -231,39 +225,6 @@ public class ChooseCup implements View.OnClickListener, MsgTransListener {
     }
 
     /*
-* 开始检查订单是否支付
-* */
-    private void beginTaskCheckPay() {
-
-        mCurRequest = REQUEST_CHECK_PAY;
-
-        if (mTimer == null) {
-
-            mTimer = new Timer(true);
-        }
-        if (mCheckPayTask == null) {
-
-            mCheckPayTask = new TimerTask() {
-
-                @Override
-                public void run() {
-                    // TODO Auto-generated method stub
-
-                    if (!mDealRecorder.isPayed() && mDealRecorder.isVlide()) {
-                        QRMsger qrMsger = new QRMsger();
-                        qrMsger.checkPay(mMsgTransListener, mDealRecorder.getOrder());
-                    } else {
-                        stopTaskCheckPay();
-                    }
-                }
-            };
-
-            mTimer.schedule(mCheckPayTask, 20000, 9000);//交易之后20秒进行查询交易状态,每隔5秒查询一次
-        }
-
-    }
-
-    /*
 * 根据返回信息，设置二维码
 * */
     private void getQrMsg(ParseRQMsg parseRqMsg) {
@@ -283,7 +244,8 @@ public class ChooseCup implements View.OnClickListener, MsgTransListener {
         Bitmap bitmap = mQrMaker.createBitmap(parseRqMsg.getQrCode(), 350, 350);
         setQR_Code(bitmap);
 
-        beginTaskCheckPay();
+//        beginTaskCheckPay();
+        tradeMsgRequest.beginTaskCheckPay(mMsgTransListener, mDealRecorder);
         MyLog.W(TAG, "dealOrder = " + mDealRecorder.getOrder());
     }
 
@@ -302,7 +264,8 @@ public class ChooseCup implements View.OnClickListener, MsgTransListener {
             MyLog.d(TAG, "msg.getPayTime()= " + mDealRecorder.getPayTime());
 
             if (mChooseCupListener != null) {
-                stopTaskCheckPay();
+
+                tradeMsgRequest.stopTaskCheckPay();
                 getFinalContainerConfig();
                 mChooseCupListener.hasPay(mCoffeeFomat, mDealRecorder);
             }
@@ -346,16 +309,6 @@ public class ChooseCup implements View.OnClickListener, MsgTransListener {
         }
     }
 
-    private void stopTaskCheckPay() {
-
-        if (mTimer != null) {
-
-            mTimer.cancel();
-        }
-        mTimer = null;
-        mCheckPayTask = null;
-    }
-
     /*
    * 倒计时检测
    * */
@@ -370,7 +323,8 @@ public class ChooseCup implements View.OnClickListener, MsgTransListener {
                 mViewHolder.mCountDownTime.setText(millisUntilFinished / 1000 + " s");
 
                 if (mDealRecorder.isPayed()) {
-                    stopTaskCheckPay();
+
+                    tradeMsgRequest.stopTaskCheckPay();
                     stopCountDownTimer();
                     return;
                 }
@@ -384,7 +338,7 @@ public class ChooseCup implements View.OnClickListener, MsgTransListener {
                     if (mChooseCupListener != null) {
 
                         stopCountDownTimer();
-                        stopTaskCheckPay();
+                        tradeMsgRequest.stopTaskCheckPay();
                         mChooseCupListener.cancle(mDealRecorder.getOrder());
                     }
                 }
@@ -428,7 +382,9 @@ public class ChooseCup implements View.OnClickListener, MsgTransListener {
             case R.id.close:
 
                 if (mChooseCupListener != null) {
-                    stopTaskCheckPay();
+
+                    stopCountDownTimer();
+                    tradeMsgRequest.stopTaskCheckPay();
                     mChooseCupListener.cancle(mDealRecorder.getOrder());
                 }
                 break;
@@ -441,7 +397,7 @@ public class ChooseCup implements View.OnClickListener, MsgTransListener {
 
         if (msg != null) {
 
-            if (msg instanceof ParseRQMsg && mCurRequest == REQUEST_QR_CODE) {
+            if (msg instanceof ParseRQMsg && tradeMsgRequest.mCurRequest == TradeMsgRequest.REQUEST_QR_CODE) {
 
                 ParseRQMsg parseRqMsg = (ParseRQMsg) msg;
                 getQrMsg(parseRqMsg);
@@ -449,16 +405,16 @@ public class ChooseCup implements View.OnClickListener, MsgTransListener {
                 MyLog.d(TAG, parseRqMsg.getQrCode());
 
             }
-            if (msg instanceof PayResult && mCurRequest == REQUEST_CHECK_PAY) {
+            if (msg instanceof PayResult && tradeMsgRequest.mCurRequest == TradeMsgRequest.REQUEST_CHECK_PAY) {
                 PayResult aMsg = (PayResult) msg;
                 getPayMsg(aMsg);
             }
         } else {
-            if (mCurRequest == REQUEST_QR_CODE) {
+            if (tradeMsgRequest.mCurRequest == TradeMsgRequest.REQUEST_QR_CODE) {
                 setQR_Code(null);
                 MyLog.W(TAG, "no message come in reqQR");
             }
-            if (mCurRequest == REQUEST_CHECK_PAY) {
+            if (tradeMsgRequest.mCurRequest == TradeMsgRequest.REQUEST_CHECK_PAY) {
                 MyLog.W(TAG, "check pay msg is null");
             }
 
@@ -479,6 +435,7 @@ public class ChooseCup implements View.OnClickListener, MsgTransListener {
         public TextView mErrTip;
         public LinearLayout mContentLayout;
         private LinearLayout mQrLayout;
+        public LinearLayout mFailedLayout;
 
 
         public ViewHolder(View view) {
@@ -498,6 +455,7 @@ public class ChooseCup implements View.OnClickListener, MsgTransListener {
             mErrTip = (TextView) view.findViewById(R.id.errTip);
             mContentLayout = (LinearLayout) view.findViewById(R.id.contentLayout);
             mQrLayout = (LinearLayout) view.findViewById(R.id.qr_layout);
+            mFailedLayout = (LinearLayout) view.findViewById(R.id.failed_layout);
         }
 
         public void addView(final Step step, final int index) {

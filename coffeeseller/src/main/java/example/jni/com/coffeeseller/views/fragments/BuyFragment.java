@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -44,6 +45,7 @@ public class BuyFragment extends BasicFragment implements GridViewItemListener, 
     public ImageView mLogo;
     public TextView mMachineCode;
     public ImageView mHelp;
+    private RelativeLayout mHelpLayout;
     private CoffeeViewPagerAdapter mPagerAdapter;
     private List<Coffee> mCoffees;
     private long lastClickTime;
@@ -71,11 +73,13 @@ public class BuyFragment extends BasicFragment implements GridViewItemListener, 
         homeActivity = HomeActivity.getInstance();
         mLogo = (ImageView) content.findViewById(R.id.logo);
         mHelp = (ImageView) content.findViewById(R.id.help);
+        mHelpLayout = (RelativeLayout) content.findViewById(R.id.helpLayout);
         mMachineCode = (TextView) content.findViewById(R.id.machineCode);
         mLogo.setOnClickListener(this);
 
         mViewPager = (HomeViewPager) content.findViewById(R.id.viewPager);
         mPointGroup = (LinearLayout) content.findViewById(R.id.pointGroup);
+        mHelpLayout.setOnClickListener(this);
         mViewPager.setPageTransformer(true, new GridViewTransformation());
         mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
@@ -150,7 +154,7 @@ public class BuyFragment extends BasicFragment implements GridViewItemListener, 
         if (buyDialog == null) {
             buyDialog = new BuyDialog(homeActivity, R.style.dialog);
         }
-        buyDialog.setInitData(this,coffee);
+        buyDialog.setInitData(this, coffee);
         buyDialog.showDialog();
 
     }
@@ -174,6 +178,13 @@ public class BuyFragment extends BasicFragment implements GridViewItemListener, 
                     lastClickTime = System.currentTimeMillis();
                     homeActivity.replaceFragment(FragmentEnum.ChooseCupNumFragment, FragmentEnum.TradeFragment);
                 }*/
+                break;
+            case R.id.helpLayout:
+                if (buyDialog == null) {
+                    buyDialog = new BuyDialog(homeActivity, R.style.dialog);
+                }
+                buyDialog.setInitView(BuyDialog.VIEW_HELP);
+                buyDialog.showDialog();
                 break;
         }
     }

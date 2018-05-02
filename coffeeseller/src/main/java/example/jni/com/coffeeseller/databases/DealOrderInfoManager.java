@@ -44,8 +44,7 @@ public class DealOrderInfoManager {
         synchronized (this) {
             SQLiteDatabase localSQLiteDatabase = mDataBaseHelper.getWritableDatabase();
 
-
-            Object[] arrayOfObject = new Object[12];
+            Object[] arrayOfObject = new Object[13];
             arrayOfObject[0] = orderRecorder.getOrder();
             arrayOfObject[1] = orderRecorder.getRqcup();
             arrayOfObject[2] = orderRecorder.getPrice();
@@ -55,14 +54,16 @@ public class DealOrderInfoManager {
             arrayOfObject[6] = orderRecorder.isMakeSuccess() ? 1 : 0;
             arrayOfObject[7] = orderRecorder.getCustomerId();
             arrayOfObject[8] = orderRecorder.getFormulaID();
-            arrayOfObject[9] = orderRecorder.getPayTime();
-            arrayOfObject[10] = orderRecorder.isReportSuccess() ? 1 : 0;
-            arrayOfObject[11] = orderRecorder.getReportMsg();
+            arrayOfObject[9] = orderRecorder.getBunkers();
+            arrayOfObject[10] = orderRecorder.getPayTime();
+            arrayOfObject[11] = orderRecorder.isReportSuccess() ? 1 : 0;
+            arrayOfObject[12] = orderRecorder.getReportMsg();
 
-            MyLog.d(TAG, "arrayOfObject=" + arrayOfObject);
             localSQLiteDatabase.execSQL("insert into order_info ( trade_code ,cup,price,taste_redio,temp_format, payed ," +
-                    "make_success,customer_id,formula_id,pay_time,is_report_success,report_msg ) " +
-                    "values(?,?,?,?,?,?,?,?,?,?,?,?)", arrayOfObject);
+                    "make_success,customer_id,formula_id,bunkers,pay_time,is_report_success,report_msg ) " +
+                    "values(?,?,?,?,?,?,?,?,?,?,?,?,?)", arrayOfObject);
+
+            MyLog.W(TAG, "add order into table order_info where orderCode= " + orderRecorder.getOrder());
             localSQLiteDatabase.close();
 
         }
@@ -88,16 +89,9 @@ public class DealOrderInfoManager {
                 return;
             }
             SQLiteDatabase localSQLiteDatabase = mDataBaseHelper.getReadableDatabase();
-            Object[] arrayOfObject = new Object[4];
-            MyLog.d(TAG, "isPayed=" + bean.isPayed());
-
-            MyLog.d(TAG, "isMakeSuccess=" + bean.isMakeSuccess());
-
-            MyLog.d(TAG, "isReportSuccess=" + bean.isReportSuccess());
-
-
-            MyLog.d(TAG, "getReportMsg=" + bean.getReportMsg());
-
+            MyLog.W(TAG, " update order_info " + "isPayed=" + bean.isPayed() + ", isMakeSuccess=" + bean.isMakeSuccess()
+                    + " ,isReportSuccess=  " + bean.isReportSuccess() + " ,getReportMsg=  " + bean.getReportMsg()
+                    + " ,bunkers= " + bean.getBunkers());
 
             ContentValues contentValues = new ContentValues();
             contentValues.put("payed", bean.isPayed() ? 1 : 0);
@@ -106,11 +100,8 @@ public class DealOrderInfoManager {
             contentValues.put("report_msg", bean.getReportMsg());
             contentValues.put("taste_redio", bean.getTasteRadio());
             contentValues.put("temp_format", bean.getRqTempFormat());
-            /*localSQLiteDatabase.execSQL("update order_info set payed=" + (bean.isPayed() ? 1 : 0) +
-                    ",make_success=" + (bean.isMakeSuccess() ? 1 : 0) +
-                    ",is_report_success=" + (bean.isReportSuccess() ? 1 : 0) +
-                    ",report_msg= " + bean.getReportMsg() +
-                    " where trade_code= " + bean.getOrder());*/
+            contentValues.put("bunkers", bean.getBunkers());
+
             localSQLiteDatabase.update("order_info", contentValues, "trade_code = ? ", new String[]{bean.getOrder()});
 
             localSQLiteDatabase.close();
@@ -137,6 +128,7 @@ public class DealOrderInfoManager {
                 mBean.setPayTime(localCursor.getString(localCursor.getColumnIndex("pay_time")));
                 mBean.setCustomerId(localCursor.getString(localCursor.getColumnIndex("customer_id")));
                 mBean.setFormulaID(localCursor.getInt(localCursor.getColumnIndex("formula_id")));
+                mBean.setBunkers(localCursor.getString(localCursor.getColumnIndex("bunkers")));
                 mBean.setReportMsg(localCursor.getString(localCursor.getColumnIndex("report_msg")));
 
 

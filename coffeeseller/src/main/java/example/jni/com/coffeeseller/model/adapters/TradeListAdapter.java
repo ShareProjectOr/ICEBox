@@ -62,17 +62,18 @@ public class TradeListAdapter extends BaseAdapter {
         }
         DealRecorder dealRecorder = DealRecorders.get(position);
         if (dealRecorder != null) {
-            viewHolder.mRqCup.setText(dealRecorder.getRqcup()+"");
+            viewHolder.mRqCup.setText(dealRecorder.getRqcup() + "");
             viewHolder.mRqTempFormat.setText(dealRecorder.getRqTempFormat());
             viewHolder.mOrder.setText(dealRecorder.getOrder());
             viewHolder.mPrice.setText(dealRecorder.getPrice());
             viewHolder.mTaste.setText(dealRecorder.getTasteRadio());
             viewHolder.mPayTime.setText(dealRecorder.getPayTime());
-            viewHolder.mFormulaID.setText(dealRecorder.getFormulaID()+"");
+            viewHolder.mFormulaID.setText(dealRecorder.getFormulaID() + "");
             viewHolder.mPayed.setText(dealRecorder.isPayed() + "");
             viewHolder.mMakeSuccess.setText(dealRecorder.isMakeSuccess() + "");
             viewHolder.mIsReportSuccess.setText(dealRecorder.isReportSuccess() + "");
             viewHolder.mReportMsg.setText(dealRecorder.getReportMsg());
+            viewHolder.mReportBunkers.setText(dealRecorder.getBunkers());
         }
         return viewHolder.view;
     }
@@ -90,6 +91,7 @@ public class TradeListAdapter extends BaseAdapter {
         public TextView mMakeSuccess;
         public TextView mIsReportSuccess;
         public TextView mReportMsg;
+        public TextView mReportBunkers;
 
         public ViewHolder() {
             bindViews();
@@ -108,6 +110,7 @@ public class TradeListAdapter extends BaseAdapter {
             mMakeSuccess = (TextView) view.findViewById(R.id.makeSuccess);
             mIsReportSuccess = (TextView) view.findViewById(R.id.isReportSuccess);
             mReportMsg = (TextView) view.findViewById(R.id.reportMsg);
+            mReportBunkers = (TextView) view.findViewById(R.id.reportBunkers);
         }
 
     }

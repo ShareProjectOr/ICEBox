@@ -48,7 +48,6 @@ public class MkCoffee {
     private CoffeeFomat coffeeFomat;
     private DealRecorder dealRecorder;
     private MkCoffeeListenner mkCoffeeListenner;
-    private DealOrderInfoManager dealOrderInfoManager;
     private Handler handler;
 
     private boolean isStartMaking = false;
@@ -56,7 +55,7 @@ public class MkCoffee {
     private boolean isCalculateMaterial = true;
 
     private long lastStateTime;
-    private long totalMakingTime;
+    private long totalMakingTime = 0;
     private StringBuffer buffer;
 
     public MkCoffee(Context context, CoffeeFomat coffeeFomat, DealRecorder dealRecorder, MkCoffeeListenner mkCoffeeListenner, Handler handler) {
@@ -82,7 +81,6 @@ public class MkCoffee {
 
     public void initData() {
 
-        dealOrderInfoManager = new DealOrderInfoManager(context);
         if (coffeeFomat != null && dealRecorder != null) {
 
             dealRecorder.getContainerConfigs().clear();
@@ -116,9 +114,9 @@ public class MkCoffee {
         coffMsger = CoffMsger.getInstance();
         buffer = new StringBuffer();
 
-
-//        updateProgressAnim(CONTAIN_MAKING_PROGRESS_TIME);
         startMkCoffee();
+
+        MyLog.W(TAG, "enter mkCoffee page");
     }
 
     public View getView() {
@@ -146,9 +144,7 @@ public class MkCoffee {
                 mkCoffeeListenner.getMkResult(dealRecorder, false, isCalculateMaterial);
             }
 
-
-//            disDialog(true);
-            MyLog.d(TAG, "containerConfigs is null");
+            MyLog.W(TAG, "containerConfigs is null");
         }
     }
 
@@ -178,12 +174,12 @@ public class MkCoffee {
     * */
     private void mkCoffee() {
 
+        MyLog.W(TAG, "start making");
 
         Runnable runnable = new Runnable() {
             @Override
             public void run() {
 
-                //   StringBuffer buffer = new StringBuffer();
                 buffer.append("提示：");
                 MachineState machineState = null;
                 lastStateTime = System.currentTimeMillis();
@@ -197,7 +193,7 @@ public class MkCoffee {
                         if (coffeeMakeStateRecorder.state == null
                                 || coffeeMakeStateRecorder.state == CoffeeMakeState.COFFEEFINISHED_CUPNOTAKEN
                                 || coffeeMakeStateRecorder.state == CoffeeMakeState.COFFEEFINISHED_CUPISTAKEN) {
-                            MyLog.d(TAG, " make successed but time is too long ");
+                            MyLog.W(TAG, " make successed but time is too long ");
 
                             if (mkCoffeeListenner != null) {
                                 dealRecorder.setMakeSuccess(true);
@@ -206,7 +202,7 @@ public class MkCoffee {
                         } else {
                             if (coffeeMakeStateRecorder.state == CoffeeMakeState.COFFEE_DOWN_CUP) {
 
-                                MyLog.d(TAG, " make failed and time is too long,down cup state is remaining ");
+                                MyLog.W(TAG, " make failed and time is too long,down cup state is remaining ");
 
                                 if (mkCoffeeListenner != null) {
                                     dealRecorder.setMakeSuccess(false);
@@ -218,7 +214,6 @@ public class MkCoffee {
                             break;
                         }
 
-                        //     disDialog(false);
                         break;
                     }
                     if (DealMachineState(machineState)) {
@@ -293,18 +288,19 @@ public class MkCoffee {
                             mkCoffeeListenner.getMkResult(dealRecorder, true, isCalculateMaterial);
                         }
 
-                        break;
+                        MyLog.d(TAG, "cur state is COFFEEFINISHED_CUPNOTAKEN ");
 
-                        //disDialog(false);
+                        break;
 
                     }
                     if (coffeeMakeStateRecorder.state == CoffeeMakeState.COFFEEFINISHED_CUPISTAKEN) {
 
                         coffeeMakeStateRecorder.state = null;
 
+                        MyLog.d(TAG, "cur state is COFFEEFINISHED_CUPISTAKEN ");
+
                         break;
 
-                        //  disDialog(false);
                     }
                     if (coffeeMakeStateRecorder.state == CoffeeMakeState.COFFEEMAKING_FAILED) {
 
@@ -315,10 +311,7 @@ public class MkCoffee {
                             mkCoffeeListenner.getMkResult(dealRecorder, false, isCalculateMaterial);
                         }
 
-
-                        // disDialog(true);
-
-
+                        MyLog.d(TAG, "cur state is COFFEEMAKING_FAILED ");
                         break;
                     }
                 }
@@ -341,11 +334,7 @@ public class MkCoffee {
 
             coffeeMakeStateRecorder.state = CoffeeMakeState.COFFEEFINISHED_CUPNOTAKEN;
         }
-        /*else if (machineState.getMajorState().getCurStateEnum() == StateEnum.HAS_ERR) {
 
-            coffeeMakeStateRecorder.state = CoffeeMakeState.COFFEEMAKING_FAILED;
-
-        }*/
     }
 
     private boolean dealMakingState(MachineState machineState) {
@@ -410,8 +399,7 @@ public class MkCoffee {
 
     private boolean isMkTimeOut() {
 
-        long curTime = System.currentTimeMillis();
-        if (curTime - totalMakingTime > MAX_TOTAL_MK_TIME) {
+        if (System.currentTimeMillis() - totalMakingTime > MAX_TOTAL_MK_TIME) {
 
             return true;
         }
@@ -483,6 +471,8 @@ public class MkCoffee {
                 makingViewHolder.mErrTip.setVisibility(VISIBLE);
                 makingViewHolder.mProgressBarLayout.setVisibility(GONE);
                 makingViewHolder.mErrTip.setText(buffer.toString());
+
+                MyLog.W(TAG, "making err: " + buffer.toString());
             }
         });
 

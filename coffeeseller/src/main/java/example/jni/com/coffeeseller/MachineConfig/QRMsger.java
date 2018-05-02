@@ -6,9 +6,11 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Map;
 
 import example.jni.com.coffeeseller.bean.MachineConfig;
+import example.jni.com.coffeeseller.bean.ReportBunker;
 import example.jni.com.coffeeseller.contentprovider.Constance;
 import example.jni.com.coffeeseller.contentprovider.ConstanceMethod;
 import example.jni.com.coffeeseller.httputils.JsonUtil;
@@ -125,6 +127,55 @@ public class QRMsger {
         };
         Thread t = new Thread(mRun);
         t.start();
+    }
+
+
+    //上报交易给服务器
+
+    public DealRecorder reportTradeToServer(DealRecorder dealRecorder, String bunkers) {
+
+        Map<String, Object> params = ConstanceMethod.getParams();
+        params.put("tradeCode", dealRecorder.getOrder());
+        params.put("makeState", (dealRecorder.isMakeSuccess() ? 1 : 0));
+        params.put("bunkers", bunkers);
+
+
+        MyLog.W(TAG, "reportTradeToServer RQ_URL = " + Constance.TRADE_UPLOAD);
+        MyLog.W(TAG, "reportTradeToServer params = " + JsonUtil.mapToJson(params));
+
+        String RESPONSE_TEXT = null;
+
+        try {
+
+            RESPONSE_TEXT = OkHttpUtil.post(Constance.TRADE_UPLOAD, JsonUtil.mapToJson(params));
+
+        } catch (IOException e) {
+
+            e.printStackTrace();
+        }
+
+        MyLog.W(TAG, "reportTradeToServer data : " + RESPONSE_TEXT);
+
+        if (RESPONSE_TEXT != null || !TextUtils.isEmpty(RESPONSE_TEXT)) {
+
+            try {
+                JSONObject response = new JSONObject(RESPONSE_TEXT);
+                dealRecorder.setReportSuccess(response.getBoolean("uploadState"));
+                dealRecorder.setReportMsg(response.getString("err"));
+            } catch (JSONException e) {
+                dealRecorder.setReportSuccess(false);
+                dealRecorder.setReportMsg("JSONException");
+                e.printStackTrace();
+            }
+
+        } else {
+            dealRecorder.setReportSuccess(false);
+            dealRecorder.setReportMsg("请求返回为null");
+        }
+
+        MyLog.W(TAG, " reportTradeToServer  is  over");
+
+        return dealRecorder;
     }
 
    /* public void refund(final MsgTransListener mListener, final String order, final int failCups) {
