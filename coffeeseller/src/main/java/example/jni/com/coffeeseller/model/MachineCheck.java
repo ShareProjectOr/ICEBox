@@ -62,7 +62,7 @@ public class MachineCheck implements IMachineCheck {
 
     private void getFormula() {
 
-        if (MachineConfig.getMachineCode().isEmpty()) {
+        if (MachineConfig.getMachineCode()==null||MachineConfig.getMachineCode().isEmpty()) {
             mOnMachineCheckCallBackListener.MaterialGroupGetFailed("机器号未填写,配方获取失败");
         } else {
             Map<String, Object> body = new HashMap<>();
@@ -249,7 +249,7 @@ public class MachineCheck implements IMachineCheck {
                     Log.d(TAG, "machineCofig is " + object.getJSONObject("d"));
                     SharedPreferencesManager.getInstance(mContext).setTopicIP(object.getJSONObject("d").getString("tcpIP"));
                     MachineConfig.setHostUrl(object.getJSONObject("d").getString("uRL"));
-                    MachineConfig.setMachineCode(MachineConfig.getMachineCode());
+                    MachineConfig.setMachineCode(object.getJSONObject("d").getString("machineCode"));
                     MachineConfig.setTcpIP(object.getJSONObject("d").getString("tcpIP"));
                     MachineConfig.setTopic(object.getJSONObject("d").getString("topic"));
                     MachineInitState.CHECK_MACHINECODE = MachineInitState.NORMAL;
