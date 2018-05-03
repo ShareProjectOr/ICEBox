@@ -63,7 +63,7 @@ public class ConfigFragment extends BasicFragment implements IAddMaterialView, I
     private MaterialRecycleListAdapter mAdapter;
     private TextView cupStock, waterStock;
     private TextView addCupTime, addWaterTime;
-    private TextView addCup, addWater, mMachineName, listCupNum;
+    private TextView addCup, addWater, mMachineName;
     private MaterialSql sql;
     private int BunkersID;
     private CommitMaterialPresenter materialPresenter;
@@ -86,11 +86,12 @@ public class ConfigFragment extends BasicFragment implements IAddMaterialView, I
     }
 
     private void initData() {
-        cupStock.setText(SharedPreferencesManager.getInstance(getActivity()).getCupNum() + "杯");
+        cupStock.setText(SharedPreferencesManager.getInstance(getActivity()).getCupNum() + "个");
         waterStock.setText(SharedPreferencesManager.getInstance(getActivity()).getWaterCount() + "ml");
         addCupTime.setText(SharedPreferencesManager.getInstance(getActivity()).getAddCupTime());
         addWaterTime.setText(SharedPreferencesManager.getInstance(getActivity()).getAddWaterTime());
         mMachineCode.setText(SharedPreferencesManager.getInstance(getActivity()).getMachineCode());
+
    /*     if (msger != null) {
 
             driverVersion.setText("驱动版本:" + msger.getCurState().getVersion());
@@ -121,7 +122,6 @@ public class ConfigFragment extends BasicFragment implements IAddMaterialView, I
         runState = (TextView) mView.findViewById(R.id.runState);
         netWorkState = (TextView) mView.findViewById(R.id.netWorkState);
         CupNum = (TextView) mView.findViewById(R.id.CupNum);
-        listCupNum = (TextView) mView.findViewById(R.id.cup_num);
         mMachineName = (TextView) mView.findViewById(R.id.machineName);
         mMachineName.setOnClickListener(this);
         passWord = (EditText) mView.findViewById(R.id.passWord);
@@ -375,7 +375,7 @@ public class ConfigFragment extends BasicFragment implements IAddMaterialView, I
     public void showResultAndUpdateView() {
         Toast.makeText(getActivity(), "添加成功", Toast.LENGTH_LONG).show();
         CupNum.setText(SharedPreferencesManager.getInstance(getActivity()).getCupNum() + "");
-        listCupNum.setText(SharedPreferencesManager.getInstance(getActivity()).getCupNum() + "个");
+        cupStock.setText(SharedPreferencesManager.getInstance(getActivity()).getCupNum() + "个");
     }
 
     @Override

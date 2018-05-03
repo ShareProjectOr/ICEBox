@@ -56,7 +56,7 @@ public class BindMaterial implements IBindMaterial {
                         Log.e(TAG, "machineCode is " + MachineConfig.getMachineCode() + " bunkerID is " + bunkerID + "object is " + object.toString());
                         if (object.getString("err").equals("")) {
 
-                            JSONArray array = object.getJSONObject("d").getJSONArray("list");
+                            JSONArray array = object.getJSONArray("d");
                             for (int i = 0; i < array.length(); i++) {
                                 JSONObject materialObject = (JSONObject) array.opt(i);
                                 Material material = new Material();

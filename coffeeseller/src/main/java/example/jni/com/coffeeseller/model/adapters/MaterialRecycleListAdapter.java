@@ -87,7 +87,7 @@ public class MaterialRecycleListAdapter extends RecyclerView.Adapter<RecyclerVie
             mHolder.bindMaterial.setOnClickListener(new View.OnClickListener() { //点击 绑定原料
                 @Override
                 public void onClick(View v) {
-                    bindMaterialPresenter.BindMaterial(mHolder.bankersName, list.get(position).getBunkerID());
+                    bindMaterialPresenter.BindMaterial(mHolder.bindMaterial, list.get(position).getBunkerID());
                 }
             });
         } else {

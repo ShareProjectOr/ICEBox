@@ -107,7 +107,7 @@ public class SharedPreferencesManager {
     public void setCupNum(int CupNum) {
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putInt("CupNum", CupNum);
-        editor.apply();
+        editor.commit();
     }
 
     public int getCupNum() {

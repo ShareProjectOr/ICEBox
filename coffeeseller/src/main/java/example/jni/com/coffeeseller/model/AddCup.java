@@ -3,6 +3,7 @@ package example.jni.com.coffeeseller.model;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.support.v7.app.AlertDialog;
+import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
@@ -28,6 +29,7 @@ public class AddCup implements IAddCup {
                 dialog.dismiss();
                 if (!addcount.getText().toString().isEmpty()) {
                     int beforeNum = SharedPreferencesManager.getInstance(context).getCupNum();
+                    Log.e("TAG", "current cup num is " + Integer.parseInt(addcount.getText().toString()) + beforeNum);
                     SharedPreferencesManager.getInstance(context).setCupNum(Integer.parseInt(addcount.getText().toString()) + beforeNum);
                     onAddCupCallBackListener.AddSuccess();
                 } else {
