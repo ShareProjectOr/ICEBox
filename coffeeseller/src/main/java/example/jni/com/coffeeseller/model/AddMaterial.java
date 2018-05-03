@@ -43,6 +43,8 @@ public class AddMaterial implements IAddMaterial {
         mBefore_add_stock = (TextView) view.findViewById(R.id.before_add_stock);
         mAdd_account = (EditText) view.findViewById(R.id.add_account);
         mLast_add_stock = (EditText) view.findViewById(R.id.last_add_stock);
+       /* mAdd_account.setHint();
+        mLast_add_stock.setHint();*/
         mCancel = (Button) view.findViewById(R.id.cancel);
         mSure = (Button) view.findViewById(R.id.sure);
         mAdd_bunker_name.setText(sql.getBunkersNameByID(bunkersID));
@@ -51,7 +53,7 @@ public class AddMaterial implements IAddMaterial {
         final long beforeAddStork = Long.parseLong(beforeAddStorktext);
         final double dobeforeAddStork = new BigDecimal(((float) beforeAddStork / 1000)).setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
 
-        mBefore_add_stock.setText(dobeforeAddStork + "g");
+        mBefore_add_stock.setText(dobeforeAddStork + "");
 
 
         mLast_add_stock.setOnFocusChangeListener(new View.OnFocusChangeListener() {

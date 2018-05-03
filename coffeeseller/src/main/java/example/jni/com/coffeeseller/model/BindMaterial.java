@@ -64,12 +64,13 @@ public class BindMaterial implements IBindMaterial {
                         JSONArray array = object.getJSONArray("d");
                         for (int i = 0; i < array.length(); i++) {
                             JSONObject materialObject = (JSONObject) array.opt(i);
-                            if (materialObject.getInt("bunkerType") == Integer.parseInt(bunkerType)) {
+
+                            if (!bunkerType.equals("null")&&materialObject.getString("materialType").equals(bunkerType)) {
                                 Material material = new Material();
                                 material.setMaterialID(materialObject.getInt("materialID"));
                                 material.setUnit(materialObject.getString("materialunit"));
                                 material.setName(materialObject.getString("materialName"));
-                                material.setType(materialObject.getInt("materialType"));
+                                material.setType(Integer.parseInt(materialObject.getString("materialType")));
                                 material.setOutput(materialObject.getInt("output"));
                                 materialNameList.add(materialObject.getString("materialName"));
                                 list.add(material);
