@@ -76,7 +76,7 @@ public class MaterialRecycleListAdapter extends RecyclerView.Adapter<RecyclerVie
             case "3":
                 mHolder.CountAndLess.setText(realstock + "个");
                 break;
-            case "4":
+            case "2":
                 mHolder.CountAndLess.setText(realstock + "L");
                 break;
             default:

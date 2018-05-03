@@ -239,7 +239,6 @@ public class MachineCheckFragment extends BasicFragment implements ICheckMachine
                             Log.d("changeProgress", values + "");
                             mSub_Mqtt.setProgress(values[0]);
                             if (values[0] == 100) {
-                                if (isCheckSuccess)
                                     homeActivity.replaceFragment(FragmentEnum.MachineCheckFragment, FragmentEnum.ChooseCupNumFragment);
                             }
                             super.onProgressUpdate(values);

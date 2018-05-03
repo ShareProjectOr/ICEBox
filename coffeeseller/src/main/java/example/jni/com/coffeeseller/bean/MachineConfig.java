@@ -9,8 +9,8 @@ import cof.ac.inter.*;
 public class MachineConfig {
     private static String HostUrl = "";
     private static String TcpIP = "";
-    private static String machineCode ;
-    private static int networkType;
+    private static String machineCode;
+    private static int networkType = 1;
     private static String topic;
 
     private static StateEnum currentState;

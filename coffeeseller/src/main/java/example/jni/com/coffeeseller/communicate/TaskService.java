@@ -138,6 +138,7 @@ public class TaskService extends Service implements MqttCallback {
             Log.e(TAG, "获取了 topic 但是订阅失败");
             mOnMachineCheckCallBackListener.MQTTSubcribeFailed();
         } else {
+            startTimer();
             mOnMachineCheckCallBackListener.MQTTSubcribeSuccess();
             MachineInitState.SUB_MQTT_STATE = MachineInitState.NORMAL;
         }
@@ -165,8 +166,12 @@ public class TaskService extends Service implements MqttCallback {
             this.mOnMachineCheckCallBackListener = mOnMachineCheckCallBackListener;
         }
         Log.d("连接中", ".......");
+        if (!isConnected()){
+            subcribeMqtt();
+        }else {
+             checkSubSuccess();
+        }
 
-        subcribeMqtt();
     }
 
     private void subcribeMqtt() {
@@ -275,7 +280,6 @@ public class TaskService extends Service implements MqttCallback {
     public int onStartCommand(Intent intent, int flags, int startId) {
 
         //   MyLog.d(TAG, "TaskService has been started");
-        startTimer();
         return super.onStartCommand(intent, flags, startId);
 
     }
@@ -414,10 +418,9 @@ public class TaskService extends Service implements MqttCallback {
         Log.e(TAG, SecondToDate.getDateToString(System.currentTimeMillis()));
         msg.put("networkType", MachineConfig.getNetworkType());
         msg.put("cupHouseState", null);
-      /*  CoffMsger msger = CoffMsger.getInstance();
+        CoffMsger msger = CoffMsger.getInstance();
         MachineState state = msger.getLastMachineState();
-        Result result = state.getResult();*/
-/*
+        Result result = state.getResult();
         if (result.getCode() == Result.SUCCESS) {
             if (state.hasCupOnShelf()) {
                 msg.put("cupHolderState", 1);
@@ -440,31 +443,32 @@ public class TaskService extends Service implements MqttCallback {
             msg.put("driverVersion", state.getVersion());
             msg.put("errCode", state.getMajorState().getState_byte() + "");
 
-        } else {*/
+        } else {
 
-        msg.put("cupHolderState", null);
-
-
-        msg.put("boilerTemperature", null);
-        msg.put("boilerPressure", null);
-
-        msg.put("doorState", null);
+            msg.put("cupHolderState", null);
 
 
-        msg.put("cupDoorState", null);
+            msg.put("boilerTemperature", null);
+            msg.put("boilerPressure", null);
 
-        msg.put("driverVersion", "1.0.0");
-        msg.put("errCode", 51);
-        // }
-        msg.put("clientVersion", HomeActivity.getInstance().getVersion());
-        msg.put("mediaVersion", "1.0.0");
-        message.setPayload(JsonUtil.mapToJson(msg).getBytes());
-        MqttTopic topic = client.getTopic("server/coffee/" + MachineConfig.getMachineCode());
-        try {
-            Log.e(TAG, "start publish message");
-            topic.publish(message);
-        } catch (MqttException e) {
-            e.printStackTrace();
+            msg.put("doorState", null);
+
+
+            msg.put("cupDoorState", null);
+
+            msg.put("driverVersion", "1.0.0");
+            msg.put("errCode", 51);
+            // }
+            msg.put("clientVersion", HomeActivity.getInstance().getVersion());
+            msg.put("mediaVersion", "1.0.0");
+            message.setPayload(JsonUtil.mapToJson(msg).getBytes());
+            MqttTopic topic = client.getTopic("server/coffee/" + MachineConfig.getMachineCode());
+            try {
+                Log.e(TAG, "start publish message");
+                topic.publish(message);
+            } catch (MqttException e) {
+                e.printStackTrace();
+            }
         }
     }
 

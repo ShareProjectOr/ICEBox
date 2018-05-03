@@ -179,7 +179,8 @@ public class MachineCheck implements IMachineCheck {
 
             @Override
             public void run() {
-
+                Intent intent = new Intent(mContext, TaskService.class);
+                mContext.startService(intent);
                 if (MachineConfig.getTcpIP().isEmpty()) {
                     mOnMachineCheckCallBackListener.MQTTSubcribeFailed();
                     if (MachineInitState.CHECK_MACHINECODE == MachineInitState.NORMAL && MachineInitState.CHECK_OPENMAINCTRL == MachineInitState.NORMAL && MachineInitState.SUB_MQTT_STATE == MachineInitState.NORMAL && MachineInitState.GET_FORMULA == MachineInitState.NORMAL) {
@@ -188,8 +189,7 @@ public class MachineCheck implements IMachineCheck {
                         mOnMachineCheckCallBackListener.MachineCheckEnd(false);
                     }
                 } else {
-                    Intent intent = new Intent(mContext, TaskService.class);
-                    mContext.startService(intent);
+
                     TaskService.getInstance().start(mOnMachineCheckCallBackListener);
                 }
             }
