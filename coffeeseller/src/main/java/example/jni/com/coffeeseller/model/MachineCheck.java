@@ -89,25 +89,19 @@ public class MachineCheck implements IMachineCheck {
 
                     for (int i = 0; i < array.length(); i++) {
                         JSONObject bunkerdata = (JSONObject) array.opt(i);
-                        bunkerData data = new bunkerData();
-                        if (bunkerdata.getInt("containerID") == 7) {  //纸杯仓
-                            SharedPreferencesManager.getInstance(mContext).setCupNum(bunkerdata.getInt("materialStock"));
-                            SharedPreferencesManager.getInstance(mContext).setAddCupTime(bunkerdata.getString("lastLoadingTime"));
-                        } else if (bunkerdata.getInt("containerID") == 8) {   //净水仓
-                            SharedPreferencesManager.getInstance(mContext).setWaterCount(bunkerdata.getInt("materialStock") + "");
-                            SharedPreferencesManager.getInstance(mContext).setAddWaterTime(bunkerdata.getString("lastLoadingTime"));
-                        } else {    //其情况它
-                            data.setContainerID(bunkerdata.getString("containerID"));
-                            data.setBunkerID(bunkerdata.getString("bunkerID"));
-                            data.setMaterialDropSpeed(bunkerdata.getString("output"));
-                            data.setMaterialID(bunkerdata.getString("materialID"));
-                            data.setMaterialName(bunkerdata.getString("materialName"));
-                            data.setMaterialUnit(bunkerdata.getString("materialunit"));
-                            data.setMaterialStock(bunkerdata.getString("materialStock"));
-                            data.setMaterialType(bunkerdata.getString("materialType"));
-                            data.setLastLoadingTime(bunkerdata.getString("lastLoadingTime"));
-                            list.add(data);
-                        }
+                        bunkerData data = new bunkerData();//其情况它
+                        data.setContainerID(bunkerdata.getString("containerID"));
+                        data.setBunkerID(bunkerdata.getString("bunkerID"));
+                        data.setBunkerType(bunkerdata.getString("bunkerType"));
+                        data.setMaterialDropSpeed(bunkerdata.getString("output"));
+                        data.setMaterialID(bunkerdata.getString("materialID"));
+                        data.setMaterialName(bunkerdata.getString("materialName"));
+                        data.setMaterialUnit(bunkerdata.getString("materialunit"));
+                        data.setMaterialStock(bunkerdata.getString("materialStock"));
+                        data.setMaterialType(bunkerdata.getString("materialType"));
+                        data.setLastLoadingTime(bunkerdata.getString("lastLoadingTime"));
+                        list.add(data);
+
 
                     }
                     if (isCanUse(list)) {
@@ -185,8 +179,7 @@ public class MachineCheck implements IMachineCheck {
 
             @Override
             public void run() {
-                Intent intent = new Intent(mContext, TaskService.class);
-                mContext.startService(intent);
+
                 if (MachineConfig.getTcpIP().isEmpty()) {
                     mOnMachineCheckCallBackListener.MQTTSubcribeFailed();
                     if (MachineInitState.CHECK_MACHINECODE == MachineInitState.NORMAL && MachineInitState.CHECK_OPENMAINCTRL == MachineInitState.NORMAL && MachineInitState.SUB_MQTT_STATE == MachineInitState.NORMAL && MachineInitState.GET_FORMULA == MachineInitState.NORMAL) {
@@ -195,6 +188,8 @@ public class MachineCheck implements IMachineCheck {
                         mOnMachineCheckCallBackListener.MachineCheckEnd(false);
                     }
                 } else {
+                    Intent intent = new Intent(mContext, TaskService.class);
+                    mContext.startService(intent);
                     TaskService.getInstance().start(mOnMachineCheckCallBackListener);
                 }
             }
@@ -282,18 +277,14 @@ public class MachineCheck implements IMachineCheck {
             }
 
             Waiter.doWait(2000);
-            if (MachineInitState.CHECK_OPENMAINCTRL == MachineInitState.NORMAL && MachineInitState.GET_FORMULA == MachineInitState.NORMAL) {
-                mOnMachineCheckCallBackListener.MachineCheckEnd(true);
-            } else {
-                mOnMachineCheckCallBackListener.MachineCheckEnd(false);
-            }
-            //  subMQTT();
-        /*    if (MachineInitState.CHECK_MACHINECODE == MachineInitState.NORMAL && MachineInitState.GET_FORMULA == MachineInitState.NORMAL &&
-                    MachineInitState.CHECK_OPENMAINCTRL == MachineInitState.NORMAL&&MachineInitState.SUB_MQTT_STATE == MachineInitState.NORMAL) {
+         /*   if (MachineInitState.CHECK_OPENMAINCTRL == MachineInitState.NORMAL && MachineInitState.GET_FORMULA == MachineInitState.NORMAL) {
                 mOnMachineCheckCallBackListener.MachineCheckEnd(true);
             } else {
                 mOnMachineCheckCallBackListener.MachineCheckEnd(false);
             }*/
+             subMQTT();
+            Waiter.doWait(2000);
+
         }
     }
 

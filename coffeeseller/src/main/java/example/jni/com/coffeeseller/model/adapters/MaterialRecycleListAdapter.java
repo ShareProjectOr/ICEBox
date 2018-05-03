@@ -72,7 +72,18 @@ public class MaterialRecycleListAdapter extends RecyclerView.Adapter<RecyclerVie
 
 
         double realstock = new BigDecimal(((float) stockmg / 1000)).setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
-        mHolder.CountAndLess.setText(realstock + "g");
+        switch (list.get(position).getMaterialType()){
+            case "3":
+                mHolder.CountAndLess.setText(realstock + "个");
+                break;
+            case "4":
+                mHolder.CountAndLess.setText(realstock + "L");
+                break;
+            default:
+                mHolder.CountAndLess.setText(realstock + "g");
+                break;
+        }
+
         if (!list.get(position).getMaterialName().equals("未启用") || list.get(position).getMaterialName().equals("null")) {
             mHolder.bankersName.setTextColor(ContextCompat.getColor(mContext, R.color.black));//已经启用了的料仓才能重新绑定原料
 

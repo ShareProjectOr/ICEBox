@@ -43,8 +43,12 @@ public class AddMaterial implements IAddMaterial {
         mBefore_add_stock = (TextView) view.findViewById(R.id.before_add_stock);
         mAdd_account = (EditText) view.findViewById(R.id.add_account);
         mLast_add_stock = (EditText) view.findViewById(R.id.last_add_stock);
-       /* mAdd_account.setHint();
-        mLast_add_stock.setHint();*/
+        String ContainerID = sql.getContainerIDByBunkerID(bunkersID);
+        if (ContainerID.equals("7")) {
+            mAdd_account.setHint("单位(L)");
+            mLast_add_stock.setHint("单位(L)");
+        }
+
         mCancel = (Button) view.findViewById(R.id.cancel);
         mSure = (Button) view.findViewById(R.id.sure);
         mAdd_bunker_name.setText(sql.getBunkersNameByID(bunkersID));

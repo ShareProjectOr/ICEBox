@@ -15,6 +15,7 @@ import android.widget.TextView;
 
 import example.jni.com.coffeeseller.MachineConfig.MachineCheckState;
 import example.jni.com.coffeeseller.R;
+import example.jni.com.coffeeseller.communicate.TaskService;
 import example.jni.com.coffeeseller.factory.FragmentEnum;
 import example.jni.com.coffeeseller.factory.FragmentFactory;
 import example.jni.com.coffeeseller.presenter.MachineCheckPresenter;
@@ -73,6 +74,7 @@ public class MachineCheckFragment extends BasicFragment implements ICheckMachine
         homeActivity = HomeActivity.getInstance();
         tologin.setOnClickListener(this);
         timeDownText = (TextView) mView.findViewById(R.id.timeDownText);
+        mMachineCheckPresenter = new MachineCheckPresenter(this, homeActivity);
     }
 
 
@@ -110,15 +112,11 @@ public class MachineCheckFragment extends BasicFragment implements ICheckMachine
         handler.post(runnable);
         beginCheck();
 
-        mMachineCheckPresenter = new MachineCheckPresenter(this, homeActivity);
-
         if (checkThread == null) {
 
             Runnable checkRun = new Runnable() {
                 @Override
                 public void run() {
-                    // TODO Auto-generated method stub
-
                     Waiter.doWait(500);
                     mMachineCheckPresenter.checkMachine();
                 }
@@ -272,9 +270,6 @@ public class MachineCheckFragment extends BasicFragment implements ICheckMachine
                         protected void onProgressUpdate(Integer... values) {
                             Log.d("changeProgress", values + "");
                             getMaterial.setProgress(values[0]);
-                          /*  if (values[0] == 100) {
-                                homeActivity.replaceFragment(FragmentEnum.MachineCheckFragment, FragmentEnum.ChooseCupNumFragment);
-                            }*/
                             super.onProgressUpdate(values);
                         }
                     }.execute();
@@ -340,8 +335,8 @@ public class MachineCheckFragment extends BasicFragment implements ICheckMachine
         checkThread = null;
         doCountDown = true;
         hasTurned = false;
-        timeDownText.setVisibility(View.VISIBLE);
         tologin.setVisibility(View.VISIBLE);
+        timeDownText.setVisibility(View.VISIBLE);
         Thread countThr = new Thread(new Runnable() {
 
             @Override
@@ -350,7 +345,7 @@ public class MachineCheckFragment extends BasicFragment implements ICheckMachine
                 while (doCountDown) {
 
                     Log.e("machineCheckFragment", count + "");
-                    MyLog.d("machineCheckFragment", "count--" + count);
+                    //   MyLog.d("machineCheckFragment", "count--" + count);
                     if (count >= 0) {
                         setCountDown(count);
                         count--;

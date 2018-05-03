@@ -11,6 +11,7 @@ import android.net.ConnectivityManager;
 import android.os.AsyncTask;
 import android.os.Handler;
 import android.os.IBinder;
+import android.os.Looper;
 import android.os.Message;
 import android.util.Log;
 
@@ -81,14 +82,14 @@ public class TaskService extends Service implements MqttCallback {
 
 
     public TaskService() {
-        mHandler = new Handler() {
+        mHandler = new Handler(Looper.getMainLooper()) {
 
             @Override
             public void handleMessage(Message msg) {
                 super.handleMessage(msg);
                 if (msg.obj == null) {
                     isSubSuccess = false;
-                    init();
+                    subcribeMqtt();
                 } else {
 
                     JSONObject msgObject = (JSONObject) msg.obj;
@@ -134,6 +135,7 @@ public class TaskService extends Service implements MqttCallback {
 
     private void checkSubSuccess() {
         if (!isConnected()) {
+            Log.e(TAG, "获取了 topic 但是订阅失败");
             mOnMachineCheckCallBackListener.MQTTSubcribeFailed();
         } else {
             mOnMachineCheckCallBackListener.MQTTSubcribeSuccess();
@@ -163,7 +165,17 @@ public class TaskService extends Service implements MqttCallback {
             this.mOnMachineCheckCallBackListener = mOnMachineCheckCallBackListener;
         }
         Log.d("连接中", ".......");
-        init();
+
+        subcribeMqtt();
+    }
+
+    private void subcribeMqtt() {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                init();
+            }
+        }).start();
     }
 
     @Override
@@ -172,8 +184,6 @@ public class TaskService extends Service implements MqttCallback {
         Log.d(TAG, "onCreate");
         mInstance = this;
         //settingDataManager = SettingDataManager.getSettingDataManager(mInstance);
-
-        checkNetState();
     }
 
     public void breakClient() {
@@ -239,6 +249,7 @@ public class TaskService extends Service implements MqttCallback {
         } catch (Exception e) {
             e.printStackTrace();
         }
+        Waiter.doWait(1000);
         checkSubSuccess();
     }
 
@@ -260,36 +271,16 @@ public class TaskService extends Service implements MqttCallback {
 
     }
 
-
-    /**
-     * 判断是否需要升级提示
-     *
-     * @param showType
-     * @param msg
-     */
-    public void showDialog(final int showType, final String msg) {
-    /*
-        if(!APPUpdateDialog.isShow()) {
-			
-			Runnable mRun = new Runnable() {
-				
-				@Override
-				public void run() {
-					APPUpdateDialog dialog = new APPUpdateDialog(mInstance, showType, msg);
-					if(!APPUpdateDialog.isShow()) {
-						dialog.getWindow().setType(WindowManager.LayoutParams.TYPE_SYSTEM_ALERT);
-						dialog.showDialog();
-					}
-				}
-			};
-			mHandler.post(mRun);
-		}*/
-    }
-
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
 
-        MyLog.d(TAG, "TaskService has been started");
+        //   MyLog.d(TAG, "TaskService has been started");
+        startTimer();
+        return super.onStartCommand(intent, flags, startId);
+
+    }
+
+    public void startTimer() {
         if (!hasTimerTask()) {
             if (isConnected()) {
                 Log.e(TAG, "订阅成功" + "开始发送消息");
@@ -297,9 +288,6 @@ public class TaskService extends Service implements MqttCallback {
             }
 
         }
-        //manageVersion();
-        return super.onStartCommand(intent, flags, startId);
-
     }
 
     private MsgTransListener msgTransListener;
@@ -554,30 +542,5 @@ public class TaskService extends Service implements MqttCallback {
         }
     }
 
-    private void checkNetState() {
-
-        if (mReceiver == null) {
-
-            mReceiver = new BroadcastReceiver() {
-
-                @Override
-                public void onReceive(Context arg0, Intent arg1) {
-                    // TODO Auto-generated method stub
-
-				/*	if(NetChecker.getInstance(TaskService.this).isConnected()) {
-
-						MyLog.W(TAG, "connected to network");
-					}else {
-						
-						MyLog.W(TAG, "network disconnected!!");
-					}*/
-
-                }
-            };
-            IntentFilter filter = new IntentFilter();
-            filter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
-            registerReceiver(mReceiver, filter);
-        }
-    }
 
 }

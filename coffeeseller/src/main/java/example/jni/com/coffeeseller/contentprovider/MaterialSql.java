@@ -412,7 +412,6 @@ public class MaterialSql extends SQLiteOpenHelper {
         bunkerdata.setMaterialID(MaterialID);
         bunkerdata.setMaterialType(MaterialType);
         bunkerdata.setMaterialName(MaterialName);
-
         bunkerdata.setMaterialUnit(MaterialUnit);
         bunkerdata.setMaterialStock(MaterialStock);
         bunkerdata.setMaterialDropSpeed(MaterialDropSpeed);

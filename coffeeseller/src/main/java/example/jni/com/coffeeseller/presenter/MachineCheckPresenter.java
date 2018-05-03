@@ -8,6 +8,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 import example.jni.com.coffeeseller.MachineConfig.MachineCheckState;
+import example.jni.com.coffeeseller.communicate.TaskService;
 import example.jni.com.coffeeseller.factory.FragmentEnum;
 import example.jni.com.coffeeseller.httputils.OkHttpUtil;
 import example.jni.com.coffeeseller.model.MachineCheck;
@@ -131,7 +132,7 @@ public class MachineCheckPresenter {
 
                 if (isCheckSuccess) {
                     mICheckMachineView.endCheck();
-                    mICheckMachineView.ChangePage(FragmentEnum.ChooseCupNumFragment);
+                    //      mICheckMachineView.ChangePage(FragmentEnum.ChooseCupNumFragment);
                 } else {
                     Log.e(TAG, "check unpass start timeCount");
                     mHandler.post(new Runnable() {

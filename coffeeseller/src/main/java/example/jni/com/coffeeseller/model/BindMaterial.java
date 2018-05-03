@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListPopupWindow;
@@ -35,13 +36,15 @@ import example.jni.com.coffeeseller.views.viewinterface.IBindMaterialView;
  */
 
 public class BindMaterial implements IBindMaterial {
-    private List<Material> list = new ArrayList<>();
-    private List<String> materialNameList = new ArrayList<>();
+    private List<Material> list;
+    private List<String> materialNameList;
     private String TAG = "BindMaterial";
 
     @Override
     public void bindMaterial(final IBindMaterialView iBindMaterialView, final Context context, final TextView textView, final String bunkerID, final String bunkerType, final OnBindMaterialCallBackListener onBindMaterialCallBackListener) {
         iBindMaterialView.ShowLoading();
+        list = new ArrayList<>();
+        materialNameList = new ArrayList<>();
         if (list.size() != 0) {
             list.clear();
         }
@@ -58,14 +61,14 @@ public class BindMaterial implements IBindMaterial {
                 try {
                     String response = OkHttpUtil.post(Constance.MATERIAL_LIST_GET_URL, JsonUtil.mapToJson(postMap));
                     JSONObject object = new JSONObject(response);
-                    Log.e(TAG, "machineCode is " + MachineConfig.getMachineCode() + " bunkerID is " + bunkerID + "object is " + object.toString());
+                    Log.e(TAG, "machineCode is " + MachineConfig.getMachineCode() + " bunkerID is " + bunkerID + " bunkerType is  " + bunkerType + "object is " + object.toString());
                     if (object.getString("err").equals("")) {
 
                         JSONArray array = object.getJSONArray("d");
                         for (int i = 0; i < array.length(); i++) {
                             JSONObject materialObject = (JSONObject) array.opt(i);
 
-                            if (!bunkerType.equals("null")&&materialObject.getString("materialType").equals(bunkerType)) {
+                            if (!bunkerType.equals("null") && materialObject.getString("materialType").equals(bunkerType)) {
                                 Material material = new Material();
                                 material.setMaterialID(materialObject.getInt("materialID"));
                                 material.setUnit(materialObject.getString("materialunit"));
@@ -94,10 +97,12 @@ public class BindMaterial implements IBindMaterial {
             @Override
             protected void onPostExecute(Boolean aBoolean) {
                 if (aBoolean) {
+
                     final ListPopupWindow window = new ListPopupWindow(context);
                     window.setAdapter(new ArrayAdapter<>(context, android.R.layout.simple_expandable_list_item_1, materialNameList));
                     window.setAnchorView(textView);
-                    window.setHorizontalOffset(textView.getWidth() / 4);
+                    window.setWidth(300);
+                    // window.setHorizontalOffset(textView.getWidth() / 4);
                     window.setModal(true);
                     window.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                         @Override
