@@ -35,4 +35,22 @@ public class CommitMaterialPresenter {
             }
         });
     }
+    public void CommitMaterial2() {
+        iCommitMaterialView.ShowLoading();
+        ;
+        iCommitMaterial.Commit(iCommitMaterialView.getList(), new OnCommitMaterialCallBackListener() {
+            @Override
+            public void commitSuccess() {
+                iCommitMaterialView.HideLoading();
+                iCommitMaterialView.ShowResult("提交成功");
+                iCommitMaterialView.ChangePage();
+            }
+
+            @Override
+            public void commitFailed(String response) {
+                iCommitMaterialView.HideLoading();
+                iCommitMaterialView.ShowResult(response);
+            }
+        });
+    }
 }

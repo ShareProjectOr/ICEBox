@@ -7,4 +7,7 @@ package example.jni.com.coffeeseller.listener;
 public interface MessageReceviedListener {
     void getMsgType(String msgType);
 
+    void stopSomeOneCoffeeSell(int formulaID);
+
+    void notifyDataSetChange();
 }

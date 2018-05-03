@@ -45,7 +45,7 @@ import example.jni.com.coffeeseller.views.customviews.BuyDialog;
  * Created by WH on 2018/3/30.
  */
 
-public class BuyFragment extends BasicFragment implements GridViewItemListener, View.OnClickListener, MessageReceviedListener {
+public class BuyFragment extends BasicFragment implements GridViewItemListener, View.OnClickListener{
     private static String TAG = "BuyFragment";
     private View content;
     private HomeActivity homeActivity;
@@ -115,7 +115,6 @@ public class BuyFragment extends BasicFragment implements GridViewItemListener, 
         buyDialog = new BuyDialog(homeActivity, R.style.dialog);
         mCoffees = new ArrayList<>();
         handler = new Handler();
-        TaskService.getInstance().setOnMessageReceviedListener(this);
         mCoffees = SingleMaterialLsit.getInstance(homeActivity).getCoffeeList();
         mPagerAdapter = new CoffeeViewPagerAdapter(homeActivity, mCoffees, this);
         mViewPager.addOnPageChangeListener(new ViewpagerPageChangedListener());
@@ -224,24 +223,4 @@ public class BuyFragment extends BasicFragment implements GridViewItemListener, 
         }
     }
 
-    @Override
-    public void getMsgType(String msgType) {
-        try {
-            JSONObject object = new JSONObject(msgType);
-            switch (object.getString("msgType")) {
-
-                case "updateFormula":
-
-                    break;
-                case "machineOrder":
-
-                    break;
-                case "relayType":
-                    break;
-            }
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
-    }
 }

@@ -99,7 +99,12 @@ public class MaterialRecycleListAdapter extends RecyclerView.Adapter<RecyclerVie
 
     @Override
     public int getItemCount() {
-        return list.size();
+        if (list == null) {
+           return 0;
+        } else {
+            return list.size();
+        }
+
     }
 
     @Override

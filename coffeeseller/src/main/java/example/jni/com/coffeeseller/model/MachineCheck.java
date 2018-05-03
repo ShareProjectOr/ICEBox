@@ -67,12 +67,18 @@ public class MachineCheck implements IMachineCheck {
         } else {
             Map<String, Object> body = new HashMap<>();
             body.put("machineCode", MachineConfig.getMachineCode());
-            Log.e(TAG, MachineConfig.getMachineCode());
+            Log.e(TAG, "get formula machineCode is " + MachineConfig.getMachineCode());
             try {
                 MaterialSql content = new MaterialSql(mContext);
 
                 List<bunkerData> list = new ArrayList<>();
+                if (MachineConfig.getHostUrl().isEmpty()) {
+
+                } else {
+
+                }
                 String response = OkHttpUtil.post(Constance.FORMULA_GET, JsonUtil.mapToJson(body));
+                Log.e(TAG, "machineCode is " + MachineConfig.getMachineCode() + "server is " + Constance.FORMULA_GET);
                 JSONObject object = new JSONObject(response);
                 if (object.getString("err").equals("")) {
 
@@ -268,7 +274,12 @@ public class MachineCheck implements IMachineCheck {
             Waiter.doWait(2000);
             checkMainCtrl();
             Waiter.doWait(2000);
-            getFormula();
+            if (MachineConfig.getHostUrl().isEmpty()) {
+                mOnMachineCheckCallBackListener.MaterialGroupGetFailed("机器鉴权没通过");
+            } else {
+                getFormula();
+            }
+
             Waiter.doWait(2000);
             if (MachineInitState.CHECK_OPENMAINCTRL == MachineInitState.NORMAL && MachineInitState.GET_FORMULA == MachineInitState.NORMAL) {
                 mOnMachineCheckCallBackListener.MachineCheckEnd(true);

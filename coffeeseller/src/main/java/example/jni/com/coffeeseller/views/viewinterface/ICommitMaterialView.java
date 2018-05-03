@@ -16,4 +16,5 @@ public interface ICommitMaterialView {
     void ShowLoading();
 
     void HideLoading();
+    void ChangePage();
 }

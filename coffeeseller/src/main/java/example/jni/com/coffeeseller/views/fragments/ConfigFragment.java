@@ -182,7 +182,7 @@ public class ConfigFragment extends BasicFragment implements IAddMaterialView, I
                 homeActivity.replaceFragment(FragmentEnum.ConfigFragment, FragmentEnum.DebugFragment);
                 break;
             case R.id.backToCheck:
-                homeActivity.replaceFragment(FragmentEnum.ConfigFragment, FragmentEnum.MachineCheckFragment);
+                materialPresenter.CommitMaterial2();
                 break;
             case R.id.add_cup:
                 addCupPresenter.AddCup();
@@ -291,6 +291,11 @@ public class ConfigFragment extends BasicFragment implements IAddMaterialView, I
     @Override
     public void HideLoading() {
         dialog.dismiss();
+    }
+
+    @Override
+    public void ChangePage() {
+        homeActivity.replaceFragment(FragmentEnum.ConfigFragment, FragmentEnum.MachineCheckFragment);
     }
 
     @Override
