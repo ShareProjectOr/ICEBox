@@ -8,8 +8,8 @@ import example.jni.com.coffeeseller.bean.MachineConfig;
 
 public interface Constance {
 
-    //    String SERVER = MachineConfig.getHostUrl();192.168.4.192
-    String SERVER = "http://119.23.71.185:8083";
+     String SERVER = MachineConfig.getHostUrl();
+  //  String SERVER = "http://119.23.71.185:8083";
 
     String GET_QR = SERVER + "/trade/getQrCode";
 
@@ -19,10 +19,10 @@ public interface Constance {
 
     String TRADE_CLOSE = SERVER + "/trade/close";
 
-    String MachineAuthentication_URL = SERVER + "/machine/activate";
-    String COMMIT_MATERIAL_URL = "http://192.168.4.152:8083" + "/material/save";
+    String MachineAuthentication_URL = "http://119.23.71.185:8083" + "/machine/activate";
+    String COMMIT_MATERIAL_URL = SERVER + "/material/save";
     String PASSWORD_CHANGE = SERVER + "/machine/updatePassword";
-    String CHECK_VERSION_URL = "http://192.168.4.152:8083" + "/app/versioncheck";
+    String CHECK_VERSION_URL = SERVER+ "/app/versioncheck";
     String FORMULA_GET = SERVER + "/formula/getFormula";
     String MATERIAL_LIST_GET_URL = SERVER + "/material/get";
     // String[] bunkersName = {"咖啡豆仓", "热水仓", "料仓1", "料仓2", "料仓3", "料仓4", "料仓5", "料仓6"};

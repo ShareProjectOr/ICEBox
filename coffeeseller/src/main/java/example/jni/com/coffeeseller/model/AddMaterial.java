@@ -105,8 +105,11 @@ public class AddMaterial implements IAddMaterial {
                     Toast.makeText(context, "请输入补料量或补料量后余量", Toast.LENGTH_LONG).show();
                     return;
                 }
-                double addAccount = Double.parseDouble(mAdd_account.getText().toString());
-                mLast_add_stock.setText(addAccount + dobeforeAddStork + "");
+                if (!mAdd_account.getText().toString().isEmpty()) {
+                    double addAccount = Double.parseDouble(mAdd_account.getText().toString());
+                    mLast_add_stock.setText(addAccount + dobeforeAddStork + "");
+                }
+
                 if (sql.updateContact(bunkersID, "", "", "", "", (long) (Double.parseDouble(mLast_add_stock.getText().toString()) * 1000) + "", "", "", SecondToDate.getDateToString(System.currentTimeMillis()))) {
                     onAddMaterialCallBackListener.addEnd(sql);
                     Toast.makeText(context, "补料成功", Toast.LENGTH_LONG).show();
