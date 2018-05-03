@@ -10,6 +10,7 @@ public class bunkerData {
     String bunkersName;//料仓名字
     String MaterialType;//原料种类
     String MaterialName;//原料名字
+    String bunkerType;   //料仓种类
     String MaterialUnit;//原料单位
     String MaterialStock;//原料剩余量
     String MaterialDropSpeed;//单位落料量
@@ -22,6 +23,14 @@ public class bunkerData {
 
     public void setLastLoadingTime(String lastLoadingTime) {
         this.lastLoadingTime = lastLoadingTime;
+    }
+
+    public String getBunkerType() {
+        return bunkerType;
+    }
+
+    public void setBunkerType(String bunkerType) {
+        this.bunkerType = bunkerType;
     }
 
     public String getBunkersName() {

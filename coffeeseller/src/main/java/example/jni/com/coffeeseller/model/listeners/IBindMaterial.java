@@ -10,5 +10,5 @@ import example.jni.com.coffeeseller.views.viewinterface.IBindMaterialView;
  */
 
 public interface IBindMaterial {
-    void bindMaterial(IBindMaterialView iBindMaterialView,Context context, TextView textView, String bunkerID, OnBindMaterialCallBackListener onBindMaterialCallBackListener);
+    void bindMaterial(IBindMaterialView iBindMaterialView,Context context, TextView textView, String bunkerID,String bunkerType, OnBindMaterialCallBackListener onBindMaterialCallBackListener);
 }

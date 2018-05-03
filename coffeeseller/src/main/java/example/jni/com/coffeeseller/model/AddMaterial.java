@@ -110,7 +110,7 @@ public class AddMaterial implements IAddMaterial {
                     mLast_add_stock.setText(addAccount + dobeforeAddStork + "");
                 }
 
-                if (sql.updateContact(bunkersID, "", "", "", "", (long) (Double.parseDouble(mLast_add_stock.getText().toString()) * 1000) + "", "", "", SecondToDate.getDateToString(System.currentTimeMillis()))) {
+                if (sql.updateContact(bunkersID, "", "", "", "", "", (long) (Double.parseDouble(mLast_add_stock.getText().toString()) * 1000) + "", "", "", SecondToDate.getDateToString(System.currentTimeMillis()))) {
                     onAddMaterialCallBackListener.addEnd(sql);
                     Toast.makeText(context, "补料成功", Toast.LENGTH_LONG).show();
                     isCanCheck = false;
@@ -123,7 +123,7 @@ public class AddMaterial implements IAddMaterial {
     }
 
     @Override
-    public void addSpecialMaterial(final Context context, final String bunkersID, final OnAddMaterialCallBackListener onAddMaterialCallBackListener) {
+    public void addSpecialMaterial(final Context context, final String bunkersID, final MaterialSql sql, final OnAddMaterialCallBackListener onAddMaterialCallBackListener) {
         TextView mAdd_bunker_name, mBefore_add_stock;
         final EditText mAdd_account, mLast_add_stock;
         Button mCancel, mSure;
@@ -133,69 +133,56 @@ public class AddMaterial implements IAddMaterial {
         mAdd_bunker_name = (TextView) view.findViewById(R.id.add_bunker_name);
         mBefore_add_stock = (TextView) view.findViewById(R.id.before_add_stock);
         mAdd_account = (EditText) view.findViewById(R.id.add_account);
+        mAdd_account.setHint("单位(个)");
         mLast_add_stock = (EditText) view.findViewById(R.id.last_add_stock);
+        mLast_add_stock.setHint("单位(个)");
         mCancel = (Button) view.findViewById(R.id.cancel);
         mSure = (Button) view.findViewById(R.id.sure);
+        mAdd_bunker_name.setText(sql.getBunkersNameByID(bunkersID));
+
+        String beforeAddStorktext = sql.getStorkByBunkersID(bunkersID);
+        mBefore_add_stock.setText(beforeAddStorktext + "个");
+        final long beforeAddCount = Long.parseLong(beforeAddStorktext);
         switch (bunkersID) {
             case "7":
                 mAdd_bunker_name.setText("纸杯仓");
-                mBefore_add_stock.setText(SharedPreferencesManager.getInstance(context).getCupNum() + "杯");
                 break;
             case "8":
                 mAdd_bunker_name.setText("温水仓");
-                mBefore_add_stock.setText(SharedPreferencesManager.getInstance(context).getWaterCount() + "ml");
                 break;
 
         }
 
-
-        final int beforeAddStork = Integer.parseInt(mBefore_add_stock.getText().toString());
-
-        mAdd_account.addTextChangedListener(new TextWatcher() {
+        mLast_add_stock.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (hasFocus) {
 
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                int addAccount;
-                if (s.length() == 0) {
-                    addAccount = 0;
                 } else {
-                    addAccount = Integer.parseInt(s.toString());
-                }
+                    if (!mLast_add_stock.getText().toString().isEmpty()) {
+                        long lastAddAccount = Long.parseLong(mLast_add_stock.getText().toString());
+                        if (lastAddAccount >= beforeAddCount) {
+                            mAdd_account.setText((lastAddAccount - beforeAddCount) + "");
+                            Log.e(TAG, "now lastAddStork is " + mLast_add_stock.toString() + " and beforeAddStock is " + beforeAddCount + " and addAcount is " + (lastAddAccount - beforeAddCount));
+                        }
+                    }
 
-                mLast_add_stock.setText(addAccount + beforeAddStork + "");
+                }
             }
         });
 
-        mLast_add_stock.addTextChangedListener(new TextWatcher() {
+        mAdd_account.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (hasFocus) {
 
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                int lastAddStork;
-                if (s.length() == 0) {
-                    lastAddStork = 0;
                 } else {
-                    lastAddStork = Integer.parseInt(s.toString());
+                    if (!mAdd_account.getText().toString().isEmpty()) {
+                        long addAccount = Long.parseLong(mAdd_account.getText().toString());
+                        mLast_add_stock.setText(addAccount + beforeAddCount + "");
+                    }
+
                 }
-                mAdd_account.setText(lastAddStork - beforeAddStork + "");
             }
         });
         final AlertDialog alertDialog = builder.create();
@@ -214,22 +201,19 @@ public class AddMaterial implements IAddMaterial {
                     Toast.makeText(context, "请输入补料量或补料量后余量", Toast.LENGTH_LONG).show();
                     return;
                 }
-                switch (bunkersID) {
-                    case "0":
-                        SharedPreferencesManager.getInstance(context).setCoffeeBeanAcount(mLast_add_stock.getText().toString());
-                        SharedPreferencesManager.getInstance(context).setAddBeanTime(SecondToDate.getDateToString(System.currentTimeMillis()));
-                        break;
-                    case "7":
-                        SharedPreferencesManager.getInstance(context).setCupNum(Integer.parseInt(mLast_add_stock.getText().toString()));
-                        SharedPreferencesManager.getInstance(context).setAddCupTime(SecondToDate.getDateToString(System.currentTimeMillis()));
-                        break;
-                    case "8":
-                        SharedPreferencesManager.getInstance(context).setWaterCount(mLast_add_stock.getText().toString());
-                        SharedPreferencesManager.getInstance(context).setAddWaterTime(SecondToDate.getDateToString(System.currentTimeMillis()));
-                        break;
+                if (!mAdd_account.getText().toString().isEmpty()) {
+                    long addAccount = Long.parseLong(mAdd_account.getText().toString());
+                    mLast_add_stock.setText(addAccount + beforeAddCount + "");
                 }
-                Toast.makeText(context, "补料成功", Toast.LENGTH_LONG).show();
-                onAddMaterialCallBackListener.addEnd(null);
+
+                if (sql.updateContact(bunkersID, "", "", "", "", "", Long.parseLong(mLast_add_stock.getText().toString()) + "", "", "", SecondToDate.getDateToString(System.currentTimeMillis()))) {
+                    onAddMaterialCallBackListener.addEnd(sql);
+                    Toast.makeText(context, "补料成功", Toast.LENGTH_LONG).show();
+                    isCanCheck = false;
+                } else {
+                    Toast.makeText(context, "补料失败", Toast.LENGTH_LONG).show();
+                }
+                alertDialog.dismiss();
             }
         });
     }

@@ -10,5 +10,6 @@ import example.jni.com.coffeeseller.contentprovider.MaterialSql;
 
 public interface IAddMaterial {
     void addMaterial(Context context, String bunkersID, MaterialSql sql, OnAddMaterialCallBackListener onAddMaterialCallBackListener);
-    void addSpecialMaterial(Context context, String bunkersID, OnAddMaterialCallBackListener onAddMaterialCallBackListener);
+
+    void addSpecialMaterial(Context context, String bunkersID, MaterialSql sql, OnAddMaterialCallBackListener onAddMaterialCallBackListener);
 }

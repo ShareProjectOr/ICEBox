@@ -80,8 +80,14 @@ public class MaterialRecycleListAdapter extends RecyclerView.Adapter<RecyclerVie
             mHolder.Opration.setOnClickListener(new View.OnClickListener() {// 启用了的料仓才能补料
                 @Override
                 public void onClick(View v) {
-                    bunkersID = list.get(position).getBunkerID();
-                    presenter.AddMaterial();
+                    if (list.get(position).getBunkerType().equals("4")) {  //如果为包装仓 则为补杯界面
+                        bunkersID = list.get(position).getBunkerID();
+                        presenter.addSepcialMaterial();
+                    } else {                    //否则为常规补料
+                        bunkersID = list.get(position).getBunkerID();
+                        presenter.AddMaterial();
+                    }
+
                 }
             });
             mHolder.bindMaterial.setOnClickListener(new View.OnClickListener() { //点击 绑定原料

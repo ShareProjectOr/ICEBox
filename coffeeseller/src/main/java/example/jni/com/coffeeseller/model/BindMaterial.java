@@ -40,25 +40,31 @@ public class BindMaterial implements IBindMaterial {
     private String TAG = "BindMaterial";
 
     @Override
-    public void bindMaterial(final IBindMaterialView iBindMaterialView, final Context context, final TextView textView, final String bunkerID, final OnBindMaterialCallBackListener onBindMaterialCallBackListener) {
-        if (list.size() == 0 && materialNameList.size() == 0) {
-            iBindMaterialView.ShowLoading();
-            new AsyncTask<Void, Boolean, Boolean>() {
-                String result = "";
+    public void bindMaterial(final IBindMaterialView iBindMaterialView, final Context context, final TextView textView, final String bunkerID, final String bunkerType, final OnBindMaterialCallBackListener onBindMaterialCallBackListener) {
+        iBindMaterialView.ShowLoading();
+        if (list.size() != 0) {
+            list.clear();
+        }
+        if (materialNameList.size() != 0) {
+            list.clear();
+        }
+        new AsyncTask<Void, Boolean, Boolean>() {
+            String result = "";
 
-                @Override
-                protected Boolean doInBackground(Void... params) {
-                    Map<String, Object> postMap = new HashMap<>();
-                    postMap.put("machineCode", MachineConfig.getMachineCode());
-                    try {
-                        String response = OkHttpUtil.post(Constance.MATERIAL_LIST_GET_URL, JsonUtil.mapToJson(postMap));
-                        JSONObject object = new JSONObject(response);
-                        Log.e(TAG, "machineCode is " + MachineConfig.getMachineCode() + " bunkerID is " + bunkerID + "object is " + object.toString());
-                        if (object.getString("err").equals("")) {
+            @Override
+            protected Boolean doInBackground(Void... params) {
+                Map<String, Object> postMap = new HashMap<>();
+                postMap.put("machineCode", MachineConfig.getMachineCode());
+                try {
+                    String response = OkHttpUtil.post(Constance.MATERIAL_LIST_GET_URL, JsonUtil.mapToJson(postMap));
+                    JSONObject object = new JSONObject(response);
+                    Log.e(TAG, "machineCode is " + MachineConfig.getMachineCode() + " bunkerID is " + bunkerID + "object is " + object.toString());
+                    if (object.getString("err").equals("")) {
 
-                            JSONArray array = object.getJSONArray("d");
-                            for (int i = 0; i < array.length(); i++) {
-                                JSONObject materialObject = (JSONObject) array.opt(i);
+                        JSONArray array = object.getJSONArray("d");
+                        for (int i = 0; i < array.length(); i++) {
+                            JSONObject materialObject = (JSONObject) array.opt(i);
+                            if (materialObject.getInt("bunkerType") == Integer.parseInt(bunkerType)) {
                                 Material material = new Material();
                                 material.setMaterialID(materialObject.getInt("materialID"));
                                 material.setUnit(materialObject.getString("materialunit"));
@@ -68,73 +74,54 @@ public class BindMaterial implements IBindMaterial {
                                 materialNameList.add(materialObject.getString("materialName"));
                                 list.add(material);
                             }
-                            return true;
-                        } else {
-                            result = object.getString("err");
+
+
                         }
-                    } catch (IOException e) {
-                        result = e.getMessage();
-
-                    } catch (JSONException e) {
-                        result = e.getMessage();
+                        return true;
+                    } else {
+                        result = object.getString("err");
                     }
-                    return false;
-                }
+                } catch (IOException e) {
+                    result = e.getMessage();
 
-                @Override
-                protected void onPostExecute(Boolean aBoolean) {
-                    if (aBoolean) {
-                        final ListPopupWindow window = new ListPopupWindow(context);
-                        window.setAdapter(new ArrayAdapter<>(context, android.R.layout.simple_expandable_list_item_1, materialNameList));
-                        window.setAnchorView(textView);
-                        window.setHorizontalOffset(textView.getWidth() / 4);
-                        window.setModal(true);
-                        window.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                            @Override
-                            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                                MaterialSql sql = new MaterialSql(context);
-                                Log.e("choose name", materialNameList.get(position));
-                                Boolean update = sql.updateContact(bunkerID, list.get(position).getMaterialID() + "", list.get(position).getType() + "", materialNameList.get(position),
-                                        list.get(position).getUnit(), "0", list.get(position).getOutput() + "", "", SecondToDate.getDateToString(System.currentTimeMillis()));
-                                if (update) {
-                                    onBindMaterialCallBackListener.BindSuccess(list);
-                                } else {
-                                    onBindMaterialCallBackListener.BindFailed("更新本地数据库失败");
-                                }
-                                window.dismiss();
+                } catch (JSONException e) {
+                    result = e.getMessage();
+                }
+                return false;
+            }
+
+            @Override
+            protected void onPostExecute(Boolean aBoolean) {
+                if (aBoolean) {
+                    final ListPopupWindow window = new ListPopupWindow(context);
+                    window.setAdapter(new ArrayAdapter<>(context, android.R.layout.simple_expandable_list_item_1, materialNameList));
+                    window.setAnchorView(textView);
+                    window.setHorizontalOffset(textView.getWidth() / 4);
+                    window.setModal(true);
+                    window.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                        @Override
+                        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                            MaterialSql sql = new MaterialSql(context);
+                            Log.e("choose name", materialNameList.get(position));
+                            Boolean update = sql.updateContact(bunkerID, "", list.get(position).getMaterialID() + "", list.get(position).getType() + "", materialNameList.get(position),
+                                    list.get(position).getUnit(), "0", list.get(position).getOutput() + "", "", SecondToDate.getDateToString(System.currentTimeMillis()));
+                            if (update) {
+                                onBindMaterialCallBackListener.BindSuccess(list);
+                            } else {
+                                onBindMaterialCallBackListener.BindFailed("更新本地数据库失败");
                             }
-                        });
-                        window.show();
-                    } else {
-                        onBindMaterialCallBackListener.BindFailed(result);
-                    }
-                    iBindMaterialView.HideLoading();
-                    ;
+                            window.dismiss();
+                        }
+                    });
+                    window.show();
+                } else {
+                    onBindMaterialCallBackListener.BindFailed(result);
                 }
-            }.execute();
-        } else {
-            final ListPopupWindow window = new ListPopupWindow(context);
-            window.setAdapter(new ArrayAdapter<>(context, android.R.layout.simple_expandable_list_item_1, materialNameList));
-            window.setAnchorView(textView);
-            window.setHorizontalOffset(textView.getWidth() / 4);
-            window.setModal(true);
-            window.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                @Override
-                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                    MaterialSql sql = new MaterialSql(context);
-                    Log.e("choose name", materialNameList.get(position));
-                    Boolean update = sql.updateContact(bunkerID, list.get(position).getMaterialID() + "", list.get(position).getType() + "", materialNameList.get(position),
-                            list.get(position).getUnit(), "0", list.get(position).getOutput() + "", "", SecondToDate.getDateToString(System.currentTimeMillis()));
-                    if (update) {
-                        onBindMaterialCallBackListener.BindSuccess(list);
-                    } else {
-                        onBindMaterialCallBackListener.BindFailed("更新本地数据库失败");
-                    }
-                    window.dismiss();
-                }
-            });
-            window.show();
-        }
+                iBindMaterialView.HideLoading();
+                ;
+            }
+        }.execute();
+
 
     }
 }

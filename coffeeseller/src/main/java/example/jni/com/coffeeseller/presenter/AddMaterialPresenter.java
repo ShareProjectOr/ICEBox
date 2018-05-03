@@ -29,7 +29,7 @@ public class AddMaterialPresenter {
     }
 
     public void addSepcialMaterial() {
-        mIAddMaterial.addSpecialMaterial(iAddMaterialView.getcontext(), iAddMaterialView.getBunkersID(), new OnAddMaterialCallBackListener() {
+        mIAddMaterial.addSpecialMaterial(iAddMaterialView.getcontext(), iAddMaterialView.getBunkersID(), iAddMaterialView.getSql(), new OnAddMaterialCallBackListener() {
             @Override
             public void addEnd(MaterialSql sql) {
                 iAddMaterialView.notifySetDataChange(sql);

@@ -320,7 +320,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
-                    android:padding="@dimen/config_marial_list_margin">
+                    android:padding="@dimen/config_marial_list_margin"
+                    android:visibility="gone">
 
                     <TextView
                         android:layout_width="0dp"
@@ -375,7 +376,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
-                    android:padding="@dimen/config_marial_list_margin">
+                    android:padding="@dimen/config_marial_list_margin"
+                    android:visibility="gone">
 
                     <TextView
                         android:layout_width="0dp"
