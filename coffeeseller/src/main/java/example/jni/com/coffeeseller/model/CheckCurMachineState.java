@@ -40,71 +40,74 @@ public class CheckCurMachineState {
         mCoffMsger = CoffMsger.getInstance();
         MachineState machineState = mCoffMsger.getLastMachineState();
 
-        if (SharedPreferencesManager.getInstance(HomeActivity.getInstance()).getCupNum() >5){
+        if (SharedPreferencesManager.getInstance(HomeActivity.getInstance()).getCupNum() < 5) {
 
+            mBuffer.append("\n");
+            mBuffer.append("杯子数量不足！");
+            return false;
         }
 
 
-            if (!checkMaterial(machineState)) {
+        if (!checkMaterial(machineState)) {
+
+            return false;
+        } else {
+
+            MajorState majorState = machineState.getMajorState();
+
+            MyLog.d(TAG, "majorState.getCurStateEnum() ==" + majorState.getCurStateEnum());
+            if (majorState.getCurStateEnum() == StateEnum.FINISH) {
+
+                mBuffer.append("\n");
+                mBuffer.append("杯架上有杯子未取走");
 
                 return false;
-            } else {
+            } else if (majorState.getCurStateEnum() != StateEnum.IDLE) {
+                mBuffer.append("\n");
+                switch (majorState.getCurStateEnum()) {
+                    case DOOR_OPNE:
+                        mBuffer.append("错误:升降门未落下");
+                        break;
+                    case DOWN_CUP:
+                        mBuffer.append("错误:正在落杯中");
+                        break;
+                    case DOWN_POWER:
+                        mBuffer.append("错误:正在落粉中");
+                        break;
+                    case HEAT_POT:
+                        mBuffer.append("错误:锅炉加热中");
+                        break;
+                    case MAKING:
+                        mBuffer.append("接收到的指令为制作中");
+                        break;
 
-                MajorState majorState = machineState.getMajorState();
+                    case HAS_ERR:
+                        mBuffer.append("机器有故障");
+                        break;
 
-                MyLog.d(TAG, "majorState.getCurStateEnum() ==" + majorState.getCurStateEnum());
-                if (majorState.getCurStateEnum() == StateEnum.FINISH) {
+                    case WARNING:
+                        mBuffer.append("机器有警告信息");
+                        break;
 
-                    mBuffer.append("\n");
-                    mBuffer.append("杯架上有杯子未取走");
+                    case STERILIZING:
+                        mBuffer.append("机器消毒中");
+                        break;
+                    case CLEANING:
+                        mBuffer.append("机器清洗中");
+                        break;
 
-                    return false;
-                } else if (majorState.getCurStateEnum() != StateEnum.IDLE) {
-                    mBuffer.append("\n");
-                    switch (majorState.getCurStateEnum()) {
-                        case DOOR_OPNE:
-                            mBuffer.append("错误:升降门未落下");
-                            break;
-                        case DOWN_CUP:
-                            mBuffer.append("错误:正在落杯中");
-                            break;
-                        case DOWN_POWER:
-                            mBuffer.append("错误:正在落粉中");
-                            break;
-                        case HEAT_POT:
-                            mBuffer.append("错误:锅炉加热中");
-                            break;
-                        case MAKING:
-                            mBuffer.append("接收到的指令为制作中");
-                            break;
+                    case TESTING:
+                        mBuffer.append("机器测试中");
+                        break;
 
-                        case HAS_ERR:
-                            mBuffer.append("机器故障");
-                            break;
+                    case UNKNOW_STATE:
+                        mBuffer.append("错误:未知错误");
+                        break;
 
-                        case WARNING:
-                            mBuffer.append("机器有警告信息");
-                            break;
-
-                        case STERILIZING:
-                            mBuffer.append("机器消毒中");
-                            break;
-                        case CLEANING:
-                            mBuffer.append("机器清洗中");
-                            break;
-
-                        case TESTING:
-                            mBuffer.append("机器测试中");
-                            break;
-
-                        case UNKNOW_STATE:
-                            mBuffer.append("错误:未知错误");
-                            break;
-
-                    }
-                    return false;
                 }
+                return false;
             }
+        }
         return true;
     }
 
@@ -143,14 +146,14 @@ public class CheckCurMachineState {
             mBuffer.append("\n");
             mBuffer.append("水量不足");
         }
-       /* if (!machineState.isBeanEnough()) {
+        if (!machineState.isBeanEnough()) {
 
             isCheckCanMake = false;
             mBuffer.append("\n");
             mBuffer.append("咖啡豆不足");
 
         }
-        if (machineState.isWasteContainerFull()) {
+       /* if (machineState.isWasteContainerFull()) {
 
             isCheckCanMake = false;
             mBuffer.append("\n");

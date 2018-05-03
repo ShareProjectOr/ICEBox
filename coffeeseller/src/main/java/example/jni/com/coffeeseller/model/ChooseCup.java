@@ -156,7 +156,7 @@ public class ChooseCup implements View.OnClickListener, MsgTransListener {
         mViewHolder.mCoffeeName.setText(mCoffee.name);
         mViewHolder.mCoffeeName.setTextSize(TextUtil.textSize(mCoffee.name));
 
-        mViewHolder.mQrCodeImage.setOnClickListener(this);
+        mViewHolder.mRequestQRTxt.setOnClickListener(this);
 
         TaskService.getInstance().SetOnMsgListener(mMsgTransListener);
 
@@ -214,6 +214,7 @@ public class ChooseCup implements View.OnClickListener, MsgTransListener {
             public void run() {
                 // TODO Auto-generated method stub
                 mViewHolder.mLoadingBar.clearAnimation();
+                mViewHolder.mRequestQRTxt.setVisibility(View.GONE);
                 mViewHolder.mLoadingBar.setVisibility(View.GONE);
 
                 if (bitmap != null) {
@@ -221,6 +222,7 @@ public class ChooseCup implements View.OnClickListener, MsgTransListener {
                     mViewHolder.mQrCodeImage.setBackgroundDrawable(bitmapDrawable);
                 } else {
                     mViewHolder.mQrCodeImage.setBackgroundResource(R.mipmap.qr_fault);
+                    mViewHolder.mRequestQRTxt.setVisibility(View.VISIBLE);
                 }
                 mViewHolder.mQrCodeImage.setVisibility(View.VISIBLE);
             }
@@ -373,12 +375,13 @@ public class ChooseCup implements View.OnClickListener, MsgTransListener {
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.qrCodeImage:
+            case R.id.requestQRTxt:
                 if (qrBitmap != null) {
                     return;
                 } else {
 
-                    mViewHolder.mLoadingBar.setVisibility(View.GONE);
+                    mViewHolder.mRequestQRTxt.setVisibility(View.GONE);
+                    mViewHolder.mLoadingBar.setVisibility(View.VISIBLE);
                     tradeMsgRequest.requestQRCode(this, mDealRecorder, mCoffee);
                 }
 
@@ -451,6 +454,7 @@ public class ChooseCup implements View.OnClickListener, MsgTransListener {
         public LinearLayout mContentLayout;
         private LinearLayout mQrLayout;
         public LinearLayout mFailedLayout;
+        public TextView mRequestQRTxt;
 
 
         public ViewHolder(View view) {
@@ -462,6 +466,7 @@ public class ChooseCup implements View.OnClickListener, MsgTransListener {
             mQrCodeImage = (ImageView) view.findViewById(R.id.qrCodeImage);
             mCoffeeCold = (TextView) view.findViewById(R.id.coffeeCold);
             mCoffeeHot = (TextView) view.findViewById(R.id.coffeeHot);
+            mRequestQRTxt = (TextView) view.findViewById(R.id.requestQRTxt);
             mCoffeePrice = (TextView) view.findViewById(R.id.coffeePrice);
             mTastLayout = (LinearLayout) view.findViewById(R.id.tast_layout);
             mLoadingBar = (ProgressBar) view.findViewById(R.id.loadingBar);
