@@ -73,8 +73,9 @@ public class MaterialRecycleListAdapter extends RecyclerView.Adapter<RecyclerVie
 
         double realstock = new BigDecimal(((float) stockmg / 1000)).setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
         mHolder.CountAndLess.setText(realstock + "g");
-        if (!list.get(position).getMaterialName().equals("未启用")) {
+        if (!list.get(position).getMaterialName().equals("未启用") || list.get(position).getMaterialName().equals("null")) {
             mHolder.bankersName.setTextColor(ContextCompat.getColor(mContext, R.color.black));//已经启用了的料仓才能重新绑定原料
+
             mHolder.Opration.setText("补料");
             mHolder.Opration.setOnClickListener(new View.OnClickListener() {// 启用了的料仓才能补料
                 @Override
@@ -83,7 +84,7 @@ public class MaterialRecycleListAdapter extends RecyclerView.Adapter<RecyclerVie
                     presenter.AddMaterial();
                 }
             });
-            mHolder.bankersName.setOnClickListener(new View.OnClickListener() {
+            mHolder.bindMaterial.setOnClickListener(new View.OnClickListener() { //点击 绑定原料
                 @Override
                 public void onClick(View v) {
                     bindMaterialPresenter.BindMaterial(mHolder.bankersName, list.get(position).getBunkerID());
@@ -91,6 +92,7 @@ public class MaterialRecycleListAdapter extends RecyclerView.Adapter<RecyclerVie
             });
         } else {
             mHolder.bankersName.setTextColor(ContextCompat.getColor(mContext, R.color.login_black_gray));//未开启的料仓
+            mHolder.bindMaterial.setTextColor(ContextCompat.getColor(mContext, R.color.login_black_gray));//未开启料仓时,绑定的原料为灰色且不能被点击
         }
 
 
@@ -100,7 +102,7 @@ public class MaterialRecycleListAdapter extends RecyclerView.Adapter<RecyclerVie
     @Override
     public int getItemCount() {
         if (list == null) {
-           return 0;
+            return 0;
         } else {
             return list.size();
         }
@@ -159,7 +161,7 @@ public class MaterialRecycleListAdapter extends RecyclerView.Adapter<RecyclerVie
 
 
     class ContentViewHolder extends RecyclerView.ViewHolder {
-        TextView bankersName, Material, CountAndLess, AddTime, Opration;
+        TextView bankersName, Material, CountAndLess, AddTime, Opration, bindMaterial;
 
         public ContentViewHolder(View itemView) {
             super(itemView);
@@ -168,6 +170,7 @@ public class MaterialRecycleListAdapter extends RecyclerView.Adapter<RecyclerVie
             CountAndLess = (TextView) itemView.findViewById(R.id.countAndless);
             AddTime = (TextView) itemView.findViewById(R.id.addTime);
             Opration = (TextView) itemView.findViewById(R.id.operation);
+            bindMaterial = (TextView) itemView.findViewById(R.id.bindMarterial);
         }
     }
 }

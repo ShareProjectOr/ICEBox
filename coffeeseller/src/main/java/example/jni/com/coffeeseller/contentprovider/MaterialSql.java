@@ -158,6 +158,7 @@ public class MaterialSql extends SQLiteOpenHelper {
     }
 
     public String getStorkByMaterialID(String MaterialID) {
+        Log.e(TAG, "materialID is " + MaterialID);
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor res = db.rawQuery("select * from " + MATERIALS_TABLE_NAME + " where " + MATERIALS_COLUMN_MATERIALID + " = " + MaterialID + "", null);
         res.moveToFirst();

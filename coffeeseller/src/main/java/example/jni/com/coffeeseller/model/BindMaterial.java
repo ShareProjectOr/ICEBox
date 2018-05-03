@@ -37,13 +37,14 @@ import example.jni.com.coffeeseller.views.viewinterface.IBindMaterialView;
 public class BindMaterial implements IBindMaterial {
     private List<Material> list = new ArrayList<>();
     private List<String> materialNameList = new ArrayList<>();
+    private String TAG = "BindMaterial";
 
     @Override
     public void bindMaterial(final IBindMaterialView iBindMaterialView, final Context context, final TextView textView, final String bunkerID, final OnBindMaterialCallBackListener onBindMaterialCallBackListener) {
         if (list.size() == 0 && materialNameList.size() == 0) {
             iBindMaterialView.ShowLoading();
             new AsyncTask<Void, Boolean, Boolean>() {
-                String result;
+                String result = "";
 
                 @Override
                 protected Boolean doInBackground(Void... params) {
@@ -52,6 +53,7 @@ public class BindMaterial implements IBindMaterial {
                     try {
                         String response = OkHttpUtil.post(Constance.MATERIAL_LIST_GET_URL, JsonUtil.mapToJson(postMap));
                         JSONObject object = new JSONObject(response);
+                        Log.e(TAG, "machineCode is " + MachineConfig.getMachineCode() + " bunkerID is " + bunkerID + "object is " + object.toString());
                         if (object.getString("err").equals("")) {
 
                             JSONArray array = object.getJSONObject("d").getJSONArray("list");
@@ -85,7 +87,7 @@ public class BindMaterial implements IBindMaterial {
                         final ListPopupWindow window = new ListPopupWindow(context);
                         window.setAdapter(new ArrayAdapter<>(context, android.R.layout.simple_expandable_list_item_1, materialNameList));
                         window.setAnchorView(textView);
-                        window.setHorizontalOffset(textView.getWidth() /4);
+                        window.setHorizontalOffset(textView.getWidth() / 4);
                         window.setModal(true);
                         window.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                             @Override
@@ -114,7 +116,7 @@ public class BindMaterial implements IBindMaterial {
             final ListPopupWindow window = new ListPopupWindow(context);
             window.setAdapter(new ArrayAdapter<>(context, android.R.layout.simple_expandable_list_item_1, materialNameList));
             window.setAnchorView(textView);
-            window.setHorizontalOffset(textView.getWidth()/4);
+            window.setHorizontalOffset(textView.getWidth() / 4);
             window.setModal(true);
             window.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override

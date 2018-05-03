@@ -46,5 +46,14 @@
             android:layout_weight="1"
             android:textColor="@color/blue"
             android:textSize="@dimen/text_size_one" />
+
+        <TextView
+            android:id="@+id/bindMarterial"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="40dp"
+            android:text="绑定原料"
+            android:textColor="@color/blue"
+            android:textSize="@dimen/text_size_one" />
     </LinearLayout>
 </LinearLayout>

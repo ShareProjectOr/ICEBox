@@ -74,16 +74,8 @@ public class SingleMaterialLsit {
                 for (int j = 0; j < stepArray.length(); j++) {
                     org.json.JSONObject stepObject = (org.json.JSONObject) stepArray.opt(j);
                     String materialID = stepObject.getJSONObject("material").getString("materialID");
-                  /*  int containerID = stepObject.getInt("containerID");
-                    Cursor cursor = sql.getDataCursor("containerID", containerID);
-                    cursor.moveToFirst();*/
                     sql = new MaterialSql(mContext);
                     Log.e(TAG, "数据库长度" + sql.getAllbunkersIDs().size());
-                    String materialStock = sql.getStorkByMaterialID(materialID);//找到对应原料编号的剩余量
-
-               /* for (String haveMaterialID : sql.getAllmaterialID()) {
-                    if (materialID)
-                }*/
                     Log.e(TAG, "currentStep need materialID is " + materialID);
                     Log.e(TAG, "location all materialID is " + sql.getAllmaterialID().toString());
                     if (!sql.getAllmaterialID().contains(materialID)) { //本地料仓里面不含有这个原料
@@ -91,7 +83,7 @@ public class SingleMaterialLsit {
                         coffee.setOver(true);
                         break;
                     }
-
+                    String materialStock = sql.getStorkByMaterialID(materialID);// 找到对应原料编号的剩余量
                     if (materialStock.equals("0")) { // 有原料但剩余量为0 则为售罄
                         Log.e(TAG, "location materialStock is 0  ");
                         coffee.setOver(true);
@@ -107,10 +99,18 @@ public class SingleMaterialLsit {
                         break;
                     }
                 }
+
+
                 List<Step> stepList = new ArrayList<>();
+
                 for (int j = 0; j < stepArray.length(); j++) {
                     org.json.JSONObject stepObject = (org.json.JSONObject) stepArray.opt(j);
                     Step step = new Step();
+                    if (!sql.getAllmaterialID().contains(stepObject.getJSONObject("material").getString("materialID"))) { //本地料仓里面不含有这个原料
+                        Log.e(TAG, "location have not this material");
+                        coffee.setOver(true);
+                        break;
+                    }
                     ContainerConfig containerConfig = new ContainerConfig();
                     switch (sql.getContainerIDByMaterialID(stepObject.getJSONObject("material").getString("materialID"))) {
                         case "0":
