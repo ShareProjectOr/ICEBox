@@ -102,13 +102,14 @@ public class BuyDialog extends Dialog implements ChooseCupListenner, MkCoffeeLis
         if (viewID == VIEW_CHOOSE_CUP) {
             ChooseCup chooseCup = new ChooseCup(context, coffee, chooseCupListenner, handler);
             setContentView(chooseCup.getView());
-
+            setCanceledOnTouchOutside(true);
             MyLog.W(TAG, "choose cup view is added");
 
         } else if (viewID == VIEW_HELP) {
             Help help = new Help(context, this);
             setContentView(help.getView());
 
+            setCanceledOnTouchOutside(true);
             MyLog.W(TAG, "help view is added");
         }
     }
@@ -236,6 +237,7 @@ public class BuyDialog extends Dialog implements ChooseCupListenner, MkCoffeeLis
     @Override
     public void hasPay(final CoffeeFomat coffeeFomat, final DealRecorder dealRecorder) {
 
+
         //本地保存交易记录
         DealOrderInfoManager.getInstance(context).addToTable(dealRecorder);
 
@@ -244,6 +246,9 @@ public class BuyDialog extends Dialog implements ChooseCupListenner, MkCoffeeLis
         handler.post(new Runnable() {
             @Override
             public void run() {
+
+                setCanceledOnTouchOutside(false);
+
                 MkCoffee mkCoffee = new MkCoffee(context, fomat, dealRecorder, mkCoffeeListenner, handler);
                 setContentView(mkCoffee.getView());
 
