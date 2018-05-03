@@ -103,13 +103,13 @@ public class BuyDialog extends Dialog implements ChooseCupListenner, MkCoffeeLis
             ChooseCup chooseCup = new ChooseCup(context, coffee, chooseCupListenner, handler);
             setContentView(chooseCup.getView());
 
-            MyLog.W(TAG,"choose cup view is added");
+            MyLog.W(TAG, "choose cup view is added");
 
         } else if (viewID == VIEW_HELP) {
             Help help = new Help(context, this);
             setContentView(help.getView());
 
-            MyLog.W(TAG,"help view is added");
+            MyLog.W(TAG, "help view is added");
         }
     }
 
@@ -118,7 +118,7 @@ public class BuyDialog extends Dialog implements ChooseCupListenner, MkCoffeeLis
         this.coffee = coffee;
         setInitView(VIEW_CHOOSE_CUP);
 
-        MyLog.W(TAG,coffee.getName()+" has been selected !");
+        MyLog.W(TAG, coffee.getName() + " has been selected !");
     }
 
     public void showDialog() {
@@ -166,7 +166,7 @@ public class BuyDialog extends Dialog implements ChooseCupListenner, MkCoffeeLis
                     boolean isUpdateSuccess = materialSql.updateMaterialStockByMaterialId(step.getMaterial().getMaterialID() + "", (sqlRestMaterialInt - mkUseMaterialInt) + "");
 
                     MyLog.W(TAG, "update material is " + isUpdateSuccess + ", materialId=" + step.getMaterial().getMaterialID()
-                            + ", usedMaterial = " +mkUseMaterialInt +" sqlRestMaterial= "+sqlRestMaterialInt+", stock=" + (sqlRestMaterialInt - mkUseMaterialInt));
+                            + ", usedMaterial = " + mkUseMaterialInt + " sqlRestMaterial= " + sqlRestMaterialInt + ", stock=" + (sqlRestMaterialInt - mkUseMaterialInt));
 
                     ReportBunker reportBunker = new ReportBunker();
                     int bunkerId = Integer.parseInt(materialSql.getBunkerIDByMaterialD(step.getMaterial().getMaterialID() + ""));
@@ -175,8 +175,6 @@ public class BuyDialog extends Dialog implements ChooseCupListenner, MkCoffeeLis
                     reportBunker.setMaterialStock((sqlRestMaterialInt - mkUseMaterialInt));
 
                     bunkers.add(reportBunker);
-
-                    SharedPreferencesManager.getInstance(context).setCupNum(SharedPreferencesManager.getInstance(context).getCupNum());
 
                 }
         }
@@ -254,7 +252,7 @@ public class BuyDialog extends Dialog implements ChooseCupListenner, MkCoffeeLis
     }
 
     @Override
-    public void getMkResult(final DealRecorder dealRecorder, boolean success, final boolean isCalculateMaterial) {
+    public void getMkResult(final DealRecorder dealRecorder, final boolean success, final boolean isCalculateMaterial) {
 
         final DealRecorder recorder = dealRecorder;
         new Thread(new Runnable() {
@@ -279,6 +277,13 @@ public class BuyDialog extends Dialog implements ChooseCupListenner, MkCoffeeLis
 
                 //更新本地交易记录
                 DealOrderInfoManager.getInstance(context).update(newDealRecorder);
+
+                if (!success && !isCalculateMaterial) {
+
+                } else {
+                    SharedPreferencesManager.getInstance(context).setCupNum(SharedPreferencesManager.getInstance(context).getCupNum() - 1);
+                }
+
             }
         }).start();
 

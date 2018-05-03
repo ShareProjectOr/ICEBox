@@ -1,6 +1,7 @@
 package example.jni.com.coffeeseller.model;
 
 import android.os.CountDownTimer;
+import android.view.View;
 
 import java.util.Timer;
 import java.util.TimerTask;

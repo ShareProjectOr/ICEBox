@@ -72,6 +72,7 @@ public class ChooseCup implements View.OnClickListener, MsgTransListener {
     private CountDownTimer countDownTimer;
     private Handler mHandler;
     private TradeMsgRequest tradeMsgRequest;
+    private Bitmap qrBitmap;
 
 
     public ChooseCup(Context context, Coffee coffee, ChooseCupListenner listenner, Handler handler) {
@@ -155,6 +156,8 @@ public class ChooseCup implements View.OnClickListener, MsgTransListener {
         mViewHolder.mCoffeeName.setText(mCoffee.name);
         mViewHolder.mCoffeeName.setTextSize(TextUtil.textSize(mCoffee.name));
 
+        mViewHolder.mQrCodeImage.setOnClickListener(this);
+
         TaskService.getInstance().SetOnMsgListener(mMsgTransListener);
 
         checkHotOrCold(true);
@@ -203,6 +206,7 @@ public class ChooseCup implements View.OnClickListener, MsgTransListener {
      * @param bitmap
      */
     void setQR_Code(final Bitmap bitmap) {
+        qrBitmap = bitmap;
         Runnable mRun = new Runnable() {
 
             @SuppressWarnings("deprecation")
@@ -216,7 +220,7 @@ public class ChooseCup implements View.OnClickListener, MsgTransListener {
                     BitmapDrawable bitmapDrawable = new BitmapDrawable(bitmap);
                     mViewHolder.mQrCodeImage.setBackgroundDrawable(bitmapDrawable);
                 } else {
-                    mViewHolder.mQrCodeImage.setBackgroundResource(R.drawable.ic_launcher);
+                    mViewHolder.mQrCodeImage.setBackgroundResource(R.mipmap.qr_fault);
                 }
                 mViewHolder.mQrCodeImage.setVisibility(View.VISIBLE);
             }
@@ -369,6 +373,17 @@ public class ChooseCup implements View.OnClickListener, MsgTransListener {
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
+            case R.id.qrCodeImage:
+                if (qrBitmap != null) {
+                    return;
+                } else {
+
+                    mViewHolder.mLoadingBar.setVisibility(View.GONE);
+                    tradeMsgRequest.requestQRCode(this, mDealRecorder, mCoffee);
+                }
+
+                break;
+
             case R.id.coffeeCold:
                 mViewHolder.mCoffeeCold.setSelected(true);
                 mViewHolder.mCoffeeHot.setSelected(false);
@@ -456,6 +471,8 @@ public class ChooseCup implements View.OnClickListener, MsgTransListener {
             mContentLayout = (LinearLayout) view.findViewById(R.id.contentLayout);
             mQrLayout = (LinearLayout) view.findViewById(R.id.qr_layout);
             mFailedLayout = (LinearLayout) view.findViewById(R.id.failed_layout);
+
+
         }
 
         public void addView(final Step step, final int index) {
