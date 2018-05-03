@@ -1,5 +1,6 @@
 package example.jni.com.coffeeseller.model;
 
+import android.content.Context;
 import android.util.Log;
 
 import cof.ac.inter.CoffMsger;
@@ -39,13 +40,15 @@ public class CheckCurMachineState {
         mBuffer.setLength(0);
         mCoffMsger = CoffMsger.getInstance();
         MachineState machineState = mCoffMsger.getLastMachineState();
+/*
 
-        if (SharedPreferencesManager.getInstance(HomeActivity.getInstance()).getCupNum() < 5) {
+        if (SharedPreferencesManager.getInstance().getCupNum() < 5) {
 
             mBuffer.append("\n");
             mBuffer.append("杯子数量不足！");
             return false;
         }
+*/
 
 
         if (!checkMaterial(machineState)) {
@@ -146,13 +149,13 @@ public class CheckCurMachineState {
             mBuffer.append("\n");
             mBuffer.append("水量不足");
         }
-        if (!machineState.isBeanEnough()) {
+  /*      if (!machineState.isBeanEnough()) {
 
             isCheckCanMake = false;
             mBuffer.append("\n");
             mBuffer.append("咖啡豆不足");
 
-        }
+        }*/
        /* if (machineState.isWasteContainerFull()) {
 
             isCheckCanMake = false;

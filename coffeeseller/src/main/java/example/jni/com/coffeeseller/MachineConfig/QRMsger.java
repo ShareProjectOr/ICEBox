@@ -2,6 +2,7 @@ package example.jni.com.coffeeseller.MachineConfig;
 
 import android.text.TextUtils;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -19,6 +20,7 @@ import example.jni.com.coffeeseller.model.listeners.MsgTransListener;
 import example.jni.com.coffeeseller.parse.ParseRQMsg;
 import example.jni.com.coffeeseller.parse.PayResult;
 import example.jni.com.coffeeseller.utils.MyLog;
+import example.jni.com.coffeeseller.utils.TextUtil;
 
 
 public class QRMsger {
@@ -134,23 +136,31 @@ public class QRMsger {
 
     public DealRecorder reportTradeToServer(DealRecorder dealRecorder, String bunkers) {
 
-        Map<String, Object> params = ConstanceMethod.getParams();
-        params.put("tradeCode", dealRecorder.getOrder());
-        params.put("makeState", (dealRecorder.isMakeSuccess() ? 1 : 0));
-        params.put("bunkers", bunkers);
-
-
-        MyLog.W(TAG, "reportTradeToServer RQ_URL = " + Constance.TRADE_UPLOAD);
-        MyLog.W(TAG, "reportTradeToServer params = " + JsonUtil.mapToJson(params));
-
         String RESPONSE_TEXT = null;
 
         try {
+
+            Map<String, Object> params = ConstanceMethod.getParams();
+            params.put("tradeCode", dealRecorder.getOrder());
+            params.put("makeState", (dealRecorder.isMakeSuccess() ? 1 : 0));
+            if (TextUtils.isEmpty(bunkers)){
+                String[] nullArray=new String[1];
+                params.put("bunkers", nullArray);
+            }else{
+                JSONArray bunkersArray=new JSONArray(bunkers);
+                params.put("bunkers", bunkersArray);
+            }
+
+
+            MyLog.W(TAG, "reportTradeToServer RQ_URL = " + Constance.TRADE_UPLOAD);
+            MyLog.W(TAG, "reportTradeToServer params = " + JsonUtil.mapToJson(params));
 
             RESPONSE_TEXT = OkHttpUtil.post(Constance.TRADE_UPLOAD, JsonUtil.mapToJson(params));
 
         } catch (IOException e) {
 
+            e.printStackTrace();
+        } catch (JSONException e) {
             e.printStackTrace();
         }
 

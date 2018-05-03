@@ -2,7 +2,9 @@ package example.jni.com.coffeeseller.contentprovider;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.widget.Toast;
 
+import example.jni.com.coffeeseller.utils.MyLog;
 import example.jni.com.coffeeseller.utils.SecondToDate;
 
 /**
@@ -108,6 +110,8 @@ public class SharedPreferencesManager {
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putInt("CupNum", CupNum);
         editor.commit();
+
+        MyLog.d("-------------",sharedPreferences.getInt("CupNum",0)+"");
     }
 
     public int getCupNum() {
