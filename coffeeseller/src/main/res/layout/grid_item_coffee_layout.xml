@@ -81,7 +81,7 @@
             android:layout_height="wrap_content"
             android:layout_alignBottom="@id/coffeeLayout"
             android:layout_alignTop="@id/coffeeLayout"
-            android:alpha="0.5"
+            android:alpha="0.7"
             android:background="@drawable/shape_is_over"
             android:orientation="vertical"
             android:visibility="gone" />
