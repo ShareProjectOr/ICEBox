@@ -117,7 +117,7 @@ public class MachineCheck implements IMachineCheck {
                                 if (list.get(i).getContainerID().equals("3")) {
                                     Log.e(TAG, "糖的默认落料量为:" + list.get(i).getMaterialDropSpeed());
                                 }
-                                boolean b = content.insertContact(list.get(i).getBunkerID(), list.get(i).getMaterialID(), list.get(i).getMaterialType(), list.get(i).getMaterialName()
+                                boolean b = content.insertContact(list.get(i).getBunkerID(), list.get(i).getBunkerType(), list.get(i).getMaterialID(), list.get(i).getMaterialType(), list.get(i).getMaterialName()
                                         , list.get(i).getMaterialUnit(), list.get(i).getMaterialStock(), list.get(i).getMaterialDropSpeed(), list.get(i).getContainerID(), list.get(i).getLastLoadingTime());
                                 if (b) {
                                 } else {
@@ -139,7 +139,7 @@ public class MachineCheck implements IMachineCheck {
 
                                 if (!isupdated) {//假如数据库里面不存在了这个料仓 则插入到数据库中
                                     Log.e(TAG, "开始执行更新数据库");
-                                    boolean b = content.insertContact(list.get(i).getBunkerID(), list.get(i).getMaterialID(), list.get(i).getMaterialType(), list.get(i).getMaterialName()
+                                    boolean b = content.insertContact(list.get(i).getBunkerID(), list.get(i).getBunkerType(), list.get(i).getMaterialID(), list.get(i).getMaterialType(), list.get(i).getMaterialName()
                                             , list.get(i).getMaterialUnit(), list.get(i).getMaterialStock(), list.get(i).getMaterialDropSpeed(), list.get(i).getContainerID(), list.get(i).getLastLoadingTime());
                                     if (b) {
                                     } else {
