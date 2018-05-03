@@ -27,8 +27,8 @@ public class BindMaterialPresenter {
         this.addMaterialView = addMaterialView;
     }
 
-    public void BindMaterial(TextView textView, String binkerID) {
-        iBindMaterial.bindMaterial(iBindMaterialView, addMaterialView.getcontext(), textView, binkerID, new OnBindMaterialCallBackListener() {
+    public void BindMaterial(TextView textView, String binkerID, String bunkerType) {
+        iBindMaterial.bindMaterial(iBindMaterialView, addMaterialView.getcontext(), textView, binkerID,bunkerType, new OnBindMaterialCallBackListener() {
             @Override
             public void BindSuccess(List<Material> list) {
                 addMaterialView.notifySetDataChange(new MaterialSql(addMaterialView.getcontext()));
