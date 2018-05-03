@@ -85,7 +85,8 @@ public class CheckCurMachineState {
                         break;
 
                     case HAS_ERR:
-                        mBuffer.append("机器有故障");
+                        mBuffer.append("机器有故障: \n" + machineState.getMajorState().getHighErrCode());
+
                         break;
 
                     case WARNING:
