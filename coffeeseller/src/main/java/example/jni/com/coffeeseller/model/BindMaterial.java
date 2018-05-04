@@ -81,6 +81,7 @@ public class BindMaterial implements IBindMaterial {
 
 
                         }
+                        materialNameList.add(0, "解除绑定");
                         return true;
                     } else {
                         result = object.getString("err");
@@ -109,13 +110,29 @@ public class BindMaterial implements IBindMaterial {
                         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                             MaterialSql sql = new MaterialSql(context);
                             Log.e("choose name", materialNameList.get(position));
-                            Boolean update = sql.updateContact(bunkerID, "", list.get(position).getMaterialID() + "", list.get(position).getType() + "", materialNameList.get(position),
-                                    list.get(position).getUnit(), "0", list.get(position).getOutput() + "", "", SecondToDate.getDateToString(System.currentTimeMillis()));
-                            if (update) {
-                                onBindMaterialCallBackListener.BindSuccess(list);
-                            } else {
-                                onBindMaterialCallBackListener.BindFailed("更新本地数据库失败");
+                            switch (position) {
+                                case 0:
+                                    Boolean update = sql.updateContact(bunkerID, "", "null", "null", "null",
+                                            "null", "0", "null", "", SecondToDate.getDateToString(System.currentTimeMillis()));
+                                    if (update) {
+                                        onBindMaterialCallBackListener.BindSuccess(list);
+                                    } else {
+                                        onBindMaterialCallBackListener.BindFailed("更新本地数据库失败");
+                                    }
+                                    break;
+                                default:
+                                    position -= 1;
+                                    Boolean update1 = sql.updateContact(bunkerID, "", list.get(position).getMaterialID() + "", list.get(position).getType() + "", materialNameList.get(position+1),
+                                            list.get(position).getUnit(), "0", list.get(position).getOutput() + "", "", SecondToDate.getDateToString(System.currentTimeMillis()));
+                                    if (update1) {
+                                        onBindMaterialCallBackListener.BindSuccess(list);
+                                    } else {
+                                        onBindMaterialCallBackListener.BindFailed("更新本地数据库失败");
+                                    }
+                                    break;
+
                             }
+
                             window.dismiss();
                         }
                     });

@@ -91,7 +91,7 @@ public class ConfigFragment extends BasicFragment implements IAddMaterialView, I
         addCupTime.setText(SharedPreferencesManager.getInstance(getActivity()).getAddCupTime());
         addWaterTime.setText(SharedPreferencesManager.getInstance(getActivity()).getAddWaterTime());
         mMachineCode.setText(SharedPreferencesManager.getInstance(getActivity()).getMachineCode());
-
+        passWord.setText(SharedPreferencesManager.getInstance(getActivity()).getLoginPassword());
    /*     if (msger != null) {
 
             driverVersion.setText("驱动版本:" + msger.getCurState().getVersion());
@@ -204,6 +204,11 @@ public class ConfigFragment extends BasicFragment implements IAddMaterialView, I
                 if (mMachineCode.getText().toString().isEmpty()) {
                     Toast.makeText(getActivity(), "机器号未填写", Toast.LENGTH_LONG).show();
                     return;
+                }
+                //检测到机器号改变了 则删除所有行
+                if (!SharedPreferencesManager.getInstance(getActivity()).getMachineCode().equals(mMachineCode.getText().toString())) {
+                    MaterialSql sql = new MaterialSql(getActivity());
+                    sql.deleteAllContent();
                 }
                 SharedPreferencesManager.getInstance(getActivity()).setMachineCode(mMachineCode.getText().toString());
                 SharedPreferencesManager.getInstance(getActivity()).setLoginPassword(passWord.getText().toString());

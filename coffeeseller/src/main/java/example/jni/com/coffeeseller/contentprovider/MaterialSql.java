@@ -51,6 +51,17 @@ public class MaterialSql extends SQLiteOpenHelper {
                 " MaterialDropSpeed text ,containerID text , addMaterialTime text )");
     }
 
+    public boolean deleteAllContent() {
+
+        if (getAllbunkersIDs().size() != 0) {
+            SQLiteDatabase db = this.getWritableDatabase();
+            db.delete(MATERIALS_TABLE_NAME, null, null);
+            db.close();
+        }
+
+        return true;
+    }
+
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         db.execSQL("DROP TABLE IF EXISTS" + MATERIALS_TABLE_NAME);
@@ -79,6 +90,7 @@ public class MaterialSql extends SQLiteOpenHelper {
         db.close();
         return ContainerID;
     }
+
 
     public String getBunkersNameByID(String bunkesID) {
         SQLiteDatabase db = this.getReadableDatabase();
@@ -223,6 +235,14 @@ public class MaterialSql extends SQLiteOpenHelper {
             return true;
         }
 
+    }
+
+    //删除所有行
+    public boolean clearSql() {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.delete(MATERIALS_TABLE_NAME, null, new String[]{"1"});
+        db.close();
+        return true;
     }
 
     /*
@@ -432,7 +452,12 @@ public class MaterialSql extends SQLiteOpenHelper {
             String bunkerID = AllbunkersIDs.get(i);
             object.setBunkerID(Integer.parseInt(bunkerID));
             object.setMaterialStock(Integer.parseInt(getStorkByBunkersID(bunkerID)));
-            object.setOutput(Integer.parseInt(getMaterialDropSpeedByBunkersID(bunkerID)));
+            if (getMaterialDropSpeedByBunkersID(bunkerID).equals("null") || getMaterialDropSpeedByBunkersID(bunkerID).equals("null")) {
+                object.setOutput(null);
+            } else {
+                object.setOutput(Integer.parseInt(getMaterialDropSpeedByBunkersID(bunkerID)));
+            }
+
             if (getMaterialIDByBunkerID(bunkerID).equals("null")) {
                 object.setMaterialID(null);
             } else {

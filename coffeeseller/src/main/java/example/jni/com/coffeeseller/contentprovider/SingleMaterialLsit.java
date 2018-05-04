@@ -140,7 +140,7 @@ public class SingleMaterialLsit {
                     }
                     containerConfig.setWater_interval(stepObject.getInt("timeOut"));
                     //   int Water_capacity = stepObject.getInt("water");
-                    containerConfig.setWater_capacity(stepObject.getInt("water"));
+                    containerConfig.setWater_capacity(stepObject.getInt("water")*10);
                     int amount = stepObject.getInt("amount");
                     Log.e(TAG, "出料总量=" + amount);
                     String MaterialID = stepObject.getJSONObject("material").getString("materialID");

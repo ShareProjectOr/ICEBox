@@ -6,7 +6,7 @@ package example.jni.com.coffeeseller.bean;
 
 public class CommitMaterialObject {
     int bunkerID;
-    int output;
+    Integer output;
     int materialStock;
     Integer materialID;
 
@@ -22,7 +22,7 @@ public class CommitMaterialObject {
         return output;
     }
 
-    public void setOutput(int output) {
+    public void setOutput(Integer output) {
         this.output = output;
     }
 
