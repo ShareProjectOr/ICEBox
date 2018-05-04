@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.os.CountDownTimer;
 import android.support.v7.app.AlertDialog;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
@@ -26,6 +27,7 @@ import example.jni.com.coffeeseller.utils.Waiter;
  */
 
 public class TestDropMaterial implements ITestDropMaterial {
+    String TAG = "TestDropMaterial";
 
     @Override
     public void StartDrop(final Context mContext, final int ContainerID, final TestDropMaterialCallBackListener testDropMaterialCallBackListener) {
@@ -38,8 +40,10 @@ public class TestDropMaterial implements ITestDropMaterial {
         final EditText materialDropSpeed = (EditText) view.findViewById(R.id.materialDropSpeed);
         Button sure, cancel, save;
         TextView bunkerName;
-        bunkerName = (TextView) view.findViewById(R.id.bankersName);
-        bunkerName.setText("落料仓:"+sql.getMaterialNameByContainerID(ContainerID+""));
+        bunkerName = (TextView) view.findViewById(R.id.bunkerName);
+        Log.e(TAG, "ContainerID is " + ContainerID);
+
+        bunkerName.setText("落料仓:" + sql.getMaterialNameByContainerID(ContainerID + ""));
         sure = (Button) view.findViewById(R.id.sure);
         save = (Button) view.findViewById(R.id.save);
         cancel = (Button) view.findViewById(R.id.cancel);
