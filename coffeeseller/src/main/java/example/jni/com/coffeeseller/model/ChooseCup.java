@@ -31,6 +31,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import cof.ac.inter.ContainerConfig;
+import cof.ac.inter.ContainerType;
 import cof.ac.inter.WaterType;
 import example.jni.com.coffeeseller.MachineConfig.DealRecorder;
 import example.jni.com.coffeeseller.MachineConfig.QRMsger;
@@ -349,8 +350,10 @@ public class ChooseCup implements View.OnClickListener, MsgTransListener {
                 textView.setSelected(false);
             } else {
                 textView.setSelected(true);
-                double materialTime = new BigDecimal((float) step.getTastes().get(i).getAmount() / 100)
+
+                double materialTime = new BigDecimal(((float) step.getTastes().get(i).getAmount()) / 100)
                         .setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
+
                 int useMaterial = (int) (materialTime * containerConfig.getMaterial_time());
 
                 MyLog.d(TAG, "amount= " + step.getTastes().get(i).getAmount() + "getMaterial_time= " + useMaterial + " ----i= " + i);
