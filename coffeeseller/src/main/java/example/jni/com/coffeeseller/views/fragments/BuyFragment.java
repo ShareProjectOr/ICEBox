@@ -124,6 +124,8 @@ public class BuyFragment extends BasicFragment implements GridViewItemListener, 
         mViewPager.setAdapter(mPagerAdapter);
         mMachineCode.setText(MachineConfig.getMachineCode() + "");
 
+        TaskService.getInstance().setOnMessageReceviedListener(this);
+
         updateOnLine();
 
     }
@@ -209,8 +211,13 @@ public class BuyFragment extends BasicFragment implements GridViewItemListener, 
     @Override
     public void getMsgType(String msgType) {
         int formulaID = Integer.parseInt(msgType);
-
-
+        List<Coffee> coffees = SingleMaterialLsit.getInstance(homeActivity).setCoffeeSellOut(formulaID);
+        mCoffees.clear();
+        mCoffees.addAll(coffees);
+        mPagerAdapter.notifyDataSetChanged();
+/*
+        mCoffees.addAll(SingleMaterialLsit.getInstance(homeActivity).getCoffeeList());
+        mPagerAdapter.notifyDataSetChanged();*/
     }
 
     @Override
