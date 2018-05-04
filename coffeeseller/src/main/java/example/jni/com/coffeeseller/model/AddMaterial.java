@@ -116,7 +116,7 @@ public class AddMaterial implements IAddMaterial {
                     mLast_add_stock.setText(addAccount + dobeforeAddStork + "");
                 }
 
-                if (sql.updateContact(bunkersID, "", "", "", "", "", (long) (Double.parseDouble(mLast_add_stock.getText().toString()) * 1000) + "", "", "", SecondToDate.getDateToString(System.currentTimeMillis()))) {
+                if (sql.updateContact(bunkersID, "", "", "", "", "", (long) (Double.parseDouble(mLast_add_stock.getText().toString()) * 1000) + "", "","", "", SecondToDate.getDateToString(System.currentTimeMillis()))) {
                     onAddMaterialCallBackListener.addEnd(sql);
                     Toast.makeText(context, "补料成功", Toast.LENGTH_LONG).show();
                     isCanCheck = false;
@@ -212,7 +212,7 @@ public class AddMaterial implements IAddMaterial {
                     mLast_add_stock.setText(addAccount + beforeAddCount + "");
                 }
 
-                if (sql.updateContact(bunkersID, "", "", "", "", "", Long.parseLong(mLast_add_stock.getText().toString()) + "", "", "", SecondToDate.getDateToString(System.currentTimeMillis()))) {
+                if (sql.updateContact(bunkersID, "", "", "", "", "", Long.parseLong(mLast_add_stock.getText().toString()) + "", "","", "", SecondToDate.getDateToString(System.currentTimeMillis()))) {
                     onAddMaterialCallBackListener.addEnd(sql);
                     Toast.makeText(context, "补料成功", Toast.LENGTH_LONG).show();
                     isCanCheck = false;
