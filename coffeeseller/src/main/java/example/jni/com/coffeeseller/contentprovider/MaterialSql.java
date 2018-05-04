@@ -671,4 +671,14 @@ public class MaterialSql extends SQLiteOpenHelper {
     public void setAdapter(MaterialRecycleListAdapter materialRecycleListAdapter) {
         adapter = materialRecycleListAdapter;
     }
+
+    public String getBunkerIDByContainerID(String containerID) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor res = db.rawQuery("select * from " + MATERIALS_TABLE_NAME + " where " + MATERIALS_COLUMN_CONTAINERID + " = " + containerID+"", null);
+        res.moveToFirst();
+        String bunkerID = res.getString(res.getColumnIndex(MATERIALS_COLUMN_BUNKERSID));
+        res.close();
+        db.close();
+        return bunkerID;
+    }
 }

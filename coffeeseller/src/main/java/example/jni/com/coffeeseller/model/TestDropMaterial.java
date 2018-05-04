@@ -16,24 +16,24 @@ import example.jni.com.coffeeseller.model.listeners.TestDropMaterialCallBackList
 public class TestDropMaterial implements ITestDropMaterial {
 
     @Override
-    public void StartDrop(int dropBunker, int time, final TestDropMaterialCallBackListener testDropMaterialCallBackListener) {
+    public void StartDrop(int ContainerID, final TestDropMaterialCallBackListener testDropMaterialCallBackListener) {
         CoffMsger coffMsger = CoffMsger.getInstance();
-        if (dropBunker == 0xAA) {
+        if (ContainerID == 0) {
             Result result = coffMsger.Debug(DebugAction.CRUSH_BEAN, 0, 50);
             if (result.getCode() == Result.SUCCESS) {
                 testDropMaterialCallBackListener.TestSuccess();
             } else {
                 testDropMaterialCallBackListener.TestFailed(result.getCode());
             }
-        } else if (dropBunker == 0x00) {
-          //  Result result = coffMsger.Debug(DebugAction.OUT_HOTWATER, dropBunker, 50);
-          /*  if (result.getCode() == Result.SUCCESS) {
+        } else if (ContainerID == 7) {
+            Result result = coffMsger.Debug(DebugAction.OUT_HOTWATER, 0, 50);
+            if (result.getCode() == Result.SUCCESS) {
                 testDropMaterialCallBackListener.TestSuccess();
             } else {
                 testDropMaterialCallBackListener.TestFailed(result.getCode());
-            }*/
+            }
         } else {
-            Result result = coffMsger.Debug(DebugAction.OUT_INGREDIENT, dropBunker, 50);
+            Result result = coffMsger.Debug(DebugAction.OUT_INGREDIENT, ContainerID, 50);
             if (result.getCode() == Result.SUCCESS) {
                 testDropMaterialCallBackListener.TestSuccess();
             } else {

@@ -4,11 +4,14 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -21,20 +24,23 @@ import example.jni.com.coffeeseller.bean.bunkerData;
 import example.jni.com.coffeeseller.contentprovider.MaterialSql;
 import example.jni.com.coffeeseller.presenter.AddMaterialPresenter;
 import example.jni.com.coffeeseller.presenter.BindMaterialPresenter;
+import example.jni.com.coffeeseller.presenter.DropMaterialPresenter;
 import example.jni.com.coffeeseller.views.viewinterface.IAddMaterialView;
 import example.jni.com.coffeeseller.views.viewinterface.IBindMaterialView;
+import example.jni.com.coffeeseller.views.viewinterface.IDebugDropMaterialView;
 
 /**
  * Created by Administrator on 2018/4/16.
  */
 
-public class MaterialRecycleListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> implements IAddMaterialView, IBindMaterialView {
+public class MaterialRecycleListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> implements IAddMaterialView, IBindMaterialView, IDebugDropMaterialView {
     private Activity mContext;
     private MaterialSql sql;
     private String bunkersID;
     private AddMaterialPresenter presenter;
     private BindMaterialPresenter bindMaterialPresenter;
     private List<bunkerData> list = new ArrayList<>();
+    private DropMaterialPresenter mDropMaterialPresenter;
 
     public MaterialRecycleListAdapter(Activity mContext) {
 
@@ -42,6 +48,7 @@ public class MaterialRecycleListAdapter extends RecyclerView.Adapter<RecyclerVie
         sql.setAdapter(this);
         this.mContext = mContext;
         presenter = new AddMaterialPresenter(this);
+        mDropMaterialPresenter = new DropMaterialPresenter(this);
         bindMaterialPresenter = new BindMaterialPresenter(this, this);
         if (list.size() != 0) {
             list.clear();
@@ -107,10 +114,10 @@ public class MaterialRecycleListAdapter extends RecyclerView.Adapter<RecyclerVie
                     bindMaterialPresenter.BindMaterial(mHolder.bindMaterial, list.get(position).getBunkerID(), list.get(position).getBunkerType());
                 }
             });
-            mHolder.textDrop.setOnClickListener(new View.OnClickListener() {
+            mHolder.textDrop.setOnClickListener(new View.OnClickListener() { // 点击进行落料
                 @Override
                 public void onClick(View v) {
-
+                    mDropMaterialPresenter.startDrop(Integer.parseInt(list.get(position).getContainerID()));
                 }
             });
         } else {
@@ -180,6 +187,40 @@ public class MaterialRecycleListAdapter extends RecyclerView.Adapter<RecyclerVie
     @Override
     public TextView getview() {
         return null;
+    }
+
+    @Override
+    public void ShowDropResult(String result, String ContainerID) {
+
+    }
+
+    @Override
+    public void ShowEditDialog(final String ContainerID) {
+        View view = LayoutInflater.from(mContext).inflate(R.layout.edit_drop_dialog_layout, null);
+        AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
+        builder.setView(view);
+        final AlertDialog alertDialog = builder.create();
+        final EditText materialDropSpeed = (EditText) view.findViewById(R.id.materialDropSpeed);
+        Button sure, cancel;
+        sure = (Button) view.findViewById(R.id.sure);
+        cancel = (Button) view.findViewById(R.id.cancel);
+        cancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                alertDialog.dismiss();
+            }
+        });
+        sure.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (materialDropSpeed.getText().toString().isEmpty()) {
+                    Toast.makeText(mContext, "请输入出料量", Toast.LENGTH_LONG).show();
+                    return;
+                }
+                String bunkersID = sql.getBunkerIDByContainerID(ContainerID);
+                sql.updateContact(bunkersID, "", "", "", "", "", "", materialDropSpeed.getText().toString(), "", "");//将校准值传入数据库
+            }
+        });
     }
 
 

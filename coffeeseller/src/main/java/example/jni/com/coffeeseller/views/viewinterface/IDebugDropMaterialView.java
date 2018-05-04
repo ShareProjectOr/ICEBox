@@ -7,12 +7,9 @@ import cof.ac.inter.ContainerType;
  */
 
 public interface IDebugDropMaterialView {
-    int getContainerID();
 
-    void ShowDropResult(String result);
+    void ShowDropResult(String result, String ContainerID);
 
-    int getTime();
-
-    void setButtonSate(boolean b);
+    void ShowEditDialog(String ContainerID);
 
 }

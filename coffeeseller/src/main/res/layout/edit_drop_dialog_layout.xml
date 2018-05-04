@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:orientation="vertical"
+    android:paddingLeft="50dp"
+    android:paddingTop="50dp">
+
+
+    <TextView
+        android:id="@+id/bunkersName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="落料仓:"
+        android:textColor="@color/black"
+        android:textSize="@dimen/text_size_one" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="50dp"
+        android:text="落料时间:5s"
+        android:textColor="@color/black"
+        android:textSize="@dimen/text_size_one" />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="50dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="输入最终出料量(mg):"
+            android:textColor="@color/black"
+            android:textSize="@dimen/text_size_one" />
+
+        <EditText
+            android:id="@+id/materialDropSpeed"
+            android:layout_width="200dp"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="50dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/cancel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/shape_botton"
+            android:text="取消"
+            android:textColor="@color/white"
+            android:textSize="@dimen/text_size_one" />
+
+        <Button
+            android:id="@+id/sure"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="200dp"
+            android:background="@drawable/shape_botton"
+            android:text="确定"
+            android:textColor="@color/white"
+            android:textSize="@dimen/text_size_one" />
+    </LinearLayout>
+</LinearLayout>

@@ -239,7 +239,10 @@ public class MachineCheckFragment extends BasicFragment implements ICheckMachine
                             Log.d("changeProgress", values + "");
                             mSub_Mqtt.setProgress(values[0]);
                             if (values[0] == 100) {
+                                if (isCheckSuccess) {
                                     homeActivity.replaceFragment(FragmentEnum.MachineCheckFragment, FragmentEnum.ChooseCupNumFragment);
+                                }
+
                             }
                             super.onProgressUpdate(values);
                         }
@@ -334,6 +337,7 @@ public class MachineCheckFragment extends BasicFragment implements ICheckMachine
         checkThread = null;
         doCountDown = true;
         hasTurned = false;
+        isCheckSuccess = false;
         tologin.setVisibility(View.VISIBLE);
         timeDownText.setVisibility(View.VISIBLE);
         Thread countThr = new Thread(new Runnable() {

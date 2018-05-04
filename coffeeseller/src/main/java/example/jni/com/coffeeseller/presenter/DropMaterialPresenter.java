@@ -18,21 +18,21 @@ public class DropMaterialPresenter {
         mITestDropMaterial = new TestDropMaterial();
     }
 
-    public void startDrop() {
-        mITestDropMaterial.StartDrop(iDebugDropMaterialView.getContainerID(), iDebugDropMaterialView.getTime(), new TestDropMaterialCallBackListener() {
+    public void startDrop(final int ContainerID) {
+        mITestDropMaterial.StartDrop(ContainerID, new TestDropMaterialCallBackListener() {
             @Override
             public void TestSuccess() {
-                iDebugDropMaterialView.ShowDropResult("落料成功");
+                iDebugDropMaterialView.ShowDropResult("落料成功", String.valueOf(ContainerID));
+                iDebugDropMaterialView.ShowEditDialog(ContainerID+"");
             }
 
             @Override
             public void TestFailed(int ResultCode) {
-                iDebugDropMaterialView.ShowDropResult("落料失败了啊老大  ResultCode is " + ResultCode + "快查查是什么原因!!!");
+                iDebugDropMaterialView.ShowDropResult("落料失败了啊老大  ResultCode is " + ResultCode + "快查查是什么原因!!!", "");
             }
 
             @Override
             public void TestEnd() {
-                iDebugDropMaterialView.setButtonSate(true);
             }
         });
     }
