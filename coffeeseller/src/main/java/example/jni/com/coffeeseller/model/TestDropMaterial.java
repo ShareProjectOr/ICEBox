@@ -79,7 +79,6 @@ public class TestDropMaterial implements ITestDropMaterial {
                         testDropMaterialCallBackListener.TestFailed(result.getCode());
                     }
                 }
-                alertDialog.dismiss();
                 testDropMaterialCallBackListener.TestEnd();
             }
         });
