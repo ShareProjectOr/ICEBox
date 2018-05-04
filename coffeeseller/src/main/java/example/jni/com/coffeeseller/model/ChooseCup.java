@@ -61,6 +61,9 @@ import static android.R.attr.track;
 public class ChooseCup implements View.OnClickListener, MsgTransListener {
     private static String TAG = "ChooseCup";
     private static int VIEW_SHOW_TIME = 2 * 60 * 1000;
+    private static int NO_PAY = 0;
+    private static int PAYING = 1;
+    private static int PAYED = 2;
     private Context mContext;
     private View mView;
     private ViewHolder mViewHolder;
@@ -73,6 +76,7 @@ public class ChooseCup implements View.OnClickListener, MsgTransListener {
     private Handler mHandler;
     private TradeMsgRequest tradeMsgRequest;
     private Bitmap qrBitmap;
+    private int curPayState = NO_PAY;
 
 
     public ChooseCup(Context context, Coffee coffee, ChooseCupListenner listenner, Handler handler) {
@@ -250,7 +254,6 @@ public class ChooseCup implements View.OnClickListener, MsgTransListener {
         Bitmap bitmap = mQrMaker.createBitmap(parseRqMsg.getQrCode(), 350, 350);
         setQR_Code(bitmap);
 
-//        beginTaskCheckPay();
         tradeMsgRequest.beginTaskCheckPay(mMsgTransListener, mDealRecorder);
         MyLog.W(TAG, "dealOrder = " + mDealRecorder.getOrder());
     }
@@ -261,6 +264,54 @@ public class ChooseCup implements View.OnClickListener, MsgTransListener {
     private void getPayMsg(PayResult msg) {
         MyLog.d(TAG, "msg= " + msg);
 
+        if (curPayState == NO_PAY) {
+            if (msg.getPayResult() == PAYING) {
+                curPayState = PAYING;
+            }
+            if (msg.getPayResult() == PAYED) {
+                curPayState = PAYED;
+            }
+
+            MyLog.W(TAG, "check pay result is not pay ");
+        }
+        if (curPayState == PAYING) {
+
+            if (mHandler != null) {
+                mHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+
+                        mViewHolder.mPaying.setVisibility(View.VISIBLE);
+                        mViewHolder.mQrCodeImage.setVisibility(View.GONE);
+
+                        if (mChooseCupListener != null) {
+
+                            mChooseCupListener.paying();
+                        }
+                    }
+                });
+            }
+            MyLog.W(TAG, "check pay result is paying ");
+
+            if (msg.getPayResult() == PAYED) {
+                curPayState = PAYED;
+            }
+        }
+        if (curPayState == PAYED) {
+            MyLog.W(TAG, " check pay result has payed");
+
+            mDealRecorder.setPayed(true);
+            mDealRecorder.setPayTime(msg.getPayTime());
+            if (mChooseCupListener != null) {
+
+                tradeMsgRequest.stopTaskCheckPay();
+                stopCountDownTimer();
+                getFinalContainerConfig();
+                mChooseCupListener.hasPay(mCoffeeFomat, mDealRecorder);
+            }
+
+        }
+/*
         if (msg.getPayResult() == 2) {
 
             MyLog.W(TAG, " check pay result has payed");
@@ -278,11 +329,13 @@ public class ChooseCup implements View.OnClickListener, MsgTransListener {
 
         } else if (msg.getPayResult() == 1) {
             mDealRecorder.setPayed(false);
+            mViewHolder.mPaying.setVisibility(View.VISIBLE);
+
             MyLog.W(TAG, "check pay result is paying ");
         } else if (msg.getPayResult() == 0) {
             mDealRecorder.setPayed(false);
             MyLog.W(TAG, "check pay result is not pay ");
-        }
+        }*/
     }
 
     private void updateTextColor(LinearLayout tasteLayout, View checkedView, Step step, int index) {
@@ -455,6 +508,7 @@ public class ChooseCup implements View.OnClickListener, MsgTransListener {
         private LinearLayout mQrLayout;
         public LinearLayout mFailedLayout;
         public TextView mRequestQRTxt;
+        public TextView mPaying;
 
 
         public ViewHolder(View view) {
@@ -473,6 +527,7 @@ public class ChooseCup implements View.OnClickListener, MsgTransListener {
             mClose = (ImageView) view.findViewById(R.id.close);
             mCountDownTime = (TextView) view.findViewById(R.id.countDownTime);
             mErrTip = (TextView) view.findViewById(R.id.errTip);
+            mPaying = (TextView) view.findViewById(R.id.paying);
             mContentLayout = (LinearLayout) view.findViewById(R.id.contentLayout);
             mQrLayout = (LinearLayout) view.findViewById(R.id.qr_layout);
             mFailedLayout = (LinearLayout) view.findViewById(R.id.failed_layout);
@@ -498,7 +553,7 @@ public class ChooseCup implements View.OnClickListener, MsgTransListener {
 
             LinearLayout layout = setTast(tasteLayout, tastes, step, index);
 
-            setEnable(layout, step);
+            setEnable(layout, step, index);
 
             mTastLayout.addView(tasteView);
 
@@ -507,7 +562,7 @@ public class ChooseCup implements View.OnClickListener, MsgTransListener {
         /*
           * 根据数据库剩余量计算RadioButton是否可用
           * */
-        private void setEnable(LinearLayout tasteLayout, Step step) {
+        private void setEnable(LinearLayout tasteLayout, Step step, int index) {
 
             List<Taste> tastes = step.getTastes();
             Material material = step.getMaterial();
@@ -515,30 +570,47 @@ public class ChooseCup implements View.OnClickListener, MsgTransListener {
                 return;
             }
 
+
             MaterialSql table = new MaterialSql(mContext);
-            Cursor cursor = table.getDataCursor(table.MATERIALS_COLUMN_MATERIALID, material.getMaterialID());
-            cursor.moveToFirst();
-            String stock = cursor.getString(cursor.getColumnIndex(table.MATERIALS_COLUMN_MATERIALSTOCK));
-            if (TextUtils.isEmpty(stock)) {
+            String sqlRestMaterial = table.getStorkByMaterialID(step.getMaterial().getMaterialID() + "");
+
+            MyLog.d(TAG, "sqlRestMaterial =" + sqlRestMaterial);
+
+
+            if (TextUtils.isEmpty(sqlRestMaterial)) {
                 return;
             }
+            int sqlRestMaterialInt = Integer.parseInt(sqlRestMaterial);
 
-            int stockInt = Integer.parseInt(stock);
-
+            TextView nomalView = null;
             for (int i = 0; i < tasteLayout.getChildCount(); i++) {
 
                 Taste taste = tastes.get(i);
                 if (taste == null) {
                     continue;
                 }
-                int useMaterial = (int) (((float) taste.getAmount() / 100) * step.getContainerConfig().getMaterial_time());
+
+                int useMaterial = (int) (((float) taste.getAmount() / 100) * step.getContainerConfig().getMaterial_time() * step.getAmount());
+
+                MyLog.d(TAG, "useMaterial =" + useMaterial);
                 LinearLayout layout = (LinearLayout) tasteLayout.getChildAt(i);
                 TextView textView = (TextView) layout.getChildAt(0);
-                if (stockInt < useMaterial) {
+                if (sqlRestMaterialInt < useMaterial) {
                     textView.setEnabled(false);
                     textView.setAlpha(0.7f);
                     textView.setClickable(false);
+                    textView.setSelected(false);
+                } else {
+                    if (taste.getAmount() == 100) {
+                        nomalView = textView;
+                    }
+                    updateTextColor(tasteLayout, textView, step, index);
                 }
+
+            }
+            //默认选中正常口味
+            if (nomalView != null) {
+                updateTextColor(tasteLayout, nomalView, step, index);
             }
         }
     }

@@ -15,6 +15,7 @@ import cof.ac.inter.ContainerConfig;
 import cof.ac.inter.MachineState;
 import cof.ac.inter.Result;
 import cof.ac.inter.StateEnum;
+import cof.ac.util.DataSwitcher;
 import example.jni.com.coffeeseller.MachineConfig.CoffeeMakeState;
 import example.jni.com.coffeeseller.MachineConfig.DealRecorder;
 import example.jni.com.coffeeseller.R;
@@ -212,7 +213,7 @@ public class MkCoffee {
                                     mkCoffeeListenner.getMkResult(dealRecorder, false, isCalculateMaterial);
                                 }
 
-                            }else {
+                            } else {
 
                                 MyLog.W(TAG, " make failed and time is too long,down cup state is remaining ");
 
@@ -251,8 +252,9 @@ public class MkCoffee {
                             coffeeMakeStateRecorder.state = CoffeeMakeState.COFFEEMAKING_FAILED;
                             //     isCalculateMaterial = false;
 
+
                             buffer.append("/n");
-                            buffer.append("制作过程中接收到0a");
+                            buffer.append("制作过程中接收到0a : " + machineState.getMajorState().getHighErr_byte());
                         }
                     } else {
 

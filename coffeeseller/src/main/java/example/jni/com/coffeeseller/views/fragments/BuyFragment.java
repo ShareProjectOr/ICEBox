@@ -17,8 +17,11 @@ import android.widget.TextView;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.sql.Time;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import cof.ac.inter.StateEnum;
 import example.jni.com.coffeeseller.R;
@@ -45,7 +48,7 @@ import example.jni.com.coffeeseller.views.customviews.BuyDialog;
  * Created by WH on 2018/3/30.
  */
 
-public class BuyFragment extends BasicFragment implements GridViewItemListener, View.OnClickListener{
+public class BuyFragment extends BasicFragment implements GridViewItemListener, View.OnClickListener, MessageReceviedListener {
     private static String TAG = "BuyFragment";
     private View content;
     private HomeActivity homeActivity;
@@ -121,6 +124,8 @@ public class BuyFragment extends BasicFragment implements GridViewItemListener, 
         mViewPager.setAdapter(mPagerAdapter);
         mMachineCode.setText(MachineConfig.getMachineCode() + "");
 
+        updateOnLine();
+
     }
 
     public void addPoint(View pointView, final int index) {
@@ -157,26 +162,34 @@ public class BuyFragment extends BasicFragment implements GridViewItemListener, 
         }
     }
 
+    /*
+    * 更新在线情况
+    * */
     private void updateOnLine() {
 
-
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                handler.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (MachineConfig.getNetworkType() == 0) {
-                            mIsOnLineImg.setImageResource(R.mipmap.on_line);
-                        } else {
-                            mIsOnLineImg.setImageResource(R.mipmap.on_line);
+        Timer timer = null;
+        TimerTask timerTask = null;
+        if (timer == null) {
+            timer = new Timer();
+        }
+        if (timerTask == null) {
+            timerTask = new TimerTask() {
+                @Override
+                public void run() {
+                    handler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            if (MachineConfig.getNetworkType() == 0) {
+                                mIsOnLineImg.setImageResource(R.mipmap.on_line);
+                            } else {
+                                mIsOnLineImg.setImageResource(R.mipmap.ic_launcher_round);
+                            }
                         }
-                    }
-                });
-
-                Waiter.doWait(5000);
-            }
-        }).start();
+                    });
+                }
+            };
+        }
+        timer.schedule(timerTask, 0, 10 * 1000);
     }
 
     @Override
@@ -190,6 +203,23 @@ public class BuyFragment extends BasicFragment implements GridViewItemListener, 
         }
         buyDialog.setInitData(this, coffee);
         buyDialog.showDialog();
+
+    }
+
+    @Override
+    public void getMsgType(String msgType) {
+        int formulaID = Integer.parseInt(msgType);
+
+
+    }
+
+    @Override
+    public void stopSomeOneCoffeeSell(int formulaID) {
+
+    }
+
+    @Override
+    public void notifyDataSetChange() {
 
     }
 

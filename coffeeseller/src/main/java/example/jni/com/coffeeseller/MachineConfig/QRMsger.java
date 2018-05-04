@@ -143,12 +143,13 @@ public class QRMsger {
             Map<String, Object> params = ConstanceMethod.getParams();
             params.put("tradeCode", dealRecorder.getOrder());
             params.put("makeState", (dealRecorder.isMakeSuccess() ? 1 : 0));
-            if (TextUtils.isEmpty(bunkers)){
-                String[] nullArray=new String[1];
+            if (TextUtils.isEmpty(bunkers)) {
+                String[] nullArray = new String[1];
                 params.put("bunkers", nullArray);
-            }else{
-                JSONArray bunkersArray=new JSONArray(bunkers);
-                params.put("bunkers", bunkersArray);
+            } else {
+                //  JSONArray bunkersArray=new JSONArray(bunkers);
+                com.alibaba.fastjson.JSONArray bunkersArr = com.alibaba.fastjson.JSONArray.parseArray(bunkers);
+                params.put("bunkers", bunkersArr);
             }
 
 
@@ -160,8 +161,8 @@ public class QRMsger {
         } catch (IOException e) {
 
             e.printStackTrace();
-        } catch (JSONException e) {
-            e.printStackTrace();
+       /* } catch (JSONException e) {
+            e.printStackTrace();*/
         }
 
         MyLog.W(TAG, "reportTradeToServer data : " + RESPONSE_TEXT);

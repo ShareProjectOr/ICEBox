@@ -7,6 +7,7 @@ import cof.ac.inter.CoffMsger;
 import cof.ac.inter.MachineState;
 import cof.ac.inter.MajorState;
 import cof.ac.inter.StateEnum;
+import cof.ac.util.DataSwitcher;
 import example.jni.com.coffeeseller.contentprovider.SharedPreferencesManager;
 import example.jni.com.coffeeseller.utils.MyLog;
 import example.jni.com.coffeeseller.views.activities.HomeActivity;
@@ -85,7 +86,7 @@ public class CheckCurMachineState {
                         break;
 
                     case HAS_ERR:
-                        mBuffer.append("机器有故障: \n" + machineState.getMajorState().getHighErrCode());
+                        mBuffer.append("机器有故障: \n" + machineState.getMajorState().getHighErr_byte());
 
                         break;
 

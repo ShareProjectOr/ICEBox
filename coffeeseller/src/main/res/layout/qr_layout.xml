@@ -41,6 +41,15 @@
                 android:gravity="center" />
 
             <TextView
+                android:id="@+id/paying"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:text="正在支付中"
+                android:textColor="@color/coffeeColor"
+                android:visibility="gone" />
+
+            <TextView
                 android:id="@+id/requestQRTxt"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"

@@ -63,7 +63,7 @@ public class TradeMsgRequest {
                 }
             };
 
-            mTimer.schedule(mCheckPayTask, 20000, 9000);//交易之后20秒进行查询交易状态,每隔5秒查询一次
+            mTimer.schedule(mCheckPayTask, 1000, 5000);//交易之后20秒进行查询交易状态,每隔5秒查询一次
         }
 
     }

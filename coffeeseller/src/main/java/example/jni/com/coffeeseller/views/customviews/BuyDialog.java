@@ -41,6 +41,7 @@ import example.jni.com.coffeeseller.model.listeners.ChooseCupListenner;
 import example.jni.com.coffeeseller.model.listeners.MkCoffeeListenner;
 import example.jni.com.coffeeseller.utils.MyLog;
 import example.jni.com.coffeeseller.utils.ScreenUtil;
+import example.jni.com.coffeeseller.utils.TextUtil;
 import example.jni.com.coffeeseller.views.fragments.BuyFragment;
 
 /**
@@ -151,7 +152,7 @@ public class BuyDialog extends Dialog implements ChooseCupListenner, MkCoffeeLis
 
         for (int i = 0; i < coffee.getStepList().size(); i++) {
             Step step = coffee.getStepList().get(i);
-            if (step != null && step.getContainerConfig().getWater_capacity() == 0)
+            if (step != null )//&& step.getContainerConfig().getWater_capacity() == 0
 
                 if (step.getMaterial() != null) {
                     Log.e(TAG, "materialID is " + step.getMaterial().getMaterialID());
@@ -222,16 +223,26 @@ public class BuyDialog extends Dialog implements ChooseCupListenner, MkCoffeeLis
     public void cancle(final String order) {
         //通知服务器取消订单
 
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                cancleOrder(order);
-            }
-        }).start();
+        if (TextUtils.isEmpty(order)){
+
+        }else{
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    cancleOrder(order);
+                }
+            }).start();
+        }
+
 
         MyLog.d(TAG, "choosecup is cancle");
 
         disDialog();
+    }
+
+    @Override
+    public void paying() {
+
     }
 
     @Override

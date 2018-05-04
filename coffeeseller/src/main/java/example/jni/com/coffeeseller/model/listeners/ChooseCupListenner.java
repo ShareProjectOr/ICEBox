@@ -11,5 +11,7 @@ import example.jni.com.coffeeseller.bean.CoffeeFomat;
 public interface ChooseCupListenner {
     void cancle(String order);
 
-    void hasPay(CoffeeFomat coffeeFomat,DealRecorder dealRecorder);
+    void paying();
+
+    void hasPay(CoffeeFomat coffeeFomat, DealRecorder dealRecorder);
 }

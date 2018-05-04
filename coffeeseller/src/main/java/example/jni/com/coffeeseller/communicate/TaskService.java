@@ -558,8 +558,11 @@ public class TaskService extends Service implements MqttCallback {
             if (dealRecorder.isReportSuccess()) {
                 continue;
             } else {
-                qrMsger.reportTradeToServer(dealRecorder, dealRecorder.getBunkers());
+                DealRecorder newDealRecorder = qrMsger.reportTradeToServer(dealRecorder, dealRecorder.getBunkers());
                 MyLog.d(TAG, "order= " + dealRecorder.getOrder() + ", report to server into taskservice");
+
+                //更新本地交易记录
+                DealOrderInfoManager.getInstance(mInstance).update(newDealRecorder);
             }
         }
 
