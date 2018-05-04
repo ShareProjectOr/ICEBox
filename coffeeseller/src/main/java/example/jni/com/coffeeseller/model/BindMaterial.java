@@ -113,7 +113,7 @@ public class BindMaterial implements IBindMaterial {
                             switch (position) {
                                 case 0:
                                     Boolean update = sql.updateContact(bunkerID, "", "null", "null", "null",
-                                            "null", "0", "null","null", "", SecondToDate.getDateToString(System.currentTimeMillis()));
+                                            "null", "0", "null", "null", "", SecondToDate.getDateToString(System.currentTimeMillis()));
                                     if (update) {
                                         onBindMaterialCallBackListener.BindSuccess(list);
                                     } else {
@@ -122,8 +122,8 @@ public class BindMaterial implements IBindMaterial {
                                     break;
                                 default:
                                     position -= 1;
-                                    Boolean update1 = sql.updateContact(bunkerID, "", list.get(position).getMaterialID() + "", list.get(position).getType() + "", materialNameList.get(position+1),
-                                            list.get(position).getUnit(), "0", list.get(position).getOutput() + "","null", "", SecondToDate.getDateToString(System.currentTimeMillis()));
+                                    Boolean update1 = sql.updateContact(bunkerID, "", list.get(position).getMaterialID() + "", list.get(position).getType() + "", materialNameList.get(position + 1),
+                                            list.get(position).getUnit(), "0", "null", list.get(position).getOutput() + "", "", SecondToDate.getDateToString(System.currentTimeMillis()));
                                     if (update1) {
                                         onBindMaterialCallBackListener.BindSuccess(list);
                                     } else {

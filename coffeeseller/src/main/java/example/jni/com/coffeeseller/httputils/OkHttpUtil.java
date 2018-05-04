@@ -140,9 +140,7 @@ public class OkHttpUtil {
 //        OkHttpClient okHttpClient = new OkHttpClient();
 //        okHttpClient.setConnectTimeout(20, TimeUnit.SECONDS);
         RequestBody requestBody = RequestBody.create(JSON, json);
-        if (MachineConfig.getHostUrl().isEmpty()) {
-            return "无服务器地址,请求失败";
-        }
+
         Request request = new Request.Builder().url(url).addHeader("content-type", "application/json;charset:utf-8").post(requestBody).build();
         Call call = mOkHttpClient.newCall(request);
         Response response = mOkHttpClient.newCall(request).execute();//mOkHttpClient
