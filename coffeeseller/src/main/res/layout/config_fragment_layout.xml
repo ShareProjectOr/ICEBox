@@ -308,6 +308,16 @@
                         android:textSize="@dimen/text_size_one" />
 
                     <TextView
+
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginRight="40dp"
+                        android:text="原料校准"
+                        android:textColor="@color/blue"
+                        android:textSize="@dimen/text_size_one"
+                        android:visibility="invisible" />
+
+                    <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginRight="40dp"

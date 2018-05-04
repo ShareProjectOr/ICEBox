@@ -25,7 +25,7 @@ public class DropMaterialPresenter {
             @Override
             public void TestSuccess() {
                 iDebugDropMaterialView.ShowDropResult("落料成功", String.valueOf(ContainerID));
-                iDebugDropMaterialView.ShowEditDialog(ContainerID + "");
+         //       iDebugDropMaterialView.ShowEditDialog(ContainerID + "");
             }
 
             @Override

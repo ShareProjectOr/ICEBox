@@ -56,7 +56,17 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@drawable/shape_botton"
-            android:text="取消"
+            android:text="取消落料"
+            android:textColor="@color/white"
+            android:textSize="@dimen/text_size_one" />
+
+        <Button
+            android:id="@+id/save"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="40dp"
+            android:background="@drawable/shape_botton"
+            android:text="保存校准值"
             android:textColor="@color/white"
             android:textSize="@dimen/text_size_one" />
 
@@ -64,9 +74,9 @@
             android:id="@+id/sure"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="200dp"
+            android:layout_marginLeft="40dp"
             android:background="@drawable/shape_botton"
-            android:text="确定"
+            android:text="开始出料"
             android:textColor="@color/white"
             android:textSize="@dimen/text_size_one" />
     </LinearLayout>

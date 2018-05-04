@@ -4,11 +4,18 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.os.CountDownTimer;
 import android.support.v7.app.AlertDialog;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.Toast;
 
 import cof.ac.inter.CoffMsger;
 import cof.ac.inter.ContainerType;
 import cof.ac.inter.DebugAction;
 import cof.ac.inter.Result;
+import example.jni.com.coffeeseller.R;
+import example.jni.com.coffeeseller.contentprovider.MaterialSql;
 import example.jni.com.coffeeseller.model.listeners.ITestDropMaterial;
 import example.jni.com.coffeeseller.model.listeners.TestDropMaterialCallBackListener;
 import example.jni.com.coffeeseller.utils.Waiter;
@@ -20,10 +27,26 @@ import example.jni.com.coffeeseller.utils.Waiter;
 public class TestDropMaterial implements ITestDropMaterial {
 
     @Override
-    public void StartDrop(Context mContext, final int ContainerID, final TestDropMaterialCallBackListener testDropMaterialCallBackListener) {
-        new AlertDialog.Builder(mContext).setTitle(null).setMessage("确定开始落料测试吗?").setPositiveButton("确定", new DialogInterface.OnClickListener() {
+    public void StartDrop(final Context mContext, final int ContainerID, final TestDropMaterialCallBackListener testDropMaterialCallBackListener) {
+        View view = LayoutInflater.from(mContext).inflate(R.layout.edit_drop_dialog_layout, null);
+        AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
+        builder.setView(view);
+        builder.setTitle("确定开始落料测试吗?落料时间将持续5秒.");
+        final AlertDialog alertDialog = builder.create();
+        final EditText materialDropSpeed = (EditText) view.findViewById(R.id.materialDropSpeed);
+        Button sure, cancel, save;
+        sure = (Button) view.findViewById(R.id.sure);
+        save = (Button) view.findViewById(R.id.save);
+        cancel = (Button) view.findViewById(R.id.cancel);
+        cancel.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(DialogInterface dialog, int which) {
+            public void onClick(View v) {
+                alertDialog.dismiss();
+            }
+        });
+        sure.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
                 CoffMsger coffMsger = CoffMsger.getInstance();
                 if (ContainerID == 0) {
                     Result result = coffMsger.Debug(DebugAction.CRUSH_BEAN, 0, 50);
@@ -47,11 +70,25 @@ public class TestDropMaterial implements ITestDropMaterial {
                         testDropMaterialCallBackListener.TestFailed(result.getCode());
                     }
                 }
-                dialog.dismiss();
-                Waiter.doWait(40);
+                alertDialog.dismiss();
                 testDropMaterialCallBackListener.TestEnd();
             }
-        }).setNegativeButton("点错了", null).create().show();
+        });
+        save.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (materialDropSpeed.getText().toString().isEmpty()) {
+                    Toast.makeText(mContext, "请输入出料量", Toast.LENGTH_LONG).show();
+                    return;
+                }
+                alertDialog.dismiss();
+                MaterialSql sql = new MaterialSql(mContext);
+                String bunkersID = sql.getBunkerIDByContainerID(ContainerID + "");
+                sql.updateContact(bunkersID, "", "", "", "", "", "", materialDropSpeed.getText().toString(), "", "", "");//将校准值传入数据库
+            }
+        });
+        alertDialog.show();
+
 
     }
 }
