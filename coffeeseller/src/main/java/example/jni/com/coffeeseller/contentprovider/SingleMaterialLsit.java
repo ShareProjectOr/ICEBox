@@ -39,18 +39,7 @@ public class SingleMaterialLsit {
 
     public SingleMaterialLsit(Context context) {
         mContext = context;
-
         coffeeList = new ArrayList<>();
-       /* String arrayString = SharedPreferencesManager.getInstance(context).getCoffeeListArray();
-        Log.d(TAG, arrayString);
-        if (SharedPreferencesManager.getInstance(context).getCoffeeListArray().isEmpty()) {
-            coffeeList = new ArrayList<>();
-        } else {
-            Log.d(TAG, SharedPreferencesManager.getInstance(mContext).getCoffeeListArray());
-            JSONArray array = JSON.parseArray(SharedPreferencesManager.getInstance(mContext).getCoffeeListArray());
-            coffeeList = array.toJavaList(Coffee.class);
-
-        }*/
         setyoubaoList();
     }
 
@@ -77,27 +66,48 @@ public class SingleMaterialLsit {
                     sql = new MaterialSql(mContext);
                     Log.e(TAG, "数据库长度" + sql.getAllbunkersIDs().size());
                     Log.e(TAG, "currentStep need materialID is " + materialID);
-                    Log.e(TAG, "location all materialID is " + sql.getAllmaterialID().toString());
-                    if (!sql.getAllmaterialID().contains(materialID)) { //本地料仓里面不含有这个原料
-                        Log.e(TAG, "location have not this material");
-                        coffee.setOver(true);
-                        break;
+                    org.json.JSONArray taste = stepObject.getJSONArray("taste");
+                    if (taste.length() != 0) { //有口味的配方
+                        int amount = 300;
+                        for (int k = 0; k < taste.length(); k++) { //遍历取出最小百分比
+                            org.json.JSONObject tasteObject = (org.json.JSONObject) taste.opt(k);
+                            if (amount > tasteObject.getInt("amount")) {
+                                amount = tasteObject.getInt("amount");
+                            }
+                        }
+                        String materialStock = sql.getStorkByMaterialID(materialID);// 找到对应原料编号的剩余量
+                        long intMaterialStock = Long.parseLong(materialStock);//转化为long型
+                        long reallyAmount = stepObject.getInt("amount");
+                        long lessetAmount = reallyAmount * amount / 100;  //得出最少口味需要的原料
+                        if (intMaterialStock < lessetAmount) {
+                            coffee.setOver(true);
+                            break;
+                        }
+                    } else {   //无口味的配方
+                        Log.e(TAG, "location all materialID is " + sql.getAllmaterialID().toString());
+                        if (!sql.getAllmaterialID().contains(materialID)) { //本地料仓里面不含有这个原料
+                            Log.e(TAG, "location have not this material");
+                            coffee.setOver(true);
+                            break;
+                        }
+                        String materialStock = sql.getStorkByMaterialID(materialID);// 找到对应原料编号的剩余量
+
+                        if (materialStock.equals("0")) { // 有原料但剩余量为0 则为售罄
+                            Log.e(TAG, "location materialStock is 0  ");
+                            coffee.setOver(true);
+                            break;
+                        }
+                        long intMaterialStock = Long.parseLong(materialStock);
+                        Log.e(TAG, "location MaterialStock is" + intMaterialStock);
+                        int needAccount = stepObject.getInt("amount");
+                        Log.e(TAG, "need MaterialStock is" + needAccount);
+                        if (needAccount > intMaterialStock) { //需要量 大于剩余量时
+                            coffee.setOver(true);
+                            Log.e(TAG, "location materialStock is not enough");
+                            break;
+                        }
                     }
-                    String materialStock = sql.getStorkByMaterialID(materialID);// 找到对应原料编号的剩余量
-                    if (materialStock.equals("0")) { // 有原料但剩余量为0 则为售罄
-                        Log.e(TAG, "location materialStock is 0  ");
-                        coffee.setOver(true);
-                        break;
-                    }
-                    long intMaterialStock = Long.parseLong(materialStock);
-                    Log.e(TAG, "location MaterialStock is" + intMaterialStock);
-                    int needAccount = stepObject.getInt("amount");
-                    Log.e(TAG, "need MaterialStock is" + needAccount);
-                    if (needAccount > intMaterialStock) { //需要量 大于剩余量时
-                        coffee.setOver(true);
-                        Log.e(TAG, "location materialStock is not enough");
-                        break;
-                    }
+
                 }
 
 
@@ -140,8 +150,9 @@ public class SingleMaterialLsit {
                     }
                     containerConfig.setWater_interval(stepObject.getInt("timeOut"));
                     //   int Water_capacity = stepObject.getInt("water");
-                    containerConfig.setWater_capacity(stepObject.getInt("water")*10);
+                    containerConfig.setWater_capacity(stepObject.getInt("water") * 10);//将ml转化为0.1ml
                     int amount = stepObject.getInt("amount");
+                    step.setAmount(amount);
                     Log.e(TAG, "出料总量=" + amount);
                     String MaterialID = stepObject.getJSONObject("material").getString("materialID");
                     Log.e(TAG, "MaterialID is " + MaterialID);
@@ -440,13 +451,13 @@ public class SingleMaterialLsit {
     }
 
 
-    public List<Coffee> RemoveCoffeeList(int formulaID) {
+    public List<Coffee> setCoffeeSellOut(int formulaID) {
         if (coffeeList.size() == 0) {
             return null;
         }
         for (int i = 0; i < coffeeList.size(); i++) {
-            if (formulaID == coffeeList.get(i).getFormulaID()) {//遍历找到对应需要删除的项
-                coffeeList.remove(i);
+            if (formulaID == coffeeList.get(i).getFormulaID()) {//遍历找到对应需要禁用的项
+                coffeeList.get(i).setOver(true);
             }
         }
         return coffeeList;

@@ -39,10 +39,12 @@ import cof.ac.inter.CoffMsger;
 import cof.ac.inter.MachineState;
 import cof.ac.inter.Result;
 import cof.ac.inter.StateEnum;
+import cof.ac.util.DataSwitcher;
 import example.jni.com.coffeeseller.MachineConfig.DealRecorder;
 import example.jni.com.coffeeseller.MachineConfig.MachineInitState;
 import example.jni.com.coffeeseller.MachineConfig.QRMsger;
 import example.jni.com.coffeeseller.bean.MachineConfig;
+import example.jni.com.coffeeseller.contentprovider.SingleMaterialLsit;
 import example.jni.com.coffeeseller.databases.DealOrderInfoManager;
 import example.jni.com.coffeeseller.factory.FragmentFactory;
 import example.jni.com.coffeeseller.httputils.JsonUtil;
@@ -105,19 +107,21 @@ public class TaskService extends Service implements MqttCallback {
                             case "updateFormula":
                                 if (MachineConfig.getCurrentState() == StateEnum.IDLE) {//空闲状态更新配方
                                     JSONObject d = msgObject.getJSONObject("d");
+                                    JSONObject formulaObject = d.getJSONObject("formula");
                                     if (d.getString("updateType").equals("remove")) {
-                                        JSONObject formulaObject = d.getJSONObject("formula");
+
 
                                     } else if (d.getString("updateType").equals("update")) {
 
                                     } else if (d.getString("updateType").equals("add")) {
 
                                     }
+                                    messageReceviedListener.getMsgType(formulaObject.getString("formulaID"));
                                 }
-                                messageReceviedListener.getMsgType(msgObject.toString());
+
                                 break;
                             case "machineOrder":
-                                messageReceviedListener.getMsgType(msgObject.toString());
+                                messageReceviedListener.getMsgType("machineOrder");
                                 break;
                             case "relayType":
                                 Log.e(TAG, "收到回执 uuid is " + msgObject.getString("msgId"));
@@ -136,16 +140,28 @@ public class TaskService extends Service implements MqttCallback {
     private void checkSubSuccess() {
         if (!isConnected()) {
             Log.e(TAG, "获取了 topic 但是订阅失败");
-            mOnMachineCheckCallBackListener.MQTTSubcribeFailed();
+            if (mOnMachineCheckCallBackListener != null) {
+                mOnMachineCheckCallBackListener.MQTTSubcribeFailed();
+            }
+
         } else {
             startTimer();
-            mOnMachineCheckCallBackListener.MQTTSubcribeSuccess();
-            MachineInitState.SUB_MQTT_STATE = MachineInitState.NORMAL;
+            if (mOnMachineCheckCallBackListener != null) {
+                mOnMachineCheckCallBackListener.MQTTSubcribeSuccess();
+                MachineInitState.SUB_MQTT_STATE = MachineInitState.NORMAL;
+            }
+
         }
         if (MachineInitState.CHECK_OPENMAINCTRL == MachineInitState.NORMAL && MachineInitState.CHECK_MACHINECODE == MachineInitState.NORMAL && MachineInitState.SUB_MQTT_STATE == MachineInitState.NORMAL && MachineInitState.GET_FORMULA == MachineInitState.NORMAL) {
-            mOnMachineCheckCallBackListener.MachineCheckEnd(true);
+            if (mOnMachineCheckCallBackListener != null) {
+                mOnMachineCheckCallBackListener.MachineCheckEnd(true);
+            }
+
         } else {
-            mOnMachineCheckCallBackListener.MachineCheckEnd(false);
+            if (mOnMachineCheckCallBackListener != null) {
+                mOnMachineCheckCallBackListener.MachineCheckEnd(false);
+            }
+
         }
     }
 
@@ -166,10 +182,10 @@ public class TaskService extends Service implements MqttCallback {
             this.mOnMachineCheckCallBackListener = mOnMachineCheckCallBackListener;
         }
         Log.d("连接中", ".......");
-        if (!isConnected()){
+        if (!isConnected()) {
             subcribeMqtt();
-        }else {
-             checkSubSuccess();
+        } else {
+            checkSubSuccess();
         }
 
     }
@@ -441,7 +457,15 @@ public class TaskService extends Service implements MqttCallback {
                 msg.put("cupDoorState", 0);
             }
             msg.put("driverVersion", state.getVersion());
-            msg.put("errCode", state.getMajorState().getState_byte() + "");
+            switch (state.getMajorState().getStateCode()) {
+                case 0:
+                    msg.put("errCode", "00");
+                    break;
+                case 0x0a:
+                    msg.put("errCode", "" + DataSwitcher.byte2Hex(state.getMajorState().getLowErr_byte()));
+                    break;
+            }
+
 
         } else {
 

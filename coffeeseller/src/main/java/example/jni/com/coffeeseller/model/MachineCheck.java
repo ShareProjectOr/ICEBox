@@ -142,8 +142,27 @@ public class MachineCheck implements IMachineCheck {
                                 }
                             }
 
-                        } else {
+                        } else if (array.length() == content.getAllcontainerID().size()) {
+                            for (int i = 0; i < list.size(); i++) {
+                                boolean isupdated = false;
+                                for (String ContainerID : content.getAllcontainerID()) {
+                                    if (ContainerID.equals(list.get(i).getContainerID())) {  //假如数据库里面已经存在了这个料仓 则只能改校准值
+                                        content.updateContact("", "", "", "", "", "", "", list.get(i).getMaterialDropSpeed(), "", "");
+                                        isupdated = true;
+                                        break;
+                                    }
+                                }
 
+                                if (!isupdated) {//假如数据库里面不存在了这个料仓 则插入到数据库中
+                                    Log.e(TAG, "开始执行更新数据库");
+                                    boolean b = content.insertContact(list.get(i).getBunkerID(), list.get(i).getBunkerType(), list.get(i).getMaterialID(), list.get(i).getMaterialType(), list.get(i).getMaterialName()
+                                            , list.get(i).getMaterialUnit(), list.get(i).getMaterialStock(), list.get(i).getMaterialDropSpeed(), list.get(i).getContainerID(), list.get(i).getLastLoadingTime());
+                                    if (b) {
+                                    } else {
+                                        Log.e(TAG, "更新数据库插入时失败");
+                                    }
+                                }
+                            }
                         }
                         SingleMaterialLsit.getInstance(mContext).setCoffeeArray(d.getJSONArray("list"));
                         mOnMachineCheckCallBackListener.MaterialGroupGetSuccess();
@@ -282,7 +301,7 @@ public class MachineCheck implements IMachineCheck {
             } else {
                 mOnMachineCheckCallBackListener.MachineCheckEnd(false);
             }*/
-             subMQTT();
+            subMQTT();
             Waiter.doWait(2000);
 
         }

@@ -12,6 +12,15 @@ public class Step {
     ContainerConfig containerConfig;
     List<Taste> Tastes;
     Material material;
+    int amount;
+
+    public int getAmount() {
+        return amount;
+    }
+
+    public void setAmount(int amount) {
+        this.amount = amount;
+    }
 
     public ContainerConfig getContainerConfig() {
         return containerConfig;
