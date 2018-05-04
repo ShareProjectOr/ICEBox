@@ -117,7 +117,7 @@ public class MaterialRecycleListAdapter extends RecyclerView.Adapter<RecyclerVie
             mHolder.textDrop.setOnClickListener(new View.OnClickListener() { // 点击进行落料
                 @Override
                 public void onClick(View v) {
-                    mDropMaterialPresenter.startDrop(Integer.parseInt(list.get(position).getContainerID()));
+                    mDropMaterialPresenter.startDrop(mContext, Integer.parseInt(list.get(position).getContainerID()));
                 }
             });
         } else {
@@ -221,6 +221,7 @@ public class MaterialRecycleListAdapter extends RecyclerView.Adapter<RecyclerVie
                 sql.updateContact(bunkersID, "", "", "", "", "", "", materialDropSpeed.getText().toString(), "", "", "");//将校准值传入数据库
             }
         });
+        alertDialog.show();
     }
 
 

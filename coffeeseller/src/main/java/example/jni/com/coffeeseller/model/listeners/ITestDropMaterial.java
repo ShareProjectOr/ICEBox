@@ -1,5 +1,7 @@
 package example.jni.com.coffeeseller.model.listeners;
 
+import android.content.Context;
+
 import cof.ac.inter.ContainerType;
 
 /**
@@ -7,5 +9,5 @@ import cof.ac.inter.ContainerType;
  */
 
 public interface ITestDropMaterial {
-    void StartDrop(int ContainerID,TestDropMaterialCallBackListener testDropMaterialCallBackListener);
+    void StartDrop(Context context, int ContainerID, TestDropMaterialCallBackListener testDropMaterialCallBackListener);
 }

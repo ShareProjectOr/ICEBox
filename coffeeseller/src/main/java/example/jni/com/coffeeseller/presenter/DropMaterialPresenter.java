@@ -1,5 +1,7 @@
 package example.jni.com.coffeeseller.presenter;
 
+import android.content.Context;
+
 import example.jni.com.coffeeseller.model.TestDropMaterial;
 import example.jni.com.coffeeseller.model.listeners.ITestDropMaterial;
 import example.jni.com.coffeeseller.model.listeners.TestDropMaterialCallBackListener;
@@ -18,12 +20,12 @@ public class DropMaterialPresenter {
         mITestDropMaterial = new TestDropMaterial();
     }
 
-    public void startDrop(final int ContainerID) {
-        mITestDropMaterial.StartDrop(ContainerID, new TestDropMaterialCallBackListener() {
+    public void startDrop(Context context, final int ContainerID) {
+        mITestDropMaterial.StartDrop(context, ContainerID, new TestDropMaterialCallBackListener() {
             @Override
             public void TestSuccess() {
                 iDebugDropMaterialView.ShowDropResult("落料成功", String.valueOf(ContainerID));
-                iDebugDropMaterialView.ShowEditDialog(ContainerID+"");
+                iDebugDropMaterialView.ShowEditDialog(ContainerID + "");
             }
 
             @Override
