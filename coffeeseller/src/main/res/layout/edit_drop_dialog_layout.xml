@@ -16,13 +16,33 @@
         android:textColor="@color/black"
         android:textSize="@dimen/text_size_one" />
 
-    <TextView
+    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="50dp"
-        android:text="落料时间:5s"
-        android:textColor="@color/black"
-        android:textSize="@dimen/text_size_one" />
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+
+            android:text="落料时间:5s"
+            android:textColor="@color/black"
+            android:textSize="@dimen/text_size_one" />
+
+        <Button
+            android:id="@+id/sure"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="40dp"
+            android:background="@drawable/shape_botton"
+            android:text="开始出料"
+            android:textColor="@color/white"
+            android:textSize="@dimen/text_size_one" />
+    </LinearLayout>
+
 
     <LinearLayout
         android:layout_width="wrap_content"
@@ -70,14 +90,5 @@
             android:textColor="@color/white"
             android:textSize="@dimen/text_size_one" />
 
-        <Button
-            android:id="@+id/sure"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="40dp"
-            android:background="@drawable/shape_botton"
-            android:text="开始出料"
-            android:textColor="@color/white"
-            android:textSize="@dimen/text_size_one" />
     </LinearLayout>
 </LinearLayout>
