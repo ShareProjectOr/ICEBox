@@ -154,6 +154,7 @@ public class MachineCheckFragment extends BasicFragment implements ICheckMachine
     public void endCheck() {
         synchronized (this) {
             isChecking = false;
+            isCheckSuccess = true;
             doCountDown = false;
             hasTurned = true;
         }

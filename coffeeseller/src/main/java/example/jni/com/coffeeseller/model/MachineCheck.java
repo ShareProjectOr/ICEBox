@@ -94,6 +94,7 @@ public class MachineCheck implements IMachineCheck {
                         data.setBunkerID(bunkerdata.getString("bunkerID"));
                         data.setBunkerType(bunkerdata.getString("bunkerType"));
                         data.setMaterialDropSpeed(bunkerdata.getString("output"));
+                        data.setDefultMaterialDropSpeed(bunkerdata.getString("materialOutput"));
                         data.setMaterialID(bunkerdata.getString("materialID"));
                         data.setMaterialName(bunkerdata.getString("materialName"));
                         data.setMaterialUnit(bunkerdata.getString("materialunit"));
@@ -112,7 +113,7 @@ public class MachineCheck implements IMachineCheck {
                                     Log.e(TAG, "糖的默认落料量为:" + list.get(i).getMaterialDropSpeed());
                                 }
                                 boolean b = content.insertContact(list.get(i).getBunkerID(), list.get(i).getBunkerType(), list.get(i).getMaterialID(), list.get(i).getMaterialType(), list.get(i).getMaterialName()
-                                        , list.get(i).getMaterialUnit(), list.get(i).getMaterialStock(), list.get(i).getMaterialDropSpeed(), list.get(i).getContainerID(), list.get(i).getLastLoadingTime());
+                                        , list.get(i).getMaterialUnit(), list.get(i).getMaterialStock(), list.get(i).getMaterialDropSpeed(), list.get(i).getDefultMaterialDropSpeed(), list.get(i).getContainerID(), list.get(i).getLastLoadingTime());
                                 if (b) {
                                 } else {
                                     Log.e(TAG, "创建数据库插入时失败");
@@ -127,14 +128,14 @@ public class MachineCheck implements IMachineCheck {
                                 for (String ContainerID : content.getAllcontainerID()) {
                                     if (ContainerID.equals(list.get(i).getContainerID())) {  //假如数据库里面已经存在了这个料仓 则不做任何操作
                                         isupdated = true;
-                                        content.updateContact(list.get(i).getBunkerID(), "", "", "", "", "", "", list.get(i).getMaterialDropSpeed(), "", "");
+                                        content.updateContact(list.get(i).getBunkerID(), "", "", "", "", "", "", list.get(i).getMaterialDropSpeed(), list.get(i).getDefultMaterialDropSpeed(), "", "");
                                     }
                                 }
 
                                 if (!isupdated) {//假如数据库里面不存在了这个料仓 则插入到数据库中
                                     Log.e(TAG, "开始执行更新数据库");
                                     boolean b = content.insertContact(list.get(i).getBunkerID(), list.get(i).getBunkerType(), list.get(i).getMaterialID(), list.get(i).getMaterialType(), list.get(i).getMaterialName()
-                                            , list.get(i).getMaterialUnit(), list.get(i).getMaterialStock(), list.get(i).getMaterialDropSpeed(), list.get(i).getContainerID(), list.get(i).getLastLoadingTime());
+                                            , list.get(i).getMaterialUnit(), list.get(i).getMaterialStock(), list.get(i).getMaterialDropSpeed(), list.get(i).getDefultMaterialDropSpeed(), list.get(i).getContainerID(), list.get(i).getLastLoadingTime());
                                     if (b) {
                                     } else {
                                         Log.e(TAG, "更新数据库插入时失败");
@@ -148,7 +149,7 @@ public class MachineCheck implements IMachineCheck {
                                 for (String ContainerID : content.getAllcontainerID()) {
                                     if (ContainerID.equals(list.get(i).getContainerID())) {  //假如数据库里面已经存在了这个料仓 则只能改校准值
                                         Log.e(TAG, "更新校准值" + list.get(i).getMaterialDropSpeed());
-                                        content.updateContact(list.get(i).getBunkerID(), "", "", "", "", "", "", list.get(i).getMaterialDropSpeed(), "", "");
+                                        content.updateContact(list.get(i).getBunkerID(), "", "", "", "", "", "", list.get(i).getMaterialDropSpeed(), list.get(i).getDefultMaterialDropSpeed(),"", "");
                                         isupdated = true;
 
                                     }
@@ -157,7 +158,7 @@ public class MachineCheck implements IMachineCheck {
                                 if (!isupdated) {//假如数据库里面不存在了这个料仓 则插入到数据库中
                                     Log.e(TAG, "开始执行更新数据库");
                                     boolean b = content.insertContact(list.get(i).getBunkerID(), list.get(i).getBunkerType(), list.get(i).getMaterialID(), list.get(i).getMaterialType(), list.get(i).getMaterialName()
-                                            , list.get(i).getMaterialUnit(), list.get(i).getMaterialStock(), list.get(i).getMaterialDropSpeed(), list.get(i).getContainerID(), list.get(i).getLastLoadingTime());
+                                            , list.get(i).getMaterialUnit(), list.get(i).getMaterialStock(), list.get(i).getMaterialDropSpeed(),list.get(i).getDefultMaterialDropSpeed(), list.get(i).getContainerID(), list.get(i).getLastLoadingTime());
                                     if (b) {
                                     } else {
                                         Log.e(TAG, "更新数据库插入时失败");

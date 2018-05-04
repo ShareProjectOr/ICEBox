@@ -13,7 +13,8 @@ public class bunkerData {
     String bunkerType;   //料仓种类
     String MaterialUnit;//原料单位
     String MaterialStock;//原料剩余量
-    String MaterialDropSpeed;//单位落料量
+    String MaterialDropSpeed;//校准单位落料量
+    String defultMaterialDropSpeed; // 默认单位落料量
     String containerID;//料仓实际排列编号
     String lastLoadingTime; //最后补料时间
 
@@ -23,6 +24,14 @@ public class bunkerData {
 
     public void setLastLoadingTime(String lastLoadingTime) {
         this.lastLoadingTime = lastLoadingTime;
+    }
+
+    public String getDefultMaterialDropSpeed() {
+        return defultMaterialDropSpeed;
+    }
+
+    public void setDefultMaterialDropSpeed(String defultMaterialDropSpeed) {
+        this.defultMaterialDropSpeed = defultMaterialDropSpeed;
     }
 
     public String getBunkerType() {

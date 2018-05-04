@@ -218,7 +218,7 @@ public class MaterialRecycleListAdapter extends RecyclerView.Adapter<RecyclerVie
                     return;
                 }
                 String bunkersID = sql.getBunkerIDByContainerID(ContainerID);
-                sql.updateContact(bunkersID, "", "", "", "", "", "", materialDropSpeed.getText().toString(), "", "");//将校准值传入数据库
+                sql.updateContact(bunkersID, "", "", "", "", "", "", materialDropSpeed.getText().toString(), "", "", "");//将校准值传入数据库
             }
         });
     }
