@@ -89,10 +89,11 @@ public class TestDropMaterial implements ITestDropMaterial {
                     Toast.makeText(mContext, "请输入出料量", Toast.LENGTH_LONG).show();
                     return;
                 }
-                alertDialog.dismiss();
+
 
                 String bunkersID = sql.getBunkerIDByContainerID(ContainerID + "");
                 sql.updateContact(bunkersID, "", "", "", "", "", "", materialDropSpeed.getText().toString(), "", "", "");//将校准值传入数据库
+                alertDialog.dismiss();
             }
         });
         alertDialog.show();
