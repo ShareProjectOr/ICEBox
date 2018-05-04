@@ -155,16 +155,18 @@ public class BuyDialog extends Dialog implements ChooseCupListenner, MkCoffeeLis
             if (step != null)//&& step.getContainerConfig().getWater_capacity() == 0
 
                 if (step.getMaterial() != null) {
+
+                    if (step.getContainerConfig().getWater_capacity() != 0) {
+                        //更新数据库用水量
+                    }
+
                     Log.e(TAG, "materialID is " + step.getMaterial().getMaterialID());
 
                     String sqlRestMaterial = materialSql.getStorkByMaterialID(step.getMaterial().getMaterialID() + "");
 
-                    int sqlRestMaterialInt = Integer.parseInt(sqlRestMaterial);
+                    float sqlRestMaterialInt = Float.parseFloat(sqlRestMaterial);
 
-//                    int mkUseMaterialInt = dealRecorder.getContainerConfigs().get(i).getMaterial_time() * step.getMaterial().getOutput();
-                    ;
                     float mkUseMaterialInt = ((float) step.getTastes().get(i).getAmount()) / 100 * step.getAmount();
-
 
                     Log.e(TAG, " materialID is  " + step.getMaterial().getMaterialID() + " stock is " + sqlRestMaterial + ",used= " + mkUseMaterialInt);
 

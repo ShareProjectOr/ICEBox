@@ -31,6 +31,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import cof.ac.inter.ContainerConfig;
+import cof.ac.inter.ContainerType;
 import cof.ac.inter.WaterType;
 import example.jni.com.coffeeseller.MachineConfig.DealRecorder;
 import example.jni.com.coffeeseller.MachineConfig.QRMsger;
@@ -196,7 +197,9 @@ public class ChooseCup implements View.OnClickListener, MsgTransListener {
         for (int i = 0; i < steps.size(); i++) {
             Step step = steps.get(i);
 
-            mCoffeeFomat.getContainerConfigs().add(i, step.getContainerConfig());
+//            ContainerConfig containerConfig = step.getContainerConfig();
+//
+//            mCoffeeFomat.getContainerConfigs().add(i, containerConfig);
 
             mViewHolder.addView(step, i);
         }
@@ -342,6 +345,8 @@ public class ChooseCup implements View.OnClickListener, MsgTransListener {
 
         ContainerConfig containerConfig = mCoffeeFomat.getContainerConfigs().get(index);
 
+        MyLog.d(TAG, "step.getContainerConfig() = " + step.getMaterialTime());
+
         for (int i = 0; i < tasteLayout.getChildCount(); i++) {
             LinearLayout childLayout = (LinearLayout) tasteLayout.getChildAt(i);
             TextView textView = (TextView) childLayout.getChildAt(0);
@@ -349,18 +354,17 @@ public class ChooseCup implements View.OnClickListener, MsgTransListener {
                 textView.setSelected(false);
             } else {
                 textView.setSelected(true);
-                double materialTime = new BigDecimal((float) step.getTastes().get(i).getAmount() / 100)
-                        .setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
-                int useMaterial = (int) (materialTime * containerConfig.getMaterial_time());
 
-                MyLog.d(TAG, "amount= " + step.getTastes().get(i).getAmount() + "getMaterial_time= " + useMaterial + " ----i= " + i);
+                float materialTime = ((float) step.getTastes().get(i).getAmount()) / 100;
+
+                int useMaterial = Math.round(materialTime * step.getMaterialTime());
+
+                MyLog.d(TAG, "containerConfig.getMaterial_time()= " + step.getMaterialTime()
+                        + " ,time= " + materialTime + ",getMaterial_time= " + useMaterial + " ----i= " + step.getTastes().get(i).getRemark());
 
                 containerConfig.setMaterial_time(useMaterial);
-                MyLog.d(TAG, "containerConfig.setMaterial_time= " + containerConfig.getMaterial_time());
 
                 mCoffeeFomat.getContainerConfigs().add(index, containerConfig);
-
-                MyLog.d(TAG, "containerConfig.setMaterial_time= " + mCoffeeFomat.getContainerConfigs().get(index).getMaterial_time());
 
                 mCoffeeFomat.getTasteNameRatio().add(step.getTastes().get(i).getRemark() + "-" + step.getTastes().get(i).getAmount());
 
@@ -536,6 +540,9 @@ public class ChooseCup implements View.OnClickListener, MsgTransListener {
         }
 
         public void addView(final Step step, final int index) {
+
+            mCoffeeFomat.getContainerConfigs().add(index, step.getContainerConfig());
+
             if (step == null) {
                 return;
             }
@@ -590,7 +597,7 @@ public class ChooseCup implements View.OnClickListener, MsgTransListener {
                     continue;
                 }
 
-                int useMaterial = (int) (((float) taste.getAmount() / 100) * step.getContainerConfig().getMaterial_time() * step.getAmount());
+                float useMaterial = ((float) taste.getAmount()) / 100 * step.getAmount();
 
                 MyLog.d(TAG, "useMaterial =" + useMaterial);
                 LinearLayout layout = (LinearLayout) tasteLayout.getChildAt(i);
@@ -599,19 +606,33 @@ public class ChooseCup implements View.OnClickListener, MsgTransListener {
                     textView.setEnabled(false);
                     textView.setAlpha(0.7f);
                     textView.setClickable(false);
-                    textView.setSelected(false);
-                } else {
+                }
+              /*  else {
                     if (taste.getAmount() == 100) {
                         nomalView = textView;
                     }
                     updateTextColor(tasteLayout, textView, step, index);
-                }
+                }*/
 
             }
-            //默认选中正常口味
+
+            for (int i = 0; i < tasteLayout.getChildCount(); i++) {
+                LinearLayout layout = (LinearLayout) tasteLayout.getChildAt(i);
+                TextView textView = (TextView) layout.getChildAt(0);
+                if (textView.isEnabled() && tastes.get(i).getAmount() == 100) {
+                    updateTextColor(tasteLayout, textView, step, index);
+                    break;
+                } else {
+                    if (textView.isEnabled()) {
+                        updateTextColor(tasteLayout, textView, step, index);
+                    }
+                }
+            }
+
+      /*      //默认选中正常口味
             if (nomalView != null) {
                 updateTextColor(tasteLayout, nomalView, step, index);
-            }
+            }*/
         }
     }
 

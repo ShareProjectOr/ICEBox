@@ -117,7 +117,7 @@ public class DebugFragment extends BasicFragment implements IDebugDropMaterialVi
             case R.id.start_drop:
                 if (iscanDrop) {
                     iscanDrop = false;
-                    mDropMaterialPresenter.startDrop();
+                   // mDropMaterialPresenter.startDrop();
 
                 } else {
                     Toast.makeText(getActivity(), "当前正在执行落粉中,别着急", Toast.LENGTH_LONG).show();
@@ -160,7 +160,7 @@ public class DebugFragment extends BasicFragment implements IDebugDropMaterialVi
         }
     }
 
-    @Override
+/*    @Override
     public int getContainerID() {
         Log.d("Debug","点击位置:"+Position);
         return Constance.bunkersID[Position];
@@ -179,7 +179,7 @@ public class DebugFragment extends BasicFragment implements IDebugDropMaterialVi
     @Override
     public void setButtonSate(boolean b) {
         iscanDrop = true;
-    }
+    }*/
 
 
     @Override
@@ -253,5 +253,15 @@ public class DebugFragment extends BasicFragment implements IDebugDropMaterialVi
             }
         }).create().show();
         return true;
+    }
+
+    @Override
+    public void ShowDropResult(String result, String ContainerID) {
+
+    }
+
+    @Override
+    public void ShowEditDialog(String ContainerID) {
+
     }
 }

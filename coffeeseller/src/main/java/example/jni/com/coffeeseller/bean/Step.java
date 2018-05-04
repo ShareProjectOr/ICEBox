@@ -13,6 +13,7 @@ public class Step {
     List<Taste> Tastes;
     Material material;
     int amount;
+    int materialTime;
 
     public int getAmount() {
         return amount;
@@ -28,6 +29,7 @@ public class Step {
 
     public void setContainerConfig(ContainerConfig containerConfig) {
         this.containerConfig = containerConfig;
+        this.materialTime = containerConfig.getMaterial_time();
     }
 
     public List<Taste> getTastes() {
@@ -46,5 +48,11 @@ public class Step {
         this.material = material;
     }
 
+    public int getMaterialTime() {
+        return materialTime;
+    }
 
+    public void setMaterialTime(int materialTime) {
+        this.materialTime = materialTime;
+    }
 }

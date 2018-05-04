@@ -264,6 +264,9 @@ public class MkCoffee {
 
                     if (coffeeMakeStateRecorder.state == null) {
 
+
+
+
                         Result result = coffMsger.mkCoffee(coffeeFomat.getContainerConfigs());
                         if (result.getCode() == Result.SUCCESS) {
 

@@ -34,6 +34,7 @@ import example.jni.com.coffeeseller.databases.DataBaseHelper;
 import example.jni.com.coffeeseller.factory.FragmentEnum;
 import example.jni.com.coffeeseller.factory.FragmentFactory;
 import example.jni.com.coffeeseller.listener.MessageReceviedListener;
+import example.jni.com.coffeeseller.model.GetFormula;
 import example.jni.com.coffeeseller.model.adapters.CoffeeViewPagerAdapter;
 import example.jni.com.coffeeseller.model.adapters.HomeViewPager;
 import example.jni.com.coffeeseller.model.listeners.GridViewItemListener;
@@ -215,9 +216,11 @@ public class BuyFragment extends BasicFragment implements GridViewItemListener, 
         mCoffees.clear();
         mCoffees.addAll(coffees);
         mPagerAdapter.notifyDataSetChanged();
-/*
+        GetFormula getFormula = new GetFormula();
+        getFormula.getFormula(homeActivity);
+
         mCoffees.addAll(SingleMaterialLsit.getInstance(homeActivity).getCoffeeList());
-        mPagerAdapter.notifyDataSetChanged();*/
+        mPagerAdapter.notifyDataSetChanged();
     }
 
     @Override
