@@ -696,4 +696,14 @@ public class MaterialSql extends SQLiteOpenHelper {
         db.close();
         return DefultMaterialDropSpeed;
     }
+
+    public String getMaterialNameByContainerID(String containerID) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor res = db.rawQuery("select * from " + MATERIALS_TABLE_NAME + " where " + MATERIALS_COLUMN_CONTAINERID + " = " + containerID + "", null);
+        res.moveToFirst();
+        String MaterialName = res.getString(res.getColumnIndex(MATERIALS_COLUMN_MATERIALNAME));
+        res.close();
+        db.close();
+        return MaterialName;
+    }
 }

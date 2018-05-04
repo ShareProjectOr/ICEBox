@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import cof.ac.inter.CoffMsger;
@@ -31,10 +32,14 @@ public class TestDropMaterial implements ITestDropMaterial {
         View view = LayoutInflater.from(mContext).inflate(R.layout.edit_drop_dialog_layout, null);
         AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
         builder.setView(view);
+        final MaterialSql sql = new MaterialSql(mContext);
         builder.setTitle("确定开始落料测试吗?落料时间将持续5秒.");
         final AlertDialog alertDialog = builder.create();
         final EditText materialDropSpeed = (EditText) view.findViewById(R.id.materialDropSpeed);
         Button sure, cancel, save;
+        TextView bunkerName;
+        bunkerName = (TextView) view.findViewById(R.id.bankersName);
+        bunkerName.setText("落料仓:"+sql.getMaterialNameByContainerID(ContainerID+""));
         sure = (Button) view.findViewById(R.id.sure);
         save = (Button) view.findViewById(R.id.save);
         cancel = (Button) view.findViewById(R.id.cancel);
@@ -82,7 +87,7 @@ public class TestDropMaterial implements ITestDropMaterial {
                     return;
                 }
                 alertDialog.dismiss();
-                MaterialSql sql = new MaterialSql(mContext);
+
                 String bunkersID = sql.getBunkerIDByContainerID(ContainerID + "");
                 sql.updateContact(bunkersID, "", "", "", "", "", "", materialDropSpeed.getText().toString(), "", "", "");//将校准值传入数据库
             }
