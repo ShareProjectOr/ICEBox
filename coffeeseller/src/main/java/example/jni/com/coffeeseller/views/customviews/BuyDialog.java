@@ -152,7 +152,7 @@ public class BuyDialog extends Dialog implements ChooseCupListenner, MkCoffeeLis
 
         for (int i = 0; i < coffee.getStepList().size(); i++) {
             Step step = coffee.getStepList().get(i);
-            if (step != null )//&& step.getContainerConfig().getWater_capacity() == 0
+            if (step != null)//&& step.getContainerConfig().getWater_capacity() == 0
 
                 if (step.getMaterial() != null) {
                     Log.e(TAG, "materialID is " + step.getMaterial().getMaterialID());
@@ -161,7 +161,10 @@ public class BuyDialog extends Dialog implements ChooseCupListenner, MkCoffeeLis
 
                     int sqlRestMaterialInt = Integer.parseInt(sqlRestMaterial);
 
-                    int mkUseMaterialInt = dealRecorder.getContainerConfigs().get(i).getMaterial_time() * step.getMaterial().getOutput();
+//                    int mkUseMaterialInt = dealRecorder.getContainerConfigs().get(i).getMaterial_time() * step.getMaterial().getOutput();
+                    ;
+                    float mkUseMaterialInt = ((float) step.getTastes().get(i).getAmount()) / 100 * step.getAmount();
+
 
                     Log.e(TAG, " materialID is  " + step.getMaterial().getMaterialID() + " stock is " + sqlRestMaterial + ",used= " + mkUseMaterialInt);
 
@@ -173,8 +176,8 @@ public class BuyDialog extends Dialog implements ChooseCupListenner, MkCoffeeLis
                     ReportBunker reportBunker = new ReportBunker();
                     int bunkerId = Integer.parseInt(materialSql.getBunkerIDByMaterialD(step.getMaterial().getMaterialID() + ""));
                     reportBunker.setBunkerID(bunkerId);
-                    reportBunker.setUnit(mkUseMaterialInt);
-                    reportBunker.setMaterialStock((sqlRestMaterialInt - mkUseMaterialInt));
+                    reportBunker.setUnit(mkUseMaterialInt + "");
+                    reportBunker.setMaterialStock((sqlRestMaterialInt - mkUseMaterialInt) + "");
 
                     bunkers.add(reportBunker);
 
@@ -223,9 +226,9 @@ public class BuyDialog extends Dialog implements ChooseCupListenner, MkCoffeeLis
     public void cancle(final String order) {
         //通知服务器取消订单
 
-        if (TextUtils.isEmpty(order)){
+        if (TextUtils.isEmpty(order)) {
 
-        }else{
+        } else {
             new Thread(new Runnable() {
                 @Override
                 public void run() {

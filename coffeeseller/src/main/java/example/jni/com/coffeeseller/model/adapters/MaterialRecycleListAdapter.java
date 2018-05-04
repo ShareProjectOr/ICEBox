@@ -72,7 +72,7 @@ public class MaterialRecycleListAdapter extends RecyclerView.Adapter<RecyclerVie
 
 
         double realstock = new BigDecimal(((float) stockmg / 1000)).setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
-        switch (list.get(position).getMaterialType()){
+        switch (list.get(position).getMaterialType()) {
             case "3":
                 mHolder.CountAndLess.setText(realstock + "个");
                 break;
@@ -105,6 +105,12 @@ public class MaterialRecycleListAdapter extends RecyclerView.Adapter<RecyclerVie
                 @Override
                 public void onClick(View v) {
                     bindMaterialPresenter.BindMaterial(mHolder.bindMaterial, list.get(position).getBunkerID(), list.get(position).getBunkerType());
+                }
+            });
+            mHolder.textDrop.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
                 }
             });
         } else {
@@ -178,7 +184,7 @@ public class MaterialRecycleListAdapter extends RecyclerView.Adapter<RecyclerVie
 
 
     class ContentViewHolder extends RecyclerView.ViewHolder {
-        TextView bankersName, Material, CountAndLess, AddTime, Opration, bindMaterial;
+        TextView bankersName, Material, CountAndLess, AddTime, Opration, bindMaterial, textDrop;
 
         public ContentViewHolder(View itemView) {
             super(itemView);
@@ -188,6 +194,7 @@ public class MaterialRecycleListAdapter extends RecyclerView.Adapter<RecyclerVie
             AddTime = (TextView) itemView.findViewById(R.id.addTime);
             Opration = (TextView) itemView.findViewById(R.id.operation);
             bindMaterial = (TextView) itemView.findViewById(R.id.bindMarterial);
+            textDrop = (TextView) itemView.findViewById(R.id.textDrop);
         }
     }
 }

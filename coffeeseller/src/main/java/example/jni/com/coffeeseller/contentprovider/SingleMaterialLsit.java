@@ -159,8 +159,8 @@ public class SingleMaterialLsit {
                     String containerID = sql.getContainerIDByMaterialID(MaterialID);
 
                     Log.e(TAG, "containerID is " + containerID);
-                    String MaterialDropSpeed = sql.getMaterialDropSpeedBycontainerID(containerID);
-                    Log.e(TAG, "默认落料速度=" + MaterialDropSpeed + "--此时的原料为:" + stepObject.getJSONObject("material").getString("name"));
+                    String MaterialDropSpeed = new MaterialSql(mContext).getMaterialDropSpeedBycontainerID(containerID);
+                    Log.e(TAG, "默认落料速度=" + MaterialDropSpeed + "--此时的原料为:" + stepObject.getJSONObject("material").getString("name")+"落料总量为:"+amount);
                     int DropSpeed = Integer.parseInt(MaterialDropSpeed);
                     Log.e(TAG, "DropSpeed is " + DropSpeed);
                     double loadPercent = new BigDecimal((float) (stepObject.getInt("loadingSpeed") / 127)).setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();

@@ -351,11 +351,18 @@ public class ChooseCup implements View.OnClickListener, MsgTransListener {
                 textView.setSelected(true);
                 double materialTime = new BigDecimal((float) step.getTastes().get(i).getAmount() / 100)
                         .setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
-                int useMaterial = (int) (materialTime * containerConfig.getMaterial_time());
 
-                MyLog.d(TAG, "amount= " + step.getTastes().get(i).getAmount() + "getMaterial_time= " + useMaterial + " ----i= " + i);
 
-                containerConfig.setMaterial_time(useMaterial);
+                float useMaterial = new BigDecimal(materialTime * containerConfig.getMaterial_time())
+                        .setScale(2, BigDecimal.ROUND_HALF_UP).floatValue();
+
+
+                containerConfig.setMaterial_time(Math.round(useMaterial));
+
+
+                MyLog.d(TAG, "time=  " + Math.round(useMaterial));
+
+
                 MyLog.d(TAG, "containerConfig.setMaterial_time= " + containerConfig.getMaterial_time());
 
                 mCoffeeFomat.getContainerConfigs().add(index, containerConfig);
@@ -590,9 +597,9 @@ public class ChooseCup implements View.OnClickListener, MsgTransListener {
                     continue;
                 }
 
-                int useMaterial = (int) (((float) taste.getAmount() / 100) * step.getContainerConfig().getMaterial_time() * step.getAmount());
+                int useMaterial = step.getAmount();//(int) (((float) taste.getAmount() / 100) * step.getContainerConfig().getMaterial_time() * 0.1 *
 
-                MyLog.d(TAG, "useMaterial =" + useMaterial);
+                MyLog.d(TAG, step.getAmount() + "   ,useMaterial =" + useMaterial);
                 LinearLayout layout = (LinearLayout) tasteLayout.getChildAt(i);
                 TextView textView = (TextView) layout.getChildAt(0);
                 if (sqlRestMaterialInt < useMaterial) {

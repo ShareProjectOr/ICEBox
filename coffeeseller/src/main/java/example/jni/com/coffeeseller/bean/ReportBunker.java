@@ -6,8 +6,8 @@ package example.jni.com.coffeeseller.bean;
 
 public class ReportBunker {
     private int bunkerID;
-    private int materialStock;
-    private int unit;
+    private String materialStock;
+    private String unit;
 
     public int getBunkerID() {
         return bunkerID;
@@ -17,19 +17,19 @@ public class ReportBunker {
         this.bunkerID = bunkerID;
     }
 
-    public int getMaterialStock() {
+    public String getMaterialStock() {
         return materialStock;
     }
 
-    public void setMaterialStock(int materialStock) {
+    public void setMaterialStock(String materialStock) {
         this.materialStock = materialStock;
     }
 
-    public int getUnit() {
+    public String getUnit() {
         return unit;
     }
 
-    public void setUnit(int unit) {
+    public void setUnit(String unit) {
         this.unit = unit;
     }
 }

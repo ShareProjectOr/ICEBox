@@ -127,7 +127,7 @@ public class MachineCheck implements IMachineCheck {
                                 for (String ContainerID : content.getAllcontainerID()) {
                                     if (ContainerID.equals(list.get(i).getContainerID())) {  //假如数据库里面已经存在了这个料仓 则不做任何操作
                                         isupdated = true;
-                                        break;
+                                        content.updateContact(list.get(i).getBunkerID(), "", "", "", "", "", "", list.get(i).getMaterialDropSpeed(), "", "");
                                     }
                                 }
 
@@ -142,14 +142,15 @@ public class MachineCheck implements IMachineCheck {
                                 }
                             }
 
-                        } else if (array.length() == content.getAllcontainerID().size()) {
+                        } else {
                             for (int i = 0; i < list.size(); i++) {
                                 boolean isupdated = false;
                                 for (String ContainerID : content.getAllcontainerID()) {
                                     if (ContainerID.equals(list.get(i).getContainerID())) {  //假如数据库里面已经存在了这个料仓 则只能改校准值
-                                        content.updateContact("", "", "", "", "", "", "", list.get(i).getMaterialDropSpeed(), "", "");
+                                        Log.e(TAG, "更新校准值" + list.get(i).getMaterialDropSpeed());
+                                        content.updateContact(list.get(i).getBunkerID(), "", "", "", "", "", "", list.get(i).getMaterialDropSpeed(), "", "");
                                         isupdated = true;
-                                        break;
+
                                     }
                                 }
 
