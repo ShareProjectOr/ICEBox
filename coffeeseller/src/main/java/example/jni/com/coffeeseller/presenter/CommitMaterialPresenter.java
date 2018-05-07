@@ -1,5 +1,6 @@
 package example.jni.com.coffeeseller.presenter;
 
+import example.jni.com.coffeeseller.bean.MachineConfig;
 import example.jni.com.coffeeseller.model.CommitMaterial;
 import example.jni.com.coffeeseller.model.listeners.ICommitMaterial;
 import example.jni.com.coffeeseller.model.listeners.OnCommitMaterialCallBackListener;
@@ -35,7 +36,14 @@ public class CommitMaterialPresenter {
             }
         });
     }
+
     public void CommitMaterial2() {
+        if (MachineConfig.getHostUrl().isEmpty()) {
+            return;
+        }
+        if (MachineConfig.getMachineCode().isEmpty()){
+            return;
+        }
         iCommitMaterialView.ShowLoading();
         ;
         iCommitMaterial.Commit(iCommitMaterialView.getList(), new OnCommitMaterialCallBackListener() {

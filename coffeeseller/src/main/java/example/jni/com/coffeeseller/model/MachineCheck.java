@@ -231,9 +231,7 @@ public class MachineCheck implements IMachineCheck {
                 Waiter.doWait(700);
                 mOnMachineCheckCallBackListener.OpenMainCrilSuccess();
                 if (result.getCode() == Result.SUCCESS) {
-                    synchronized (mCoffmsger) {
-                        mCoffmsger.startCheckState();
-                    }
+                    mCoffmsger.startCheckState();
                     MachineInitState.CHECK_OPENMAINCTRL = MachineInitState.NORMAL;
                     mOnMachineCheckCallBackListener.OpenMainCrilSuccess();
                 } else {
