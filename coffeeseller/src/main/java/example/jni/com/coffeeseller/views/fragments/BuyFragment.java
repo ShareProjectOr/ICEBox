@@ -156,12 +156,20 @@ public class BuyFragment extends BasicFragment implements GridViewItemListener, 
     }
 
     public void updateUi() {
-        if (mCoffees != null) {
-            mCoffees.addAll(SingleMaterialLsit.getInstance(homeActivity).getCoffeeList());
-        }
-        if (mPagerAdapter != null) {
-            mPagerAdapter.notifyDataSetChanged();
-        }
+     handler.post(new Runnable() {
+         @Override
+         public void run() {
+             List<Coffee> coffees = SingleMaterialLsit.getInstance(homeActivity).getCoffeeList();
+             mViewPager.removeAllViews();
+             removePoint();
+             if (coffees != null && coffees.size() > 0) {
+
+                 mPagerAdapter = new CoffeeViewPagerAdapter(homeActivity, coffees, gridViewItemListener);
+                 mViewPager.addOnPageChangeListener(new ViewpagerPageChangedListener());
+                 mViewPager.setAdapter(new CoffeeViewPagerAdapter(homeActivity, mCoffees, gridViewItemListener));
+             }
+         }
+     });
     }
 
     /*
