@@ -45,6 +45,7 @@ public class MachineCheck implements IMachineCheck {
     private HomeActivity mContext;
     private Handler handler = new Handler(Looper.getMainLooper());
     private String TAG = "MachineCheck";
+    private boolean hasReserve = false;
 
     public MachineCheck(HomeActivity context) {
         MachineInitState.init();
@@ -149,7 +150,7 @@ public class MachineCheck implements IMachineCheck {
                                 for (String ContainerID : content.getAllcontainerID()) {
                                     if (ContainerID.equals(list.get(i).getContainerID())) {  //假如数据库里面已经存在了这个料仓 则只能改校准值
                                         Log.e(TAG, "更新校准值" + list.get(i).getMaterialDropSpeed());
-                                        content.updateContact(list.get(i).getBunkerID(), "", "", "", "", "", "", list.get(i).getMaterialDropSpeed(), list.get(i).getDefultMaterialDropSpeed(),"", "");
+                                        content.updateContact(list.get(i).getBunkerID(), "", "", "", "", "", "", list.get(i).getMaterialDropSpeed(), list.get(i).getDefultMaterialDropSpeed(), "", "");
                                         isupdated = true;
 
                                     }
@@ -158,7 +159,7 @@ public class MachineCheck implements IMachineCheck {
                                 if (!isupdated) {//假如数据库里面不存在了这个料仓 则插入到数据库中
                                     Log.e(TAG, "开始执行更新数据库");
                                     boolean b = content.insertContact(list.get(i).getBunkerID(), list.get(i).getBunkerType(), list.get(i).getMaterialID(), list.get(i).getMaterialType(), list.get(i).getMaterialName()
-                                            , list.get(i).getMaterialUnit(), list.get(i).getMaterialStock(), list.get(i).getMaterialDropSpeed(),list.get(i).getDefultMaterialDropSpeed(), list.get(i).getContainerID(), list.get(i).getLastLoadingTime());
+                                            , list.get(i).getMaterialUnit(), list.get(i).getMaterialStock(), list.get(i).getMaterialDropSpeed(), list.get(i).getDefultMaterialDropSpeed(), list.get(i).getContainerID(), list.get(i).getLastLoadingTime());
                                     if (b) {
                                     } else {
                                         Log.e(TAG, "更新数据库插入时失败");
@@ -223,19 +224,25 @@ public class MachineCheck implements IMachineCheck {
         CoffMsger mCoffmsger = CoffMsger.getInstance();
 
         if (mCoffmsger.init()) {
-             Result result = mCoffmsger.Debug(DebugAction.RESET, 0, 0);//复位机器
-            Waiter.doWait(700);
-           // mCoffmsger.startCheckState();
-            MachineInitState.CHECK_OPENMAINCTRL = MachineInitState.NORMAL;
-            mOnMachineCheckCallBackListener.OpenMainCrilSuccess();
-            if (result.getCode() == Result.SUCCESS) {
-                synchronized (mCoffmsger) {
-                    mCoffmsger.startCheckState();
+
+            // mCoffmsger.startCheckState();
+            if (!hasReserve) {
+                Result result = mCoffmsger.Debug(DebugAction.RESET, 0, 0);//复位机器
+                Waiter.doWait(700);
+                mOnMachineCheckCallBackListener.OpenMainCrilSuccess();
+                if (result.getCode() == Result.SUCCESS) {
+                    synchronized (mCoffmsger) {
+                        mCoffmsger.startCheckState();
+                    }
+                    MachineInitState.CHECK_OPENMAINCTRL = MachineInitState.NORMAL;
+                    mOnMachineCheckCallBackListener.OpenMainCrilSuccess();
+                } else {
+                    mOnMachineCheckCallBackListener.OpenMainCrilFailed("主控板检测出错,错误:" + result.getErrDes());
                 }
+                hasReserve = true;
+            } else {
                 MachineInitState.CHECK_OPENMAINCTRL = MachineInitState.NORMAL;
                 mOnMachineCheckCallBackListener.OpenMainCrilSuccess();
-            } else {
-                mOnMachineCheckCallBackListener.OpenMainCrilFailed("主控板检测出错,错误:" + result.getErrDes());
             }
 
 
