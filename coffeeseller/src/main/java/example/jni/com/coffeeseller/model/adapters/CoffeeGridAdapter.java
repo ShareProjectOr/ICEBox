@@ -3,6 +3,7 @@ package example.jni.com.coffeeseller.model.adapters;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -75,7 +76,15 @@ public class CoffeeGridAdapter extends BaseAdapter {
         Coffee coffee = coffees.get(position);
         if (coffee != null) {
             viewHolder.coffeeName.setText(coffee.name);
-            viewHolder.coffeePrice.setText(coffee.price);
+            if (!TextUtils.isEmpty(coffee.activitiesPrice) && !"null".equals(coffee.activitiesPrice)) {
+                float activityPrice = Float.parseFloat(coffee.activitiesPrice);
+                if (activityPrice > 0) {
+                    viewHolder.activitePriceLayout.setVisibility(View.VISIBLE);
+                    viewHolder.coffeePrice.setText(coffee.activitiesPrice);
+                    viewHolder.oldPriceLayout.setBackgroundResource(R.drawable.shape_dialog);
+                }
+            }
+            viewHolder.oldCoffeePrice.setText(coffee.price);
 
             Glide.with(context)
                     .load(coffee.cacheUrl)
@@ -105,18 +114,31 @@ public class CoffeeGridAdapter extends BaseAdapter {
     }
 
     class ViewHolder {
-        public LinearLayout overLayout;
+        public LinearLayout coffeeLayout;
         public ImageView coffeeImage;
         public TextView coffeeName;
+        public TextView activePriceTxt;
         public TextView coffeePrice;
+        public LinearLayout oldPriceLayout;
+        public LinearLayout activitePriceLayout;
+        public TextView oldPriceTxt;
+        public TextView oldCoffeePrice;
+        public LinearLayout overLayout;
         public LinearLayout sellOver;
 
         public ViewHolder(View view) {
-            overLayout = (LinearLayout) view.findViewById(R.id.overLayout);
+            coffeeLayout = (LinearLayout) view.findViewById(R.id.coffeeLayout);
             coffeeImage = (ImageView) view.findViewById(R.id.coffeeImage);
             coffeeName = (TextView) view.findViewById(R.id.coffeeName);
+            activePriceTxt = (TextView) view.findViewById(R.id.activePriceTxt);
             coffeePrice = (TextView) view.findViewById(R.id.coffeePrice);
+            oldPriceLayout = (LinearLayout) view.findViewById(R.id.oldPriceLayout);
+            activitePriceLayout = (LinearLayout) view.findViewById(R.id.activitePriceLayout);
+            oldPriceTxt = (TextView) view.findViewById(R.id.oldPriceTxt);
+            oldCoffeePrice = (TextView) view.findViewById(R.id.oldCoffeePrice);
+            overLayout = (LinearLayout) view.findViewById(R.id.overLayout);
             sellOver = (LinearLayout) view.findViewById(R.id.sellOver);
+
         }
     }
 }

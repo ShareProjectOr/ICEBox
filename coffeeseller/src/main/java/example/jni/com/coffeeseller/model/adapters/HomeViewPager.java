@@ -36,7 +36,7 @@ public class HomeViewPager extends ViewPager {
         heightMeasureSpec = MeasureSpec.makeMeasureSpec(height,
                 MeasureSpec.EXACTLY);
 
-        setMeasuredDimension(widthMeasureSpec, height);
+        setMeasuredDimension(widthMeasureSpec, heightMeasureSpec);
 
 
     }

@@ -171,21 +171,25 @@ public class TaskService extends Service implements MqttCallback {
                                 break;
                             case "updateFormulaType":
 
-                                Log.e(TAG, "updateFormulaType  =  "+ MachineConfig.getCurrentState() );
+                                Log.e(TAG, "updateFormulaType  =  " + MachineConfig.getCurrentState());
 
                                 if (MachineConfig.getCurrentState() == StateEnum.IDLE) {//空闲状态更新配方
                                     JSONObject d = msgObject.getJSONObject("d");
                                     JSONObject formulaObject = d.getJSONObject("formula");
-                                    if (d.getString("upateType").equals("remove")) {//updateType
+                                    if (d.getString("updateType").equals("remove")) {//updateType
 
 
-                                    } else if (d.getString("upateType").equals("update")) {
+                                    } else if (d.getString("updateType").equals("update")) {
 
-                                    } else if (d.getString("upateType").equals("add")) {
+                                    } else if (d.getString("updateType").equals("add")) {
 
                                     }
-                                    if (messageReceviedListener != null)
-                                        messageReceviedListener.getMsgType(formulaObject.getString("name"));//formulaID
+                                    if (messageReceviedListener != null) {
+                                        messageReceviedListener.getMsgType(formulaObject.getString("formulaID"));//formulaID
+
+                                        MyLog.d(TAG, "messageReceviedListener  come");
+                                    }
+
                                 }
 
                                 break;

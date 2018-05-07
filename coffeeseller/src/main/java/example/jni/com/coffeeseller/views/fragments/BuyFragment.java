@@ -1,10 +1,10 @@
 package example.jni.com.coffeeseller.views.fragments;
 
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.view.ViewPager;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,27 +14,16 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.sql.Time;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import cof.ac.inter.CoffMsger;
-import cof.ac.inter.DebugAction;
-import cof.ac.inter.Result;
-import cof.ac.inter.StateEnum;
 import example.jni.com.coffeeseller.R;
 import example.jni.com.coffeeseller.bean.Coffee;
 import example.jni.com.coffeeseller.bean.MachineConfig;
-import example.jni.com.coffeeseller.bean.Step;
 import example.jni.com.coffeeseller.communicate.TaskService;
-import example.jni.com.coffeeseller.contentprovider.MaterialSql;
 import example.jni.com.coffeeseller.contentprovider.SingleMaterialLsit;
-import example.jni.com.coffeeseller.databases.DataBaseHelper;
 import example.jni.com.coffeeseller.factory.FragmentEnum;
 import example.jni.com.coffeeseller.factory.FragmentFactory;
 import example.jni.com.coffeeseller.listener.MessageReceviedListener;
@@ -43,10 +32,8 @@ import example.jni.com.coffeeseller.model.adapters.CoffeeViewPagerAdapter;
 import example.jni.com.coffeeseller.model.adapters.HomeViewPager;
 import example.jni.com.coffeeseller.model.listeners.GridViewItemListener;
 import example.jni.com.coffeeseller.model.listeners.ViewpagerPageChangedListener;
-import example.jni.com.coffeeseller.parse.PayResult;
 import example.jni.com.coffeeseller.utils.GridViewTransformation;
 import example.jni.com.coffeeseller.utils.MyLog;
-import example.jni.com.coffeeseller.utils.Waiter;
 import example.jni.com.coffeeseller.views.activities.HomeActivity;
 import example.jni.com.coffeeseller.views.customviews.BuyDialog;
 
@@ -146,6 +133,10 @@ public class BuyFragment extends BasicFragment implements GridViewItemListener, 
         mPointGroup.addView(pointView);
     }
 
+    public void removePoint() {
+        mPointGroup.removeAllViews();
+    }
+
     private void changePoint(int index) {
 
         for (int i = 0; i < mPointGroup.getChildCount(); i++) {
@@ -218,15 +209,43 @@ public class BuyFragment extends BasicFragment implements GridViewItemListener, 
     public void getMsgType(String msgType) {
         MyLog.d(TAG, "getMsgType come!");
         int formulaID = Integer.parseInt(msgType);
-        List<Coffee> coffees = SingleMaterialLsit.getInstance(homeActivity).setCoffeeSellOut(formulaID);
-        mCoffees.clear();
-        mCoffees.addAll(coffees);
-        mPagerAdapter.notifyDataSetChanged();
-        GetFormula getFormula = new GetFormula();
-        getFormula.getFormula(homeActivity);
 
-        mCoffees.addAll(SingleMaterialLsit.getInstance(homeActivity).getCoffeeList());
-        mPagerAdapter.notifyDataSetChanged();
+//        mCoffees = SingleMaterialLsit.getInstance(homeActivity).setCoffeeSellOut(formulaID);
+
+        if (mPagerAdapter != null) {
+            MyLog.d(TAG, "mPagerAdapter !=null ");
+
+            List<Coffee> coffees = SingleMaterialLsit.getInstance(homeActivity).setCoffeeSellOut(formulaID);
+            MyLog.d(TAG,coffees.get(0).getPrice()+"---"+coffees.get(0).isOver);
+            mPagerAdapter.notifyCoffeeList(coffees);
+        }
+
+        new AsyncTask<Void, Void, Boolean>() {
+            @Override
+            protected Boolean doInBackground(Void... params) {
+                GetFormula getFormula = new GetFormula();
+                Boolean isUpdate = getFormula.getFormula(homeActivity);
+                return isUpdate;
+            }
+
+            @Override
+            protected void onPostExecute(Boolean isUpdate) {
+                super.onPostExecute(isUpdate);
+                if (isUpdate) {
+
+//                    mCoffees.addAll(SingleMaterialLsit.getInstance(homeActivity).getCoffeeList());
+
+                    if (mPagerAdapter != null) {
+
+                        //           MyLog.d(TAG, "mPagerAdapter !=null ---" + mCoffees.get(0).price+",----------"+mCoffees.get(0).isOver);
+
+                              mPagerAdapter.notifyCoffeeList(SingleMaterialLsit.getInstance(homeActivity).getCoffeeList());
+                    }
+
+                }
+
+            }
+        }.execute();
     }
 
     @Override

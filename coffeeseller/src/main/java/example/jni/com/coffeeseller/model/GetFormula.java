@@ -29,7 +29,7 @@ import example.jni.com.coffeeseller.httputils.OkHttpUtil;
 public class GetFormula {
     private static String TAG = "GetFormula";
 
-    public void getFormula(Context context) {
+    public Boolean getFormula(Context context) {
 
         Map<String, Object> body = new HashMap<>();
         body.put("machineCode", MachineConfig.getMachineCode());
@@ -44,29 +44,10 @@ public class GetFormula {
                 JSONObject d = object.getJSONObject("d");
 
                 Log.e(TAG, d.toString());
-                JSONArray array = d.getJSONArray("list2");
 
-                for (int i = 0; i < array.length(); i++) {
-
-
-                    JSONObject bunkerdata = (JSONObject) array.opt(i);
-                    bunkerData data = new bunkerData();//其情况它
-                    data.setContainerID(bunkerdata.getString("containerID"));
-                    data.setBunkerID(bunkerdata.getString("bunkerID"));
-                    data.setBunkerType(bunkerdata.getString("bunkerType"));
-                    data.setMaterialDropSpeed(bunkerdata.getString("output"));
-                    data.setMaterialID(bunkerdata.getString("materialID"));
-                    data.setMaterialName(bunkerdata.getString("materialName"));
-                    data.setMaterialUnit(bunkerdata.getString("materialunit"));
-                    data.setMaterialStock(bunkerdata.getString("materialStock"));
-                    data.setMaterialType(bunkerdata.getString("materialType"));
-                    data.setLastLoadingTime(bunkerdata.getString("lastLoadingTime"));
-                    list.add(data);
-
-
-                }
-
+                Log.e(TAG, "list =" + d.getJSONArray("list").toString());
                 SingleMaterialLsit.getInstance(context).setCoffeeArray(d.getJSONArray("list"));
+                return true;
             }
 
         } catch (JSONException e) {
@@ -74,6 +55,6 @@ public class GetFormula {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
+        return false;
     }
 }

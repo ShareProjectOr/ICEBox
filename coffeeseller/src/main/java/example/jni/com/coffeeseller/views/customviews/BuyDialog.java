@@ -2,6 +2,7 @@ package example.jni.com.coffeeseller.views.customviews;
 
 import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Handler;
 import android.support.annotation.StyleRes;
 import android.text.TextUtils;
@@ -76,6 +77,12 @@ public class BuyDialog extends Dialog implements ChooseCupListenner, MkCoffeeLis
         /*initView();*/
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setCanceledOnTouchOutside(false);
+        setOnDismissListener(new OnDismissListener() {
+            @Override
+            public void onDismiss(DialogInterface dialog) {
+
+            }
+        });
         initData();
     }
 
@@ -101,9 +108,16 @@ public class BuyDialog extends Dialog implements ChooseCupListenner, MkCoffeeLis
 
     public void setInitView(int viewID) {
         if (viewID == VIEW_CHOOSE_CUP) {
-            ChooseCup chooseCup = new ChooseCup(context, coffee, chooseCupListenner, handler);
+            final ChooseCup chooseCup = new ChooseCup(context, coffee, chooseCupListenner, handler);
             setContentView(chooseCup.getView());
             setCanceledOnTouchOutside(true);
+
+            setOnDismissListener(new OnDismissListener() {
+                @Override
+                public void onDismiss(DialogInterface dialog) {
+                    chooseCupListenner.cancle(chooseCup.getOrder());
+                }
+            });
             MyLog.W(TAG, "choose cup view is added");
 
         } else if (viewID == VIEW_HELP) {
@@ -128,6 +142,15 @@ public class BuyDialog extends Dialog implements ChooseCupListenner, MkCoffeeLis
             show();
 
         initView();
+    }
+
+    public void setDisDialogListenner(final String order) {
+        this.setOnDismissListener(new OnDismissListener() {
+            @Override
+            public void onDismiss(DialogInterface dialog) {
+                cancleOrder(order);
+            }
+        });
     }
 
     public void disDialog() {
@@ -218,7 +241,7 @@ public class BuyDialog extends Dialog implements ChooseCupListenner, MkCoffeeLis
             boolean isUpdateSuccess = materialSql.updateMaterialStockByMaterialId(waterMaterialId + "", waterStock + "");
 
             MyLog.d(TAG, "用水量更新：materialID is" + waterMaterialId + " , rest= "
-                    + sqlRestWaterMaterialInt + ", used= " + waterUseTotal/10
+                    + sqlRestWaterMaterialInt + ", used= " + waterUseTotal / 10
                     + " , stock= " + waterStock + ", isUpdateSuccess= " + isUpdateSuccess);
 
 
@@ -301,6 +324,10 @@ public class BuyDialog extends Dialog implements ChooseCupListenner, MkCoffeeLis
     @Override
     public void hasPay(final CoffeeFomat coffeeFomat, final DealRecorder dealRecorder) {
 
+
+        if (!isShowing()) {
+            return;
+        }
 
         //本地保存交易记录
         DealOrderInfoManager.getInstance(context).addToTable(dealRecorder);

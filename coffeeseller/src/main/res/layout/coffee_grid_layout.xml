@@ -10,8 +10,10 @@
 
     <example.jni.com.coffeeseller.views.customviews.HomeGridView
         android:id="@+id/coffeeGrid"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:paddingLeft="200dp"
+        android:paddingRight="200dp"
         android:horizontalSpacing="40dp"
         android:scrollbars="none"
         android:verticalSpacing="40dp" />

@@ -1,6 +1,7 @@
 package example.jni.com.coffeeseller.model;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.res.ColorStateList;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -78,6 +79,7 @@ public class ChooseCup implements View.OnClickListener, MsgTransListener {
     private TradeMsgRequest tradeMsgRequest;
     private Bitmap qrBitmap;
     private int curPayState = NO_PAY;
+    private String curOrder = null;
 
 
     public ChooseCup(Context context, Coffee coffee, ChooseCupListenner listenner, Handler handler) {
@@ -98,6 +100,10 @@ public class ChooseCup implements View.OnClickListener, MsgTransListener {
 
     public View getView() {
         return mView;
+    }
+
+    public String getOrder() {
+        return curOrder;
     }
 
     private boolean isMachineRight() {
@@ -138,7 +144,6 @@ public class ChooseCup implements View.OnClickListener, MsgTransListener {
 
         mViewHolder.mCoffeeName.setText(mCoffee.name);
         mViewHolder.mCoffeeName.setTextSize(TextUtil.textSize(mCoffee.name));
-
     }
 
     public void initData() {
@@ -240,6 +245,7 @@ public class ChooseCup implements View.OnClickListener, MsgTransListener {
                 mViewHolder.mLoadingBar.clearAnimation();
                 mViewHolder.mRequestQRTxt.setVisibility(View.GONE);
                 mViewHolder.mLoadingBar.setVisibility(View.GONE);
+                mViewHolder.mCoffeePrice.setText(mDealRecorder.getPrice());
 
                 if (bitmap != null) {
                     BitmapDrawable bitmapDrawable = new BitmapDrawable(bitmap);
@@ -263,6 +269,11 @@ public class ChooseCup implements View.OnClickListener, MsgTransListener {
         MyLog.W(TAG, "QR msg come now going to deal this msg");
 
         mDealRecorder.setOrder(parseRqMsg.getTradeCode());
+
+        curOrder = parseRqMsg.getTradeCode();
+
+        MyLog.d(TAG, "getPrice = " + parseRqMsg.getPrice());
+
         mDealRecorder.setPrice(parseRqMsg.getPrice());
         if (parseRqMsg == null) {
             MyLog.d(TAG, "parseRqMsg is empty");

@@ -464,7 +464,7 @@ public class SingleMaterialLsit {
 
     public List<Coffee> setCoffeeSellOut(int formulaID) {
         if (coffeeList.size() == 0) {
-            return null;
+            return coffeeList;
         }
         for (int i = 0; i < coffeeList.size(); i++) {
             if (formulaID == coffeeList.get(i).getFormulaID()) {//遍历找到对应需要禁用的项

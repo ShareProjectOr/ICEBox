@@ -13,8 +13,6 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
 import android.widget.GridView;
-import android.widget.LinearLayout;
-import android.widget.ListAdapter;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -83,8 +81,27 @@ public class CoffeeViewPagerAdapter extends PagerAdapter {
         container.removeView(gridViews.get(position));
     }
 
+    public void notifyCoffeeList(List<Coffee> coffees) {
+
+        this.coffees = coffees;
+
+        this.notifyDataSetChanged();
+
+        getGridViews();
+
+        this.notifyDataSetChanged();
+
+    }
+
     private void getGridViews() {
+        gridViews.clear();
+        if (FragmentFactory.curPage == FragmentEnum.ChooseCupNumFragment) {
+            ((BuyFragment) FragmentFactory.getInstance().getFragment(FragmentEnum.ChooseCupNumFragment)).removePoint();
+        }
         gridViewNum = coffees.size() % onePageCount == 0 ? coffees.size() / onePageCount : coffees.size() / onePageCount + 1;
+
+        MyLog.d(TAG, "gridViewNum = " + gridViewNum);
+
         for (int i = 0; i < gridViewNum; i++) {
             final List<Coffee> gridCoffees = new ArrayList<>();
             if (i != gridViewNum - 1) {
@@ -141,6 +158,8 @@ public class CoffeeViewPagerAdapter extends PagerAdapter {
                 }
             });
             gridView.setAdapter(new CoffeeGridAdapter(homeActivity, gridCoffees));
+
+
             gridView.setOnTouchListener(new View.OnTouchListener() {
                 @Override
                 public boolean onTouch(View v, MotionEvent event) {
@@ -164,6 +183,17 @@ public class CoffeeViewPagerAdapter extends PagerAdapter {
         point.setText((i + 1) + "");
         if (FragmentFactory.curPage == FragmentEnum.ChooseCupNumFragment) {
             ((BuyFragment) FragmentFactory.getInstance().getFragment(FragmentEnum.ChooseCupNumFragment)).addPoint(pointView, i);
+        }
+    }
+
+    @Override
+    public void notifyDataSetChanged() {
+        super.notifyDataSetChanged();
+        for (int i = 0; i < gridViews.size(); i++) {
+            CoffeeGridAdapter gridAdapter = (CoffeeGridAdapter) gridViews.get(i).getAdapter();
+            if (gridAdapter != null) {
+                gridAdapter.notifyDataSetChanged();
+            }
         }
     }
 }
