@@ -53,6 +53,7 @@ public class BuyFragment extends BasicFragment implements GridViewItemListener, 
     public ImageView mHelp;
     private RelativeLayout mHelpLayout;
     private CoffeeViewPagerAdapter mPagerAdapter;
+    private GridViewItemListener gridViewItemListener;
     private List<Coffee> mCoffees;
     private Handler handler;
 
@@ -110,10 +111,13 @@ public class BuyFragment extends BasicFragment implements GridViewItemListener, 
         buyDialog = new BuyDialog(homeActivity, R.style.dialog);
         mCoffees = new ArrayList<>();
         handler = new Handler();
+
+        gridViewItemListener = this;
+
         mCoffees = SingleMaterialLsit.getInstance(homeActivity).getCoffeeList();
         mPagerAdapter = new CoffeeViewPagerAdapter(homeActivity, mCoffees, this);
         mViewPager.addOnPageChangeListener(new ViewpagerPageChangedListener());
-        mViewPager.setAdapter(mPagerAdapter);
+        mViewPager.setAdapter(new CoffeeViewPagerAdapter(homeActivity, mCoffees, this));
         mMachineCode.setText(MachineConfig.getMachineCode() + "");
 
         TaskService.getInstance().setOnMessageReceviedListener(this);
@@ -208,17 +212,6 @@ public class BuyFragment extends BasicFragment implements GridViewItemListener, 
     @Override
     public void getMsgType(String msgType) {
         MyLog.d(TAG, "getMsgType come!");
-        int formulaID = Integer.parseInt(msgType);
-
-//        mCoffees = SingleMaterialLsit.getInstance(homeActivity).setCoffeeSellOut(formulaID);
-
-        if (mPagerAdapter != null) {
-            MyLog.d(TAG, "mPagerAdapter !=null ");
-
-            List<Coffee> coffees = SingleMaterialLsit.getInstance(homeActivity).setCoffeeSellOut(formulaID);
-            MyLog.d(TAG,coffees.get(0).getPrice()+"---"+coffees.get(0).isOver);
-            mPagerAdapter.notifyCoffeeList(coffees);
-        }
 
         new AsyncTask<Void, Void, Boolean>() {
             @Override
@@ -232,20 +225,20 @@ public class BuyFragment extends BasicFragment implements GridViewItemListener, 
             protected void onPostExecute(Boolean isUpdate) {
                 super.onPostExecute(isUpdate);
                 if (isUpdate) {
+                    List<Coffee> coffees = SingleMaterialLsit.getInstance(homeActivity).getCoffeeList();
+                    mViewPager.removeAllViews();
+                    removePoint();
+                    if (coffees != null && coffees.size() > 0) {
 
-//                    mCoffees.addAll(SingleMaterialLsit.getInstance(homeActivity).getCoffeeList());
-
-                    if (mPagerAdapter != null) {
-
-                        //           MyLog.d(TAG, "mPagerAdapter !=null ---" + mCoffees.get(0).price+",----------"+mCoffees.get(0).isOver);
-
-                              mPagerAdapter.notifyCoffeeList(SingleMaterialLsit.getInstance(homeActivity).getCoffeeList());
+                        mPagerAdapter = new CoffeeViewPagerAdapter(homeActivity, coffees, gridViewItemListener);
+                        mViewPager.addOnPageChangeListener(new ViewpagerPageChangedListener());
+                        mViewPager.setAdapter(new CoffeeViewPagerAdapter(homeActivity, mCoffees, gridViewItemListener));
                     }
-
                 }
 
             }
         }.execute();
+
     }
 
     @Override
@@ -287,6 +280,5 @@ public class BuyFragment extends BasicFragment implements GridViewItemListener, 
                 break;
         }
     }
-
 
 }

@@ -21,6 +21,7 @@ import example.jni.com.coffeeseller.bean.Coffee;
 import example.jni.com.coffeeseller.bean.Material;
 import example.jni.com.coffeeseller.bean.Step;
 import example.jni.com.coffeeseller.bean.Taste;
+import example.jni.com.coffeeseller.utils.MyLog;
 
 /**
  * Created by Administrator on 2018/4/16.
@@ -43,15 +44,17 @@ public class SingleMaterialLsit {
         setyoubaoList();
     }
 
-    public synchronized void setCoffeeList() {
-
-        if (coffeeArray == null) {
+    public synchronized List<Coffee> setCoffeeList() {
+        List<Coffee> coffees = new ArrayList<>();
+/*        if (coffeeArray == null) {
             return;
         }
         if (coffeeList.size() != 0) {
             coffeeList.clear();
-        }
+        }*/
         try {
+            sql = new MaterialSql(mContext);
+            Log.e(TAG, "数据库长度" + sql.getAllbunkersIDs().size());
             for (int i = 0; i < coffeeArray.length(); i++) {
                 org.json.JSONObject coffeeObject = (org.json.JSONObject) coffeeArray.opt(i);
                 Coffee coffee = new Coffee();
@@ -60,12 +63,13 @@ public class SingleMaterialLsit {
                 coffee.setPrice(coffeeObject.getString("price"));
                 coffee.setActivitiesPrice(coffeeObject.getString("activityPrice"));
                 coffee.setFormulaID(coffeeObject.getInt("formulaID"));
+                coffee.setOver(false);
                 org.json.JSONArray stepArray = coffeeObject.getJSONArray("process");
+
                 for (int j = 0; j < stepArray.length(); j++) {
                     org.json.JSONObject stepObject = (org.json.JSONObject) stepArray.opt(j);
                     String materialID = stepObject.getJSONObject("material").getString("materialID");
-                    sql = new MaterialSql(mContext);
-                    Log.e(TAG, "数据库长度" + sql.getAllbunkersIDs().size());
+
                     Log.e(TAG, "currentStep need materialID is " + materialID);
                     org.json.JSONArray taste = stepObject.getJSONArray("taste");
                     if (taste.length() != 0) { //有口味的配方
@@ -82,14 +86,15 @@ public class SingleMaterialLsit {
                         long lessetAmount = reallyAmount * amount / 100;  //得出最少口味需要的原料
                         if (intMaterialStock < lessetAmount) {
                             coffee.setOver(true);
-                            break;
+                        } else {
+                            coffee.setOver(false);
                         }
                     } else {   //无口味的配方
                         Log.e(TAG, "location all materialID is " + sql.getAllmaterialID().toString());
                         if (!sql.getAllmaterialID().contains(materialID)) { //本地料仓里面不含有这个原料
                             Log.e(TAG, "location have not this material");
                             coffee.setOver(true);
-                            break;
+                            continue;
                         }
                         String materialStock = sql.getStorkByMaterialID(materialID);// 找到对应原料编号的剩余量
 
@@ -217,10 +222,12 @@ public class SingleMaterialLsit {
                 }
                 coffee.setStepList(stepList);
                 coffeeList.add(coffee);
+                coffees.add(coffee);
             }
         } catch (JSONException e) {
             e.printStackTrace();
         }
+        return coffees;
     }
 
     private void setyoubaoList() {
@@ -476,28 +483,30 @@ public class SingleMaterialLsit {
 
     public synchronized List<Coffee> getCoffeeList() {
 
-        coffeeList.clear();
-        setCoffeeList();
 
-        formatCoffeeList();
+        return formatCoffeeList(setCoffeeList());
 
-        return coffeeList;
+//        return coffeeList;
     }
 
     /*
     * 将没有售罄的Coffee排在前面
     * */
-    private void formatCoffeeList() {
+    private List<Coffee> formatCoffeeList(List<Coffee> coffees) {
+
+        MyLog.d(TAG, "-----------------");
+
         int notOverCount = 0;
-        int coffeeCount = coffeeList.size();
+        int coffeeCount = coffees.size();
         for (int i = 0; i < coffeeCount; i++) {
-            Coffee coffee = coffeeList.get(i);
+            Coffee coffee = coffees.get(i);
             if (!coffee.isOver) {
-                coffeeList.remove(coffee);
-                coffeeList.add(notOverCount, coffee);
+                coffees.remove(coffee);
+                coffees.add(notOverCount, coffee);
                 notOverCount++;
             }
         }
+        return coffees;
     }
 
     public boolean isCoffeeSellOut(int position) {

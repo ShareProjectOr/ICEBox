@@ -22,6 +22,7 @@ import example.jni.com.coffeeseller.R;
 import example.jni.com.coffeeseller.bean.Coffee;
 import example.jni.com.coffeeseller.utils.CornersTransmation;
 import example.jni.com.coffeeseller.utils.ImageUtil;
+import example.jni.com.coffeeseller.utils.MyLog;
 
 /**
  * Created by WH on 2018/3/20.
@@ -40,6 +41,8 @@ public class CoffeeGridAdapter extends BaseAdapter {
 
 
     public CoffeeGridAdapter(Context context, List<Coffee> coffees) {
+
+        MyLog.d("CoffeeGridAdapter","CoffeeGridAdapter");
         this.context = context;
         this.coffees = coffees;
         if (this.coffees == null) {
@@ -99,12 +102,13 @@ public class CoffeeGridAdapter extends BaseAdapter {
             } else {
                 viewHolder.coffeeImage.setImageBitmap(bitmap);
             }*/
-
+            MyLog.d("----------coffee.isOver= ", "" + coffee.isOver);
             if (coffee.isOver) {
                 viewHolder.overLayout.setVisibility(View.VISIBLE);
                 viewHolder.sellOver.setVisibility(View.VISIBLE);
                 convertView.setEnabled(false);
             } else {
+
                 viewHolder.overLayout.setVisibility(View.GONE);
                 viewHolder.sellOver.setVisibility(View.GONE);
                 convertView.setEnabled(true);

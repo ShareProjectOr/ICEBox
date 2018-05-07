@@ -20,6 +20,7 @@ import java.util.List;
 
 import example.jni.com.coffeeseller.R;
 import example.jni.com.coffeeseller.bean.Coffee;
+import example.jni.com.coffeeseller.contentprovider.SingleMaterialLsit;
 import example.jni.com.coffeeseller.factory.FragmentEnum;
 import example.jni.com.coffeeseller.factory.FragmentFactory;
 import example.jni.com.coffeeseller.model.listeners.GridViewItemListener;
@@ -48,7 +49,8 @@ public class CoffeeViewPagerAdapter extends PagerAdapter {
         this.onePageCount = BuyFragment.DEFAULT_ONEPAGE_NUM;
         this.gridViewItemListener = gridViewItemListener;
         this.gridViews = new ArrayList<>();
-        getGridViews();
+        this.coffees = SingleMaterialLsit.getInstance(homeActivity).getCoffeeList();
+        getGridViews(this.coffees);
 
 
         Log.d("-----------", gridViews.size() + " -------------");
@@ -81,20 +83,8 @@ public class CoffeeViewPagerAdapter extends PagerAdapter {
         container.removeView(gridViews.get(position));
     }
 
-    public void notifyCoffeeList(List<Coffee> coffees) {
-
-        this.coffees = coffees;
-
-        this.notifyDataSetChanged();
-
-        getGridViews();
-
-        this.notifyDataSetChanged();
-
-    }
-
-    private void getGridViews() {
-        gridViews.clear();
+    public List<GridView> getGridViews(List<Coffee> coffees) {
+        //   List<GridView> gridViews = new ArrayList<>();
         if (FragmentFactory.curPage == FragmentEnum.ChooseCupNumFragment) {
             ((BuyFragment) FragmentFactory.getInstance().getFragment(FragmentEnum.ChooseCupNumFragment)).removePoint();
         }
@@ -158,8 +148,6 @@ public class CoffeeViewPagerAdapter extends PagerAdapter {
                 }
             });
             gridView.setAdapter(new CoffeeGridAdapter(homeActivity, gridCoffees));
-
-
             gridView.setOnTouchListener(new View.OnTouchListener() {
                 @Override
                 public boolean onTouch(View v, MotionEvent event) {
@@ -171,7 +159,10 @@ public class CoffeeViewPagerAdapter extends PagerAdapter {
             * 添加圆点
             * */
             addPoint(i);
+
         }
+
+        return gridViews;
     }
 
     private void addPoint(int i) {
