@@ -11,6 +11,8 @@ import android.support.v7.app.AppCompatActivity;
 import example.jni.com.coffeeseller.R;
 import example.jni.com.coffeeseller.factory.FragmentEnum;
 import example.jni.com.coffeeseller.factory.FragmentFactory;
+import example.jni.com.coffeeseller.model.listeners.TaskServiceListener;
+import example.jni.com.coffeeseller.parse.PayResult;
 import example.jni.com.coffeeseller.presenter.AddFragmentPresenter;
 import example.jni.com.coffeeseller.views.fragments.BasicFragment;
 import example.jni.com.coffeeseller.views.viewinterface.IAddFragmentView;
@@ -22,7 +24,7 @@ import static example.jni.com.coffeeseller.factory.FragmentEnum.MachineCheckFrag
  * Created by Administrator on 2018/3/20.
  */
 
-public class HomeActivity extends AppCompatActivity implements IAddFragmentView {
+public class HomeActivity extends AppCompatActivity implements IAddFragmentView ,TaskServiceListener{
     private static HomeActivity mInstance;
     private AddFragmentPresenter mAddFragmentPresenter;
 
@@ -93,5 +95,15 @@ public class HomeActivity extends AppCompatActivity implements IAddFragmentView 
     @Override
     public int getLayoutId() {
         return R.id.frag_container;
+    }
+
+    @Override
+    public void payListenner(PayResult payResult) {
+
+    }
+
+    @Override
+    public void formulaUpdate(String formulaId) {
+
     }
 }

@@ -298,7 +298,7 @@ public class MachineCheck implements IMachineCheck {
             }
 
             Waiter.doWait(2000);
-       /*     if (MachineInitState.CHECK_OPENMAINCTRL == MachineInitState.NORMAL && MachineInitState.GET_FORMULA == MachineInitState.NORMAL) {
+         /*   if (MachineInitState.CHECK_OPENMAINCTRL == MachineInitState.NORMAL && MachineInitState.GET_FORMULA == MachineInitState.NORMAL) {
                 mOnMachineCheckCallBackListener.MachineCheckEnd(true);
             } else {
                 mOnMachineCheckCallBackListener.MachineCheckEnd(false);

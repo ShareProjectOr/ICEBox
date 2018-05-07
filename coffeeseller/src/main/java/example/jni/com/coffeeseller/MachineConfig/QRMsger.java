@@ -51,7 +51,7 @@ public class QRMsger {
                 // TODO Auto-generated method stub
 
                 Map<String, Object> params = ConstanceMethod.getParams();
-                params.put("formulaID", 21);//dealRecorder.getFormulaID()
+                params.put("formulaID", dealRecorder.getFormulaID());
                 params.put("cupNum", dealRecorder.getRqcup());
 
                 MyLog.d(TAG, "reqQR RQ_URL = " + Constance.GET_QR);

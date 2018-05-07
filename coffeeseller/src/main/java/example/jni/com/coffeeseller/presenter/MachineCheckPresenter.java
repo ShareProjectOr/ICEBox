@@ -132,7 +132,7 @@ public class MachineCheckPresenter {
 
                 if (isCheckSuccess) {
                     mICheckMachineView.endCheck();
-                    //      mICheckMachineView.ChangePage(FragmentEnum.ChooseCupNumFragment);
+                      //    mICheckMachineView.ChangePage(FragmentEnum.ChooseCupNumFragment);
                 } else {
                     Log.e(TAG, "check unpass start timeCount");
                     mHandler.post(new Runnable() {

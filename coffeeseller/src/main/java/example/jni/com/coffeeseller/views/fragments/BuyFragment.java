@@ -23,10 +23,14 @@ import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import cof.ac.inter.CoffMsger;
+import cof.ac.inter.DebugAction;
+import cof.ac.inter.Result;
 import cof.ac.inter.StateEnum;
 import example.jni.com.coffeeseller.R;
 import example.jni.com.coffeeseller.bean.Coffee;
 import example.jni.com.coffeeseller.bean.MachineConfig;
+import example.jni.com.coffeeseller.bean.Step;
 import example.jni.com.coffeeseller.communicate.TaskService;
 import example.jni.com.coffeeseller.contentprovider.MaterialSql;
 import example.jni.com.coffeeseller.contentprovider.SingleMaterialLsit;
@@ -41,6 +45,7 @@ import example.jni.com.coffeeseller.model.listeners.GridViewItemListener;
 import example.jni.com.coffeeseller.model.listeners.ViewpagerPageChangedListener;
 import example.jni.com.coffeeseller.parse.PayResult;
 import example.jni.com.coffeeseller.utils.GridViewTransformation;
+import example.jni.com.coffeeseller.utils.MyLog;
 import example.jni.com.coffeeseller.utils.Waiter;
 import example.jni.com.coffeeseller.views.activities.HomeActivity;
 import example.jni.com.coffeeseller.views.customviews.BuyDialog;
@@ -111,7 +116,6 @@ public class BuyFragment extends BasicFragment implements GridViewItemListener, 
 
             }
         });
-
     }
 
     private void initDatas() {
@@ -183,9 +187,9 @@ public class BuyFragment extends BasicFragment implements GridViewItemListener, 
                         @Override
                         public void run() {
                             if (MachineConfig.getNetworkType() == 0) {
-                                mIsOnLineImg.setImageResource(R.mipmap.on_line);
-                            } else {
                                 mIsOnLineImg.setImageResource(R.mipmap.ic_launcher_round);
+                            } else {
+                                mIsOnLineImg.setImageResource(R.mipmap.on_line);
                             }
                         }
                     });
@@ -201,6 +205,7 @@ public class BuyFragment extends BasicFragment implements GridViewItemListener, 
 
         Coffee coffee = mCoffees.get(position);
         curSelectedCoffee = coffee;
+
         if (buyDialog == null) {
             buyDialog = new BuyDialog(homeActivity, R.style.dialog);
         }
@@ -211,6 +216,7 @@ public class BuyFragment extends BasicFragment implements GridViewItemListener, 
 
     @Override
     public void getMsgType(String msgType) {
+        MyLog.d(TAG, "getMsgType come!");
         int formulaID = Integer.parseInt(msgType);
         List<Coffee> coffees = SingleMaterialLsit.getInstance(homeActivity).setCoffeeSellOut(formulaID);
         mCoffees.clear();
@@ -262,5 +268,6 @@ public class BuyFragment extends BasicFragment implements GridViewItemListener, 
                 break;
         }
     }
+
 
 }

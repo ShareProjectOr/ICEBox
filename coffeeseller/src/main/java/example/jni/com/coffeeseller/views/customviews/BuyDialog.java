@@ -149,28 +149,46 @@ public class BuyDialog extends Dialog implements ChooseCupListenner, MkCoffeeLis
         }
         MaterialSql materialSql = new MaterialSql(context);
 
-
+        int waterUseTotal = 0;
+        String waterMaterialId = materialSql.getMaterialIDByContainerID("7");
+        ;
         for (int i = 0; i < coffee.getStepList().size(); i++) {
             Step step = coffee.getStepList().get(i);
+
+
             if (step != null)//&& step.getContainerConfig().getWater_capacity() == 0
 
                 if (step.getMaterial() != null) {
 
-                    if (step.getContainerConfig().getWater_capacity() != 0) {
-                        //更新数据库用水量
+
+                    if (step.getContainerConfig().getWater_capacity() != 0 || TextUtils.equals(waterMaterialId, step.getMaterial().getMaterialID() + "")) {
+
+                        //更新用水量
+                        waterUseTotal += step.getContainerConfig().getWater_capacity();
+
                     }
 
-                    Log.e(TAG, "materialID is " + step.getMaterial().getMaterialID());
+
+                    MyLog.d(TAG, "materialID is " + step.getMaterial().getMaterialID());
 
                     String sqlRestMaterial = materialSql.getStorkByMaterialID(step.getMaterial().getMaterialID() + "");
 
                     float sqlRestMaterialInt = Float.parseFloat(sqlRestMaterial);
 
-                    float mkUseMaterialInt = ((float) step.getTastes().get(i).getAmount()) / 100 * step.getAmount();
+                    if (step.getContainerConfig().getMaterial_time() == 0) {
+                        continue;
+                    }
+                    float mkUseMaterialInt = dealRecorder.getContainerConfigs().get(i).getMaterial_time() / step.getContainerConfig().getMaterial_time() * step.getAmount();
+
+                    if (mkUseMaterialInt == 0) {
+                        continue;
+                    }
 
                     Log.e(TAG, " materialID is  " + step.getMaterial().getMaterialID() + " stock is " + sqlRestMaterial + ",used= " + mkUseMaterialInt);
 
-                    boolean isUpdateSuccess = materialSql.updateMaterialStockByMaterialId(step.getMaterial().getMaterialID() + "", (sqlRestMaterialInt - mkUseMaterialInt) + "");
+                    Long stock = Long.parseLong((int) (sqlRestMaterialInt - mkUseMaterialInt) + "");
+
+                    boolean isUpdateSuccess = materialSql.updateMaterialStockByMaterialId(step.getMaterial().getMaterialID() + "", stock + "");
 
                     MyLog.W(TAG, "update material is " + isUpdateSuccess + ", materialId=" + step.getMaterial().getMaterialID()
                             + ", usedMaterial = " + mkUseMaterialInt + " sqlRestMaterial= " + sqlRestMaterialInt + ", stock=" + (sqlRestMaterialInt - mkUseMaterialInt));
@@ -178,13 +196,43 @@ public class BuyDialog extends Dialog implements ChooseCupListenner, MkCoffeeLis
                     ReportBunker reportBunker = new ReportBunker();
                     int bunkerId = Integer.parseInt(materialSql.getBunkerIDByMaterialD(step.getMaterial().getMaterialID() + ""));
                     reportBunker.setBunkerID(bunkerId);
-                    reportBunker.setUnit(mkUseMaterialInt + "");
-                    reportBunker.setMaterialStock((sqlRestMaterialInt - mkUseMaterialInt) + "");
+                    reportBunker.setUnit(Math.round(mkUseMaterialInt) + "");
+                    reportBunker.setMaterialStock(Math.round((sqlRestMaterialInt - mkUseMaterialInt)) + "");
 
                     bunkers.add(reportBunker);
-
                 }
+
         }
+/*
+* 更新用水量
+* */
+        if (waterUseTotal != 0 && waterMaterialId != null && !TextUtils.isEmpty(waterMaterialId)) {
+
+            String sqlRestWaterMaterial = materialSql.getStorkByMaterialID(waterMaterialId + "");
+
+            float sqlRestWaterMaterialInt = Float.parseFloat(sqlRestWaterMaterial);
+
+
+            int waterStock = (int) (sqlRestWaterMaterialInt - waterUseTotal / 10);
+
+            boolean isUpdateSuccess = materialSql.updateMaterialStockByMaterialId(waterMaterialId + "", waterStock + "");
+
+            MyLog.d(TAG, "用水量更新：materialID is" + waterMaterialId + " , rest= "
+                    + sqlRestWaterMaterialInt + ", used= " + waterUseTotal/10
+                    + " , stock= " + waterStock + ", isUpdateSuccess= " + isUpdateSuccess);
+
+
+            ReportBunker reportBunker = new ReportBunker();
+            int bunkerId = Integer.parseInt(materialSql.getBunkerIDByMaterialD(waterMaterialId + ""));
+            reportBunker.setBunkerID(bunkerId);
+            reportBunker.setUnit(Math.round(waterUseTotal) + "");
+            reportBunker.setMaterialStock(Math.round(waterStock) + "");
+
+            bunkers.add(reportBunker);
+        }
+
+
+
 
         /*
         * 更新数据库本地交易数据库bunker

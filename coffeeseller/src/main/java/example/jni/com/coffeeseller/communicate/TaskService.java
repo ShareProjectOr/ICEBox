@@ -52,6 +52,7 @@ import example.jni.com.coffeeseller.httputils.OkHttpUtil;
 import example.jni.com.coffeeseller.listener.MessageReceviedListener;
 import example.jni.com.coffeeseller.model.listeners.MsgTransListener;
 import example.jni.com.coffeeseller.model.listeners.OnMachineCheckCallBackListener;
+import example.jni.com.coffeeseller.model.listeners.TaskServiceListener;
 import example.jni.com.coffeeseller.parse.PayResult;
 import example.jni.com.coffeeseller.utils.MyLog;
 import example.jni.com.coffeeseller.utils.SecondToDate;
@@ -72,7 +73,7 @@ public class TaskService extends Service implements MqttCallback {
     Timer mTimer = null;
     private
     TimerTask mTimerTask = null;
-    public static final long RUN_PERIOD = 60000;
+    public static final long RUN_PERIOD = 4000; //发送消息的间隔
 
     //VersionManager versionManger;
 
@@ -80,11 +81,13 @@ public class TaskService extends Service implements MqttCallback {
     BroadcastReceiver mReceiver = null;
     private String ServiceTopic;   //服务端TOPIC
 
+    private TaskServiceListener taskServiceListener;
+
     //SettingDataManager settingDataManager;
 
 
     public TaskService() {
-        mHandler = new Handler(Looper.getMainLooper()) {
+      /*  mHandler = new Handler(Looper.getMainLooper()) {
 
             @Override
             public void handleMessage(Message msg) {
@@ -101,8 +104,12 @@ public class TaskService extends Service implements MqttCallback {
                             case "payResult":
                                 PayResult payResult = PayResult.getPayResult(msg.obj.toString());
                                 if (msgTransListener != null) {
+                                    Log.e(TAG, " msg Arrived ");
                                     msgTransListener.onMsgArrived(payResult);
+                                } else {
+                                    Log.e(TAG, "msgTransListener=null ::::");
                                 }
+                                Log.e(TAG, "收到了支付类消息 ::::");
                                 break;
                             case "updateFormula":
                                 if (MachineConfig.getCurrentState() == StateEnum.IDLE) {//空闲状态更新配方
@@ -133,9 +140,72 @@ public class TaskService extends Service implements MqttCallback {
 
                 }
             }
-        };
+        };*/
 
     }
+
+    public void dealHandler() {
+        mHandler = new Handler(Looper.getMainLooper()) {
+
+            @Override
+            public void handleMessage(Message msg) {
+                super.handleMessage(msg);
+                if (msg.obj == null) {
+                    isSubSuccess = false;
+                    ReSubMqtt();
+                } else {
+
+                    JSONObject msgObject = (JSONObject) msg.obj;
+                    Log.e(TAG, "收到消息  msg is " + msgObject.toString());
+                    try {
+                        switch (msgObject.getString("msgType")) {
+                            case "payResult":
+                                PayResult payResult = PayResult.getPayResult(msg.obj.toString());
+                                if (msgTransListener != null) {
+                                    Log.e(TAG, " msg Arrived ");
+                                    msgTransListener.onMsgArrived(payResult);
+                                } else {
+                                    Log.e(TAG, "msgTransListener = null");
+                                }
+                                Log.e(TAG, "收到了支付类消息 ::::");
+                                break;
+                            case "updateFormulaType":
+
+                                Log.e(TAG, "updateFormulaType  =  "+ MachineConfig.getCurrentState() );
+
+                                if (MachineConfig.getCurrentState() == StateEnum.IDLE) {//空闲状态更新配方
+                                    JSONObject d = msgObject.getJSONObject("d");
+                                    JSONObject formulaObject = d.getJSONObject("formula");
+                                    if (d.getString("upateType").equals("remove")) {//updateType
+
+
+                                    } else if (d.getString("upateType").equals("update")) {
+
+                                    } else if (d.getString("upateType").equals("add")) {
+
+                                    }
+                                    if (messageReceviedListener != null)
+                                        messageReceviedListener.getMsgType(formulaObject.getString("name"));//formulaID
+                                }
+
+                                break;
+                            case "machineOrder":
+                                if (messageReceviedListener != null)
+                                    messageReceviedListener.getMsgType("machineOrder");
+                                break;
+                            case "relayType":
+                                Log.e(TAG, "收到回执 uuid is " + msgObject.getString("msgId"));
+                                break;
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+
+                }
+            }
+        };
+    }
+
 
     private void checkSubSuccess() {
         if (!isConnected()) {
@@ -254,6 +324,7 @@ public class TaskService extends Service implements MqttCallback {
         super.onCreate();
         Log.d(TAG, "onCreate");
         mInstance = this;
+        dealHandler();
         //settingDataManager = SettingDataManager.getSettingDataManager(mInstance);
     }
 
@@ -335,6 +406,7 @@ public class TaskService extends Service implements MqttCallback {
         Message msg = new Message();
         msg.obj = object;
         mHandler.sendMessage(msg);
+
     }
 
     @Override
@@ -363,6 +435,8 @@ public class TaskService extends Service implements MqttCallback {
     private MsgTransListener msgTransListener;
 
     public void SetOnMsgListener(MsgTransListener msgTransListener) {
+
+        MyLog.d(TAG, "SetOnMsgListener   ");
         this.msgTransListener = msgTransListener;
     }
 
@@ -535,14 +609,17 @@ public class TaskService extends Service implements MqttCallback {
             // }
             msg.put("clientVersion", HomeActivity.getInstance().getVersion());
             msg.put("mediaVersion", "1.0.0");
-            message.setPayload(JsonUtil.mapToJson(msg).getBytes());
-            MqttTopic topic = client.getTopic("server/coffee/" + MachineConfig.getMachineCode());
-            try {
-                Log.e(TAG, "start publish message");
-                topic.publish(message);
-            } catch (MqttException e) {
-                e.printStackTrace();
-            }
+
+        }
+        message.setPayload(JsonUtil.mapToJson(msg).getBytes());
+        MqttTopic topic = client.getTopic("server/coffee/" + MachineConfig.getMachineCode());
+        try {
+            Log.e(TAG, "start publish message");
+            topic.publish(message);
+        } catch (MqttException e) {
+            Log.e(TAG, "send error " + e.getMessage());
+            e.printStackTrace();
+
         }
     }
 
@@ -622,6 +699,4 @@ public class TaskService extends Service implements MqttCallback {
 
         }
     }
-
-
 }

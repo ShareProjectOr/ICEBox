@@ -3,6 +3,7 @@ package example.jni.com.coffeeseller.model;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Handler;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
@@ -40,7 +41,6 @@ public class MkCoffee {
     private int MAX_PROGRESS = 100;
     private int MAX_MAKING_PROGRESS = 92;
     private int CONTAIN_MAKING_PROGRESS_TIME = 550;
-    private int NOT_CONTAIN_MAKING_PROGRESS_TIME = 200;
     private Context context;
     private MakingViewHolder makingViewHolder;
     private CoffMsger coffMsger;
@@ -91,8 +91,15 @@ public class MkCoffee {
             /*
             * 便于查看步骤
             * */
+            int waterTotal = 0;
             for (int i = 0; i < dealRecorder.getContainerConfigs().size(); i++) {
                 ContainerConfig containerConfig = dealRecorder.getContainerConfigs().get(i);
+
+                if (containerConfig.getWater_capacity() != 0) {
+                    waterTotal += containerConfig.getWater_capacity();
+                }
+
+                CONTAIN_MAKING_PROGRESS_TIME += containerConfig.getMaterial_time() + 5;//每个步骤机器运作大概5s
 
                 MyLog.d(TAG, "getContainer=" + containerConfig.getContainer());
                 MyLog.d(TAG, "getWater_capacity=" + containerConfig.getWater_capacity());
@@ -103,6 +110,9 @@ public class MkCoffee {
                 MyLog.d(TAG, "getStir_speed=" + containerConfig.getStir_speed());
                 MyLog.d(TAG, "getWater_interval=" + containerConfig.getWater_interval());
             }
+            CONTAIN_MAKING_PROGRESS_TIME += waterTotal / 100;
+
+            MyLog.d(TAG, "CONTAIN_MAKING_PROGRESS_TIME= " + CONTAIN_MAKING_PROGRESS_TIME);
 
             String tasteNameAndRadio = "";
             for (int i = 0; i < coffeeFomat.getTasteNameRatio().size(); i++) {
@@ -156,18 +166,18 @@ public class MkCoffee {
         if (coffeeMakeStateRecorder.state == CoffeeMakeState.COFFEE_ISMAKING && !isStartMaking) {
 
             isStartMaking = true;
-            updateProgressAnim(CONTAIN_MAKING_PROGRESS_TIME);
+            updateProgressAnim();
 
         } else if (coffeeMakeStateRecorder.state == CoffeeMakeState.COFFEE_DOWN_POWER && !isStartMaking) {
 
             isStartMaking = true;
-            updateProgressAnim(NOT_CONTAIN_MAKING_PROGRESS_TIME);
+            updateProgressAnim();
 
         } else if (coffeeMakeStateRecorder.state == CoffeeMakeState.COFFEEFINISHED_CUPNOTAKEN && isStartMaking) {
 
             isStartMaking = false;
             makeSuccess = true;
-            updateProgressAnim(0);
+            updateProgressAnim();
 
         }
     }
@@ -183,6 +193,7 @@ public class MkCoffee {
             @Override
             public void run() {
 
+                buffer.setLength(0);
                 buffer.append("提示：");
                 MachineState machineState = null;
                 lastStateTime = System.currentTimeMillis();
@@ -217,30 +228,18 @@ public class MkCoffee {
 
                                 MyLog.W(TAG, " make failed and time is too long,down cup state is remaining ");
 
-                                if (mkCoffeeListenner != null) {
+                                if (machineState.hasCupOnShelf()) {
                                     dealRecorder.setMakeSuccess(false);
+                                } else {
+                                    dealRecorder.setMakeSuccess(true);
+                                }
+
+                                if (mkCoffeeListenner != null) {
                                     isCalculateMaterial = true;
                                     mkCoffeeListenner.getMkResult(dealRecorder, false, isCalculateMaterial);
                                 }
 
                             }
-                          /*  else if (coffeeMakeStateRecorder.state == CoffeeMakeState.COFFEE_DOWN_POWER) {
-
-                                if (mkCoffeeListenner != null) {
-                                    dealRecorder.setMakeSuccess(false);
-                                    isCalculateMaterial = true;
-                                    mkCoffeeListenner.getMkResult(dealRecorder, false, isCalculateMaterial);
-                                }
-
-                            } else if (coffeeMakeStateRecorder.state == CoffeeMakeState.COFFEE_ISMAKING) {
-
-                                if (mkCoffeeListenner != null) {
-                                    dealRecorder.setMakeSuccess(false);
-                                    isCalculateMaterial = true;
-                                    mkCoffeeListenner.getMkResult(dealRecorder, false, isCalculateMaterial);
-                                }
-
-                            }*/
                         }
 
                         break;
@@ -252,9 +251,9 @@ public class MkCoffee {
                             coffeeMakeStateRecorder.state = CoffeeMakeState.COFFEEMAKING_FAILED;
                             //     isCalculateMaterial = false;
 
-
                             buffer.append("/n");
                             buffer.append("制作过程中接收到0a : " + machineState.getMajorState().getHighErr_byte());
+
                         }
                     } else {
 
@@ -263,8 +262,6 @@ public class MkCoffee {
 
 
                     if (coffeeMakeStateRecorder.state == null) {
-
-
 
 
                         Result result = coffMsger.mkCoffee(coffeeFomat.getContainerConfigs());
@@ -345,10 +342,16 @@ public class MkCoffee {
 
                         showErr(true);
 
-                        if (mkCoffeeListenner != null) {
-                            dealRecorder.setMakeSuccess(false);
-                            mkCoffeeListenner.getMkResult(dealRecorder, false, isCalculateMaterial);
-                        }
+                        handler.postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                if (mkCoffeeListenner != null) {
+                                    dealRecorder.setMakeSuccess(false);
+                                    mkCoffeeListenner.getMkResult(dealRecorder, false, isCalculateMaterial);
+                                }
+                            }
+                        }, 4000);
+
 
                         MyLog.d(TAG, "cur state is failed ");
                         break;
@@ -387,6 +390,7 @@ public class MkCoffee {
             coffeeMakeStateRecorder.state = CoffeeMakeState.COFFEEFINISHED_CUPNOTAKEN;
             return true;
         }
+
         return false;
     }
 
@@ -445,7 +449,7 @@ public class MkCoffee {
         return false;
     }
 
-    public void updateProgressAnim(final int waitTime) {
+    public void updateProgressAnim() {
 
         new AsyncTask<Void, Integer, Integer>() {
 
@@ -463,7 +467,8 @@ public class MkCoffee {
                             publishProgress(MAX_PROGRESS);
                             break;
                         }
-                        Waiter.doWait(waitTime);
+                        MyLog.d(TAG, "11111111111111111------------" + CONTAIN_MAKING_PROGRESS_TIME);
+                        Waiter.doWait(CONTAIN_MAKING_PROGRESS_TIME);
                     }
                 } else {
                     publishProgress(MAX_PROGRESS);

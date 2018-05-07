@@ -478,8 +478,25 @@ public class SingleMaterialLsit {
         coffeeList.clear();
         setCoffeeList();
 
+        formatCoffeeList();
 
         return coffeeList;
+    }
+
+    /*
+    * 将没有售罄的Coffee排在前面
+    * */
+    private void formatCoffeeList() {
+        int notOverCount = 0;
+        int coffeeCount = coffeeList.size();
+        for (int i = 0; i < coffeeCount; i++) {
+            Coffee coffee = coffeeList.get(i);
+            if (!coffee.isOver) {
+                coffeeList.remove(coffee);
+                coffeeList.add(notOverCount, coffee);
+                notOverCount++;
+            }
+        }
     }
 
     public boolean isCoffeeSellOut(int position) {

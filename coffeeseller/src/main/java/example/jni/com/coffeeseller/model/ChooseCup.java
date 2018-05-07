@@ -197,9 +197,26 @@ public class ChooseCup implements View.OnClickListener, MsgTransListener {
         for (int i = 0; i < steps.size(); i++) {
             Step step = steps.get(i);
 
-//            ContainerConfig containerConfig = step.getContainerConfig();
-//
-//            mCoffeeFomat.getContainerConfigs().add(i, containerConfig);
+            ContainerConfig containerConfig = new ContainerConfig();
+            containerConfig.setMaterial_time(step.getContainerConfig().getMaterial_time());
+            containerConfig.setWater_interval(step.getContainerConfig().getWater_interval());
+            containerConfig.setWater_type(step.getContainerConfig().getWater_type());
+            containerConfig.setContainer(step.getContainerConfig().getContainer());
+            containerConfig.setRotate_speed(step.getContainerConfig().getRotate_speed());
+            containerConfig.setStir_speed(step.getContainerConfig().getStir_speed());
+            containerConfig.setWater_capacity(step.getContainerConfig().getWater_capacity());
+
+
+            MyLog.d(TAG, step.getContainerConfig().getMaterial_time() + "----getMaterial_time= " + containerConfig.getMaterial_time());
+            MyLog.d(TAG, step.getContainerConfig().getWater_interval() + "----getWater_interval= " + containerConfig.getWater_interval());
+            MyLog.d(TAG, step.getContainerConfig().getWater_type() + "----getWater_type= " + containerConfig.getWater_type());
+            MyLog.d(TAG, step.getContainerConfig().getContainer() + "----getContainer= " + containerConfig.getContainer());
+            MyLog.d(TAG, step.getContainerConfig().getRotate_speed() + "----getRotate_speed= " + containerConfig.getRotate_speed());
+            MyLog.d(TAG, step.getContainerConfig().getStir_speed() + "----getStir_speed= " + containerConfig.getStir_speed());
+            MyLog.d(TAG, step.getContainerConfig().getWater_capacity() + "----getWater_capacity= " + containerConfig.getWater_capacity());
+
+
+            mCoffeeFomat.getContainerConfigs().add(i, containerConfig);
 
             mViewHolder.addView(step, i);
         }
@@ -227,6 +244,7 @@ public class ChooseCup implements View.OnClickListener, MsgTransListener {
                 if (bitmap != null) {
                     BitmapDrawable bitmapDrawable = new BitmapDrawable(bitmap);
                     mViewHolder.mQrCodeImage.setBackgroundDrawable(bitmapDrawable);
+                    tradeMsgRequest.mCurRequest = TradeMsgRequest.REQUEST_CHECK_PAY;
                 } else {
                     mViewHolder.mQrCodeImage.setBackgroundResource(R.mipmap.qr_fault);
                     mViewHolder.mRequestQRTxt.setVisibility(View.VISIBLE);
@@ -345,28 +363,29 @@ public class ChooseCup implements View.OnClickListener, MsgTransListener {
 
         ContainerConfig containerConfig = mCoffeeFomat.getContainerConfigs().get(index);
 
-        MyLog.d(TAG, "step.getContainerConfig() = " + step.getMaterialTime());
-
         for (int i = 0; i < tasteLayout.getChildCount(); i++) {
             LinearLayout childLayout = (LinearLayout) tasteLayout.getChildAt(i);
             TextView textView = (TextView) childLayout.getChildAt(0);
             if (textView != checkedView) {
                 textView.setSelected(false);
+                textView.setTag(false);
             } else {
                 textView.setSelected(true);
 
+                textView.setTag(true);
+
                 float materialTime = ((float) step.getTastes().get(i).getAmount()) / 100;
 
-                int useMaterial = Math.round(materialTime * step.getMaterialTime());
+                int useMaterial = Math.round(materialTime * step.getContainerConfig().getMaterial_time());
 
-                MyLog.d(TAG, "containerConfig.getMaterial_time()= " + step.getMaterialTime()
+                MyLog.d(TAG, "containerConfig.getMaterial_time()= " + step.getContainerConfig().getMaterial_time()
                         + " ,time= " + materialTime + ",getMaterial_time= " + useMaterial + " ----i= " + step.getTastes().get(i).getRemark());
 
                 containerConfig.setMaterial_time(useMaterial);
 
-                mCoffeeFomat.getContainerConfigs().add(index, containerConfig);
+                mCoffeeFomat.getContainerConfigs().remove(index);
 
-                mCoffeeFomat.getTasteNameRatio().add(step.getTastes().get(i).getRemark() + "-" + step.getTastes().get(i).getAmount());
+                mCoffeeFomat.getContainerConfigs().add(index, containerConfig);
 
             }
         }
@@ -426,6 +445,41 @@ public class ChooseCup implements View.OnClickListener, MsgTransListener {
             if (mCoffeeFomat.getContainerConfigs().get(i).getWater_capacity() != 0)
                 mCoffeeFomat.getContainerConfigs().get(i).setWater_type(mCoffeeFomat.getWaterType());
         }
+
+
+        int count = mViewHolder.mTastLayout.getChildCount();
+
+        MyLog.d(TAG, "getFinalContainerConfig count= " + count);
+
+        for (int i = 0; i < count; i++) {
+            View view = mViewHolder.mTastLayout.getChildAt(i);
+            LinearLayout tasteLayout = (LinearLayout) view.findViewById(R.id.taste_suger);
+            Step step = (Step) tasteLayout.getTag();
+            if (step == null || step.getTastes() == null || step.getTastes().size() <= 0) {
+                continue;
+            }
+            LinearLayout layout = (LinearLayout) tasteLayout.getChildAt(0);
+            MyLog.d(TAG, "getFinalContainerConfig layout count= " + step.getTastes().size());
+
+            for (int selectedId = 0; selectedId < step.getTastes().size(); selectedId++) {
+
+                LinearLayout childLayout = (LinearLayout) layout.getChildAt(selectedId);
+                TextView textView = (TextView) childLayout.getChildAt(0);
+//                boolean isSelected = (boolean) textView.getTag();
+
+                MyLog.d(TAG, "getFinalContainerConfig layout selected= " + textView.isSelected());
+
+                if (textView.isSelected()) {
+
+                    if (mCoffeeFomat.getTasteNameRatio().size() > i) {
+                        mCoffeeFomat.getTasteNameRatio().remove(i);
+                    }
+
+                    mCoffeeFomat.getTasteNameRatio().add(i, step.getTastes().get(selectedId).getRemark() + "-" + step.getTastes().get(i).getAmount());
+                }
+            }
+        }
+
         return mCoffeeFomat.getContainerConfigs();
     }
 
@@ -468,6 +522,7 @@ public class ChooseCup implements View.OnClickListener, MsgTransListener {
 
     @Override
     public void onMsgArrived(Object msg) {
+
         MyLog.d(TAG, "one msg arrived");
 
         if (msg != null) {
@@ -477,12 +532,14 @@ public class ChooseCup implements View.OnClickListener, MsgTransListener {
                 ParseRQMsg parseRqMsg = (ParseRQMsg) msg;
                 getQrMsg(parseRqMsg);
 
-                MyLog.d(TAG, parseRqMsg.getQrCode());
+                MyLog.d(TAG, "qrcode come " + parseRqMsg.getQrCode());
 
             }
             if (msg instanceof PayResult && tradeMsgRequest.mCurRequest == TradeMsgRequest.REQUEST_CHECK_PAY) {
                 PayResult aMsg = (PayResult) msg;
                 getPayMsg(aMsg);
+
+                MyLog.d(TAG, "payResult come !");
             }
         } else {
             if (tradeMsgRequest.mCurRequest == TradeMsgRequest.REQUEST_QR_CODE) {
@@ -541,13 +598,19 @@ public class ChooseCup implements View.OnClickListener, MsgTransListener {
 
         public void addView(final Step step, final int index) {
 
-            mCoffeeFomat.getContainerConfigs().add(index, step.getContainerConfig());
+            MyLog.d(TAG, "addView has been called");
 
             if (step == null) {
                 return;
             }
+
+            MyLog.d(TAG, "addView has been called,and step !=null");
+
             List<Taste> tastes = step.getTastes();
             Material material = step.getMaterial();
+
+            MyLog.d(TAG, "addView has been called,and step !=null ,and tastes =" + tastes.size());
+
             if (tastes == null || tastes.size() <= 0 || material == null) {
                 return;
             }
@@ -559,6 +622,8 @@ public class ChooseCup implements View.OnClickListener, MsgTransListener {
             tasteName.setText(material.getName());
 
             LinearLayout layout = setTast(tasteLayout, tastes, step, index);
+
+            tasteLayout.setTag(step);
 
             setEnable(layout, step, index);
 
@@ -607,12 +672,6 @@ public class ChooseCup implements View.OnClickListener, MsgTransListener {
                     textView.setAlpha(0.7f);
                     textView.setClickable(false);
                 }
-              /*  else {
-                    if (taste.getAmount() == 100) {
-                        nomalView = textView;
-                    }
-                    updateTextColor(tasteLayout, textView, step, index);
-                }*/
 
             }
 
@@ -628,12 +687,8 @@ public class ChooseCup implements View.OnClickListener, MsgTransListener {
                     }
                 }
             }
-
-      /*      //默认选中正常口味
-            if (nomalView != null) {
-                updateTextColor(tasteLayout, nomalView, step, index);
-            }*/
         }
+
     }
 
     private LinearLayout setTast(LinearLayout layout, List<Taste> tastes, final Step step, final int index) {
@@ -666,10 +721,6 @@ public class ChooseCup implements View.OnClickListener, MsgTransListener {
                     updateTextColor(linearLayout, v, step, index);
                 }
             });
-
-            if (taste.getAmount() == 100) {
-                textView.setSelected(true);
-            }
 
             childLayout.addView(textView);
 

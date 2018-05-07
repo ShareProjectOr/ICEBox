@@ -92,6 +92,7 @@ public class CoffeeViewPagerAdapter extends PagerAdapter {
             } else {
                 gridCoffees.addAll(coffees.subList(i * onePageCount, coffees.size()));
             }
+            final int gridIndex = i;
             View view = LayoutInflater.from(homeActivity).inflate(R.layout.coffee_grid_layout, null, false);
             final HomeGridView gridView = (HomeGridView) view.findViewById(R.id.coffeeGrid);
             gridView.setNumColumns(onePageCount / 2);
@@ -112,7 +113,7 @@ public class CoffeeViewPagerAdapter extends PagerAdapter {
                     }
                     if (gridViewItemListener != null) {
                         MyLog.d(TAG, "gridViewItemListener has been called");
-                        gridViewItemListener.onGridItemClick(parent, view, position, id);
+                        gridViewItemListener.onGridItemClick(parent, view, gridIndex * onePageCount + position, id);
                     }
                     Animation anim = AnimationUtils.loadAnimation(homeActivity, R.anim.set_snake);
 

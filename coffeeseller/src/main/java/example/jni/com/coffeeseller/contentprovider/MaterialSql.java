@@ -92,6 +92,22 @@ public class MaterialSql extends SQLiteOpenHelper {
         return ContainerID;
     }
 
+    /*
+    *
+    * 通过ContainnerId 获取原料id;:用于对水量的操作
+    * */
+    public String getMaterialIDByContainerID(String ContainerID) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor res = db.rawQuery("select * from " + MATERIALS_TABLE_NAME + " where " + MATERIALS_COLUMN_CONTAINERID + " = " + ContainerID + " limit 1 ", null);
+        res.moveToFirst();
+        String MaterialID = res.getString(res.getColumnIndex(MATERIALS_COLUMN_MATERIALID));
+        res.close();
+        db.close();
+        return MaterialID;
+    }
+
+
+
 
     public String getBunkersNameByID(String bunkesID) {
         SQLiteDatabase db = this.getReadableDatabase();
