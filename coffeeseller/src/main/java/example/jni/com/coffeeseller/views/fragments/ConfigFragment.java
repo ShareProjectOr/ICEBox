@@ -56,7 +56,7 @@ import example.jni.com.coffeeseller.views.viewinterface.ICommitMaterialView;
 
 public class ConfigFragment extends BasicFragment implements IAddMaterialView, ICommitMaterialView, ICheckVersionView, StateListener, IAddCupView, CompoundButton.OnCheckedChangeListener {
     private View mView;
-    private Button toDebug, materialCommit, checkVersion, saveConfig, changePassword, searchTrade;
+    private Button toDebug, materialCommit, checkVersion, saveConfig, changePassword, searchTrade, toSystem;
     private HomeActivity homeActivity;
     private TextView back;
     private RecyclerView materialList;
@@ -124,6 +124,8 @@ public class ConfigFragment extends BasicFragment implements IAddMaterialView, I
         CupNum = (TextView) mView.findViewById(R.id.CupNum);
         mMachineName = (TextView) mView.findViewById(R.id.machineName);
         mMachineName.setOnClickListener(this);
+        toSystem = (Button) mView.findViewById(R.id.toSystem);
+        toSystem.setOnClickListener(this);
         passWord = (EditText) mView.findViewById(R.id.passWord);
         saveConfig = (Button) mView.findViewById(R.id.saveConfig);
         searchTrade = (Button) mView.findViewById(R.id.search_trade);
@@ -229,6 +231,10 @@ public class ConfigFragment extends BasicFragment implements IAddMaterialView, I
                 homeActivity.replaceFragment(FragmentEnum.ConfigFragment, FragmentEnum.TradeFragment);
                 break;
             case R.id.machineName:
+              /*  SetFloatButton.getInstance(getActivity()).showFlowButton();
+                goSystemSetting();*/
+                break;
+            case R.id.toSystem:
                 SetFloatButton.getInstance(getActivity()).showFlowButton();
                 goSystemSetting();
                 break;

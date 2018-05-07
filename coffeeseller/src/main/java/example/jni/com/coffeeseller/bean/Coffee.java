@@ -18,6 +18,15 @@ public class Coffee {
     public int formulaID;
     public List<ContainerConfig> processList;
     public List<Step> stepList;
+    public String activitiesPrice= "";
+
+    public String getActivitiesPrice() {
+        return activitiesPrice;
+    }
+
+    public void setActivitiesPrice(String activitiesPrice) {
+        this.activitiesPrice = activitiesPrice;
+    }
 
     public int getFormulaID() {
         return formulaID;

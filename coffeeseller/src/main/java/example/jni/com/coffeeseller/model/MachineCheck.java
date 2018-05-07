@@ -223,12 +223,12 @@ public class MachineCheck implements IMachineCheck {
         CoffMsger mCoffmsger = CoffMsger.getInstance();
 
         if (mCoffmsger.init()) {
-            //   Result result = mCoffmsger.Debug(DebugAction.RESET, 0, 0);//复位机器
+             Result result = mCoffmsger.Debug(DebugAction.RESET, 0, 0);//复位机器
             Waiter.doWait(700);
-            mCoffmsger.startCheckState();
+           // mCoffmsger.startCheckState();
             MachineInitState.CHECK_OPENMAINCTRL = MachineInitState.NORMAL;
             mOnMachineCheckCallBackListener.OpenMainCrilSuccess();
-        /*    if (result.getCode() == Result.SUCCESS) {
+            if (result.getCode() == Result.SUCCESS) {
                 synchronized (mCoffmsger) {
                     mCoffmsger.startCheckState();
                 }
@@ -236,7 +236,7 @@ public class MachineCheck implements IMachineCheck {
                 mOnMachineCheckCallBackListener.OpenMainCrilSuccess();
             } else {
                 mOnMachineCheckCallBackListener.OpenMainCrilFailed("主控板检测出错,错误:" + result.getErrDes());
-            }*/
+            }
 
 
         } else {

@@ -463,7 +463,7 @@ public class MaterialSql extends SQLiteOpenHelper {
         return bunkerdata;
     }
 
-    private String bankesName[] = {"豆仓(主料仓)", "辅料仓1", "辅料仓2", "辅料仓3", "辅料仓4", "辅料仓5", "辅料仓6", "温水仓", "纸杯仓"};
+    private String bankesName[] = {"豆仓(主料仓)", "辅料仓1", "辅料仓2", "辅料仓3", "辅料仓4", "辅料仓5", "辅料仓6", "净水仓", "纸杯仓"};
 
     public List<CommitMaterialObject> getCommitMaterialObjectList() {
         List<CommitMaterialObject> list = new ArrayList<>();

@@ -57,7 +57,8 @@ public class SingleMaterialLsit {
                 Coffee coffee = new Coffee();
                 coffee.setCacheUrl(coffeeObject.getString("imageSource"));
                 coffee.setName(coffeeObject.getString("name"));
-                coffee.setPrice(coffeeObject.getString("suggestedPrice"));
+                coffee.setPrice(coffeeObject.getString("price"));
+                coffee.setActivitiesPrice(coffeeObject.getString("activityPrice"));
                 coffee.setFormulaID(coffeeObject.getInt("formulaID"));
                 org.json.JSONArray stepArray = coffeeObject.getJSONArray("process");
                 for (int j = 0; j < stepArray.length(); j++) {
