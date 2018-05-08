@@ -73,7 +73,7 @@ public class TaskService extends Service implements MqttCallback {
     Timer mTimer = null;
     private
     TimerTask mTimerTask = null;
-    public static final long RUN_PERIOD = 4000; //发送消息的间隔
+    public static final long RUN_PERIOD = 60000; //发送消息的间隔
 
     //VersionManager versionManger;
 
@@ -623,17 +623,24 @@ public class TaskService extends Service implements MqttCallback {
 
         }
         message.setPayload(JsonUtil.mapToJson(msg).getBytes());
+
         if (client != null) {  //为了防止 在订阅之前 被调用时会 抛出client为空的异常
-            MqttTopic topic = client.getTopic("server/coffee/" + MachineConfig.getMachineCode());
+            if (!isConnected()) {  //未连接 则重连
+                ReSubMqtt();
+            } else {
+                MqttTopic topic = client.getTopic("server/coffee/" + MachineConfig.getMachineCode());
 
-            try {
-                Log.e(TAG, "start publish message");
-                topic.publish(message);
-            } catch (MqttException e) {
-                Log.e(TAG, "send error " + e.getMessage());
-                e.printStackTrace();
+                try {
+                    Log.e(TAG, "start publish message");
+                    topic.publish(message);
+                } catch (MqttException e) {
+                    Log.e(TAG, "send error " + e.getMessage());
+                    e.printStackTrace();
 
+                }
             }
+
+
         }
 
     }
