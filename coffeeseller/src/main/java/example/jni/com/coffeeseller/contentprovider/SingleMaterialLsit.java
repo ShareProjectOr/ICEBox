@@ -168,6 +168,7 @@ public class SingleMaterialLsit {
                     String MaterialDropSpeed = "";
                     String outPut = sql.getMaterialDropSpeedBycontainerID(containerID); //校准值
                     String defultOutPut = stepObject.getJSONObject("material").getString("output");
+
                     if (outPut.equals("null") || outPut.equals("") || outPut.equals("0")) {
                         //没有校准值时 ,采用默认值
                         MaterialDropSpeed = defultOutPut;
@@ -177,7 +178,7 @@ public class SingleMaterialLsit {
                     }
 
 
-                    Log.e(TAG, "默认落料速度=" + MaterialDropSpeed + "--此时的原料为:" + stepObject.getJSONObject("material").getString("name") + "落料总量为:" + amount);
+                    Log.e(TAG, "默认落料速度=" + defultOutPut + " 校准值= " + outPut + "--此时的原料为:" + stepObject.getJSONObject("material").getString("name") + "落料总量为:" + amount);
                     int DropSpeed = Integer.parseInt(MaterialDropSpeed);
                     Log.e(TAG, "DropSpeed is " + DropSpeed);
                     double loadPercent = new BigDecimal((float) (stepObject.getInt("loadingSpeed") / 127)).setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();

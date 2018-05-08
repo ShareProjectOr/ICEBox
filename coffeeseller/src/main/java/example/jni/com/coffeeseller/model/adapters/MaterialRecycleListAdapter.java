@@ -70,6 +70,7 @@ public class MaterialRecycleListAdapter extends RecyclerView.Adapter<RecyclerVie
         mHolder.bankersName.setText(list.get(position).getBunkersName());
         mHolder.Material.setText(list.get(position).getMaterialName());
         mHolder.AddTime.setText(list.get(position).getLastLoadingTime());
+        mHolder.output.setText(list.get(position).getMaterialDropSpeed());
         long stockmg;
         if (list.get(position).getMaterialStock().equals("")) {
             stockmg = 0;
@@ -226,7 +227,7 @@ public class MaterialRecycleListAdapter extends RecyclerView.Adapter<RecyclerVie
 
 
     class ContentViewHolder extends RecyclerView.ViewHolder {
-        TextView bankersName, Material, CountAndLess, AddTime, Opration, bindMaterial, textDrop;
+        TextView bankersName, Material, CountAndLess, AddTime, Opration, bindMaterial, textDrop, output;
 
         public ContentViewHolder(View itemView) {
             super(itemView);
@@ -237,6 +238,7 @@ public class MaterialRecycleListAdapter extends RecyclerView.Adapter<RecyclerVie
             Opration = (TextView) itemView.findViewById(R.id.operation);
             bindMaterial = (TextView) itemView.findViewById(R.id.bindMarterial);
             textDrop = (TextView) itemView.findViewById(R.id.textDrop);
+            output = (TextView) itemView.findViewById(R.id.output);
         }
     }
 }

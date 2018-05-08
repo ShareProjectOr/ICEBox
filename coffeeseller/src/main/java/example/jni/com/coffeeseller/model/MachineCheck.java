@@ -111,7 +111,7 @@ public class MachineCheck implements IMachineCheck {
                             for (int i = 0; i < list.size(); i++) {
                                 Log.e(TAG, "开始执行创建数据库");
                                 if (list.get(i).getContainerID().equals("3")) {
-                                    Log.e(TAG, "糖的默认落料量为:" + list.get(i).getMaterialDropSpeed());
+                                    Log.e(TAG, "糖的默认落料量为:" + list.get(i).getDefultMaterialDropSpeed());
                                 }
                                 boolean b = content.insertContact(list.get(i).getBunkerID(), list.get(i).getBunkerType(), list.get(i).getMaterialID(), list.get(i).getMaterialType(), list.get(i).getMaterialName()
                                         , list.get(i).getMaterialUnit(), list.get(i).getMaterialStock(), list.get(i).getMaterialDropSpeed(), list.get(i).getDefultMaterialDropSpeed(), list.get(i).getContainerID(), list.get(i).getLastLoadingTime());

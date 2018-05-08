@@ -49,7 +49,7 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_marginRight="10dp"
-            android:layout_weight="2"
+            android:layout_weight="2.5"
             android:orientation="vertical">
 
             <LinearLayout
@@ -277,6 +277,7 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:text="料仓编号"
+                        android:gravity="center"
                         android:textSize="@dimen/text_size_one" />
 
                     <TextView
@@ -284,6 +285,7 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:text="原料"
+                        android:gravity="center"
                         android:textSize="@dimen/text_size_one" />
 
                     <TextView
@@ -291,12 +293,21 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:text="预估余量"
+                        android:gravity="center"
+                        android:textSize="@dimen/text_size_one" />
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:text="单位落料校准值"
                         android:textSize="@dimen/text_size_one" />
 
                     <TextView
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
+                        android:gravity="center"
                         android:text="最后补料时间"
                         android:textSize="@dimen/text_size_one" />
 
@@ -305,6 +316,7 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:text="操作"
+                        android:gravity="center"
                         android:textSize="@dimen/text_size_one" />
 
                     <TextView
@@ -315,7 +327,7 @@
                         android:text="原料校准"
                         android:textColor="@color/blue"
                         android:textSize="@dimen/text_size_one"
-                        android:visibility="invisible" />
+                        android:visibility="gone" />
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -323,7 +335,7 @@
                         android:layout_marginRight="40dp"
                         android:text="绑定原料"
                         android:textSize="@dimen/text_size_one"
-                        android:visibility="invisible" />
+                        android:visibility="gone" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -480,7 +492,7 @@
                 <Button
                     android:id="@+id/toSystem"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_height="30dp"
                     android:layout_marginRight="10dp"
                     android:textColor="@color/white"
                     android:textSize="@dimen/text_size_one"
@@ -514,7 +526,7 @@
 
                 <EditText
                     android:id="@+id/machineCode"
-                    android:layout_width="400dp"
+                    android:layout_width="300dp"
                     android:layout_height="40dp"
                     android:layout_marginLeft="20dp"
                     android:background="@drawable/shape_config_edit" />
@@ -657,10 +669,11 @@
                 <Button
                     android:id="@+id/changePassword"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_height="30dp"
                     android:layout_marginLeft="20dp"
                     android:background="@drawable/shape_botton"
                     android:text="修改密码"
+                    android:textSize="@dimen/text_size_one"
                     android:textColor="@color/white" />
             </LinearLayout>
 
@@ -668,7 +681,7 @@
             <Button
                 android:id="@+id/saveConfig"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="30dp"
                 android:layout_marginLeft="20dp"
                 android:layout_marginRight="20dp"
                 android:layout_marginTop="100dp"
