@@ -291,7 +291,7 @@ public class TaskService extends Service implements MqttCallback {
                     // setWill方法，如果项目中需要知道客户端是否掉线可以调用该方法。设置最终端口的通知消息
                     Map<String, Object> bytejson = new HashMap<>();
                     bytejson.put("msgId", UUID.randomUUID().toString());
-                    bytejson.put("msgType", "willMsgType");
+                    bytejson.put("msgType", "willType");
                     bytejson.put("machineCode", MachineConfig.getMachineCode());
                     bytejson.put("sendTime", SecondToDate.getDateToString(System.currentTimeMillis()));
                     options.setWill(topic, JsonUtil.mapToJson(bytejson).getBytes(), 2, true);
@@ -620,15 +620,19 @@ public class TaskService extends Service implements MqttCallback {
 
         }
         message.setPayload(JsonUtil.mapToJson(msg).getBytes());
-        MqttTopic topic = client.getTopic("server/coffee/" + MachineConfig.getMachineCode());
-        try {
-            Log.e(TAG, "start publish message");
-            topic.publish(message);
-        } catch (MqttException e) {
-            Log.e(TAG, "send error " + e.getMessage());
-            e.printStackTrace();
+        if (client != null) {  //为了防止 在订阅之前 被调用时会 抛出client为空的异常
+            MqttTopic topic = client.getTopic("server/coffee/" + MachineConfig.getMachineCode());
 
+            try {
+                Log.e(TAG, "start publish message");
+                topic.publish(message);
+            } catch (MqttException e) {
+                Log.e(TAG, "send error " + e.getMessage());
+                e.printStackTrace();
+
+            }
         }
+
     }
 
     /**
@@ -643,7 +647,7 @@ public class TaskService extends Service implements MqttCallback {
             if (dealRecorder.isReportSuccess()) {
                 continue;
             } else {
-                if (dealRecorder.getUploadCount()>=1){
+                if (dealRecorder.getUploadCount() >= 1) {
 
                     DealRecorder newDealRecorder = qrMsger.reportTradeToServer(dealRecorder, dealRecorder.getBunkers());
                     MyLog.d(TAG, "order= " + dealRecorder.getOrder() + ", report to server into taskservice");

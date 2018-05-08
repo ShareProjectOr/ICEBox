@@ -137,9 +137,11 @@ public class OkHttpUtil {
         if (url.isEmpty()) {
             return "请求地址错误";
         }
+
 //        OkHttpClient okHttpClient = new OkHttpClient();
 //        okHttpClient.setConnectTimeout(20, TimeUnit.SECONDS);
         RequestBody requestBody = RequestBody.create(JSON, json);
+
         Request request = new Request.Builder().url(url).addHeader("content-type", "application/json;charset:utf-8").post(requestBody).build();
         Call call = mOkHttpClient.newCall(request);
         Response response = mOkHttpClient.newCall(request).execute();//mOkHttpClient

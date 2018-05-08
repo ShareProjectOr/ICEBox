@@ -9,6 +9,7 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
+import cof.ac.inter.CoffMsger;
 import cof.ac.inter.MachineState;
 import cof.ac.inter.StateListener;
 import example.jni.com.coffeeseller.R;
@@ -73,6 +74,7 @@ public class HomeActivity extends AppCompatActivity implements IAddFragmentView,
     private void initViews() {
         mInstance = this;
         FragmentFactory.curPage = MachineCheckFragment;
+        CoffMsger.getInstance().setStateListener(this);
 //          FragmentFactory.curPage = ChooseCupNumFragment;
         mAddFragmentPresenter = new AddFragmentPresenter(this);
         mAddFragmentPresenter.AddFragment();
@@ -115,6 +117,7 @@ public class HomeActivity extends AppCompatActivity implements IAddFragmentView,
     @Override
     public void stateArrived(final MachineState machineState) {
         if (machineState != null) {
+            Log.e(TAG, "lastState is " + lastState + "current state is " + machineState.getMajorState().getStateCode());
             if (lastState != machineState.getMajorState().getStateCode()) { //上一次不等于当前的状态则提交
                 Log.e(TAG, "lastState is " + lastState + "current state is " + machineState.getMajorState().getStateCode());
                 TaskService.getInstance().sendStateMsg();
