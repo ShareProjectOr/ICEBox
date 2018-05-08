@@ -229,15 +229,15 @@ public class MachineCheck implements IMachineCheck {
             if (!hasReserve) {
                 Result result = mCoffmsger.Debug(DebugAction.RESET, 0, 0);//复位机器
                 Waiter.doWait(700);
-                mOnMachineCheckCallBackListener.OpenMainCrilSuccess();
                 if (result.getCode() == Result.SUCCESS) {
                     mCoffmsger.startCheckState();
                     MachineInitState.CHECK_OPENMAINCTRL = MachineInitState.NORMAL;
                     mOnMachineCheckCallBackListener.OpenMainCrilSuccess();
+                    hasReserve = true;
                 } else {
                     mOnMachineCheckCallBackListener.OpenMainCrilFailed("主控板检测出错,错误:" + result.getErrDes());
                 }
-                hasReserve = true;
+
             } else {
                 MachineInitState.CHECK_OPENMAINCTRL = MachineInitState.NORMAL;
                 mOnMachineCheckCallBackListener.OpenMainCrilSuccess();

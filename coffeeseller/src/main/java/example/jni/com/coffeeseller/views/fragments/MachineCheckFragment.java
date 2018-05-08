@@ -56,6 +56,7 @@ public class MachineCheckFragment extends BasicFragment implements ICheckMachine
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         mView = inflater.inflate(R.layout.machinecheck_fragment_layout, null);
         initview();
+
         FragmentFactory.curPage = FragmentEnum.MachineCheckFragment;
         startMachineCheck();
         return mView;
@@ -118,6 +119,7 @@ public class MachineCheckFragment extends BasicFragment implements ICheckMachine
                 @Override
                 public void run() {
                     Waiter.doWait(500);
+
                     mMachineCheckPresenter.checkMachine();
                 }
             };
@@ -130,8 +132,9 @@ public class MachineCheckFragment extends BasicFragment implements ICheckMachine
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.tologin:
-                mMachineCheckPresenter.toLoginFragment();
                 endCheck();
+                mMachineCheckPresenter.toLoginFragment();
+
                 break;
         }
     }

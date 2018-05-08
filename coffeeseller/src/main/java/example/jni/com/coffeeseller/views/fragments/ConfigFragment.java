@@ -86,8 +86,7 @@ public class ConfigFragment extends BasicFragment implements IAddMaterialView, I
     }
 
     private void initData() {
-        cupStock.setText(SharedPreferencesManager.getInstance(getActivity()).getCupNum() + "个");
-        waterStock.setText(SharedPreferencesManager.getInstance(getActivity()).getWaterCount() + "ml");
+
         addCupTime.setText(SharedPreferencesManager.getInstance(getActivity()).getAddCupTime());
         addWaterTime.setText(SharedPreferencesManager.getInstance(getActivity()).getAddWaterTime());
         mMachineCode.setText(SharedPreferencesManager.getInstance(getActivity()).getMachineCode());
@@ -105,8 +104,9 @@ public class ConfigFragment extends BasicFragment implements IAddMaterialView, I
         }*/
 
         updateTimeAndVersion.setText("最后更新于 " + SharedPreferencesManager.getInstance(getActivity()).getLastAppUpdateTime() + " 当前版本: " + getVersion());
-        CupNum.setText("仓杯余量:" + SharedPreferencesManager.getInstance(getActivity()).getCupNum());
 
+        /*cupStock.setText(SharedPreferencesManager.getInstance(getActivity()).getCupNum() + "个");
+        waterStock.setText(SharedPreferencesManager.getInstance(getActivity()).getWaterCount() + "ml");*/
 
     }
 
@@ -359,6 +359,12 @@ public class ConfigFragment extends BasicFragment implements IAddMaterialView, I
                         cupShelfState.setText("杯架状态:杯架未初始化");
                     }
 
+                    if (machineState.hasCup()) {
+                        CupNum.setText("仓杯余量:有杯");
+                    } else {
+                        CupNum.setText("仓杯余量:无杯");
+                    }
+                    //   machineState.is
                     boilerTemperature.setText("锅炉温度:" + machineState.getPotTemp());
                     boilerPressure.setText("锅炉压力:" + machineState.getPotPressure());
                     if (machineState.isFrontDoorOpen()) {

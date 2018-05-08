@@ -185,8 +185,8 @@ public class TaskService extends Service implements MqttCallback {
 
                                     }
                                     if (messageReceviedListener != null) {
-                                        messageReceviedListener.getMsgType(formulaObject.getString("formulaID"));//formulaID
-
+                                        //  messageReceviedListener.getMsgType(formulaObject.getString("formulaID"));//formulaID
+                                        messageReceviedListener.getMsgType(msgObject.toString());
                                         MyLog.d(TAG, "messageReceviedListener  come");
                                     }
 

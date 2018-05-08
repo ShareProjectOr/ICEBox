@@ -41,7 +41,7 @@ public class CommitMaterialPresenter {
         if (MachineConfig.getHostUrl().isEmpty()) {
             return;
         }
-        if (MachineConfig.getMachineCode().isEmpty()){
+        if (MachineConfig.getMachineCode().isEmpty()) {
             return;
         }
         iCommitMaterialView.ShowLoading();
