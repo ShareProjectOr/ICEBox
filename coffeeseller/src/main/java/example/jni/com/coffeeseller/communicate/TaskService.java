@@ -173,24 +173,23 @@ public class TaskService extends Service implements MqttCallback {
 
                                 Log.e(TAG, "updateFormulaType  =  " + MachineConfig.getCurrentState());
 
-                                if (MachineConfig.getCurrentState() == StateEnum.IDLE) {//空闲状态更新配方
-                                    JSONObject d = msgObject.getJSONObject("d");
-                                    JSONObject formulaObject = d.getJSONObject("formula");
-                                    if (d.getString("updateType").equals("remove")) {//updateType
+
+                                JSONObject d = msgObject.getJSONObject("d");
+                                JSONObject formulaObject = d.getJSONObject("formula");
+                                if (d.getString("updateType").equals("remove")) {//updateType
 
 
-                                    } else if (d.getString("updateType").equals("update")) {
+                                } else if (d.getString("updateType").equals("update")) {
 
-                                    } else if (d.getString("updateType").equals("add")) {
-
-                                    }
-                                    if (messageReceviedListener != null) {
-                                        //  messageReceviedListener.getMsgType(formulaObject.getString("formulaID"));//formulaID
-                                        messageReceviedListener.getMsgType(msgObject.toString());
-                                        MyLog.d(TAG, "messageReceviedListener  come");
-                                    }
+                                } else if (d.getString("updateType").equals("add")) {
 
                                 }
+                                if (messageReceviedListener != null) {
+                                    //  messageReceviedListener.getMsgType(formulaObject.getString("formulaID"));//formulaID
+                                    messageReceviedListener.getMsgType(msgObject.toString());
+                                    MyLog.d(TAG, "messageReceviedListener  come");
+                                }
+
 
                                 break;
                             case "machineOrder":
@@ -585,11 +584,16 @@ public class TaskService extends Service implements MqttCallback {
                 msg.put("cupDoorState", 0);
             }
             msg.put("driverVersion", state.getVersion());
+            Log.e(TAG, "stateCode is " + state.getMajorState().getStateCode() + " errCode is " + DataSwitcher.byte2Hex(state.getMajorState().getLowErr_byte()));
             switch (state.getMajorState().getStateCode()) {
+
                 case 0:
                     msg.put("errCode", "00");
                     break;
                 case 0x0a:
+                    msg.put("errCode", "" + DataSwitcher.byte2Hex(state.getMajorState().getLowErr_byte()));
+                    break;
+                default:
                     msg.put("errCode", "" + DataSwitcher.byte2Hex(state.getMajorState().getLowErr_byte()));
                     break;
             }
@@ -609,7 +613,7 @@ public class TaskService extends Service implements MqttCallback {
             msg.put("cupDoorState", null);
 
             msg.put("driverVersion", "1.0.0");
-            msg.put("errCode", 51);
+            msg.put("errCode", "");
             // }
             msg.put("clientVersion", HomeActivity.getInstance().getVersion());
             msg.put("mediaVersion", "1.0.0");

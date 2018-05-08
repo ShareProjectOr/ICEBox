@@ -46,6 +46,7 @@ public class StartServiceReceiver extends BroadcastReceiver {
                         Log.d("netstatus", "wifi 已连接网络，但不可用");
                     }
                 } else {//网络未连接
+                    MachineConfig.setNetworkType(0);
                     Log.d("netstatus", "wifi 未连接网络");
                 }
             } else {
@@ -76,12 +77,15 @@ public class StartServiceReceiver extends BroadcastReceiver {
                 if (networkInfo.isAvailable()) {//并且网络可用
                     Log.d("netstatus", "总网络 已连接网络，并且可用");
                 } else {//并且网络不可用
+                    MachineConfig.setNetworkType(0);
                     Log.d("netstatus", "总网络 已连接网络，但不可用");
                 }
             } else if (networkInfo.getState() == NetworkInfo.State.DISCONNECTED) {//网络未连接
                 Log.d("netstatus", "总网络 未连接网络");
+                MachineConfig.setNetworkType(0);
             }
         } else {
+            MachineConfig.setNetworkType(0);
             Log.d("netstatus", "总网络 info为空");
         }
     }

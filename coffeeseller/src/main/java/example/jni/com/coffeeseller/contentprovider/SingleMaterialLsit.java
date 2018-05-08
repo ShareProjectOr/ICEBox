@@ -167,7 +167,7 @@ public class SingleMaterialLsit {
                     Log.e(TAG, "containerID is " + containerID);
                     String MaterialDropSpeed = "";
                     String outPut = sql.getMaterialDropSpeedBycontainerID(containerID); //校准值
-                    if (outPut.equals("null") || outPut.equals("")) {
+                    if (outPut.equals("null") || outPut.equals("")||outPut.equals("0")) {
                         //没有校准值时 ,采用默认值
                         MaterialDropSpeed = sql.getDefultMaterialDropSpeedBycontainerID(containerID);
                     } else {
