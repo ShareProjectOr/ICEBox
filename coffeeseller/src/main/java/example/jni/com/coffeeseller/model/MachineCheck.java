@@ -224,8 +224,8 @@ public class MachineCheck implements IMachineCheck {
         CoffMsger mCoffmsger = CoffMsger.getInstance();
 
         if (mCoffmsger.init()) {
-
-            // mCoffmsger.startCheckState();
+            mCoffmsger.startCheckState();
+       /*     //
             if (!hasReserve) {
                 Result result = mCoffmsger.Debug(DebugAction.RESET, 0, 0);//复位机器
                 Waiter.doWait(700);
@@ -241,9 +241,10 @@ public class MachineCheck implements IMachineCheck {
             } else {
                 MachineInitState.CHECK_OPENMAINCTRL = MachineInitState.NORMAL;
                 mOnMachineCheckCallBackListener.OpenMainCrilSuccess();
-            }
+            }*/
 
-
+            MachineInitState.CHECK_OPENMAINCTRL = MachineInitState.NORMAL;
+            mOnMachineCheckCallBackListener.OpenMainCrilSuccess();
         } else {
             mOnMachineCheckCallBackListener.OpenMainCrilFailed("串口打开失败,请检测串口输入是否正确");
         }

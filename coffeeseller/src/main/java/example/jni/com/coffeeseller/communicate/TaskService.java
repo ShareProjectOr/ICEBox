@@ -588,12 +588,15 @@ public class TaskService extends Service implements MqttCallback {
             switch (state.getMajorState().getStateCode()) {
 
                 case 0:
+                    Log.e(TAG, "0--current state is " + state.getMajorState().getStateCode());
                     msg.put("errCode", "00");
                     break;
                 case 0x0a:
+                    Log.e(TAG, "0a--current state is " + state.getMajorState().getStateCode());
                     msg.put("errCode", "" + DataSwitcher.byte2Hex(state.getMajorState().getLowErr_byte()));
                     break;
                 default:
+                    Log.e(TAG, "default--current state is " + state.getMajorState().getStateCode());
                     msg.put("errCode", "" + DataSwitcher.byte2Hex(state.getMajorState().getLowErr_byte()));
                     break;
             }
