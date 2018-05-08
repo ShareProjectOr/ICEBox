@@ -376,7 +376,7 @@ public class TaskService extends Service implements MqttCallback {
             // setWill方法，如果项目中需要知道客户端是否掉线可以调用该方法。设置最终端口的通知消息
             Map<String, Object> bytejson = new HashMap<>();
             bytejson.put("msgId", UUID.randomUUID().toString());
-            bytejson.put("msgType", "willMsgType");
+            bytejson.put("msgType", "willType");
             bytejson.put("machineCode", MachineConfig.getMachineCode());
             bytejson.put("sendTime", SecondToDate.getDateToString(System.currentTimeMillis()));
             options.setWill(topic, JsonUtil.mapToJson(bytejson).getBytes(), 2, true);
@@ -584,7 +584,7 @@ public class TaskService extends Service implements MqttCallback {
                 msg.put("cupDoorState", 0);
             }
             msg.put("driverVersion", state.getVersion());
-            Log.e(TAG, "stateCode is " + state.getMajorState().getStateCode() + " errCode is " + DataSwitcher.byte2Hex(state.getMajorState().getLowErr_byte()));
+            Log.e(TAG, "stateCode is " + state.getMajorState().getStateCode() + " errCode is " + DataSwitcher.byte2Hex(state.getMajorState().getHighErr_byte()));
             switch (state.getMajorState().getStateCode()) {
 
                 case 0:
@@ -592,12 +592,12 @@ public class TaskService extends Service implements MqttCallback {
                     msg.put("errCode", "00");
                     break;
                 case 0x0a:
-                    Log.e(TAG, "0a--current state is " + state.getMajorState().getStateCode());
-                    msg.put("errCode", "" + DataSwitcher.byte2Hex(state.getMajorState().getLowErr_byte()));
+                    Log.e(TAG, "0a--current state is " + state.getMajorState().getStateCode() + "and crrent lowErro_byte is " + state.getMajorState().getHighErr_byte());
+                    msg.put("errCode", "" + DataSwitcher.byte2Hex(state.getMajorState().getHighErr_byte()));
                     break;
                 default:
-                    Log.e(TAG, "default--current state is " + state.getMajorState().getStateCode());
-                    msg.put("errCode", "" + DataSwitcher.byte2Hex(state.getMajorState().getLowErr_byte()));
+                    Log.e(TAG, "default--current state is " + state.getMajorState().getStateCode() + "and crrent lowErro_byte is " + state.getMajorState().getHighErr_byte());
+                    msg.put("errCode", "" + DataSwitcher.byte2Hex(state.getMajorState().getHighErr_byte()));
                     break;
             }
 

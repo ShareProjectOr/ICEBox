@@ -118,7 +118,7 @@ public class HomeActivity extends AppCompatActivity implements IAddFragmentView,
     public void stateArrived(final MachineState machineState) {
         Log.e(TAG, "stateArrived");
         if (machineState != null) {
-            Log.e(TAG, "lastState is " + lastState + "current state is " + machineState.getMajorState().getStateCode());
+            Log.e(TAG, "lastState is " + lastState + "current state is " + machineState.getMajorState().getStateCode()+ "and crrent lowErro_byte is " + machineState.getMajorState().getHighErr_byte());
             if (lastState != machineState.getMajorState().getStateCode()) { //上一次不等于当前的状态则提交
                 Log.e(TAG, "lastState is " + lastState + "current state is " + machineState.getMajorState().getStateCode());
                 TaskService.getInstance().sendStateMsg();
