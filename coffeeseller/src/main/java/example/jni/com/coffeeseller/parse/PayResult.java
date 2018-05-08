@@ -74,7 +74,11 @@ public class PayResult {
                 payResult.setTradeCode(msgContent.getString("tradeCode"));
                 payResult.setPrice(msgContent.getString("price"));
                 payResult.setPayTime(msgContent.getString("payTime"));
-                payResult.setPayResult(msgContent.getInt("payResult"));
+                if (TextUtils.equals(msgContent.getString("payResult"), "null")){
+                    payResult.setPayResult(0);
+                }else{
+                    payResult.setPayResult(msgContent.getInt("payResult"));
+                }
             }
 
         } catch (JSONException e) {

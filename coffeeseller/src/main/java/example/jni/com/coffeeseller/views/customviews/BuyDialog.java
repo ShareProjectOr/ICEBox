@@ -59,6 +59,7 @@ public class BuyDialog extends Dialog implements ChooseCupListenner, MkCoffeeLis
     private ChooseCupListenner chooseCupListenner;
     private MkCoffeeListenner mkCoffeeListenner;
     private BuyFragment fragment;
+    private boolean dialogDisCancle = false;
 
     public BuyDialog(Context context) {
         super(context);
@@ -115,7 +116,9 @@ public class BuyDialog extends Dialog implements ChooseCupListenner, MkCoffeeLis
             setOnDismissListener(new OnDismissListener() {
                 @Override
                 public void onDismiss(DialogInterface dialog) {
-                    chooseCupListenner.cancle(chooseCup.getOrder());
+                    if (!dialogDisCancle) {
+                        chooseCupListenner.cancle(chooseCup.getOrder());
+                    }
                 }
             });
             MyLog.W(TAG, "choose cup view is added");
@@ -144,19 +147,11 @@ public class BuyDialog extends Dialog implements ChooseCupListenner, MkCoffeeLis
         initView();
     }
 
-    public void setDisDialogListenner(final String order) {
-        this.setOnDismissListener(new OnDismissListener() {
-            @Override
-            public void onDismiss(DialogInterface dialog) {
-                cancleOrder(order);
-            }
-        });
-    }
-
     public void disDialog() {
         if (isShowing()) {
             dismiss();
         }
+
     }
 
     //更新数据库原料表
@@ -338,6 +333,8 @@ public class BuyDialog extends Dialog implements ChooseCupListenner, MkCoffeeLis
             @Override
             public void run() {
 
+                dialogDisCancle = true;
+
                 setCanceledOnTouchOutside(false);
 
                 MkCoffee mkCoffee = new MkCoffee(context, fomat, dealRecorder, mkCoffeeListenner, handler);
@@ -351,6 +348,9 @@ public class BuyDialog extends Dialog implements ChooseCupListenner, MkCoffeeLis
     public void getMkResult(final DealRecorder dealRecorder, final boolean success, final boolean isCalculateMaterial) {
 
         final DealRecorder recorder = dealRecorder;
+
+        dialogDisCancle = true;
+
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -389,7 +389,13 @@ public class BuyDialog extends Dialog implements ChooseCupListenner, MkCoffeeLis
             fragment.updateUi();
         }
 
-        disDialog();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                disDialog();
+            }
+        }, 3000);
+
 
     }
 

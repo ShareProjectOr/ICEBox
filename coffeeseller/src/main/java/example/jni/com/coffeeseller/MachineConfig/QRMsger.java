@@ -136,6 +136,7 @@ public class QRMsger {
 
     public DealRecorder reportTradeToServer(DealRecorder dealRecorder, String bunkers) {
 
+        MyLog.W(TAG, "reportTradeToServer RQ_URL = " + Constance.TRADE_UPLOAD);
         String RESPONSE_TEXT = null;
 
         try {
@@ -152,13 +153,13 @@ public class QRMsger {
                 params.put("bunkers", bunkersArr);
             }
 
-
-            MyLog.W(TAG, "reportTradeToServer RQ_URL = " + Constance.TRADE_UPLOAD);
             MyLog.W(TAG, "reportTradeToServer params = " + JsonUtil.mapToJson(params));
 
             RESPONSE_TEXT = OkHttpUtil.post(Constance.TRADE_UPLOAD, JsonUtil.mapToJson(params));
 
         } catch (IOException e) {
+
+            RESPONSE_TEXT = null;
 
             e.printStackTrace();
        /* } catch (JSONException e) {
@@ -183,6 +184,8 @@ public class QRMsger {
             dealRecorder.setReportSuccess(false);
             dealRecorder.setReportMsg("请求返回为null");
         }
+
+        dealRecorder.setUploadCount(dealRecorder.getUploadCount() + 1);
 
         MyLog.W(TAG, " reportTradeToServer  is  over");
 

@@ -24,6 +24,8 @@ public class DealRecorder {
     boolean isReportSuccess = false;
     String reportMsg;
 
+    int uploadCount=0;
+
     List<ContainerConfig> containerConfigs;
 
     public DealRecorder() {
@@ -142,6 +144,14 @@ public class DealRecorder {
 
     public void setBunkers(String bunkers) {
         this.bunkers = bunkers;
+    }
+
+    public int getUploadCount() {
+        return uploadCount;
+    }
+
+    public void setUploadCount(int uploadCount) {
+        this.uploadCount = uploadCount;
     }
 
     public boolean isVlide() {

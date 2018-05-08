@@ -44,7 +44,7 @@ public class DealOrderInfoManager {
         synchronized (this) {
             SQLiteDatabase localSQLiteDatabase = mDataBaseHelper.getWritableDatabase();
 
-            Object[] arrayOfObject = new Object[13];
+            Object[] arrayOfObject = new Object[14];
             arrayOfObject[0] = orderRecorder.getOrder();
             arrayOfObject[1] = orderRecorder.getRqcup();
             arrayOfObject[2] = orderRecorder.getPrice();
@@ -58,10 +58,11 @@ public class DealOrderInfoManager {
             arrayOfObject[10] = orderRecorder.getPayTime();
             arrayOfObject[11] = orderRecorder.isReportSuccess() ? 1 : 0;
             arrayOfObject[12] = orderRecorder.getReportMsg();
+            arrayOfObject[13] = orderRecorder.getUploadCount();
 
             localSQLiteDatabase.execSQL("insert into order_info ( trade_code ,cup,price,taste_redio,temp_format, payed ," +
-                    "make_success,customer_id,formula_id,bunkers,pay_time,is_report_success,report_msg ) " +
-                    "values(?,?,?,?,?,?,?,?,?,?,?,?,?)", arrayOfObject);
+                    "make_success,customer_id,formula_id,bunkers,pay_time,is_report_success,report_msg ,upload_count) " +
+                    "values(?,?,?,?,?,?,?,?,?,?,?,?,?,?)", arrayOfObject);
 
             MyLog.W(TAG, "add order into table order_info where orderCode= " + orderRecorder.getOrder());
             localSQLiteDatabase.close();
@@ -91,7 +92,7 @@ public class DealOrderInfoManager {
             SQLiteDatabase localSQLiteDatabase = mDataBaseHelper.getReadableDatabase();
             MyLog.W(TAG, " update order_info " + "isPayed=" + bean.isPayed() + ", isMakeSuccess=" + bean.isMakeSuccess()
                     + " ,isReportSuccess=  " + bean.isReportSuccess() + " ,getReportMsg=  " + bean.getReportMsg()
-                    + " ,bunkers= " + bean.getBunkers());
+                    + " ,bunkers= " + bean.getBunkers()+" ,upload_count= " + bean.getUploadCount());
 
             ContentValues contentValues = new ContentValues();
             contentValues.put("payed", bean.isPayed() ? 1 : 0);
@@ -101,6 +102,7 @@ public class DealOrderInfoManager {
             contentValues.put("taste_redio", bean.getTasteRadio());
             contentValues.put("temp_format", bean.getRqTempFormat());
             contentValues.put("bunkers", bean.getBunkers());
+            contentValues.put("upload_count", bean.getUploadCount());
 
             localSQLiteDatabase.update("order_info", contentValues, "trade_code = ? ", new String[]{bean.getOrder()});
 
@@ -130,6 +132,7 @@ public class DealOrderInfoManager {
                 mBean.setFormulaID(localCursor.getInt(localCursor.getColumnIndex("formula_id")));
                 mBean.setBunkers(localCursor.getString(localCursor.getColumnIndex("bunkers")));
                 mBean.setReportMsg(localCursor.getString(localCursor.getColumnIndex("report_msg")));
+                mBean.setUploadCount(localCursor.getInt(localCursor.getColumnIndex("upload_count")));
 
 
                 boolean isPay = localCursor.getInt(localCursor.getColumnIndex("payed")) == 0 ? false : true;

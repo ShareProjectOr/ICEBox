@@ -226,7 +226,7 @@ public class MkCoffee {
 
                             } else {
 
-                                MyLog.W(TAG, " make failed and time is too long,down cup state is remaining ");
+                                MyLog.W(TAG, " make failed and time is too long,other state is remaining ");
 
                                 if (machineState.hasCupOnShelf()) {
                                     dealRecorder.setMakeSuccess(false);
@@ -236,7 +236,7 @@ public class MkCoffee {
 
                                 if (mkCoffeeListenner != null) {
                                     isCalculateMaterial = true;
-                                    mkCoffeeListenner.getMkResult(dealRecorder, false, isCalculateMaterial);
+                                    mkCoffeeListenner.getMkResult(dealRecorder, dealRecorder.isMakeSuccess(), isCalculateMaterial);
                                 }
 
                             }
@@ -468,7 +468,7 @@ public class MkCoffee {
                             break;
                         }
                         MyLog.d(TAG, "11111111111111111------------" + CONTAIN_MAKING_PROGRESS_TIME);
-                        Waiter.doWait(CONTAIN_MAKING_PROGRESS_TIME);
+                        Waiter.doWait(CONTAIN_MAKING_PROGRESS_TIME * 10 / MAX_MAKING_PROGRESS);
                     }
                 } else {
                     publishProgress(MAX_PROGRESS);
