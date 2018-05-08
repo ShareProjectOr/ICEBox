@@ -11,6 +11,7 @@ import android.provider.Settings;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -32,6 +33,7 @@ import example.jni.com.coffeeseller.R;
 import example.jni.com.coffeeseller.bean.CommitMaterialObject;
 import example.jni.com.coffeeseller.bean.MachineConfig;
 import example.jni.com.coffeeseller.bean.Material;
+import example.jni.com.coffeeseller.communicate.TaskService;
 import example.jni.com.coffeeseller.contentprovider.MaterialSql;
 import example.jni.com.coffeeseller.contentprovider.SharedPreferencesManager;
 import example.jni.com.coffeeseller.factory.FragmentEnum;
@@ -75,6 +77,8 @@ public class ConfigFragment extends BasicFragment implements IAddMaterialView, I
     private AddCupPresenter addCupPresenter;
     private EditText mMachineCode, mTime, mWaterPercent, passWord;
     private CheckBox isOutCupAutoClear, onClear, usuallyWaterType, hotAndColdWaterType;
+    private int lastState;
+    private String TAG = "configFrament";
 
     @Nullable
     @Override
@@ -344,13 +348,18 @@ public class ConfigFragment extends BasicFragment implements IAddMaterialView, I
                 public void run() {
 
                     switch (machineState.getMajorState().getStateCode()) {
+
                         case 0:
                             errCode.setText("异常状态:无异常");
                             break;
                         case 0x0a:
                             errCode.setText("异常状态:" + DataSwitcher.byte2Hex(machineState.getMajorState().getLowErr_byte()));
                             break;
+                        default:
+                            errCode.setText("异常状态:" + DataSwitcher.byte2Hex(machineState.getMajorState().getLowErr_byte()));
+                            break;
                     }
+
                     runState.setText("运行状态:" + DataSwitcher.byte2Hex(machineState.getMajorState().getState_byte()));
                     netWorkState.setText("网络状态:" + MachineConfig.getNetworkType());
                     if (machineState.isCupShelfRightPlace()) {

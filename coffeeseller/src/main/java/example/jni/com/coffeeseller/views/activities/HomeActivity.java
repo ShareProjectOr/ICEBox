@@ -7,8 +7,12 @@ import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 
+import cof.ac.inter.MachineState;
+import cof.ac.inter.StateListener;
 import example.jni.com.coffeeseller.R;
+import example.jni.com.coffeeseller.communicate.TaskService;
 import example.jni.com.coffeeseller.factory.FragmentEnum;
 import example.jni.com.coffeeseller.factory.FragmentFactory;
 import example.jni.com.coffeeseller.model.listeners.TaskServiceListener;
@@ -24,11 +28,12 @@ import static example.jni.com.coffeeseller.factory.FragmentEnum.MachineCheckFrag
  * Created by Administrator on 2018/3/20.
  */
 
-public class HomeActivity extends AppCompatActivity implements IAddFragmentView ,TaskServiceListener{
+public class HomeActivity extends AppCompatActivity implements IAddFragmentView, TaskServiceListener, StateListener {
     private static HomeActivity mInstance;
     private AddFragmentPresenter mAddFragmentPresenter;
-
+    private String TAG = "HomeActivity";
     public static String Version;
+    private int lastState = 0;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -104,6 +109,18 @@ public class HomeActivity extends AppCompatActivity implements IAddFragmentView 
 
     @Override
     public void formulaUpdate(String formulaId) {
+
+    }
+
+    @Override
+    public void stateArrived(final MachineState machineState) {
+        if (machineState != null) {
+            if (lastState != machineState.getMajorState().getStateCode()) { //上一次不等于当前的状态则提交
+                Log.e(TAG, "lastState is " + lastState + "current state is " + machineState.getMajorState().getStateCode());
+                TaskService.getInstance().sendStateMsg();
+                lastState = machineState.getMajorState().getStateCode();
+            }
+        }
 
     }
 }

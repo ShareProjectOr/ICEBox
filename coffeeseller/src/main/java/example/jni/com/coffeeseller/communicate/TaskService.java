@@ -547,7 +547,7 @@ public class TaskService extends Service implements MqttCallback {
     }
 
 
-    private void sendStateMsg() {
+    public void sendStateMsg() {
         MqttMessage message = new MqttMessage();
         message.setQos(1);
         message.setRetained(false);
