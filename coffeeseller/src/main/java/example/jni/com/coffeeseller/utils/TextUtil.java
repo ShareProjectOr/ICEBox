@@ -27,4 +27,17 @@ public class TextUtil {
         }
         return 25;
     }
+
+    public static String textPointNum(String text, int pointNum) {
+        if (pointNum == 2) {
+            return text + ".";
+        }
+        if (pointNum == 1) {
+            return text + "..";
+        }
+        if (pointNum == 0) {
+            return text + "...";
+        }
+        return text;
+    }
 }

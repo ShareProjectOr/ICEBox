@@ -21,6 +21,7 @@ public class CheckCurMachineState {
     public static CheckCurMachineState mInstance;
     private CoffMsger mCoffMsger;
     private StringBuffer mBuffer;
+    private boolean isHotting = false;
     private long lastCheckTime;//上次检测时间
 
     public static CheckCurMachineState getInstance() {
@@ -69,10 +70,21 @@ public class CheckCurMachineState {
 
                 return false;
             } else if (majorState.getCurStateEnum() != StateEnum.IDLE) {
-                checkCurState(machineState.getMajorState());
-                return false;
+
+                if (majorState.getCurStateEnum() == StateEnum.HEAT_POT) {
+
+                    isHotting = true;
+                    return true;
+                } else {
+                    isHotting = false;
+                    checkCurState(majorState);
+                    return false;
+                }
+            } else {
+                isHotting = false;
             }
         }
+        isHotting = false;
         return true;
     }
 
@@ -89,14 +101,15 @@ public class CheckCurMachineState {
                 mBuffer.append("错误:正在落粉中");
                 break;
             case HEAT_POT:
-                mBuffer.append("错误:锅炉加热中");
+//                mBuffer.append("错误:锅炉加热中");
+
                 break;
             case MAKING:
                 mBuffer.append("错误:制作中");
                 break;
 
             case HAS_ERR:
-                mBuffer.append("机器有故障: \n" +majorState.getHighErr_byte());
+                mBuffer.append("机器有故障: \n" + majorState.getHighErr_byte());
 
                 break;
 
@@ -198,5 +211,10 @@ public class CheckCurMachineState {
         }
 
         return isCheckCanMake;
+    }
+
+
+    public boolean isHotting() {
+        return isHotting;
     }
 }

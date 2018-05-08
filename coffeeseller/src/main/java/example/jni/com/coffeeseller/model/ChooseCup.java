@@ -113,6 +113,7 @@ public class ChooseCup implements View.OnClickListener, MsgTransListener {
             mViewHolder.mQrLayout.setVisibility(View.VISIBLE);
             mViewHolder.mErrTip.setVisibility(View.GONE);
             mViewHolder.mFailedLayout.setVisibility(View.GONE);
+
             return true;
         } else {
             MyLog.d(TAG, "machine is has error ");
@@ -174,10 +175,8 @@ public class ChooseCup implements View.OnClickListener, MsgTransListener {
 
         initTaste(mCoffee.getStepList());
 
-        tradeMsgRequest.requestQRCode(this, mDealRecorder, mCoffee);
-
+//        tradeMsgRequest.requestQRCode(this, mDealRecorder, mCoffee);
     }
-
 
     private void checkHotOrCold(boolean checkHot) {
 
@@ -415,6 +414,8 @@ public class ChooseCup implements View.OnClickListener, MsgTransListener {
 
                 mViewHolder.mCountDownTime.setText(millisUntilFinished / 1000 + " s");
 
+                if (judgeHeapHot(millisUntilFinished)) return;
+
                 if (mDealRecorder.isPayed()) {
 
                     tradeMsgRequest.stopTaskCheckPay();
@@ -440,11 +441,45 @@ public class ChooseCup implements View.OnClickListener, MsgTransListener {
         countDownTimer.start();
     }
 
+    /*
+    * 判断锅炉是否正在加热中，如果不在加热中，显示二维码
+    * */
+    private boolean judgeHeapHot(long millisUntilFinished) {
+        if (tradeMsgRequest.mCurRequest != TradeMsgRequest.DEFAULT) {
+            return true;
+        }
+
+        if (CheckCurMachineState.getInstance().isCanMaking()) {
+            if (CheckCurMachineState.getInstance().isHotting()) {
+                mViewHolder.mRequestQRTxt.setVisibility(View.VISIBLE);
+                mViewHolder.mQrCodeImage.setVisibility(View.GONE);
+
+                String tipText = TextUtil.textPointNum("锅炉加热中", (int) (millisUntilFinished / 1000 % 3));
+
+                mViewHolder.mRequestQRTxt.setText(tipText);
+            } else {
+                mViewHolder.mRequestQRTxt.setVisibility(View.GONE);
+
+                mViewHolder.mRequestQRTxt.setText("点击重新获取");
+
+                if (tradeMsgRequest.mCurRequest == TradeMsgRequest.DEFAULT) {
+                    tradeMsgRequest.requestQRCode(mMsgTransListener, mDealRecorder, mCoffee);
+                }
+            }
+        }
+        return false;
+    }
+
     private void stopCountDownTimer() {
         if (countDownTimer != null) {
             countDownTimer.cancel();
             countDownTimer = null;
         }
+    }
+
+    public void stopTimer() {
+        tradeMsgRequest.stopTaskCheckPay();
+        stopCountDownTimer();
     }
 
     /*
@@ -457,6 +492,7 @@ public class ChooseCup implements View.OnClickListener, MsgTransListener {
                 mCoffeeFomat.getContainerConfigs().get(i).setWater_type(mCoffeeFomat.getWaterType());
         }
 
+        mCoffeeFomat.setCoffeeName(mCoffee.name);
 
         int count = mViewHolder.mTastLayout.getChildCount();
 

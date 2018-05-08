@@ -24,6 +24,7 @@ public class CoffeeFomat {
     private List<String> tasteNameRatio;
     private WaterType waterType;
     private List<ContainerConfig> containerConfigs;
+    private String coffeeName;
 
     public boolean isMin() {
         return cup == 1;
@@ -65,5 +66,13 @@ public class CoffeeFomat {
 
     public void setTasteNameRatio(List<String> tasteNameRatio) {
         this.tasteNameRatio = tasteNameRatio;
+    }
+
+    public String getCoffeeName() {
+        return coffeeName;
+    }
+
+    public void setCoffeeName(String coffeeName) {
+        this.coffeeName = coffeeName;
     }
 }

@@ -118,6 +118,7 @@ public class BuyDialog extends Dialog implements ChooseCupListenner, MkCoffeeLis
                 public void onDismiss(DialogInterface dialog) {
                     if (!dialogDisCancle) {
                         chooseCupListenner.cancle(chooseCup.getOrder());
+                        chooseCup.stopTimer();
                     }
                 }
             });

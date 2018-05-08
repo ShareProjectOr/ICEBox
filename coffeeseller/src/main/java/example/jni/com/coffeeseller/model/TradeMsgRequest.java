@@ -18,7 +18,8 @@ import example.jni.com.coffeeseller.utils.MyLog;
 
 public class TradeMsgRequest {
     private static String TAG = "TradeMsgRequest";
-    public int mCurRequest;
+    public static int DEFAULT = -1;
+    public int mCurRequest = DEFAULT;
     public static int REQUEST_QR_CODE = 0;
     public static int REQUEST_CHECK_PAY = 1;
     private TimerTask mCheckPayTask = null;

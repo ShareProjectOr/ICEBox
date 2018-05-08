@@ -2,6 +2,7 @@ package example.jni.com.coffeeseller.model;
 
 import android.content.Context;
 import android.os.AsyncTask;
+import android.os.CountDownTimer;
 import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -38,6 +39,7 @@ public class MkCoffee {
     private static String TAG = "MkCoffee";
     private long MAX_TOTAL_MK_TIME = 180000;
     private long MAX_STATE_TIME = 5000;
+    private long MK_TIP_TIME = 120000;
     private int MAX_PROGRESS = 100;
     private int MAX_MAKING_PROGRESS = 92;
     private int CONTAIN_MAKING_PROGRESS_TIME = 550;
@@ -50,6 +52,7 @@ public class MkCoffee {
     private DealRecorder dealRecorder;
     private MkCoffeeListenner mkCoffeeListenner;
     private Handler handler;
+    private CountDownTimer mkCountDownTimer;
 
     private boolean isStartMaking = false;
     private boolean makeSuccess = false;
@@ -96,10 +99,11 @@ public class MkCoffee {
                 ContainerConfig containerConfig = dealRecorder.getContainerConfigs().get(i);
 
                 if (containerConfig.getWater_capacity() != 0) {
+                    CONTAIN_MAKING_PROGRESS_TIME += 5 * 1000;//出水运作5s
                     waterTotal += containerConfig.getWater_capacity();
                 }
 
-                CONTAIN_MAKING_PROGRESS_TIME += containerConfig.getMaterial_time() + 5;//每个步骤机器运作大概5s
+                CONTAIN_MAKING_PROGRESS_TIME += containerConfig.getMaterial_time() * 10 + 5 * 1000;//每个步骤机器运作大概5s
 
                 MyLog.d(TAG, "getContainer=" + containerConfig.getContainer());
                 MyLog.d(TAG, "getWater_capacity=" + containerConfig.getWater_capacity());
@@ -110,7 +114,9 @@ public class MkCoffee {
                 MyLog.d(TAG, "getStir_speed=" + containerConfig.getStir_speed());
                 MyLog.d(TAG, "getWater_interval=" + containerConfig.getWater_interval());
             }
-            CONTAIN_MAKING_PROGRESS_TIME += waterTotal / 100;
+            CONTAIN_MAKING_PROGRESS_TIME += waterTotal * 10 / 10;
+
+        //    CONTAIN_MAKING_PROGRESS_TIME += 30 * 1000;
 
             MyLog.d(TAG, "CONTAIN_MAKING_PROGRESS_TIME= " + CONTAIN_MAKING_PROGRESS_TIME);
 
@@ -122,10 +128,13 @@ public class MkCoffee {
             dealRecorder.setRqTempFormat(coffeeFomat.getWaterType() + "");
             DealOrderInfoManager.getInstance(context).update(dealRecorder);
         }
+
         coffMsger = CoffMsger.getInstance();
         buffer = new StringBuffer();
 
         MyLog.W(TAG, "enter mkCoffee page");
+
+        makingViewHolder.mCoffeeName.setText(coffeeFomat.getCoffeeName());
 
         startMkCoffee();
 
@@ -143,6 +152,9 @@ public class MkCoffee {
         coffeeMakeStateRecorder.init();
         if (coffeeFomat != null && coffeeFomat.getContainerConfigs().size() >= 0) {
             buffer.setLength(0);
+
+            countDownTime();
+
             mkCoffee();
         } else {
 
@@ -155,9 +167,40 @@ public class MkCoffee {
             if (mkCoffeeListenner != null) {
                 dealRecorder.setMakeSuccess(false);
                 mkCoffeeListenner.getMkResult(dealRecorder, false, isCalculateMaterial);
+                stopCountDownTimer();
             }
 
             MyLog.W(TAG, "containerConfigs is null");
+        }
+    }
+
+    /*
+   * 倒计时检测
+   * */
+    private void countDownTime() {
+
+        stopCountDownTimer();
+
+        mkCountDownTimer = new CountDownTimer(MK_TIP_TIME, 1000) {
+            @Override
+            public void onTick(final long millisUntilFinished) {
+
+                makingViewHolder.mMkTimerCount.setText(millisUntilFinished / 1000 + " s");
+            }
+
+            @Override
+            public void onFinish() {
+
+            }
+        };
+        mkCountDownTimer.start();
+    }
+
+
+    private void stopCountDownTimer() {
+        if (mkCountDownTimer != null) {
+            mkCountDownTimer.cancel();
+            mkCountDownTimer = null;
         }
     }
 
@@ -212,6 +255,7 @@ public class MkCoffee {
                             if (mkCoffeeListenner != null) {
                                 dealRecorder.setMakeSuccess(true);
                                 mkCoffeeListenner.getMkResult(dealRecorder, false, isCalculateMaterial);
+                                stopCountDownTimer();
                             }
                         } else {
                             if (coffeeMakeStateRecorder.state == CoffeeMakeState.COFFEE_DOWN_CUP) {
@@ -222,6 +266,7 @@ public class MkCoffee {
                                     dealRecorder.setMakeSuccess(false);
                                     isCalculateMaterial = false;
                                     mkCoffeeListenner.getMkResult(dealRecorder, false, isCalculateMaterial);
+                                    stopCountDownTimer();
                                 }
 
                             } else {
@@ -237,6 +282,7 @@ public class MkCoffee {
                                 if (mkCoffeeListenner != null) {
                                     isCalculateMaterial = true;
                                     mkCoffeeListenner.getMkResult(dealRecorder, dealRecorder.isMakeSuccess(), isCalculateMaterial);
+                                    stopCountDownTimer();
                                 }
 
                             }
@@ -251,7 +297,7 @@ public class MkCoffee {
                             coffeeMakeStateRecorder.state = CoffeeMakeState.COFFEEMAKING_FAILED;
                             //     isCalculateMaterial = false;
 
-                            buffer.append("/n");
+                            buffer.append("\n");
                             buffer.append("制作过程中接收到0a : " + machineState.getMajorState().getHighErr_byte());
 
                         }
@@ -263,6 +309,7 @@ public class MkCoffee {
 
                     if (coffeeMakeStateRecorder.state == null) {
 
+                        MyLog.d(TAG, "send mkCoffee comd");
 
                         Result result = coffMsger.mkCoffee(coffeeFomat.getContainerConfigs());
                         if (result.getCode() == Result.SUCCESS) {
@@ -322,6 +369,7 @@ public class MkCoffee {
                         if (mkCoffeeListenner != null) {
                             dealRecorder.setMakeSuccess(true);
                             mkCoffeeListenner.getMkResult(dealRecorder, true, isCalculateMaterial);
+                            stopCountDownTimer();
                         }
 
                         MyLog.W(TAG, "cur state is finish ");
@@ -348,6 +396,7 @@ public class MkCoffee {
                                 if (mkCoffeeListenner != null) {
                                     dealRecorder.setMakeSuccess(false);
                                     mkCoffeeListenner.getMkResult(dealRecorder, false, isCalculateMaterial);
+                                    stopCountDownTimer();
                                 }
                             }
                         }, 4000);
@@ -467,8 +516,7 @@ public class MkCoffee {
                             publishProgress(MAX_PROGRESS);
                             break;
                         }
-                        MyLog.d(TAG, "11111111111111111------------" + CONTAIN_MAKING_PROGRESS_TIME);
-                        Waiter.doWait(CONTAIN_MAKING_PROGRESS_TIME * 10 / MAX_MAKING_PROGRESS);
+                        Waiter.doWait(CONTAIN_MAKING_PROGRESS_TIME / MAX_MAKING_PROGRESS);
                     }
                 } else {
                     publishProgress(MAX_PROGRESS);
@@ -527,7 +575,8 @@ public class MkCoffee {
         public TextView mErrTip;
         public LinearLayout mIsMakeLayout;
         public ImageView mMakeCenterImage;
-
+        public TextView mMkTimerCount;
+        public TextView mCoffeeName;
         public LinearLayout mProgressBarLayout;
         public ProgressBar mProgressBar;
         public LinearLayout mTextLayout;
@@ -551,6 +600,8 @@ public class MkCoffee {
             mTipOne = (LinearLayout) view.findViewById(R.id.tipOne);
             mTipTwo = (LinearLayout) view.findViewById(R.id.tipTwo);
             mTipThress = (LinearLayout) view.findViewById(R.id.tipThress);
+            mMkTimerCount = (TextView) view.findViewById(R.id.mkTimerCount);
+            mCoffeeName = (TextView) view.findViewById(R.id.coffeeName);
 
             mTipTwo.setVisibility(View.INVISIBLE);
             mTipThress.setVisibility(View.INVISIBLE);
