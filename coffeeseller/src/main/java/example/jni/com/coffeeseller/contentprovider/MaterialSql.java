@@ -193,9 +193,15 @@ public class MaterialSql extends SQLiteOpenHelper {
         }
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor res = db.rawQuery("select * from " + MATERIALS_TABLE_NAME + " where " + MATERIALS_COLUMN_MATERIALID + " = " + MaterialID + "", null);
-        res.moveToFirst();
-        String MaterialStock = res.getString(res.getColumnIndex(MATERIALS_COLUMN_MATERIALSTOCK));
-        res.close();
+        String MaterialStock = "";
+        if (res != null && res.moveToFirst()) {
+            MaterialStock = res.getString(res.getColumnIndex(MATERIALS_COLUMN_MATERIALSTOCK));
+            res.close();
+        } else {
+            MaterialStock = "0";
+        }
+
+
         db.close();
         return MaterialStock;
     }

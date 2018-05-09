@@ -194,6 +194,7 @@ public class ConfigFragment extends BasicFragment implements IAddMaterialView, I
         switch (v.getId()) {
             case R.id.debug_machine:
 
+
                 Result result = msger.Debug(DebugAction.RESET, 0, 0);//复位机器
                 if (result.getCode() == Result.SUCCESS) {
                     msger.startCheckState();

@@ -40,6 +40,7 @@ public class StartServiceReceiver extends BroadcastReceiver {
                 if (networkInfo.getState() == NetworkInfo.State.CONNECTED) {//已连接网络
                     Log.d("netstatus", "wifi 已连接网络");
                     if (networkInfo.isAvailable()) {//并且网络可用
+                        MachineConfig.setNetworkType(2);
                         Log.d("netstatus", "wifi 已连接网络，并且可用");
                     } else {//并且网络不可用
                         MachineConfig.setNetworkType(0);
@@ -50,6 +51,7 @@ public class StartServiceReceiver extends BroadcastReceiver {
                     Log.d("netstatus", "wifi 未连接网络");
                 }
             } else {
+                MachineConfig.setNetworkType(0);
                 Log.d("netstatus", "wifi parcelableExtra为空");
             }
         }
@@ -75,6 +77,7 @@ public class StartServiceReceiver extends BroadcastReceiver {
             if (networkInfo.getState() == NetworkInfo.State.CONNECTED) {//已连接网络
                 Log.d("netstatus", "总网络 已连接网络");
                 if (networkInfo.isAvailable()) {//并且网络可用
+                    MachineConfig.setNetworkType(1);
                     Log.d("netstatus", "总网络 已连接网络，并且可用");
                 } else {//并且网络不可用
                     MachineConfig.setNetworkType(0);

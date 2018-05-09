@@ -1,18 +1,22 @@
 package example.jni.com.coffeeseller.views.activities;
 
+import android.content.Context;
 import android.content.IntentFilter;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.telephony.TelephonyManager;
 import android.util.Log;
 
 import cof.ac.inter.CoffMsger;
 import cof.ac.inter.MachineState;
 import cof.ac.inter.StateListener;
 import example.jni.com.coffeeseller.R;
+import example.jni.com.coffeeseller.bean.MachineConfig;
 import example.jni.com.coffeeseller.communicate.TaskService;
 import example.jni.com.coffeeseller.factory.FragmentEnum;
 import example.jni.com.coffeeseller.factory.FragmentFactory;
@@ -44,6 +48,33 @@ public class HomeActivity extends AppCompatActivity implements IAddFragmentView,
         //动态注册，此广播只能动态注册才能接收到
         IntentFilter filter = new IntentFilter();
         filter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);//网络的连接（包括wifi和移动网络）
+        checkNetWorkType();
+    }
+
+    private boolean checkNetWorkType() {
+        ConnectivityManager mConnectivity = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        TelephonyManager mTelephony = (TelephonyManager) this.getSystemService(TELEPHONY_SERVICE);
+//检查网络连接
+        NetworkInfo info = mConnectivity.getActiveNetworkInfo();
+        int netType = info.getType();
+        int netSubtype = info.getSubtype();
+        if (info == null || !mConnectivity.getBackgroundDataSetting()) {
+            MachineConfig.setNetworkType(0);
+            return false;
+        }
+        if (netType == ConnectivityManager.TYPE_WIFI) {  //WIFI
+            Log.d(TAG, "wifi is access");
+            MachineConfig.setNetworkType(2);
+            return info.isConnected();
+        } else if (netType == ConnectivityManager.TYPE_MOBILE && netSubtype == TelephonyManager.NETWORK_TYPE_UMTS && !mTelephony.isNetworkRoaming()) {   //MOBILE
+            Log.d(TAG, "MOBILE is access");
+            MachineConfig.setNetworkType(1);
+            return info.isConnected();
+        } else {
+            Log.d(TAG, "netWorkType is unaccess");
+            MachineConfig.setNetworkType(0);
+            return false;
+        }
     }
 
     public String getVersion() {
@@ -118,7 +149,7 @@ public class HomeActivity extends AppCompatActivity implements IAddFragmentView,
     public void stateArrived(final MachineState machineState) {
         Log.e(TAG, "stateArrived");
         if (machineState != null) {
-            Log.e(TAG, "lastState is " + lastState + "current state is " + machineState.getMajorState().getStateCode()+ "and crrent lowErro_byte is " + machineState.getMajorState().getHighErr_byte());
+            Log.e(TAG, "lastState is " + lastState + "current state is " + machineState.getMajorState().getStateCode() + "and crrent lowErro_byte is " + machineState.getMajorState().getHighErr_byte());
             if (lastState != machineState.getMajorState().getStateCode()) { //上一次不等于当前的状态则提交
                 Log.e(TAG, "lastState is " + lastState + "current state is " + machineState.getMajorState().getStateCode());
                 TaskService.getInstance().sendStateMsg();

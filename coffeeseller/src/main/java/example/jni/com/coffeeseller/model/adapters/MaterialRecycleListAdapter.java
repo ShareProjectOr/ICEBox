@@ -70,7 +70,12 @@ public class MaterialRecycleListAdapter extends RecyclerView.Adapter<RecyclerVie
         mHolder.bankersName.setText(list.get(position).getBunkersName());
         mHolder.Material.setText(list.get(position).getMaterialName());
         mHolder.AddTime.setText(list.get(position).getLastLoadingTime());
-        mHolder.output.setText(list.get(position).getMaterialDropSpeed());
+        if (list.get(position).getMaterialDropSpeed().equals("null") || list.get(position).getMaterialDropSpeed().equals("0") || list.get(position).getMaterialDropSpeed().equals("")) {
+            mHolder.output.setText("未设置");
+        } else {
+            mHolder.output.setText(list.get(position).getMaterialDropSpeed());
+        }
+
         long stockmg;
         if (list.get(position).getMaterialStock().equals("")) {
             stockmg = 0;

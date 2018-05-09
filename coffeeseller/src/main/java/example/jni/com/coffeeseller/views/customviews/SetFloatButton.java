@@ -5,8 +5,10 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.PixelFormat;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
 import android.view.WindowManager.LayoutParams;
@@ -22,12 +24,28 @@ import example.jni.com.coffeeseller.R;
 
 public class SetFloatButton {
 
-    private static Context mContext;
     WindowManager windowManager;
     LayoutParams params;
+    int screenWidth = 0;
+    int screenHeight = 0;
+    int rawY = 0;
+    int rawX = 0;
+    Button button;
+    int startX, startY, dx, dy;
+    int statusHeight;
+
+    private static Context mContext = null;
 
     private SetFloatButton() {
-
+        // 获取系统窗口服务
+        windowManager = (WindowManager) mContext
+                .getSystemService(Context.WINDOW_SERVICE);
+        DisplayMetrics metrics = new DisplayMetrics();
+        windowManager.getDefaultDisplay().getMetrics(metrics);
+        int resourceId = mContext.getResources().getIdentifier("status_bar_height", "dimen", "android");
+        if (resourceId > 0) {
+            statusHeight = mContext.getResources().getDimensionPixelSize(resourceId);
+        }
     }
 
     private static SetFloatButton instance = null;
@@ -63,7 +81,6 @@ public class SetFloatButton {
 
     }
 
-    Button button;
 
     private View getButton() {
 
@@ -93,8 +110,46 @@ public class SetFloatButton {
                 mContext.startActivity(intent);
             }
         });
+        button.setOnTouchListener(new View.OnTouchListener() {
 
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                // TODO Auto-generated method stub
+                int[] dir = new int[2];
+                v.getLocationOnScreen(dir);
+                int action = event.getAction();
+                switch (action) {
+                    case MotionEvent.ACTION_DOWN:
+
+                        startX = dir[0];
+                        startY = dir[1];
+                        Log.e("Test", "startx=" + startX + "---startY=" + startY);
+                        rawX = (int) event.getRawX();
+                        rawY = (int) event.getRawY();
+                        Log.e("Test", "rawX=" + rawX + "---rawY=" + rawY);
+                        break;
+
+                    case MotionEvent.ACTION_MOVE:
+                        dx = (int) event.getRawX() - rawX;
+                        dy = (int) event.getRawY() - rawY;
+                        Log.e("Test", "dx=" + dx + "---dy=" + dy);
+                        updateLayout(v);
+                        break;
+                    case MotionEvent.ACTION_UP:
+
+                        break;
+                }
+                return false;
+            }
+        });
         return button;
+    }
+
+    private void updateLayout(View v) {
+        params.x = startX + dx;
+        params.y = startY + dy - statusHeight;
+        Log.e("Test", "params.x=" + params.x + "---params.y=" + params.y);
+        windowManager.updateViewLayout(v, params);
     }
 
 
