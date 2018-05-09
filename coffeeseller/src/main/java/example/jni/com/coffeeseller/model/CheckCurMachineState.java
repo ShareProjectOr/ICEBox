@@ -4,8 +4,10 @@ import android.content.Context;
 import android.util.Log;
 
 import cof.ac.inter.CoffMsger;
+import cof.ac.inter.DebugAction;
 import cof.ac.inter.MachineState;
 import cof.ac.inter.MajorState;
+import cof.ac.inter.Result;
 import cof.ac.inter.StateEnum;
 import cof.ac.util.DataSwitcher;
 import example.jni.com.coffeeseller.contentprovider.SharedPreferencesManager;
@@ -21,8 +23,11 @@ public class CheckCurMachineState {
     public static CheckCurMachineState mInstance;
     private CoffMsger mCoffMsger;
     private StringBuffer mBuffer;
-    private boolean isHotting = false;
-    private long lastCheckTime;//上次检测时间
+    private boolean isHotting = false;//加热中
+    private boolean isClearing = false;//清洗中
+    private boolean isDoorOpen = false;//门是否开启着
+    private boolean hasCupOnShelf = false;//门是否开启着
+    private boolean isCupShelfRightPlace = true;//杯架是否在初始位置
 
     public static CheckCurMachineState getInstance() {
         if (mInstance == null) {
@@ -75,16 +80,22 @@ public class CheckCurMachineState {
 
                     isHotting = true;
                     return true;
+                } else if (majorState.getCurStateEnum() == StateEnum.CLEANING) {
+
+                    isClearing = true;
+                    return true;
                 } else {
-                    isHotting = false;
+
+                    init();
                     checkCurState(majorState);
                     return false;
                 }
             } else {
-                isHotting = false;
+                init();
             }
         }
         isHotting = false;
+        isClearing = false;
         return true;
     }
 
@@ -155,14 +166,20 @@ public class CheckCurMachineState {
 
             isCheckCanMake = false;
             mBuffer.append("\n");
-            mBuffer.append("锅炉温度大于130");
+            mBuffer.append("降温中...");
+
+            MyLog.W(TAG, "锅炉温度大于130");
 
         }
-        if (machineState.getPotPressure() > 1500) {
+        if (machineState.getPotPressure() > 1500 * 10) {
 
             isCheckCanMake = false;
             mBuffer.append("\n");
-            mBuffer.append("锅炉压力大于1500");
+
+            mBuffer.append("降压中...");
+
+            MyLog.W(TAG, "锅炉压力大于15000");
+
 
         }
         if (!machineState.isWaterEnough()) {
@@ -187,6 +204,7 @@ public class CheckCurMachineState {
         if (machineState.isLittleDoorOpen()) {
             Log.d(TAG, "前门未关");
             isCheckCanMake = false;
+            isDoorOpen = machineState.isLittleDoorOpen();
             mBuffer.append("\n");
             mBuffer.append("前门未关");
 
@@ -194,6 +212,7 @@ public class CheckCurMachineState {
         if (!machineState.isCupShelfRightPlace()) {
             Log.d(TAG, "杯架未在初始状态");
             isCheckCanMake = false;
+            isCupShelfRightPlace = machineState.isCupShelfRightPlace();
             mBuffer.append("\n");
             mBuffer.append("杯架未在初始状态");
 
@@ -201,6 +220,7 @@ public class CheckCurMachineState {
         if (machineState.hasCupOnShelf()) {
             Log.d(TAG, "杯架上有杯子未取走");
             isCheckCanMake = false;
+            hasCupOnShelf = machineState.hasCupOnShelf();
             mBuffer.append("\n");
             mBuffer.append("杯架上有杯子未取走");
 
@@ -216,5 +236,84 @@ public class CheckCurMachineState {
 
     public boolean isHotting() {
         return isHotting;
+    }
+
+    public boolean isClearing() {
+        return isClearing;
+    }
+
+    public boolean isDoorOpen() {
+        return isDoorOpen;
+    }
+
+    public boolean isHasCupOnShelf() {
+        return hasCupOnShelf;
+    }
+
+    public boolean isCupShelfRightPlace() {
+        return isCupShelfRightPlace;
+    }
+
+    public boolean isCupShelfRightPlaceClearMachineTest() {
+        CoffMsger coffMsger = CoffMsger.getInstance();
+        MachineState machineState = coffMsger.getLastMachineState();
+        return machineState.isCupShelfRightPlace();
+    }
+
+    /*
+        * 是否发送关门指令
+        * */
+    public boolean isSendCloseDoorComd() {//门开、杯架未在初始状态、没有杯子
+//        return isDoorOpen && isCupShelfRightPlace && (!hasCupOnShelf);
+        return isDoorOpen && (!hasCupOnShelf);
+    }
+
+    /*
+    * 是否将杯架移入
+    * */
+    public boolean isMoveInTray() {//杯架未在初始状态、没有杯子
+        return (!isCupShelfRightPlace) && (!hasCupOnShelf);
+    }
+
+    /*
+    * 发送关门指令,应单片机要求
+    * */
+    public void sendCloseDoorComd() {
+        if (isSendCloseDoorComd()) {
+            CoffMsger coffMsger = CoffMsger.getInstance();
+            Result result = coffMsger.Debug(DebugAction.CTR_LITTLEDOOR, 0, 0);
+
+            if (result.getCode() == Result.SUCCESS) {
+
+                MyLog.W(TAG, "sendCloseDoorComd  send close door code success!");
+
+            } else {
+
+                MyLog.W(TAG, "sendCloseDoorComd  send  close door failed, because " + result.getErrDes());
+
+            }
+        }
+        if (isMoveInTray()) {
+            CoffMsger coffMsger = CoffMsger.getInstance();
+            Result result = coffMsger.Debug(DebugAction.MOVE_TRAY, 0, 0);
+
+            if (result.getCode() == Result.SUCCESS) {
+
+                MyLog.W(TAG, "sendCloseDoorComd  send move tray code success!");
+
+            } else {
+
+                MyLog.W(TAG, "sendCloseDoorComd  send  move tray failed, because " + result.getErrDes());
+
+            }
+        }
+    }
+
+    public void init() {
+        isHotting = false;//加热中
+        isClearing = false;//清洗中
+        isDoorOpen = false;//门是否开启着
+        hasCupOnShelf = false;//门是否开启着
+        isCupShelfRightPlace = true;//杯架是否在初始位置
     }
 }

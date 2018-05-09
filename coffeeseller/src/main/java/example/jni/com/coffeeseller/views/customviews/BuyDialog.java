@@ -20,6 +20,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import example.jni.com.coffeeseller.MachineConfig.DealRecorder;
 import example.jni.com.coffeeseller.MachineConfig.QRMsger;
@@ -35,7 +37,9 @@ import example.jni.com.coffeeseller.contentprovider.SharedPreferencesManager;
 import example.jni.com.coffeeseller.databases.DealOrderInfoManager;
 import example.jni.com.coffeeseller.httputils.JsonUtil;
 import example.jni.com.coffeeseller.httputils.OkHttpUtil;
+import example.jni.com.coffeeseller.model.CheckCurMachineState;
 import example.jni.com.coffeeseller.model.ChooseCup;
+import example.jni.com.coffeeseller.model.ClearMachine;
 import example.jni.com.coffeeseller.model.Help;
 import example.jni.com.coffeeseller.model.MkCoffee;
 import example.jni.com.coffeeseller.model.listeners.ChooseCupListenner;
@@ -59,7 +63,11 @@ public class BuyDialog extends Dialog implements ChooseCupListenner, MkCoffeeLis
     private ChooseCupListenner chooseCupListenner;
     private MkCoffeeListenner mkCoffeeListenner;
     private BuyFragment fragment;
+    private Timer clearMachineTimer;
+    private TimerTask clearMachineTimerTask;
+
     private boolean dialogDisCancle = false;
+    private boolean isMkResult = false;
 
     public BuyDialog(Context context) {
         super(context);
@@ -347,6 +355,9 @@ public class BuyDialog extends Dialog implements ChooseCupListenner, MkCoffeeLis
 
     @Override
     public void getMkResult(final DealRecorder dealRecorder, final boolean success, final boolean isCalculateMaterial) {
+        if (isMkResult) {//如果已经有回掉了，就不在处理
+            return;
+        }
 
         final DealRecorder recorder = dealRecorder;
 
@@ -378,7 +389,11 @@ public class BuyDialog extends Dialog implements ChooseCupListenner, MkCoffeeLis
                 if (!success && !isCalculateMaterial) {
 
                 } else {
+                    //更新杯子
                     SharedPreferencesManager.getInstance(context).setCupNum(SharedPreferencesManager.getInstance(context).getCupNum() - 1);
+
+                    //清洗机器
+                    fragment.clearMachine(newDealRecorder.getContainerConfigs());
                 }
 
             }
@@ -389,6 +404,8 @@ public class BuyDialog extends Dialog implements ChooseCupListenner, MkCoffeeLis
         if (fragment != null) {
             fragment.updateUi();
         }
+
+        isMkResult = true;
 
         handler.postDelayed(new Runnable() {
             @Override

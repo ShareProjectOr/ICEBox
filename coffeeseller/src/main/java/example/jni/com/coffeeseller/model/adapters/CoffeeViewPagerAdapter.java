@@ -122,7 +122,7 @@ public class CoffeeViewPagerAdapter extends PagerAdapter {
                         MyLog.d(TAG, "gridViewItemListener has been called");
                         gridViewItemListener.onGridItemClick(parent, view, gridIndex * onePageCount + position, id);
                     }
-                    Animation anim = AnimationUtils.loadAnimation(homeActivity, R.anim.set_snake);
+                 /*   Animation anim = AnimationUtils.loadAnimation(homeActivity, R.anim.set_snake);
 
                     anim.setAnimationListener(new Animation.AnimationListener() {
                         @Override
@@ -144,7 +144,7 @@ public class CoffeeViewPagerAdapter extends PagerAdapter {
                     });
                     if (view != null) {
                         view.startAnimation(anim);
-                    }
+                    }*/
                 }
             });
             gridView.setAdapter(new CoffeeGridAdapter(homeActivity, gridCoffees));

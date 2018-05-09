@@ -83,14 +83,13 @@
         android:gravity="center"
         android:orientation="vertical">
 
-
         <LinearLayout
             android:id="@+id/pointGroup"
             android:layout_width="match_parent"
             android:layout_height="100dp"
             android:layout_alignParentBottom="true"
             android:layout_weight="2"
-            android:gravity="center"
+            android:gravity="top|center_horizontal"
             android:orientation="horizontal">
 
         </LinearLayout>
@@ -107,7 +106,12 @@
                 android:id="@+id/viewPager"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center" />
+                android:layout_gravity="center">
+
+
+            </example.jni.com.coffeeseller.model.adapters.HomeViewPager>
+
+
         </LinearLayout>
 
 

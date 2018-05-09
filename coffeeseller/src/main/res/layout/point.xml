@@ -9,6 +9,7 @@
         android:layout_height="50dp"
         android:background="@drawable/selector_point"
         android:gravity="center"
+        android:textColor="@color/coffeeColor"
         android:text="1"
-        android:textSize="25sp"></TextView>
+        android:textSize="35sp"></TextView>
 </LinearLayout>

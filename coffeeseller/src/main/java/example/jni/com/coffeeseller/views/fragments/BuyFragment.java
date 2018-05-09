@@ -6,6 +6,7 @@ import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -19,6 +20,7 @@ import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import cof.ac.inter.ContainerConfig;
 import example.jni.com.coffeeseller.R;
 import example.jni.com.coffeeseller.bean.Coffee;
 import example.jni.com.coffeeseller.bean.MachineConfig;
@@ -27,6 +29,8 @@ import example.jni.com.coffeeseller.contentprovider.SingleMaterialLsit;
 import example.jni.com.coffeeseller.factory.FragmentEnum;
 import example.jni.com.coffeeseller.factory.FragmentFactory;
 import example.jni.com.coffeeseller.listener.MessageReceviedListener;
+import example.jni.com.coffeeseller.model.CheckCurMachineState;
+import example.jni.com.coffeeseller.model.ClearMachine;
 import example.jni.com.coffeeseller.model.GetFormula;
 import example.jni.com.coffeeseller.model.adapters.CoffeeViewPagerAdapter;
 import example.jni.com.coffeeseller.model.adapters.HomeViewPager;
@@ -48,6 +52,7 @@ public class BuyFragment extends BasicFragment implements GridViewItemListener, 
     public static int DEFAULT_ONEPAGE_NUM = 8;
     private HomeViewPager mViewPager;
     private LinearLayout mPointGroup;
+    private RelativeLayout mViewPagerParentLayout;
     public ImageView mLogo, mIsOnLineImg;
     public TextView mMachineCode;
     public ImageView mHelp;
@@ -56,8 +61,11 @@ public class BuyFragment extends BasicFragment implements GridViewItemListener, 
     private GridViewItemListener gridViewItemListener;
     private List<Coffee> mCoffees;
     private Handler handler;
-
+    private Timer clearMachineTimer;
+    private TimerTask clearMachineTimerTask;
     private BuyDialog buyDialog;
+
+    private long lastClearMachineTime = 0;
 
 
     public Coffee curSelectedCoffee;
@@ -81,8 +89,10 @@ public class BuyFragment extends BasicFragment implements GridViewItemListener, 
         mIsOnLineImg = (ImageView) content.findViewById(R.id.isOnLineImg);
         mHelp = (ImageView) content.findViewById(R.id.help);
         mHelpLayout = (RelativeLayout) content.findViewById(R.id.helpLayout);
+        mViewPagerParentLayout = (RelativeLayout) content.findViewById(R.id.viewPagerParentLayout);
         mMachineCode = (TextView) content.findViewById(R.id.machineCode);
         mLogo.setOnClickListener(this);
+
 
         mViewPager = (HomeViewPager) content.findViewById(R.id.viewPager);
         mPointGroup = (LinearLayout) content.findViewById(R.id.pointGroup);
@@ -102,6 +112,14 @@ public class BuyFragment extends BasicFragment implements GridViewItemListener, 
             @Override
             public void onPageScrollStateChanged(int state) {
 
+            }
+        });
+
+        mViewPagerParentLayout.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                mViewPager.dispatchTouchEvent(event);
+                return false;
             }
         });
     }
@@ -156,20 +174,67 @@ public class BuyFragment extends BasicFragment implements GridViewItemListener, 
     }
 
     public void updateUi() {
-     handler.post(new Runnable() {
-         @Override
-         public void run() {
-             List<Coffee> coffees = SingleMaterialLsit.getInstance(homeActivity).getCoffeeList();
-             mViewPager.removeAllViews();
-             removePoint();
-             if (coffees != null && coffees.size() > 0) {
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                List<Coffee> coffees = SingleMaterialLsit.getInstance(homeActivity).getCoffeeList();
+                mViewPager.removeAllViews();
+                removePoint();
+                if (coffees != null && coffees.size() > 0) {
 
-                 mPagerAdapter = new CoffeeViewPagerAdapter(homeActivity, coffees, gridViewItemListener);
-                 mViewPager.addOnPageChangeListener(new ViewpagerPageChangedListener());
-                 mViewPager.setAdapter(new CoffeeViewPagerAdapter(homeActivity, mCoffees, gridViewItemListener));
-             }
-         }
-     });
+                    mPagerAdapter = new CoffeeViewPagerAdapter(homeActivity, coffees, gridViewItemListener);
+                    mViewPager.addOnPageChangeListener(new ViewpagerPageChangedListener());
+                    mViewPager.setAdapter(new CoffeeViewPagerAdapter(homeActivity, mCoffees, gridViewItemListener));
+                }
+            }
+        });
+    }
+
+    /*
+   * 清洗机器
+   * */
+    public void clearMachine(final List<ContainerConfig> containerConfigs) {
+
+        MyLog.d(TAG, "clearMachine");
+        lastClearMachineTime = System.currentTimeMillis();
+        if (clearMachineTimer == null) {
+            clearMachineTimer = new Timer();
+        }
+        if (clearMachineTimerTask == null) {
+            clearMachineTimerTask = new TimerTask() {
+                @Override
+                public void run() {
+
+                    if (CheckCurMachineState.getInstance().isCupShelfRightPlaceClearMachineTest()) {
+//                        boolean isResultSuccess = ClearMachine.clearMachineByHotWater(100, 0);
+                        boolean isOver=ClearMachine.clearMachineAllModule(containerConfigs);
+                        if (System.currentTimeMillis() - lastClearMachineTime > 50 * 1000) {
+
+                            MyLog.d(TAG, "clearMachine over 50s");
+                            stopTaskClearMachine();
+                            return;
+                        }
+                        if (isOver) {
+                            MyLog.d(TAG, "clearMachine success!");
+                            stopTaskClearMachine();
+                        } else {
+                            MyLog.d(TAG, "clearMachine failed!");
+                        }
+                    }
+                }
+            };
+        }
+        clearMachineTimer.schedule(clearMachineTimerTask, 0, 2000);
+    }
+
+    public void stopTaskClearMachine() {
+
+        if (clearMachineTimer != null) {
+
+            clearMachineTimer.cancel();
+        }
+        clearMachineTimer = null;
+        clearMachineTimerTask = null;
     }
 
     /*

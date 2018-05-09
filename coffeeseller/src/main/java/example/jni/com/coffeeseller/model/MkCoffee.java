@@ -101,10 +101,9 @@ public class MkCoffee {
                 if (containerConfig.getWater_capacity() != 0) {
                     CONTAIN_MAKING_PROGRESS_TIME += 5 * 1000;//出水运作5s
                     waterTotal += containerConfig.getWater_capacity();
+                } else {
+                    CONTAIN_MAKING_PROGRESS_TIME += containerConfig.getMaterial_time() * 10 + 8 * 1000;//每个步骤机器运作大概8s
                 }
-
-                CONTAIN_MAKING_PROGRESS_TIME += containerConfig.getMaterial_time() * 10 + 5 * 1000;//每个步骤机器运作大概5s
-
                 MyLog.d(TAG, "getContainer=" + containerConfig.getContainer());
                 MyLog.d(TAG, "getWater_capacity=" + containerConfig.getWater_capacity());
                 MyLog.d(TAG, "getMaterial_time=" + containerConfig.getMaterial_time());
@@ -116,7 +115,7 @@ public class MkCoffee {
             }
             CONTAIN_MAKING_PROGRESS_TIME += waterTotal * 10 / 10;
 
-        //    CONTAIN_MAKING_PROGRESS_TIME += 30 * 1000;
+            //    CONTAIN_MAKING_PROGRESS_TIME += 30 * 1000;
 
             MyLog.d(TAG, "CONTAIN_MAKING_PROGRESS_TIME= " + CONTAIN_MAKING_PROGRESS_TIME);
 
@@ -252,11 +251,11 @@ public class MkCoffee {
                                 || coffeeMakeStateRecorder.state == CoffeeMakeState.COFFEEFINISHED_CUPISTAKEN) {
                             MyLog.W(TAG, " make successed but time is too long ");
 
-                            if (mkCoffeeListenner != null) {
+                   /*         if (mkCoffeeListenner != null) {
                                 dealRecorder.setMakeSuccess(true);
                                 mkCoffeeListenner.getMkResult(dealRecorder, false, isCalculateMaterial);
                                 stopCountDownTimer();
-                            }
+                            }*/
                         } else {
                             if (coffeeMakeStateRecorder.state == CoffeeMakeState.COFFEE_DOWN_CUP) {
 

@@ -31,8 +31,11 @@ import java.util.TimerTask;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import cof.ac.inter.CoffMsger;
 import cof.ac.inter.ContainerConfig;
 import cof.ac.inter.ContainerType;
+import cof.ac.inter.DebugAction;
+import cof.ac.inter.Result;
 import cof.ac.inter.WaterType;
 import example.jni.com.coffeeseller.MachineConfig.DealRecorder;
 import example.jni.com.coffeeseller.MachineConfig.QRMsger;
@@ -92,8 +95,12 @@ public class ChooseCup implements View.OnClickListener, MsgTransListener {
 
     private void init() {
         initView();
-        if (isMachineRight()) {
+        if (isMachineRight()) {//如果正常
             initData();
+        } else {//如果不正常
+
+            //是否需要发送关门指令
+            CheckCurMachineState.getInstance().sendCloseDoorComd();
         }
         countDownTime();
     }
@@ -457,6 +464,15 @@ public class ChooseCup implements View.OnClickListener, MsgTransListener {
                 String tipText = TextUtil.textPointNum("锅炉加热中", (int) (millisUntilFinished / 1000 % 3));
 
                 mViewHolder.mRequestQRTxt.setText(tipText);
+            } else if (CheckCurMachineState.getInstance().isClearing()) {
+
+                mViewHolder.mRequestQRTxt.setVisibility(View.VISIBLE);
+                mViewHolder.mQrCodeImage.setVisibility(View.GONE);
+
+                String tipText = TextUtil.textPointNum("清洗中", (int) (millisUntilFinished / 1000 % 3));
+
+                mViewHolder.mRequestQRTxt.setText(tipText);
+
             } else {
                 mViewHolder.mRequestQRTxt.setVisibility(View.GONE);
 
@@ -512,7 +528,6 @@ public class ChooseCup implements View.OnClickListener, MsgTransListener {
 
                 LinearLayout childLayout = (LinearLayout) layout.getChildAt(selectedId);
                 TextView textView = (TextView) childLayout.getChildAt(0);
-//                boolean isSelected = (boolean) textView.getTag();
 
                 MyLog.d(TAG, "getFinalContainerConfig layout selected= " + textView.isSelected());
 

@@ -76,6 +76,7 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentLeft="true"
                     android:background="@drawable/selector_cold_hot"
+                    android:enabled="false"
                     android:gravity="center"
                     android:paddingBottom="10dp"
                     android:paddingLeft="60dp"

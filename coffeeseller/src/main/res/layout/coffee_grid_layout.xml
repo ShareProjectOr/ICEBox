@@ -3,18 +3,20 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+
     android:gravity="center"
     android:orientation="vertical">
 
-    <!--android:background="@android:color/transparent"-->
+    <!--   android:paddingBottom="100dp"-->
 
     <example.jni.com.coffeeseller.views.customviews.HomeGridView
         android:id="@+id/coffeeGrid"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:horizontalSpacing="40dp"
         android:paddingLeft="200dp"
         android:paddingRight="200dp"
-        android:horizontalSpacing="40dp"
+        android:paddingTop="150dp"
         android:scrollbars="none"
         android:verticalSpacing="40dp" />
 
