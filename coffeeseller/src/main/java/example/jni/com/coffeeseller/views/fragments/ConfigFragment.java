@@ -11,7 +11,6 @@ import android.provider.Settings;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,9 +18,11 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import cof.ac.inter.DebugAction;
+import cof.ac.inter.Result;
 
 import java.util.List;
 
@@ -32,16 +33,12 @@ import cof.ac.util.DataSwitcher;
 import example.jni.com.coffeeseller.R;
 import example.jni.com.coffeeseller.bean.CommitMaterialObject;
 import example.jni.com.coffeeseller.bean.MachineConfig;
-import example.jni.com.coffeeseller.bean.Material;
-import example.jni.com.coffeeseller.communicate.TaskService;
 import example.jni.com.coffeeseller.contentprovider.MaterialSql;
 import example.jni.com.coffeeseller.contentprovider.SharedPreferencesManager;
 import example.jni.com.coffeeseller.factory.FragmentEnum;
-import example.jni.com.coffeeseller.factory.FragmentFactory;
 import example.jni.com.coffeeseller.httputils.UpdateAppManager;
 import example.jni.com.coffeeseller.model.adapters.MaterialRecycleListAdapter;
 import example.jni.com.coffeeseller.presenter.AddCupPresenter;
-import example.jni.com.coffeeseller.presenter.AddMaterialPresenter;
 import example.jni.com.coffeeseller.presenter.CheckVersionPresenter;
 import example.jni.com.coffeeseller.presenter.CommitMaterialPresenter;
 import example.jni.com.coffeeseller.utils.MyLog;
@@ -95,7 +92,20 @@ public class ConfigFragment extends BasicFragment implements IAddMaterialView, I
         addWaterTime.setText(SharedPreferencesManager.getInstance(getActivity()).getAddWaterTime());
         mMachineCode.setText(SharedPreferencesManager.getInstance(getActivity()).getMachineCode());
         passWord.setText(SharedPreferencesManager.getInstance(getActivity()).getLoginPassword());
-   /*     if (msger != null) {
+        boolean isOutCupClear = SharedPreferencesManager.getInstance(getActivity()).getOutCupAutoClear();
+        boolean isOnClear = SharedPreferencesManager.getInstance(getActivity()).getIsOnClear();
+        if (isOutCupClear) {
+            isOutCupAutoClear.setChecked(true);
+        } else {
+            isOutCupAutoClear.setChecked(false);
+        }
+
+        if (isOnClear) {
+            onClear.setChecked(true);
+        } else {
+            onClear.setChecked(false);
+        }
+        if (msger != null) {
 
             driverVersion.setText("驱动版本:" + msger.getCurState().getVersion());
             if (msger.getLastMachineState().isWasteContainerFull()) {
@@ -105,12 +115,10 @@ public class ConfigFragment extends BasicFragment implements IAddMaterialView, I
             }
         } else {
 
-        }*/
+        }
 
         updateTimeAndVersion.setText("最后更新于 " + SharedPreferencesManager.getInstance(getActivity()).getLastAppUpdateTime() + " 当前版本: " + getVersion());
 
-        /*cupStock.setText(SharedPreferencesManager.getInstance(getActivity()).getCupNum() + "个");
-        waterStock.setText(SharedPreferencesManager.getInstance(getActivity()).getWaterCount() + "ml");*/
 
     }
 
@@ -185,7 +193,14 @@ public class ConfigFragment extends BasicFragment implements IAddMaterialView, I
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.debug_machine:
-                homeActivity.replaceFragment(FragmentEnum.ConfigFragment, FragmentEnum.DebugFragment);
+
+                Result result = msger.Debug(DebugAction.RESET, 0, 0);//复位机器
+                if (result.getCode() == Result.SUCCESS) {
+                    msger.startCheckState();
+                    Toast.makeText(getActivity(), "机器复位成功", Toast.LENGTH_LONG).show();
+                } else {
+                    Toast.makeText(getActivity(), "机器复位失败" + result.getCode(), Toast.LENGTH_LONG).show();
+                }
                 break;
             case R.id.backToCheck:
                 materialPresenter.CommitMaterial2();

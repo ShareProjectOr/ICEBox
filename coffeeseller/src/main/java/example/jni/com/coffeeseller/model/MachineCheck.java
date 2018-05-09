@@ -1,12 +1,9 @@
 package example.jni.com.coffeeseller.model;
 
-import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
-import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -19,8 +16,6 @@ import java.util.List;
 import java.util.Map;
 
 import cof.ac.inter.CoffMsger;
-import cof.ac.inter.DebugAction;
-import cof.ac.inter.Result;
 import example.jni.com.coffeeseller.MachineConfig.MachineInitState;
 import example.jni.com.coffeeseller.bean.MachineConfig;
 import example.jni.com.coffeeseller.bean.bunkerData;

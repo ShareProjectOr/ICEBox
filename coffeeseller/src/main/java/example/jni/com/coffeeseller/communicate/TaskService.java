@@ -584,19 +584,19 @@ public class TaskService extends Service implements MqttCallback {
                 msg.put("cupDoorState", 0);
             }
             msg.put("driverVersion", state.getVersion());
-            Log.e(TAG, "stateCode is " + state.getMajorState().getStateCode() + " errCode is " + DataSwitcher.byte2Hex(state.getMajorState().getHighErr_byte()));
+            Log.e(TAG, "stateCode is " + state.getMajorState().getStateCode() + " HighErr_byte is " + DataSwitcher.byte2Hex(state.getMajorState().getHighErr_byte()));
             switch (state.getMajorState().getStateCode()) {
 
                 case 0:
-                    Log.e(TAG, "0--current state is " + state.getMajorState().getStateCode());
+                    Log.e(TAG, "0--current state is " + DataSwitcher.byte2Hex(state.getMajorState().getHighErr_byte()));
                     msg.put("errCode", "00");
                     break;
                 case 0x0a:
-                    Log.e(TAG, "0a--current state is " + state.getMajorState().getStateCode() + "and crrent lowErro_byte is " + state.getMajorState().getHighErr_byte());
+                    Log.e(TAG, "0a--current state is " + state.getMajorState().getStateCode() + "and crrent HighErr_byte is " + DataSwitcher.byte2Hex(state.getMajorState().getHighErr_byte()));
                     msg.put("errCode", "" + DataSwitcher.byte2Hex(state.getMajorState().getHighErr_byte()));
                     break;
                 default:
-                    Log.e(TAG, "default--current state is " + state.getMajorState().getStateCode() + "and crrent lowErro_byte is " + state.getMajorState().getHighErr_byte());
+                    Log.e(TAG, "default--current state is " + state.getMajorState().getStateCode() + "and crrent HighErr_byte is " + DataSwitcher.byte2Hex(state.getMajorState().getHighErr_byte()));
                     msg.put("errCode", "" + DataSwitcher.byte2Hex(state.getMajorState().getHighErr_byte()));
                     break;
             }

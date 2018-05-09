@@ -111,7 +111,7 @@
                         android:gravity="center"
                         android:paddingLeft="30dp"
                         android:paddingRight="30dp"
-                        android:text="设备调试"
+                        android:text="复位机器"
                         android:textColor="@color/white"
                         android:textSize="@dimen/text_size_one" />
                 </LinearLayout>
@@ -242,19 +242,23 @@
 
                     <Button
                         android:id="@+id/material_commit"
-                        android:layout_width="200dp"
+                        android:layout_width="wrap_content"
                         android:layout_height="30dp"
                         android:layout_marginRight="40dp"
                         android:background="@drawable/shape_botton"
+                        android:paddingLeft="30dp"
+                        android:paddingRight="30dp"
                         android:text="原料提交"
                         android:textColor="@color/white"
                         android:textSize="@dimen/text_size_one" />
 
                     <Button
                         android:id="@+id/search_trade"
-                        android:layout_width="200dp"
+                        android:layout_width="wrap_content"
                         android:layout_height="30dp"
                         android:background="@drawable/shape_botton"
+                        android:paddingLeft="30dp"
+                        android:paddingRight="30dp"
                         android:text="查看交易"
                         android:textColor="@color/white"
                         android:textSize="@dimen/text_size_one" />
@@ -276,25 +280,26 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
+                        android:gravity="center"
                         android:text="料仓编号"
-                        android:gravity="center"
                         android:textSize="@dimen/text_size_one" />
 
                     <TextView
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
+                        android:gravity="center"
                         android:text="原料"
-                        android:gravity="center"
                         android:textSize="@dimen/text_size_one" />
 
                     <TextView
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="预估余量"
                         android:gravity="center"
+                        android:text="预估余量"
                         android:textSize="@dimen/text_size_one" />
+
                     <TextView
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
@@ -315,8 +320,8 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="操作"
                         android:gravity="center"
+                        android:text="操作"
                         android:textSize="@dimen/text_size_one" />
 
                     <TextView
@@ -327,7 +332,7 @@
                         android:text="原料校准"
                         android:textColor="@color/blue"
                         android:textSize="@dimen/text_size_one"
-                        android:visibility="gone" />
+                        android:visibility="invisible" />
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -335,7 +340,7 @@
                         android:layout_marginRight="40dp"
                         android:text="绑定原料"
                         android:textSize="@dimen/text_size_one"
-                        android:visibility="gone" />
+                        android:visibility="invisible" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -494,10 +499,12 @@
                     android:layout_width="wrap_content"
                     android:layout_height="30dp"
                     android:layout_marginRight="10dp"
-                    android:textColor="@color/white"
-                    android:textSize="@dimen/text_size_one"
+                    android:background="@drawable/shape_botton"
+                    android:paddingLeft="30dp"
+                    android:paddingRight="30dp"
                     android:text="系统设置"
-                    android:background="@drawable/shape_botton" />
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/text_size_one" />
             </LinearLayout>
 
 
@@ -663,7 +670,7 @@
                 <EditText
                     android:id="@+id/passWord"
                     android:layout_width="300dp"
-                    android:layout_height="60dp"
+                    android:layout_height="40dp"
                     android:background="@drawable/shape_config_edit" />
 
                 <Button
@@ -672,9 +679,11 @@
                     android:layout_height="30dp"
                     android:layout_marginLeft="20dp"
                     android:background="@drawable/shape_botton"
+                    android:paddingLeft="30dp"
+                    android:paddingRight="30dp"
                     android:text="修改密码"
-                    android:textSize="@dimen/text_size_one"
-                    android:textColor="@color/white" />
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/text_size_one" />
             </LinearLayout>
 
 

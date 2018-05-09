@@ -93,6 +93,7 @@ public class SharedPreferencesManager {
     public boolean getIsOnClear() {//开机自动清洗
         return sharedPreferences.getBoolean("isOnClear", false);
     }
+
     public void setOutCupAutoClear(boolean b) {
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putBoolean("outCupAutoClear", b);
@@ -100,8 +101,9 @@ public class SharedPreferencesManager {
     }
 
     public boolean getOutCupAutoClear() {//出杯自动清洗
-        return sharedPreferences.getBoolean("outCupAutoClear", false);
+        return sharedPreferences.getBoolean("outCupAutoClear", true);
     }
+
     public String getLastAppUpdateTime() {
         return sharedPreferences.getString("LastAppUpdateTime", SecondToDate.getDateToString(System.currentTimeMillis()));
     }
@@ -111,7 +113,7 @@ public class SharedPreferencesManager {
         editor.putInt("CupNum", CupNum);
         editor.commit();
 
-        MyLog.d("-------------",sharedPreferences.getInt("CupNum",0)+"");
+        MyLog.d("-------------", sharedPreferences.getInt("CupNum", 0) + "");
     }
 
     public int getCupNum() {
