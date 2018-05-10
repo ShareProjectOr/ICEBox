@@ -149,16 +149,8 @@ public class AddMaterial implements IAddMaterial {
         String beforeAddStorktext = sql.getStorkByBunkersID(bunkersID);
         mBefore_add_stock.setText(beforeAddStorktext + "个");
         final long beforeAddCount = Long.parseLong(beforeAddStorktext);
-        switch (bunkersID) {
-            case "7":
+
                 mAdd_bunker_name.setText("纸杯仓");
-                break;
-            case "8":
-                mAdd_bunker_name.setText("温水仓");
-                break;
-
-        }
-
         mLast_add_stock.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {

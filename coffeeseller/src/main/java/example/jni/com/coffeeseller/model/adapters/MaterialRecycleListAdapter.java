@@ -87,7 +87,7 @@ public class MaterialRecycleListAdapter extends RecyclerView.Adapter<RecyclerVie
         double realstock = new BigDecimal(((float) stockmg / 1000)).setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
         switch (list.get(position).getMaterialType()) {
             case "3":
-                mHolder.CountAndLess.setText(realstock + "个");
+                mHolder.CountAndLess.setText(realstock*1000 + "个");
                 break;
             case "2":
                 mHolder.CountAndLess.setText(realstock + "L");
@@ -104,7 +104,8 @@ public class MaterialRecycleListAdapter extends RecyclerView.Adapter<RecyclerVie
             mHolder.Opration.setOnClickListener(new View.OnClickListener() {// 启用了的料仓才能补料
                 @Override
                 public void onClick(View v) {
-                    if (list.get(position).getBunkerType().equals("4")) {  //如果为包装仓 则为补杯界面
+                    Log.e("补料","bunkerType is "+list.get(position).getBunkerType());
+                    if (list.get(position).getBunkerType().equals("3")) {  //如果为包装仓 则为补杯界面
                         bunkersID = list.get(position).getBunkerID();
                         presenter.addSepcialMaterial();
                     } else {                    //否则为常规补料

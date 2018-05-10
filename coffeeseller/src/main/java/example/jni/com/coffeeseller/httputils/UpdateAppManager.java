@@ -103,14 +103,14 @@ public class UpdateAppManager {
                     }
 
                 })
-                // .setNegativeButton("以后再说", new OnClickListener() {
-                //
-                // @Override
-                // public void onClick(DialogInterface dialog, int which) {
-                // dialog.dismiss();
-                //
-                // }
-                // })
+                .setNegativeButton("以后再说", new OnClickListener() {
+
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+
+                    }
+                })
                 .create().show();
 
     }
