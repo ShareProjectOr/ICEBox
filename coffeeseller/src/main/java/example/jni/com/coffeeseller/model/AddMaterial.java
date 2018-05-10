@@ -28,7 +28,6 @@ import example.jni.com.coffeeseller.utils.Waiter;
 
 public class AddMaterial implements IAddMaterial {
     private String TAG = "AddMaterial";
-    private boolean isCanCheck = false;
 
     @Override
     public void addMaterial(final Context context, final String bunkersID, final MaterialSql sql, final OnAddMaterialCallBackListener onAddMaterialCallBackListener) {
@@ -119,7 +118,6 @@ public class AddMaterial implements IAddMaterial {
                 if (sql.updateContact(bunkersID, "", "", "", "", "", (long) (Double.parseDouble(mLast_add_stock.getText().toString()) * 1000) + "", "","", "", SecondToDate.getDateToString(System.currentTimeMillis()))) {
                     onAddMaterialCallBackListener.addEnd(sql);
                     Toast.makeText(context, "补料成功", Toast.LENGTH_LONG).show();
-                    isCanCheck = false;
                 } else {
                     Toast.makeText(context, "补料失败", Toast.LENGTH_LONG).show();
                 }
@@ -207,7 +205,6 @@ public class AddMaterial implements IAddMaterial {
                 if (sql.updateContact(bunkersID, "", "", "", "", "", Long.parseLong(mLast_add_stock.getText().toString()) + "", "","", "", SecondToDate.getDateToString(System.currentTimeMillis()))) {
                     onAddMaterialCallBackListener.addEnd(sql);
                     Toast.makeText(context, "补料成功", Toast.LENGTH_LONG).show();
-                    isCanCheck = false;
                 } else {
                     Toast.makeText(context, "补料失败", Toast.LENGTH_LONG).show();
                 }

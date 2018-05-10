@@ -504,7 +504,7 @@ public class MaterialSql extends SQLiteOpenHelper {
         if (AllcontainerID.size() == 0) {
             return null;
         } else {
-            Log.e(TAG, "location AllcontainerID is " + AllcontainerID.toString());
+            Log.d(TAG, "location AllcontainerID is " + AllcontainerID.toString());
             List<bunkerData> bunkersList = new ArrayList<>();
 
             if (AllcontainerID.contains("0")) { //如果含有这个料仓则从数据库中找到数据加入

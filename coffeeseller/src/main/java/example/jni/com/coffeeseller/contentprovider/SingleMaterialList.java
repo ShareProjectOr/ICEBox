@@ -1,10 +1,8 @@
 package example.jni.com.coffeeseller.contentprovider;
 
 import android.content.Context;
-import android.database.Cursor;
 import android.util.Log;
 
-import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 
@@ -27,24 +25,23 @@ import example.jni.com.coffeeseller.utils.MyLog;
  * Created by Administrator on 2018/4/16.
  */
 
-public class SingleMaterialLsit {
-    private static SingleMaterialLsit mInstance;
+public class SingleMaterialList {
+    private static SingleMaterialList mInstance;
 
     private List<Coffee> coffeeList;
-    private String TAG = "SingleMaterialLsit";
+    private String TAG = "SingleMaterialList";
     private Context mContext;
     private List<Coffee> youbaoCoffeeList = new ArrayList<>();
-    private MaterialSql sql;
 
     private org.json.JSONArray coffeeArray;
 
-    public SingleMaterialLsit(Context context) {
+    private SingleMaterialList(Context context) {
         mContext = context;
         coffeeList = new ArrayList<>();
         setyoubaoList();
     }
 
-    public synchronized List<Coffee> setCoffeeList() {
+    private synchronized List<Coffee> setCoffeeList() {
         List<Coffee> coffees = new ArrayList<>();
 /*        if (coffeeArray == null) {
             return;
@@ -53,8 +50,8 @@ public class SingleMaterialLsit {
             coffeeList.clear();
         }*/
         try {
-            sql = new MaterialSql(mContext);
-            Log.e(TAG, "数据库长度" + sql.getAllbunkersIDs().size());
+            MaterialSql sql = new MaterialSql(mContext);
+            Log.d(TAG, "数据库长度" + sql.getAllbunkersIDs().size());
             for (int i = 0; i < coffeeArray.length(); i++) {
                 org.json.JSONObject coffeeObject = (org.json.JSONObject) coffeeArray.opt(i);
                 Coffee coffee = new Coffee();
@@ -70,7 +67,7 @@ public class SingleMaterialLsit {
                     org.json.JSONObject stepObject = (org.json.JSONObject) stepArray.opt(j);
                     String materialID = stepObject.getJSONObject("material").getString("materialID");
 
-                    Log.e(TAG, "currentStep need materialID is " + materialID);
+                    Log.d(TAG, "currentStep need materialID is " + materialID);
                     org.json.JSONArray taste = stepObject.getJSONArray("taste");
                     if (taste.length() != 0) { //有口味的配方
                         int amount = 300;
@@ -90,26 +87,26 @@ public class SingleMaterialLsit {
                             coffee.setOver(false);
                         }
                     } else {   //无口味的配方
-                        Log.e(TAG, "location all materialID is " + sql.getAllmaterialID().toString());
+                        Log.d(TAG, "location all materialID is " + sql.getAllmaterialID().toString());
                         if (!sql.getAllmaterialID().contains(materialID)) { //本地料仓里面不含有这个原料
-                            Log.e(TAG, "location have not this material");
+                            Log.d(TAG, "location have not this material");
                             coffee.setOver(true);
                             continue;
                         }
                         String materialStock = sql.getStorkByMaterialID(materialID);// 找到对应原料编号的剩余量
 
                         if (materialStock.equals("0")) { // 有原料但剩余量为0 则为售罄
-                            Log.e(TAG, "location materialStock is 0  ");
+                            Log.d(TAG, "location materialStock is 0  ");
                             coffee.setOver(true);
                             break;
                         }
                         long intMaterialStock = Long.parseLong(materialStock);
-                        Log.e(TAG, "location MaterialStock is" + intMaterialStock);
+                        Log.d(TAG, "location MaterialStock is" + intMaterialStock);
                         int needAccount = stepObject.getInt("amount");
-                        Log.e(TAG, "need MaterialStock is" + needAccount);
+                        Log.d(TAG, "need MaterialStock is" + needAccount);
                         if (needAccount > intMaterialStock) { //需要量 大于剩余量时
                             coffee.setOver(true);
-                            Log.e(TAG, "location materialStock is not enough");
+                            Log.d(TAG, "location materialStock is not enough");
                             break;
                         }
                     }
@@ -123,7 +120,7 @@ public class SingleMaterialLsit {
                     org.json.JSONObject stepObject = (org.json.JSONObject) stepArray.opt(j);
                     Step step = new Step();
                     if (!sql.getAllmaterialID().contains(stepObject.getJSONObject("material").getString("materialID"))) { //本地料仓里面不含有这个原料
-                        Log.e(TAG, "location have not this material");
+                        Log.d(TAG, "location have not this material");
                         coffee.setOver(true);
                         break;
                     }
@@ -159,13 +156,13 @@ public class SingleMaterialLsit {
                     containerConfig.setWater_capacity(stepObject.getInt("water") * 10);//将ml转化为0.1ml
                     int amount = stepObject.getInt("amount");
                     step.setAmount(amount);
-                    Log.e(TAG, "出料总量=" + amount);
+                    Log.d(TAG, "出料总量=" + amount);
                     String MaterialID = stepObject.getJSONObject("material").getString("materialID");
-                    Log.e(TAG, "MaterialID is " + MaterialID);
+                    Log.d(TAG, "MaterialID is " + MaterialID);
                     String containerID = sql.getContainerIDByMaterialID(MaterialID);
 
-                    Log.e(TAG, "containerID is " + containerID);
-                    String MaterialDropSpeed = "";
+                    Log.d(TAG, "containerID is " + containerID);
+                    String MaterialDropSpeed;
                     String outPut = sql.getMaterialDropSpeedBycontainerID(containerID); //校准值
                     String defultOutPut = stepObject.getJSONObject("material").getString("output");
 
@@ -178,18 +175,18 @@ public class SingleMaterialLsit {
                     }
 
 
-                    Log.e(TAG, "默认落料速度=" + defultOutPut + " 校准值= " + outPut + "--此时的原料为:" + stepObject.getJSONObject("material").getString("name") + "落料总量为:" + amount);
+                    Log.d(TAG, "默认落料速度=" + defultOutPut + " 校准值= " + outPut + "--此时的原料为:" + stepObject.getJSONObject("material").getString("name") + "落料总量为:" + amount);
                     int DropSpeed = Integer.parseInt(MaterialDropSpeed);
-                    Log.e(TAG, "DropSpeed is " + DropSpeed);
+                    Log.d(TAG, "DropSpeed is " + DropSpeed);
                     double loadPercent = new BigDecimal((float) (stepObject.getInt("loadingSpeed") / 127)).setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
-                    Log.e(TAG, "double loadPercent is " + loadPercent);
+                    Log.d(TAG, "double loadPercent is " + loadPercent);
                     double materialTime = new BigDecimal((float) amount / DropSpeed).setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
-                    Log.e(TAG, "double materialTime is " + materialTime);
+                    Log.d(TAG, "double materialTime is " + materialTime);
                     Double dealprecentTime = materialTime * loadPercent * 5 * 10;
-                    Log.e(TAG, "Double dealprecentTime is " + dealprecentTime);
+                    Log.d(TAG, "Double dealprecentTime is " + dealprecentTime);
 
                     int intmaterialTime = dealprecentTime.intValue();
-                    Log.e(TAG, "intmaterialTime is " + intmaterialTime);
+                    Log.d(TAG, "intmaterialTime is " + intmaterialTime);
                     containerConfig.setMaterial_time(intmaterialTime);
                     containerConfig.setRotate_speed(stepObject.getInt("loadingSpeed"));
                     containerConfig.setStir_speed(stepObject.getInt("mixingSpeed"));
@@ -450,9 +447,9 @@ public class SingleMaterialLsit {
         youbaoCoffeeList.add(yishinongka);
     }
 
-    public static synchronized SingleMaterialLsit getInstance(Context context) {
+    public static synchronized SingleMaterialList getInstance(Context context) {
         if (mInstance == null) {
-            mInstance = new SingleMaterialLsit(context);
+            mInstance = new SingleMaterialList(context);
         }
         return mInstance;
     }
@@ -533,7 +530,7 @@ public class SingleMaterialLsit {
     }
 
     public synchronized void setCoffeeArray(org.json.JSONArray coffeeArray) {
-        Log.e(TAG, "all coffee list size is " + coffeeArray.length());
+        Log.d(TAG, "all coffee list size is " + coffeeArray.length());
         this.coffeeArray = coffeeArray;
     }
 

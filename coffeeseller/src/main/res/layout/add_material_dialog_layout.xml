@@ -77,7 +77,8 @@
             android:hint="单位(g)"
             android:imeOptions="actionDone"
             android:inputType="number"
-            android:maxLength="8" />
+            android:maxLength="8"
+            android:paddingLeft="10dp" />
     </LinearLayout>
 
     <LinearLayout
@@ -111,6 +112,7 @@
                 android:imeOptions="actionDone"
                 android:inputType="number"
                 android:maxLength="8"
+                android:paddingLeft="10dp"
                 android:textColor="@color/black"
                 android:textSize="@dimen/text_size_one" />
 

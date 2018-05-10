@@ -60,8 +60,7 @@ public class MaterialRecycleListAdapter extends RecyclerView.Adapter<RecyclerVie
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(mContext).inflate(R.layout.material_list_item_layout, parent, false);
-        RecyclerView.ViewHolder holder = new ContentViewHolder(view);
-        return holder;
+        return new ContentViewHolder(view);
     }
 
     @Override
@@ -104,7 +103,7 @@ public class MaterialRecycleListAdapter extends RecyclerView.Adapter<RecyclerVie
             mHolder.Opration.setOnClickListener(new View.OnClickListener() {// 启用了的料仓才能补料
                 @Override
                 public void onClick(View v) {
-                    Log.e("补料","bunkerType is "+list.get(position).getBunkerType());
+                    Log.d("补料","bunkerType is "+list.get(position).getBunkerType());
                     if (list.get(position).getBunkerType().equals("3")) {  //如果为包装仓 则为补杯界面
                         bunkersID = list.get(position).getBunkerID();
                         presenter.addSepcialMaterial();
@@ -178,7 +177,7 @@ public class MaterialRecycleListAdapter extends RecyclerView.Adapter<RecyclerVie
         Toast.makeText(mContext, Result, Toast.LENGTH_LONG).show();
     }
 
-    ProgressDialog dialog;
+    private ProgressDialog dialog;
 
     @Override
     public void ShowLoading() {
@@ -232,10 +231,10 @@ public class MaterialRecycleListAdapter extends RecyclerView.Adapter<RecyclerVie
     }
 
 
-    class ContentViewHolder extends RecyclerView.ViewHolder {
+    private class ContentViewHolder extends RecyclerView.ViewHolder {
         TextView bankersName, Material, CountAndLess, AddTime, Opration, bindMaterial, textDrop, output;
 
-        public ContentViewHolder(View itemView) {
+        ContentViewHolder(View itemView) {
             super(itemView);
             bankersName = (TextView) itemView.findViewById(R.id.bankersName);
             Material = (TextView) itemView.findViewById(R.id.material);

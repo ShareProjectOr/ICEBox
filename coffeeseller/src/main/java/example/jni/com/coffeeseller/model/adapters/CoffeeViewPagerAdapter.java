@@ -9,8 +9,6 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.TextView;
@@ -20,7 +18,7 @@ import java.util.List;
 
 import example.jni.com.coffeeseller.R;
 import example.jni.com.coffeeseller.bean.Coffee;
-import example.jni.com.coffeeseller.contentprovider.SingleMaterialLsit;
+import example.jni.com.coffeeseller.contentprovider.SingleMaterialList;
 import example.jni.com.coffeeseller.factory.FragmentEnum;
 import example.jni.com.coffeeseller.factory.FragmentFactory;
 import example.jni.com.coffeeseller.model.listeners.GridViewItemListener;
@@ -49,7 +47,7 @@ public class CoffeeViewPagerAdapter extends PagerAdapter {
         this.onePageCount = BuyFragment.DEFAULT_ONEPAGE_NUM;
         this.gridViewItemListener = gridViewItemListener;
         this.gridViews = new ArrayList<>();
-        this.coffees = SingleMaterialLsit.getInstance(homeActivity).getCoffeeList();
+        this.coffees = SingleMaterialList.getInstance(homeActivity).getCoffeeList();
         getGridViews(this.coffees);
 
 

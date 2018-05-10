@@ -2,13 +2,7 @@ package example.jni.com.coffeeseller.communicate;
 
 
 import android.app.Service;
-import android.content.BroadcastReceiver;
-import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
-import android.media.AudioManager;
-import android.net.ConnectivityManager;
-import android.os.AsyncTask;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Looper;
@@ -27,7 +21,6 @@ import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -38,21 +31,17 @@ import java.util.UUID;
 import cof.ac.inter.CoffMsger;
 import cof.ac.inter.MachineState;
 import cof.ac.inter.Result;
-import cof.ac.inter.StateEnum;
 import cof.ac.util.DataSwitcher;
 import example.jni.com.coffeeseller.MachineConfig.DealRecorder;
 import example.jni.com.coffeeseller.MachineConfig.MachineInitState;
 import example.jni.com.coffeeseller.MachineConfig.QRMsger;
 import example.jni.com.coffeeseller.bean.MachineConfig;
-import example.jni.com.coffeeseller.contentprovider.SingleMaterialLsit;
 import example.jni.com.coffeeseller.databases.DealOrderInfoManager;
 import example.jni.com.coffeeseller.factory.FragmentFactory;
 import example.jni.com.coffeeseller.httputils.JsonUtil;
-import example.jni.com.coffeeseller.httputils.OkHttpUtil;
 import example.jni.com.coffeeseller.listener.MessageReceviedListener;
 import example.jni.com.coffeeseller.model.listeners.MsgTransListener;
 import example.jni.com.coffeeseller.model.listeners.OnMachineCheckCallBackListener;
-import example.jni.com.coffeeseller.model.listeners.TaskServiceListener;
 import example.jni.com.coffeeseller.parse.PayResult;
 import example.jni.com.coffeeseller.utils.MyLog;
 import example.jni.com.coffeeseller.utils.SecondToDate;
@@ -75,72 +64,14 @@ public class TaskService extends Service implements MqttCallback {
     TimerTask mTimerTask = null;
     public static final long RUN_PERIOD = 60000; //发送消息的间隔
 
-    //VersionManager versionManger;
+
 
     static TaskService mInstance;
-    BroadcastReceiver mReceiver = null;
-    private String ServiceTopic;   //服务端TOPIC
 
-    private TaskServiceListener taskServiceListener;
 
-    //SettingDataManager settingDataManager;
 
 
     public TaskService() {
-      /*  mHandler = new Handler(Looper.getMainLooper()) {
-
-            @Override
-            public void handleMessage(Message msg) {
-                super.handleMessage(msg);
-                if (msg.obj == null) {
-                    isSubSuccess = false;
-                    ReSubMqtt();
-                } else {
-
-                    JSONObject msgObject = (JSONObject) msg.obj;
-                    Log.e(TAG, "收到消息  msg is " + msgObject.toString());
-                    try {
-                        switch (msgObject.getString("msgType")) {
-                            case "payResult":
-                                PayResult payResult = PayResult.getPayResult(msg.obj.toString());
-                                if (msgTransListener != null) {
-                                    Log.e(TAG, " msg Arrived ");
-                                    msgTransListener.onMsgArrived(payResult);
-                                } else {
-                                    Log.e(TAG, "msgTransListener=null ::::");
-                                }
-                                Log.e(TAG, "收到了支付类消息 ::::");
-                                break;
-                            case "updateFormula":
-                                if (MachineConfig.getCurrentState() == StateEnum.IDLE) {//空闲状态更新配方
-                                    JSONObject d = msgObject.getJSONObject("d");
-                                    JSONObject formulaObject = d.getJSONObject("formula");
-                                    if (d.getString("updateType").equals("remove")) {
-
-
-                                    } else if (d.getString("updateType").equals("update")) {
-
-                                    } else if (d.getString("updateType").equals("add")) {
-
-                                    }
-                                    messageReceviedListener.getMsgType(formulaObject.getString("formulaID"));
-                                }
-
-                                break;
-                            case "machineOrder":
-                                messageReceviedListener.getMsgType("machineOrder");
-                                break;
-                            case "relayType":
-                                Log.e(TAG, "收到回执 uuid is " + msgObject.getString("msgId"));
-                                break;
-                        }
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-
-                }
-            }
-        };*/
 
     }
 
@@ -156,22 +87,22 @@ public class TaskService extends Service implements MqttCallback {
                 } else {
 
                     JSONObject msgObject = (JSONObject) msg.obj;
-                    Log.e(TAG, "收到消息  msg is " + msgObject.toString());
+                    Log.d(TAG, "收到消息  msg is " + msgObject.toString());
                     try {
                         switch (msgObject.getString("msgType")) {
                             case "payResult":
                                 PayResult payResult = PayResult.getPayResult(msg.obj.toString());
                                 if (msgTransListener != null) {
-                                    Log.e(TAG, " msg Arrived ");
+                                    Log.d(TAG, " msg Arrived ");
                                     msgTransListener.onMsgArrived(payResult);
                                 } else {
-                                    Log.e(TAG, "msgTransListener = null");
+                                    Log.d(TAG, "msgTransListener = null");
                                 }
-                                Log.e(TAG, "收到了支付类消息 ::::");
+                                Log.d(TAG, "收到了支付类消息 ::::");
                                 break;
                             case "updateFormulaType":
 
-                                Log.e(TAG, "updateFormulaType  =  " + MachineConfig.getCurrentState());
+                                Log.d(TAG, "updateFormulaType  =  " + MachineConfig.getCurrentState());
 
 
                                 JSONObject d = msgObject.getJSONObject("d");
@@ -197,7 +128,7 @@ public class TaskService extends Service implements MqttCallback {
                                     messageReceviedListener.getMsgType("machineOrder");
                                 break;
                             case "relayType":
-                                Log.e(TAG, "收到回执 uuid is " + msgObject.getString("msgId"));
+                                Log.d(TAG, "收到回执 uuid is " + msgObject.getString("msgId"));
                                 break;
                         }
                     } catch (JSONException e) {
@@ -212,7 +143,7 @@ public class TaskService extends Service implements MqttCallback {
 
     private void checkSubSuccess() {
         if (!isConnected()) {
-            Log.e(TAG, "获取了 topic 但是订阅失败");
+            Log.d(TAG, "获取了 topic 但是订阅失败");
             if (mOnMachineCheckCallBackListener != null) {
                 mOnMachineCheckCallBackListener.MQTTSubcribeFailed();
             }
@@ -286,7 +217,7 @@ public class TaskService extends Service implements MqttCallback {
                     //   options.setWill();
                     // 设置回调
                     client.setCallback(new TaskService());
-                    Log.e(TAG, "topic is " + MachineConfig.getTcpIP());
+                    Log.d(TAG, "topic is " + MachineConfig.getTcpIP());
                     MqttTopic topic = client.getTopic(MachineConfig.getTcpIP());
                     // setWill方法，如果项目中需要知道客户端是否掉线可以调用该方法。设置最终端口的通知消息
                     Map<String, Object> bytejson = new HashMap<>();
@@ -303,7 +234,7 @@ public class TaskService extends Service implements MqttCallback {
                         return;
                     }
                     String[] topic1 = {MachineConfig.getTopic() + "#", "client/coffee/sc/#"};
-                    Log.e(TAG, topic1[0]);
+                    Log.d(TAG, topic1[0]);
                     client.subscribe(topic1, Qos);
 
                 } catch (Exception e) {
@@ -371,7 +302,7 @@ public class TaskService extends Service implements MqttCallback {
             //   options.setWill();
             // 设置回调
             client.setCallback(new TaskService());
-            Log.e(TAG, "topic is " + MachineConfig.getTcpIP());
+            Log.d(TAG, "topic is " + MachineConfig.getTcpIP());
             MqttTopic topic = client.getTopic(MachineConfig.getTcpIP());
             // setWill方法，如果项目中需要知道客户端是否掉线可以调用该方法。设置最终端口的通知消息
             Map<String, Object> bytejson = new HashMap<>();
@@ -388,7 +319,7 @@ public class TaskService extends Service implements MqttCallback {
                 return;
             }
             String[] topic1 = {MachineConfig.getTopic() + "#", "client/coffee/sc/#"};
-            Log.e(TAG, topic1[0]);
+            Log.d(TAG, topic1[0]);
             client.subscribe(topic1, Qos);
 
         } catch (Exception e) {
@@ -428,7 +359,7 @@ public class TaskService extends Service implements MqttCallback {
     public void startTimer() {
         if (!hasTimerTask()) {
             if (isConnected()) {
-                Log.e(TAG, "订阅成功" + "开始发送消息");
+                Log.d(TAG, "订阅成功" + "开始发送消息");
                 createTimerTask();
             }
 
@@ -452,22 +383,6 @@ public class TaskService extends Service implements MqttCallback {
     /**
      * 版本检测
      */
-    private void manageVersion() {
-        /*
-        Runnable mRun = new Runnable() {
-			
-			@Override
-			public void run() {
-				if(versionManger == null) {
-					
-					versionManger = new VersionManager(mInstance);
-				}
-				versionManger.manageVersionOnline();
-			}
-		};
-		Thread t = new Thread(mRun);
-		t.start();*/
-    }
 
     public void stopService() {
 
@@ -508,15 +423,10 @@ public class TaskService extends Service implements MqttCallback {
 
                         sendLocDealMsg();
                     }
-                    if (COUNT % 120 == 0) {//版本检测
+                  /*  if (COUNT % 120 == 0) {//版本检测
 
                         manageVersion();
-                    }
-                    /*if(JuiceReleaseRecorder.getRecorder().shouldRelease()&& ConfigDataInitManager.getInstance().hasJuiceCollect()) {
-
-						CPUMsger.getCPUMsger().releaseJuice();
-						JuiceReleaseRecorder.getRecorder().notifyReleased();
-					}*/
+                    }*/
 
                 }
             };
@@ -558,7 +468,7 @@ public class TaskService extends Service implements MqttCallback {
         msg.put("pageType", FragmentFactory.getInstance().getPageType(FragmentFactory.curPage));
         msg.put("msgType", "runningStateType");
         msg.put("sendTime", SecondToDate.getDateToString(System.currentTimeMillis()));
-        Log.e(TAG, SecondToDate.getDateToString(System.currentTimeMillis()));
+        Log.d(TAG, SecondToDate.getDateToString(System.currentTimeMillis()));
         msg.put("networkType", MachineConfig.getNetworkType());
         msg.put("cupHouseState", null);
         CoffMsger msger = CoffMsger.getInstance();
@@ -584,19 +494,19 @@ public class TaskService extends Service implements MqttCallback {
                 msg.put("cupDoorState", 0);
             }
             msg.put("driverVersion", state.getVersion());
-            Log.e(TAG, "stateCode is " + state.getMajorState().getStateCode() + " HighErr_byte is " + DataSwitcher.byte2Hex(state.getMajorState().getHighErr_byte()));
+            Log.d(TAG, "stateCode is " + state.getMajorState().getStateCode() + " HighErr_byte is " + DataSwitcher.byte2Hex(state.getMajorState().getHighErr_byte()));
             switch (state.getMajorState().getStateCode()) {
 
                 case 0:
-                    Log.e(TAG, "0--current state is " + DataSwitcher.byte2Hex(state.getMajorState().getHighErr_byte()));
+                    Log.d(TAG, "0--current state is " + DataSwitcher.byte2Hex(state.getMajorState().getHighErr_byte()));
                     msg.put("errCode", "00");
                     break;
                 case 0x0a:
-                    Log.e(TAG, "0a--current state is " + state.getMajorState().getStateCode() + "and crrent HighErr_byte is " + DataSwitcher.byte2Hex(state.getMajorState().getHighErr_byte()));
+                    Log.d(TAG, "0a--current state is " + state.getMajorState().getStateCode() + "and crrent HighErr_byte is " + DataSwitcher.byte2Hex(state.getMajorState().getHighErr_byte()));
                     msg.put("errCode", "" + DataSwitcher.byte2Hex(state.getMajorState().getHighErr_byte()));
                     break;
                 default:
-                    Log.e(TAG, "default--current state is " + state.getMajorState().getStateCode() + "and crrent HighErr_byte is " + DataSwitcher.byte2Hex(state.getMajorState().getHighErr_byte()));
+                    Log.d(TAG, "default--current state is " + state.getMajorState().getStateCode() + "and crrent HighErr_byte is " + DataSwitcher.byte2Hex(state.getMajorState().getHighErr_byte()));
                     msg.put("errCode", "" + DataSwitcher.byte2Hex(state.getMajorState().getHighErr_byte()));
                     break;
             }
@@ -631,10 +541,10 @@ public class TaskService extends Service implements MqttCallback {
                 MqttTopic topic = client.getTopic("server/coffee/" + MachineConfig.getMachineCode());
 
                 try {
-                    Log.e(TAG, "start publish message");
+                    Log.d(TAG, "start publish message");
                     topic.publish(message);
                 } catch (MqttException e) {
-                    Log.e(TAG, "send error " + e.getMessage());
+                    Log.d(TAG, "send error " + e.getMessage());
                     e.printStackTrace();
 
                 }
@@ -671,58 +581,9 @@ public class TaskService extends Service implements MqttCallback {
 
     }
 
-    /**
-     * 读取广告屏开启、关闭时间
-     */
-    private void videoScreenCheck() {
 
-	/*	if(settingDataManager.isScreenAuto()){
 
-			String screenStartTime = settingDataManager.getScreenOnTime();
-			CPUMsger cpuMsger = CPUMsger.getCPUMsger();
 
-			MyLog.d(TAG, "turn on srceen time is "+screenStartTime);
-			if(TimeMatcher.isNowTime(screenStartTime)){
-				
-				MyLog.d(TAG, "turn on screen and voice");				
-				turnOnVoice();
-				cpuMsger.turnOnScreen();
-				return;
-			}
-			
-			String screenStopTime = settingDataManager.getScreenOffTime();
-			MyLog.d(TAG, "turn off srceen time is "+screenStopTime);
-			if(TimeMatcher.isNowTime(screenStopTime)){
-				
-				MyLog.d(TAG, "turn off screen and voice");
-				turnOffVoice();
-				cpuMsger.turnOffScreen();
-				return;
-			}
-			
-		}*/
-    }
 
-    void turnOffVoice() {
 
-        AudioManager audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
-        int volumn = audioManager.getStreamVolume(AudioManager.STREAM_MUSIC);//此时获取到的音量值是0 ；
-        MyLog.d(TAG, "volumn--" + volumn);
-        if (volumn != 0) {
-
-            audioManager.setStreamMute(AudioManager.STREAM_MUSIC, true);//设置成静音
-        }
-    }
-
-    void turnOnVoice() {
-
-        AudioManager audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
-        int volumn = audioManager.getStreamVolume(AudioManager.STREAM_MUSIC);//此时获取到的音量值是0 ；
-        MyLog.d(TAG, "volumn--" + volumn);
-        if (volumn == 0) {
-
-            audioManager.setStreamMute(AudioManager.STREAM_MUSIC, false);//设置成静音
-
-        }
-    }
 }

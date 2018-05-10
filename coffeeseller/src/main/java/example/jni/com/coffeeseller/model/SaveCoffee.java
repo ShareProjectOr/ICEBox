@@ -13,7 +13,7 @@ import java.util.List;
 import cof.ac.inter.ContainerConfig;
 import example.jni.com.coffeeseller.R;
 import example.jni.com.coffeeseller.bean.Coffee;
-import example.jni.com.coffeeseller.contentprovider.SingleMaterialLsit;
+import example.jni.com.coffeeseller.contentprovider.SingleMaterialList;
 import example.jni.com.coffeeseller.model.listeners.ISaveCoffee;
 import example.jni.com.coffeeseller.model.listeners.OnSaveCoffeeCallBackListener;
 
@@ -58,7 +58,7 @@ public class SaveCoffee implements ISaveCoffee, View.OnClickListener {
                 coffee.setName(mName.getText().toString());
                 coffee.setPrice(mPrice.getText().toString());
                 coffee.setProcessList(list);
-                if (SingleMaterialLsit.getInstance(mContext).AddCoffeeList(coffee)) {
+                if (SingleMaterialList.getInstance(mContext).AddCoffeeList(coffee)) {
                     onSaveCoffeeCallBackListener.saveSuccess();
                     dialog.dismiss();
                 } else {

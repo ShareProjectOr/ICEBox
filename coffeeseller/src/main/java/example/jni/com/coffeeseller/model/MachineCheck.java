@@ -23,7 +23,7 @@ import example.jni.com.coffeeseller.communicate.TaskService;
 import example.jni.com.coffeeseller.contentprovider.Constance;
 import example.jni.com.coffeeseller.contentprovider.MaterialSql;
 import example.jni.com.coffeeseller.contentprovider.SharedPreferencesManager;
-import example.jni.com.coffeeseller.contentprovider.SingleMaterialLsit;
+import example.jni.com.coffeeseller.contentprovider.SingleMaterialList;
 import example.jni.com.coffeeseller.httputils.JsonUtil;
 import example.jni.com.coffeeseller.httputils.OkHttpUtil;
 import example.jni.com.coffeeseller.model.listeners.IMachineCheck;
@@ -63,7 +63,7 @@ public class MachineCheck implements IMachineCheck {
         } else {
             Map<String, Object> body = new HashMap<>();
             body.put("machineCode", MachineConfig.getMachineCode());
-            Log.e(TAG, "get formula machineCode is " + MachineConfig.getMachineCode());
+            Log.d(TAG, "get formula machineCode is " + MachineConfig.getMachineCode());
             try {
                 MaterialSql content = new MaterialSql(mContext);
 
@@ -74,13 +74,13 @@ public class MachineCheck implements IMachineCheck {
 
                 }
                 String response = OkHttpUtil.post(Constance.FORMULA_GET, JsonUtil.mapToJson(body));
-                Log.e(TAG, "machineCode is " + MachineConfig.getMachineCode() + "server is " + Constance.FORMULA_GET);
+                Log.d(TAG, "machineCode is " + MachineConfig.getMachineCode() + "server is " + Constance.FORMULA_GET);
                 JSONObject object = new JSONObject(response);
                 if (object.getString("err").equals("")) {
 
                     JSONObject d = object.getJSONObject("d");
 
-                    Log.e(TAG, d.toString());
+                    Log.d(TAG, d.toString());
                     JSONArray array = d.getJSONArray("list2");
 
                     for (int i = 0; i < array.length(); i++) {
@@ -104,15 +104,15 @@ public class MachineCheck implements IMachineCheck {
                     if (isCanUse(list)) {
                         if (content.getAllbunkersIDs().size() == 0) {//本地数据库为空的时候 ,需以服务端的数据进行绑定数据库
                             for (int i = 0; i < list.size(); i++) {
-                                Log.e(TAG, "开始执行创建数据库");
+                                Log.d(TAG, "开始执行创建数据库");
                                 if (list.get(i).getContainerID().equals("3")) {
-                                    Log.e(TAG, "糖的默认落料量为:" + list.get(i).getDefultMaterialDropSpeed());
+                                    Log.d(TAG, "糖的默认落料量为:" + list.get(i).getDefultMaterialDropSpeed());
                                 }
                                 boolean b = content.insertContact(list.get(i).getBunkerID(), list.get(i).getBunkerType(), list.get(i).getMaterialID(), list.get(i).getMaterialType(), list.get(i).getMaterialName()
                                         , list.get(i).getMaterialUnit(), list.get(i).getMaterialStock(), list.get(i).getMaterialDropSpeed(), list.get(i).getDefultMaterialDropSpeed(), list.get(i).getContainerID(), list.get(i).getLastLoadingTime());
                                 if (b) {
                                 } else {
-                                    Log.e(TAG, "创建数据库插入时失败");
+                                    Log.d(TAG, "创建数据库插入时失败");
                                 }
                             }
 
@@ -129,12 +129,12 @@ public class MachineCheck implements IMachineCheck {
                                 }
 
                                 if (!isupdated) {//假如数据库里面不存在了这个料仓 则插入到数据库中
-                                    Log.e(TAG, "开始执行更新数据库");
+                                    Log.d(TAG, "开始执行更新数据库");
                                     boolean b = content.insertContact(list.get(i).getBunkerID(), list.get(i).getBunkerType(), list.get(i).getMaterialID(), list.get(i).getMaterialType(), list.get(i).getMaterialName()
                                             , list.get(i).getMaterialUnit(), list.get(i).getMaterialStock(), list.get(i).getMaterialDropSpeed(), list.get(i).getDefultMaterialDropSpeed(), list.get(i).getContainerID(), list.get(i).getLastLoadingTime());
                                     if (b) {
                                     } else {
-                                        Log.e(TAG, "更新数据库插入时失败");
+                                        Log.d(TAG, "更新数据库插入时失败");
                                     }
                                 }
                             }
@@ -144,7 +144,7 @@ public class MachineCheck implements IMachineCheck {
                                 boolean isupdated = false;
                                 for (String ContainerID : content.getAllcontainerID()) {
                                     if (ContainerID.equals(list.get(i).getContainerID())) {  //假如数据库里面已经存在了这个料仓 则只能改校准值
-                                        Log.e(TAG, "更新校准值" + list.get(i).getMaterialDropSpeed());
+                                        Log.d(TAG, "更新校准值" + list.get(i).getMaterialDropSpeed());
                                         content.updateContact(list.get(i).getBunkerID(), "", "", "", "", "", "", list.get(i).getMaterialDropSpeed(), list.get(i).getDefultMaterialDropSpeed(), "", "");
                                         isupdated = true;
 
@@ -152,20 +152,20 @@ public class MachineCheck implements IMachineCheck {
                                 }
 
                                 if (!isupdated) {//假如数据库里面不存在了这个料仓 则插入到数据库中
-                                    Log.e(TAG, "开始执行更新数据库");
+                                    Log.d(TAG, "开始执行更新数据库");
                                     boolean b = content.insertContact(list.get(i).getBunkerID(), list.get(i).getBunkerType(), list.get(i).getMaterialID(), list.get(i).getMaterialType(), list.get(i).getMaterialName()
                                             , list.get(i).getMaterialUnit(), list.get(i).getMaterialStock(), list.get(i).getMaterialDropSpeed(), list.get(i).getDefultMaterialDropSpeed(), list.get(i).getContainerID(), list.get(i).getLastLoadingTime());
                                     if (b) {
                                     } else {
-                                        Log.e(TAG, "更新数据库插入时失败");
+                                        Log.d(TAG, "更新数据库插入时失败");
                                     }
                                 }
                             }
                         }
-                        SingleMaterialLsit.getInstance(mContext).setCoffeeArray(d.getJSONArray("list"));
+                        SingleMaterialList.getInstance(mContext).setCoffeeArray(d.getJSONArray("list"));
                         mOnMachineCheckCallBackListener.MaterialGroupGetSuccess();
                         MachineInitState.GET_FORMULA = MachineInitState.NORMAL;
-                        Log.e(TAG, "不对数据库做任何操作");
+                        Log.d(TAG, "不对数据库做任何操作");
                     } else { //服务器返回的料仓不为空
                         mOnMachineCheckCallBackListener.MaterialGroupGetFailed("机器未创建料仓,禁止使用");
                     }
@@ -255,7 +255,7 @@ public class MachineCheck implements IMachineCheck {
         } else {
             postBody.put("machineCode", SharedPreferencesManager.getInstance(mContext).getMachineCode());
             postBody.put("loginPassword", SharedPreferencesManager.getInstance(mContext).getLoginPassword());
-            Log.e(TAG, "machineCode is " + SharedPreferencesManager.getInstance(mContext).getMachineCode() + "password is " + SharedPreferencesManager.getInstance(mContext).getLoginPassword());
+            Log.d(TAG, "machineCode is " + SharedPreferencesManager.getInstance(mContext).getMachineCode() + "password is " + SharedPreferencesManager.getInstance(mContext).getLoginPassword());
             try {
                 String response = OkHttpUtil.post(Constance.MachineAuthentication_URL, JsonUtil.mapToJson(postBody));
                 JSONObject object = new JSONObject(response);

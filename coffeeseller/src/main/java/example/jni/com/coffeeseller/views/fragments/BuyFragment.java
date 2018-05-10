@@ -25,7 +25,7 @@ import example.jni.com.coffeeseller.R;
 import example.jni.com.coffeeseller.bean.Coffee;
 import example.jni.com.coffeeseller.bean.MachineConfig;
 import example.jni.com.coffeeseller.communicate.TaskService;
-import example.jni.com.coffeeseller.contentprovider.SingleMaterialLsit;
+import example.jni.com.coffeeseller.contentprovider.SingleMaterialList;
 import example.jni.com.coffeeseller.factory.FragmentEnum;
 import example.jni.com.coffeeseller.factory.FragmentFactory;
 import example.jni.com.coffeeseller.listener.MessageReceviedListener;
@@ -132,7 +132,7 @@ public class BuyFragment extends BasicFragment implements GridViewItemListener, 
 
         gridViewItemListener = this;
 
-        mCoffees = SingleMaterialLsit.getInstance(homeActivity).getCoffeeList();
+        mCoffees = SingleMaterialList.getInstance(homeActivity).getCoffeeList();
         mPagerAdapter = new CoffeeViewPagerAdapter(homeActivity, mCoffees, this);
         mViewPager.addOnPageChangeListener(new ViewpagerPageChangedListener());
         mViewPager.setAdapter(new CoffeeViewPagerAdapter(homeActivity, mCoffees, this));
@@ -177,7 +177,7 @@ public class BuyFragment extends BasicFragment implements GridViewItemListener, 
         handler.post(new Runnable() {
             @Override
             public void run() {
-                List<Coffee> coffees = SingleMaterialLsit.getInstance(homeActivity).getCoffeeList();
+                List<Coffee> coffees = SingleMaterialList.getInstance(homeActivity).getCoffeeList();
                 mViewPager.removeAllViews();
                 removePoint();
                 if (coffees != null && coffees.size() > 0) {
@@ -298,7 +298,7 @@ public class BuyFragment extends BasicFragment implements GridViewItemListener, 
             protected void onPostExecute(Boolean isUpdate) {
                 super.onPostExecute(isUpdate);
                 if (isUpdate) {
-                    List<Coffee> coffees = SingleMaterialLsit.getInstance(homeActivity).getCoffeeList();
+                    List<Coffee> coffees = SingleMaterialList.getInstance(homeActivity).getCoffeeList();
                     mViewPager.removeAllViews();
                     removePoint();
                     if (coffees != null && coffees.size() > 0) {
