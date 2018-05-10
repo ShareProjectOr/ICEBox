@@ -114,7 +114,8 @@ public class ChooseCup implements View.OnClickListener, MsgTransListener {
     }
 
     private boolean isMachineRight() {
-        if (CheckCurMachineState.getInstance().isCanMaking()) {
+
+        if (CheckCurMachineState.getInstance().isCanMaking() && CheckCurMachineState.getInstance().isCupEnghou(mContext)) {
             MyLog.d(TAG, "machine is ok ");
             mViewHolder.mContentLayout.setVisibility(View.VISIBLE);
             mViewHolder.mQrLayout.setVisibility(View.VISIBLE);

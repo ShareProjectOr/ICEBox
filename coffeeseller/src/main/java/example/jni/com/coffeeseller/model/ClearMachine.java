@@ -1,5 +1,6 @@
 package example.jni.com.coffeeseller.model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import cof.ac.inter.CoffMsger;
@@ -124,6 +125,9 @@ public class ClearMachine {
             return -1;
         }
         ContainerType containerType = containerConfig.getContainer();
+
+        MyLog.d(TAG, "containerType =" + containerType);
+
         if (containerType == ContainerType.NO_ONE || containerType == ContainerType.NO_TOW) {//清洗1号模块
 
             return Beater_1;
@@ -134,27 +138,49 @@ public class ClearMachine {
 
             return Beater_3;
 
+        } else if (containerType == ContainerType.BEAN_CONTAINER) {
+
+            return BurstBubble;
         }
         return -1;
     }
 
     public static boolean clearMachineAllModule(List<ContainerConfig> containerConfigs) {
+
+        MyLog.W(TAG, "clearMachineAllModule called!");
         if (containerConfigs == null) {
             return false;
         }
 
+        List<Integer> moduleIds = new ArrayList<>();
         for (int i = 0; i < containerConfigs.size(); i++) {
             ContainerConfig containerConfig = containerConfigs.get(i);
-            boolean isCanSend = getModuleId(containerConfig) == -1 ? false : true;
+
+            int moduleId = getModuleId(containerConfig);
+            if (moduleIds.contains(moduleId)) {
+                continue;
+            } else {
+                moduleIds.add(moduleId);
+            }
+        }
+        MyLog.d(TAG, "moduleIds .size= " + moduleIds.size());
+        for (int i = 0; i < moduleIds.size(); i++) {
+            int moduleId = moduleIds.get(i);
+            boolean isCanSend = (moduleId == -1 ? false : true);
+            MyLog.d(TAG, "isCanSend= " + isCanSend);
             if (isCanSend) {
 
-                boolean isSendOk = clearMechineByModuleID(getModuleId(containerConfig), 1);
+                boolean isSendOk = clearMechineByModuleID(moduleId, 1);
 
-                Waiter.doWait(5 * 1000 + 500);//再次发送清洗指令必须在5s后
+                MyLog.W(TAG, "clear module!");
+                Waiter.doWait(5 * 1000 + 100);//再次发送清洗指令必须在5s后
             } else {
                 continue;
             }
+            if (i + 1 == moduleIds.size()) {
+                return true;
+            }
         }
-        return true;
+        return false;
     }
 }

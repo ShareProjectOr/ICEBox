@@ -23,6 +23,7 @@ import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import cof.ac.inter.ContainerConfig;
 import example.jni.com.coffeeseller.MachineConfig.DealRecorder;
 import example.jni.com.coffeeseller.MachineConfig.QRMsger;
 import example.jni.com.coffeeseller.R;
@@ -57,6 +58,8 @@ public class BuyDialog extends Dialog implements ChooseCupListenner, MkCoffeeLis
     private static String TAG = "BuyDialog";
     public static int VIEW_CHOOSE_CUP = 0;
     public static int VIEW_HELP = 1;
+    public static int MK_COFFEE = 2;
+    private static long TIME_BEFORE_MK_TO_CLEAR = 10 * 60 * 1000;
     private Context context;
     private Coffee coffee;
     private Handler handler;
@@ -65,9 +68,12 @@ public class BuyDialog extends Dialog implements ChooseCupListenner, MkCoffeeLis
     private BuyFragment fragment;
     private Timer clearMachineTimer;
     private TimerTask clearMachineTimerTask;
+    private int curViewId = -1;
 
     private boolean dialogDisCancle = false;
-    private boolean isMkResult = false;
+
+    private long lastClearMachineTime = 0;
+    private long lastMkTime = 0;
 
     public BuyDialog(Context context) {
         super(context);
@@ -85,13 +91,7 @@ public class BuyDialog extends Dialog implements ChooseCupListenner, MkCoffeeLis
 
         /*initView();*/
         requestWindowFeature(Window.FEATURE_NO_TITLE);
-        setCanceledOnTouchOutside(false);
-        setOnDismissListener(new OnDismissListener() {
-            @Override
-            public void onDismiss(DialogInterface dialog) {
-
-            }
-        });
+        setOnCancleTouchListenner(false);
         initData();
     }
 
@@ -119,8 +119,7 @@ public class BuyDialog extends Dialog implements ChooseCupListenner, MkCoffeeLis
         if (viewID == VIEW_CHOOSE_CUP) {
             final ChooseCup chooseCup = new ChooseCup(context, coffee, chooseCupListenner, handler);
             setContentView(chooseCup.getView());
-            setCanceledOnTouchOutside(true);
-
+            setOnCancleTouchListenner(true);
             setOnDismissListener(new OnDismissListener() {
                 @Override
                 public void onDismiss(DialogInterface dialog) {
@@ -130,13 +129,18 @@ public class BuyDialog extends Dialog implements ChooseCupListenner, MkCoffeeLis
                     }
                 }
             });
+
+            curViewId = VIEW_CHOOSE_CUP;
             MyLog.W(TAG, "choose cup view is added");
 
         } else if (viewID == VIEW_HELP) {
             Help help = new Help(context, this);
             setContentView(help.getView());
 
-            setCanceledOnTouchOutside(true);
+            setOnCancleTouchListenner(true);
+
+            curViewId = VIEW_HELP;
+
             MyLog.W(TAG, "help view is added");
         }
     }
@@ -149,6 +153,10 @@ public class BuyDialog extends Dialog implements ChooseCupListenner, MkCoffeeLis
         MyLog.W(TAG, coffee.getName() + " has been selected !");
     }
 
+    public int getCurViewId() {
+        return curViewId;
+    }
+
     public void showDialog() {
         if (!isShowing())
             show();
@@ -157,11 +165,67 @@ public class BuyDialog extends Dialog implements ChooseCupListenner, MkCoffeeLis
     }
 
     public void disDialog() {
+
+        stopTaskClearMachine();
+        curViewId = -1;
         if (isShowing()) {
             dismiss();
         }
 
     }
+
+    public void setOnCancleTouchListenner(boolean canCancle) {
+        setCanceledOnTouchOutside(canCancle);
+    }
+
+
+    /*
+* 清洗机器
+* */
+    public void clearMachine(final List<ContainerConfig> containerConfigs) {
+        stopTaskClearMachine();
+        MyLog.d(TAG, "clearMachine");
+        lastClearMachineTime = System.currentTimeMillis();
+        if (clearMachineTimer == null) {
+            clearMachineTimer = new Timer();
+        }
+        if (clearMachineTimerTask == null) {
+            clearMachineTimerTask = new TimerTask() {
+                @Override
+                public void run() {
+
+                    if (CheckCurMachineState.getInstance().isCupShelfRightPlaceClearMachineTest()) {
+//                        boolean isResultSuccess = ClearMachine.clearMachineByHotWater(100, 0);
+                        boolean isOver = ClearMachine.clearMachineAllModule(containerConfigs);
+                        if (System.currentTimeMillis() - lastClearMachineTime > 50 * 1000) {
+
+                            MyLog.d(TAG, "clearMachine over 50s");
+                            stopTaskClearMachine();
+                            return;
+                        }
+                        if (isOver) {
+                            MyLog.d(TAG, "clearMachine success!");
+                            stopTaskClearMachine();
+                        } else {
+                            MyLog.d(TAG, "clearMachine failed!");
+                        }
+                    }
+                }
+            };
+        }
+        clearMachineTimer.schedule(clearMachineTimerTask, 0, 2000);
+    }
+
+    public void stopTaskClearMachine() {
+
+        if (clearMachineTimer != null) {
+
+            clearMachineTimer.cancel();
+        }
+        clearMachineTimer = null;
+        clearMachineTimerTask = null;
+    }
+
 
     //更新数据库原料表
     private String updateMaterial(DealRecorder dealRecorder) {
@@ -256,6 +320,17 @@ public class BuyDialog extends Dialog implements ChooseCupListenner, MkCoffeeLis
             reportBunker.setMaterialStock(Math.round(waterStock) + "");
 
             bunkers.add(reportBunker);
+
+            //更新杯子
+
+            String cupBunkerId = materialSql.getBunkerIDByContainerID("8");
+            String cupNum = materialSql.getStorkByBunkersID(cupBunkerId);
+            if (!TextUtils.isEmpty(cupNum)) {
+                int cupNumInt = Integer.parseInt(cupNum);
+                if (cupNumInt > 0) {
+                    materialSql.updateContact(cupBunkerId, "", "", "", "", "", (cupNumInt - 1) + "", "", "", "", "");
+                }
+            }
         }
 
 
@@ -344,10 +419,22 @@ public class BuyDialog extends Dialog implements ChooseCupListenner, MkCoffeeLis
 
                 dialogDisCancle = true;
 
-                setCanceledOnTouchOutside(false);
+                setOnCancleTouchListenner(false);
 
                 MkCoffee mkCoffee = new MkCoffee(context, fomat, dealRecorder, mkCoffeeListenner, handler);
                 setContentView(mkCoffee.getView());
+
+                //上次制作后长时间没有制作就清洗机器
+                if (System.currentTimeMillis() - lastMkTime > TIME_BEFORE_MK_TO_CLEAR) {
+                    //清洗机器
+                    boolean isOver = ClearMachine.clearMachineAllModule(coffeeFomat.getContainerConfigs());
+
+                    mkCoffee.startMkCoffee();
+                }else{
+                    mkCoffee.startMkCoffee();
+                }
+
+                curViewId = MK_COFFEE;
 
             }
         });
@@ -355,10 +442,10 @@ public class BuyDialog extends Dialog implements ChooseCupListenner, MkCoffeeLis
 
     @Override
     public void getMkResult(final DealRecorder dealRecorder, final boolean success, final boolean isCalculateMaterial) {
-        if (isMkResult) {//如果已经有回掉了，就不在处理
-            return;
-        }
 
+        lastMkTime = System.currentTimeMillis();
+
+        MyLog.d(TAG, "getMkResult been called!");
         final DealRecorder recorder = dealRecorder;
 
         dialogDisCancle = true;
@@ -389,11 +476,9 @@ public class BuyDialog extends Dialog implements ChooseCupListenner, MkCoffeeLis
                 if (!success && !isCalculateMaterial) {
 
                 } else {
-                    //更新杯子
-                    SharedPreferencesManager.getInstance(context).setCupNum(SharedPreferencesManager.getInstance(context).getCupNum() - 1);
 
                     //清洗机器
-                    fragment.clearMachine(newDealRecorder.getContainerConfigs());
+                    clearMachine(dealRecorder.getContainerConfigs());
                 }
 
             }
@@ -405,7 +490,6 @@ public class BuyDialog extends Dialog implements ChooseCupListenner, MkCoffeeLis
             fragment.updateUi();
         }
 
-        isMkResult = true;
 
         handler.postDelayed(new Runnable() {
             @Override
@@ -413,7 +497,6 @@ public class BuyDialog extends Dialog implements ChooseCupListenner, MkCoffeeLis
                 disDialog();
             }
         }, 3000);
-
 
     }
 

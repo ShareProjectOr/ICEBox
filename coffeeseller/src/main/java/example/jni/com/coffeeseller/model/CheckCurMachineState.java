@@ -1,6 +1,7 @@
 package example.jni.com.coffeeseller.model;
 
 import android.content.Context;
+import android.text.TextUtils;
 import android.util.Log;
 
 import cof.ac.inter.CoffMsger;
@@ -10,6 +11,7 @@ import cof.ac.inter.MajorState;
 import cof.ac.inter.Result;
 import cof.ac.inter.StateEnum;
 import cof.ac.util.DataSwitcher;
+import example.jni.com.coffeeseller.contentprovider.MaterialSql;
 import example.jni.com.coffeeseller.contentprovider.SharedPreferencesManager;
 import example.jni.com.coffeeseller.utils.MyLog;
 import example.jni.com.coffeeseller.views.activities.HomeActivity;
@@ -41,23 +43,41 @@ public class CheckCurMachineState {
         mBuffer = new StringBuffer();
     }
 
+    public boolean isCupEnghou(Context context) {
+        MaterialSql materialSql = new MaterialSql(context);
+        String cupBunkerId = materialSql.getBunkerIDByContainerID("8");
+        String cupNum = materialSql.getStorkByBunkersID(cupBunkerId);
+
+        MyLog.d(TAG, "cupNum = " + cupNum);
+        if (!TextUtils.isEmpty(cupNum)) {
+            int cupNumInt = Integer.parseInt(cupNum);
+            if (cupNumInt > 5) {
+                return true;
+            } else {
+                mBuffer.append("杯子数量不足");
+                return false;
+            }
+        } else {
+            mBuffer.append("杯子数量不足");
+            return false;
+        }
+    }
+
     public boolean isCanMaking() {
 
-
+        init();
         MyLog.d(TAG, "isCanMaking");
 
         mBuffer.setLength(0);
         mCoffMsger = CoffMsger.getInstance();
         MachineState machineState = mCoffMsger.getLastMachineState();
-/*
 
-        if (SharedPreferencesManager.getInstance().getCupNum() < 5) {
+    /*    if (SharedPreferencesManager.getInstance().getCupNum() < 5) {
 
             mBuffer.append("\n");
             mBuffer.append("杯子数量不足！");
             return false;
-        }
-*/
+        }*/
 
 
         if (!checkMaterial(machineState)) {
@@ -99,7 +119,7 @@ public class CheckCurMachineState {
         return true;
     }
 
-    protected void checkCurState(MajorState majorState) {
+    public void checkCurState(MajorState majorState) {
         mBuffer.append("\n");
         switch (majorState.getCurStateEnum()) {
             case DOOR_OPNE:
@@ -133,6 +153,7 @@ public class CheckCurMachineState {
                 break;
             case CLEANING:
                 mBuffer.append("机器清洗中");
+                isClearing = true;
                 break;
 
             case TESTING:

@@ -102,7 +102,6 @@ public class CoffeeGridAdapter extends BaseAdapter {
             } else {
                 viewHolder.coffeeImage.setImageBitmap(bitmap);
             }*/
-            MyLog.d("----------coffee.isOver= ", "" + coffee.isOver);
             if (coffee.isOver) {
                 viewHolder.overLayout.setVisibility(View.VISIBLE);
                 viewHolder.sellOver.setVisibility(View.VISIBLE);

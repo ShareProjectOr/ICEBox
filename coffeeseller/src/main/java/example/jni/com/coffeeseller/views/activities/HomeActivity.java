@@ -56,12 +56,13 @@ public class HomeActivity extends AppCompatActivity implements IAddFragmentView,
         TelephonyManager mTelephony = (TelephonyManager) this.getSystemService(TELEPHONY_SERVICE);
 //检查网络连接
         NetworkInfo info = mConnectivity.getActiveNetworkInfo();
-        int netType = info.getType();
-        int netSubtype = info.getSubtype();
+
         if (info == null || !mConnectivity.getBackgroundDataSetting()) {
             MachineConfig.setNetworkType(0);
             return false;
         }
+        int netType = info.getType();
+        int netSubtype = info.getSubtype();
         if (netType == ConnectivityManager.TYPE_WIFI) {  //WIFI
             Log.d(TAG, "wifi is access");
             MachineConfig.setNetworkType(2);

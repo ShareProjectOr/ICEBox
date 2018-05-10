@@ -172,7 +172,9 @@ public class QRMsger {
 
             try {
                 JSONObject response = new JSONObject(RESPONSE_TEXT);
-                dealRecorder.setReportSuccess(response.getBoolean("uploadState"));
+                if (!TextUtils.equals(response.getString("uploadState"), "null")) {
+                    dealRecorder.setReportSuccess(response.getBoolean("uploadState"));
+                }
                 dealRecorder.setReportMsg(response.getString("err"));
             } catch (JSONException e) {
                 dealRecorder.setReportSuccess(false);

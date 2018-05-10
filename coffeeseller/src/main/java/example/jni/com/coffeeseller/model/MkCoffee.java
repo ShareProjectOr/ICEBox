@@ -12,20 +12,27 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import java.util.Timer;
+import java.util.TimerTask;
+
 import cof.ac.inter.CoffMsger;
 import cof.ac.inter.ContainerConfig;
 import cof.ac.inter.MachineState;
+import cof.ac.inter.MajorState;
 import cof.ac.inter.Result;
 import cof.ac.inter.StateEnum;
 import cof.ac.util.DataSwitcher;
 import example.jni.com.coffeeseller.MachineConfig.CoffeeMakeState;
 import example.jni.com.coffeeseller.MachineConfig.DealRecorder;
+import example.jni.com.coffeeseller.MachineConfig.QRMsger;
 import example.jni.com.coffeeseller.R;
 import example.jni.com.coffeeseller.bean.CoffeeFomat;
 import example.jni.com.coffeeseller.bean.CoffeeMakeStateRecorder;
 import example.jni.com.coffeeseller.databases.DealOrderInfoManager;
 import example.jni.com.coffeeseller.model.listeners.MkCoffeeListenner;
+import example.jni.com.coffeeseller.model.listeners.MsgTransListener;
 import example.jni.com.coffeeseller.utils.MyLog;
+import example.jni.com.coffeeseller.utils.TextUtil;
 import example.jni.com.coffeeseller.utils.Waiter;
 
 import static android.view.View.GONE;
@@ -39,7 +46,7 @@ public class MkCoffee {
     private static String TAG = "MkCoffee";
     private long MAX_TOTAL_MK_TIME = 180000;
     private long MAX_STATE_TIME = 5000;
-    private long MK_TIP_TIME = 120000;
+    private long MK_TIP_TIME = 180000;
     private int MAX_PROGRESS = 100;
     private int MAX_MAKING_PROGRESS = 92;
     private int CONTAIN_MAKING_PROGRESS_TIME = 550;
@@ -53,10 +60,14 @@ public class MkCoffee {
     private MkCoffeeListenner mkCoffeeListenner;
     private Handler handler;
     private CountDownTimer mkCountDownTimer;
+    private Timer clearTimer;
+    private TimerTask clearTimerTask;
 
     private boolean isStartMaking = false;
     private boolean makeSuccess = false;
     private boolean isCalculateMaterial = true;
+    private boolean isSendMkingComdSuccess = false;
+    private boolean isMkingOver = false;
 
     private long lastStateTime;
     private long totalMakingTime = 0;
@@ -99,10 +110,17 @@ public class MkCoffee {
                 ContainerConfig containerConfig = dealRecorder.getContainerConfigs().get(i);
 
                 if (containerConfig.getWater_capacity() != 0) {
-                    CONTAIN_MAKING_PROGRESS_TIME += 5 * 1000;//出水运作5s
                     waterTotal += containerConfig.getWater_capacity();
+                    if (containerConfig.getMaterial_time() == 0) {
+                        CONTAIN_MAKING_PROGRESS_TIME += 5 * 1000;//出水运作5s
+
+                    } else {
+                        CONTAIN_MAKING_PROGRESS_TIME += 5 * 1000;//出水运作5s
+                        CONTAIN_MAKING_PROGRESS_TIME += containerConfig.getMaterial_time() * 10 + 10 * 1000;//每个步骤机器运作大概8s
+                    }
+
                 } else {
-                    CONTAIN_MAKING_PROGRESS_TIME += containerConfig.getMaterial_time() * 10 + 8 * 1000;//每个步骤机器运作大概8s
+                    CONTAIN_MAKING_PROGRESS_TIME += containerConfig.getMaterial_time() * 10 + 10 * 1000;//每个步骤机器运作大概8s
                 }
                 MyLog.d(TAG, "getContainer=" + containerConfig.getContainer());
                 MyLog.d(TAG, "getWater_capacity=" + containerConfig.getWater_capacity());
@@ -135,7 +153,9 @@ public class MkCoffee {
 
         makingViewHolder.mCoffeeName.setText(coffeeFomat.getCoffeeName());
 
-        startMkCoffee();
+
+        countDownTime();
+        //    startMkCoffee();
 
 
     }
@@ -152,7 +172,9 @@ public class MkCoffee {
         if (coffeeFomat != null && coffeeFomat.getContainerConfigs().size() >= 0) {
             buffer.setLength(0);
 
-            countDownTime();
+            //     countDownTime();
+
+//            isStartMkCoffee();
 
             mkCoffee();
         } else {
@@ -185,6 +207,15 @@ public class MkCoffee {
             public void onTick(final long millisUntilFinished) {
 
                 makingViewHolder.mMkTimerCount.setText(millisUntilFinished / 1000 + " s");
+
+                if (!isSendMkingComdSuccess) {
+                    makingViewHolder.mErrTip.setVisibility(View.VISIBLE);
+                    makingViewHolder.mProgressBarLayout.setVisibility(GONE);
+                    makingViewHolder.mErrTip.setText(TextUtil.textPointNum("清洗中", (int) (millisUntilFinished / 1000 % 3)));
+                } else {
+                    makingViewHolder.mErrTip.setVisibility(View.GONE);
+                    makingViewHolder.mProgressBarLayout.setVisibility(VISIBLE);
+                }
             }
 
             @Override
@@ -224,6 +255,56 @@ public class MkCoffee {
         }
     }
 
+    public void stopClearTimerTask() {
+
+        if (clearTimer != null) {
+
+            clearTimer.cancel();
+        }
+        clearTimer = null;
+        clearTimerTask = null;
+    }
+
+    private void isStartMkCoffee() {
+
+        if (clearTimer == null) {
+
+            clearTimer = new Timer(true);
+        }
+        if (clearTimerTask == null) {
+
+            clearTimerTask = new TimerTask() {
+
+                @Override
+                public void run() {
+                    // TODO Auto-generated method stub
+
+                    MachineState machineState = coffMsger.getLastMachineState();
+                    MajorState majorState = machineState.getMajorState();
+
+                    CheckCurMachineState.getInstance().checkCurState(majorState);
+
+                    if (CheckCurMachineState.getInstance().isClearing()) {
+                        makingViewHolder.mErrTip.setVisibility(View.VISIBLE);
+                        makingViewHolder.mProgressBarLayout.setVisibility(View.GONE);
+                        makingViewHolder.mErrTip.setText("清洗中，请稍后...");
+                    } else {
+                        MyLog.d(TAG, " isClearing =false");
+                        makingViewHolder.mErrTip.setVisibility(View.GONE);
+                        makingViewHolder.mProgressBarLayout.setVisibility(View.VISIBLE);
+                        stopClearTimerTask();
+                        mkCoffee();
+                    }
+                }
+            };
+
+            clearTimer.schedule(clearTimerTask, 0, 1000);//交易之后20秒进行查询交易状态,每隔5秒查询一次
+        }
+
+
+    }
+
+
     /*
     * 制作咖啡
     * */
@@ -261,14 +342,18 @@ public class MkCoffee {
 
                                 MyLog.W(TAG, " make failed and time is too long,down cup state is remaining ");
 
-                                if (mkCoffeeListenner != null) {
-                                    dealRecorder.setMakeSuccess(false);
-                                    isCalculateMaterial = false;
+                                //   if (mkCoffeeListenner != null) {
+                                dealRecorder.setMakeSuccess(false);
+                                isCalculateMaterial = false;
+                                if (!isMkingOver) {
                                     mkCoffeeListenner.getMkResult(dealRecorder, false, isCalculateMaterial);
-                                    stopCountDownTimer();
                                 }
+                                stopCountDownTimer();
+                                break;
+                                //      }
 
-                            } else {
+                            } else if (coffeeMakeStateRecorder.state == CoffeeMakeState.COFFEE_ISMAKING
+                                    || coffeeMakeStateRecorder.state == CoffeeMakeState.COFFEE_DOWN_POWER) {
 
                                 MyLog.W(TAG, " make failed and time is too long,other state is remaining ");
 
@@ -278,11 +363,16 @@ public class MkCoffee {
                                     dealRecorder.setMakeSuccess(true);
                                 }
 
-                                if (mkCoffeeListenner != null) {
-                                    isCalculateMaterial = true;
+                                //    if (mkCoffeeListenner != null) {
+                                isCalculateMaterial = true;
+                                if (!isMkingOver) {
                                     mkCoffeeListenner.getMkResult(dealRecorder, dealRecorder.isMakeSuccess(), isCalculateMaterial);
-                                    stopCountDownTimer();
                                 }
+
+                                stopCountDownTimer();
+
+                                break;
+                                //      }
 
                             }
                         }
@@ -306,7 +396,7 @@ public class MkCoffee {
                     }
 
 
-                    if (coffeeMakeStateRecorder.state == null) {
+                    if (coffeeMakeStateRecorder.state == null && !isSendMkingComdSuccess) {
 
                         MyLog.d(TAG, "send mkCoffee comd");
 
@@ -314,6 +404,9 @@ public class MkCoffee {
                         if (result.getCode() == Result.SUCCESS) {
 
                             coffeeMakeStateRecorder.state = CoffeeMakeState.COFFEE_MAKE_INIT;
+
+                            isSendMkingComdSuccess = true;
+
                         } else {
 
                             coffeeMakeStateRecorder.state = CoffeeMakeState.COFFEEMAKING_FAILED;
@@ -334,7 +427,7 @@ public class MkCoffee {
                     if (coffeeMakeStateRecorder.state == CoffeeMakeState.COFFEE_DOWN_CUP) {
 
                         dealStateDownCup(machineState);
-                        MyLog.W(TAG, " cur state is down cup");
+
                         continue;
                     }
 
@@ -344,7 +437,7 @@ public class MkCoffee {
 
                         updateProgress();
 
-                        MyLog.W(TAG, " cur state is making");
+//                        MyLog.W(TAG, " cur state is making");
 
                         continue;
                     }
@@ -355,7 +448,7 @@ public class MkCoffee {
 
                         updateProgress();
 
-                        MyLog.W(TAG, " cur state is down power");
+//                        MyLog.W(TAG, " cur state is down power");
 
                         continue;
                     }
@@ -365,13 +458,15 @@ public class MkCoffee {
 
                         updateProgress();
 
-                        if (mkCoffeeListenner != null) {
-                            dealRecorder.setMakeSuccess(true);
-                            mkCoffeeListenner.getMkResult(dealRecorder, true, isCalculateMaterial);
-                            stopCountDownTimer();
-                        }
+                        //  if (mkCoffeeListenner != null) {
+                        dealRecorder.setMakeSuccess(true);
+                        mkCoffeeListenner.getMkResult(dealRecorder, true, isCalculateMaterial);
+                        isMkingOver = true;
+                        stopCountDownTimer();
 
-                        MyLog.W(TAG, "cur state is finish ");
+                        //    }
+
+//                        MyLog.W(TAG, "cur state is finish ");
 
                         break;
 
@@ -380,7 +475,9 @@ public class MkCoffee {
 
                         coffeeMakeStateRecorder.state = null;
 
-                        MyLog.d(TAG, "cur state is take cup ");
+                        isMkingOver = false;
+
+//                        MyLog.d(TAG, "cur state is take cup ");
 
                         break;
 
@@ -392,11 +489,12 @@ public class MkCoffee {
                         handler.postDelayed(new Runnable() {
                             @Override
                             public void run() {
-                                if (mkCoffeeListenner != null) {
-                                    dealRecorder.setMakeSuccess(false);
-                                    mkCoffeeListenner.getMkResult(dealRecorder, false, isCalculateMaterial);
-                                    stopCountDownTimer();
-                                }
+                                //     if (mkCoffeeListenner != null) {
+                                dealRecorder.setMakeSuccess(false);
+                                mkCoffeeListenner.getMkResult(dealRecorder, false, isCalculateMaterial);
+                                isMkingOver = true;
+                                stopCountDownTimer();
+                                //        }
                             }
                         }, 4000);
 
@@ -417,12 +515,18 @@ public class MkCoffee {
         if (machineState.getMajorState().getCurStateEnum() == StateEnum.MAKING) {
 
             coffeeMakeStateRecorder.state = CoffeeMakeState.COFFEE_ISMAKING;
+
+            MyLog.W(TAG, " cur state is making");
         } else if (machineState.getMajorState().getCurStateEnum() == StateEnum.DOWN_POWER) {
 
             coffeeMakeStateRecorder.state = CoffeeMakeState.COFFEE_DOWN_POWER;
+
+            MyLog.W(TAG, " cur state is down power");
         } else if (machineState.getMajorState().getCurStateEnum() == StateEnum.FINISH) {
 
             coffeeMakeStateRecorder.state = CoffeeMakeState.COFFEEFINISHED_CUPNOTAKEN;
+
+            MyLog.W(TAG, " cur state is finish");
         }
 
     }
@@ -432,10 +536,14 @@ public class MkCoffee {
         if (machineState.getMajorState().getCurStateEnum() == StateEnum.DOWN_POWER) {
 
             coffeeMakeStateRecorder.state = CoffeeMakeState.COFFEE_DOWN_POWER;
+
+            MyLog.W(TAG, " cur state is down power");
             return true;
         } else if (machineState.getMajorState().getCurStateEnum() == StateEnum.FINISH) {
 
             coffeeMakeStateRecorder.state = CoffeeMakeState.COFFEEFINISHED_CUPNOTAKEN;
+
+            MyLog.W(TAG, " cur state is finish");
             return true;
         }
 
@@ -447,9 +555,13 @@ public class MkCoffee {
         if (machineState.getMajorState().getCurStateEnum() == StateEnum.MAKING) {
 
             coffeeMakeStateRecorder.state = CoffeeMakeState.COFFEE_ISMAKING;
+
+            MyLog.W(TAG, " cur state is making");
         } else if (machineState.getMajorState().getCurStateEnum() == StateEnum.FINISH) {
 
             coffeeMakeStateRecorder.state = CoffeeMakeState.COFFEEFINISHED_CUPNOTAKEN;
+
+            MyLog.W(TAG, " cur state is finish");
         }
     }
 
@@ -457,6 +569,8 @@ public class MkCoffee {
         if (machineState.getMajorState().getCurStateEnum() == StateEnum.DOWN_CUP) {
 
             coffeeMakeStateRecorder.state = CoffeeMakeState.COFFEE_DOWN_CUP;
+
+            MyLog.W(TAG, " cur state is down cup");
         }
     }
 

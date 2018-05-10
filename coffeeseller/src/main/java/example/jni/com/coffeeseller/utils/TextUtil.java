@@ -40,4 +40,9 @@ public class TextUtil {
         }
         return text;
     }
+
+    public static void textPointAnim(String text) {
+
+
+    }
 }
