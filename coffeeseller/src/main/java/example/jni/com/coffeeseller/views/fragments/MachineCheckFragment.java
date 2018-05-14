@@ -13,6 +13,8 @@ import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import java.util.Arrays;
+
 import example.jni.com.coffeeseller.MachineConfig.MachineCheckState;
 import example.jni.com.coffeeseller.R;
 import example.jni.com.coffeeseller.communicate.TaskService;
@@ -35,7 +37,6 @@ public class MachineCheckFragment extends BasicFragment implements ICheckMachine
     private Button tologin;
     private TextView timeDownText;
     Thread checkThread;
-    int checkFlag = 0;
     private MachineCheckPresenter mMachineCheckPresenter;
     boolean isChecking = false;
     Handler mhHandler = new Handler();
@@ -184,14 +185,12 @@ public class MachineCheckFragment extends BasicFragment implements ICheckMachine
 
                         @Override
                         protected void onProgressUpdate(Integer... values) {
-                            Log.d("changeProgress", values + "");
+                            Log.d("changeProgress", Arrays.toString(values) + "");
                             mCheck_machineCode.setProgress(values[0]);
                             super.onProgressUpdate(values);
                         }
                     }.execute();
 
-
-                } else {
 
                 }
                 break;
@@ -212,14 +211,12 @@ public class MachineCheckFragment extends BasicFragment implements ICheckMachine
 
                         @Override
                         protected void onProgressUpdate(Integer... values) {
-                            Log.d("changeProgress", values + "");
+                            Log.d("changeProgress", Arrays.toString(values) + "");
                             mCheck_mainCtrl.setProgress(values[0]);
                             super.onProgressUpdate(values);
                         }
                     }.execute();
 
-
-                } else {
 
                 }
                 break;
@@ -240,7 +237,7 @@ public class MachineCheckFragment extends BasicFragment implements ICheckMachine
 
                         @Override
                         protected void onProgressUpdate(Integer... values) {
-                            Log.d("changeProgress", values + "");
+                            Log.d("changeProgress", Arrays.toString(values) + "");
                             mSub_Mqtt.setProgress(values[0]);
                             if (values[0] == 100) {
                                 if (isCheckSuccess) {
@@ -252,8 +249,6 @@ public class MachineCheckFragment extends BasicFragment implements ICheckMachine
                         }
                     }.execute();
 
-
-                } else {
 
                 }
                 break;
@@ -274,14 +269,12 @@ public class MachineCheckFragment extends BasicFragment implements ICheckMachine
 
                         @Override
                         protected void onProgressUpdate(Integer... values) {
-                            Log.d("changeProgress", values + "");
+                            Log.d("changeProgress", Arrays.toString(values) + "");
                             getMaterial.setProgress(values[0]);
                             super.onProgressUpdate(values);
                         }
                     }.execute();
 
-
-                } else {
 
                 }
                 break;

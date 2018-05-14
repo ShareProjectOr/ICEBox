@@ -18,8 +18,8 @@ public interface Constance {
     String TRADE_UPLOAD = SERVER + "/trade/upload";
 
     String TRADE_CLOSE = SERVER + "/trade/close";
-
-    String MachineAuthentication_URL = "http://119.23.71.185:8083" + "/machine/activate";
+    String MachineAuthentication_URL = "http://192.168.5.103:8083" + "/machine/activate";
+   // String MachineAuthentication_URL = "http://119.23.71.185:8083" + "/machine/activate";
     String COMMIT_MATERIAL_URL = SERVER + "/material/save";
     String PASSWORD_CHANGE = SERVER + "/machine/updatePassword";
     String CHECK_VERSION_URL = SERVER + "/app/versioncheck";

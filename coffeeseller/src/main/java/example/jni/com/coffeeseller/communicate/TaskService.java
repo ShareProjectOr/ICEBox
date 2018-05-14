@@ -65,10 +65,7 @@ public class TaskService extends Service implements MqttCallback {
     public static final long RUN_PERIOD = 60000; //发送消息的间隔
 
 
-
     static TaskService mInstance;
-
-
 
 
     public TaskService() {
@@ -149,10 +146,11 @@ public class TaskService extends Service implements MqttCallback {
             }
 
         } else {
-            startTimer();
+
             if (mOnMachineCheckCallBackListener != null) {
                 mOnMachineCheckCallBackListener.MQTTSubcribeSuccess();
                 MachineInitState.SUB_MQTT_STATE = MachineInitState.NORMAL;
+                startTimer();
             }
 
         }
@@ -186,7 +184,7 @@ public class TaskService extends Service implements MqttCallback {
             this.mOnMachineCheckCallBackListener = mOnMachineCheckCallBackListener;
         }
         Log.d("连接中", ".......");
-        if (!isConnected()) {
+        if (!isConnected()) {//如果是断开状态 , 则订阅 否则则直接认为订阅成功
             subcribeMqtt();
         } else {
             checkSubSuccess();
@@ -580,10 +578,6 @@ public class TaskService extends Service implements MqttCallback {
         }
 
     }
-
-
-
-
 
 
 }
