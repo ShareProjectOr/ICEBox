@@ -10,7 +10,9 @@ import android.os.Message;
 import android.util.Log;
 
 
+import org.eclipse.paho.client.mqttv3.IMqttActionListener;
 import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
+import org.eclipse.paho.client.mqttv3.IMqttToken;
 import org.eclipse.paho.client.mqttv3.MqttCallback;
 import org.eclipse.paho.client.mqttv3.MqttClient;
 import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
@@ -49,7 +51,7 @@ import example.jni.com.coffeeseller.utils.Waiter;
 import example.jni.com.coffeeseller.views.activities.HomeActivity;
 
 
-public class TaskService extends Service implements MqttCallback {
+public class TaskService extends Service implements MqttCallback, IMqttActionListener {
     public static final String HOST = "tcp://" + "196.168.4.192" + ":61613";//tcp://127.0.0.1:616
     private static MqttClient client;
     private MqttConnectOptions options;
@@ -139,21 +141,37 @@ public class TaskService extends Service implements MqttCallback {
 
 
     private void checkSubSuccess() {
-        if (!isConnected()) {
-            Log.d(TAG, "获取了 topic 但是订阅失败");
-            if (mOnMachineCheckCallBackListener != null) {
-                mOnMachineCheckCallBackListener.MQTTSubcribeFailed();
-            }
+        int count = 3;
+        while (!isConnected()) {//当MQTT处于断开状态时进入循环判断开始计算
 
-        } else {
+            if (!isConnected()) {
+                if (count == 0) {
+                    tagMachineCheckResult();//如果三次检测还是失败 则直接标记为订阅失败
+                    break;
+                } else {
+                    count--;  //如果当前没有连接上对检测次数减一
+                }
 
-            if (mOnMachineCheckCallBackListener != null) {
-                mOnMachineCheckCallBackListener.MQTTSubcribeSuccess();
-                MachineInitState.SUB_MQTT_STATE = MachineInitState.NORMAL;
+
+                Log.d(TAG, "获取了 topic 但是订阅失败，当前剩余count次数为: " + count);
+
+
+            } else {
                 startTimer();
+                if (mOnMachineCheckCallBackListener != null) {
+                    mOnMachineCheckCallBackListener.MQTTSubcribeSuccess();
+                    MachineInitState.SUB_MQTT_STATE = MachineInitState.NORMAL;
+                }
+                tagMachineCheckResult();
+                break;
             }
-
+            Waiter.doWait(3000);//如果没有连接上,则等待5秒后机器判断
         }
+
+
+    }
+
+    private void tagMachineCheckResult() {
         if (MachineInitState.CHECK_OPENMAINCTRL == MachineInitState.NORMAL && MachineInitState.CHECK_MACHINECODE == MachineInitState.NORMAL && MachineInitState.SUB_MQTT_STATE == MachineInitState.NORMAL && MachineInitState.GET_FORMULA == MachineInitState.NORMAL) {
             if (mOnMachineCheckCallBackListener != null) {
                 mOnMachineCheckCallBackListener.MachineCheckEnd(true);
@@ -184,10 +202,8 @@ public class TaskService extends Service implements MqttCallback {
             this.mOnMachineCheckCallBackListener = mOnMachineCheckCallBackListener;
         }
         Log.d("连接中", ".......");
-        if (!isConnected()) {//如果是断开状态 , 则订阅 否则则直接认为订阅成功
+        if (!isConnected()) {
             subcribeMqtt();
-        } else {
-            checkSubSuccess();
         }
 
     }
@@ -323,7 +339,6 @@ public class TaskService extends Service implements MqttCallback {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        Waiter.doWait(1000);
         checkSubSuccess();
     }
 
@@ -580,4 +595,13 @@ public class TaskService extends Service implements MqttCallback {
     }
 
 
+    @Override
+    public void onSuccess(IMqttToken iMqttToken) {
+
+    }
+
+    @Override
+    public void onFailure(IMqttToken iMqttToken, Throwable throwable) {
+
+    }
 }

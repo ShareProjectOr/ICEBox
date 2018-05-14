@@ -305,7 +305,7 @@ public class MachineCheck implements IMachineCheck {
                 mOnMachineCheckCallBackListener.MachineCheckEnd(false);
             }*/
             subMQTT();
-            Waiter.doWait(1000);
+            Waiter.doWait(1500);
 
         }
     }
