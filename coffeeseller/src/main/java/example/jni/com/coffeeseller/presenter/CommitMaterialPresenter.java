@@ -38,27 +38,29 @@ public class CommitMaterialPresenter {
     }
 
     public void CommitMaterial2() {
-        if (MachineConfig.getHostUrl().isEmpty()) {
-            return;
-        }
-        if (MachineConfig.getMachineCode().isEmpty()) {
-            return;
-        }
-        iCommitMaterialView.ShowLoading();
-        ;
-        iCommitMaterial.Commit(iCommitMaterialView.getList(), new OnCommitMaterialCallBackListener() {
-            @Override
-            public void commitSuccess() {
-                iCommitMaterialView.HideLoading();
-                iCommitMaterialView.ShowResult("提交成功");
-                iCommitMaterialView.ChangePage();
-            }
+        if (MachineConfig.getHostUrl().isEmpty() || MachineConfig.getMachineCode().isEmpty()) {
+            iCommitMaterialView.ShowResult("机器号未填写或服务器地址获取出错,原料未提交");
+            iCommitMaterialView.ChangePage();
+        } else {
+            iCommitMaterialView.ShowLoading();
+            iCommitMaterial.Commit(iCommitMaterialView.getList(), new OnCommitMaterialCallBackListener() {
+                @Override
+                public void commitSuccess() {
+                    iCommitMaterialView.HideLoading();
+                    iCommitMaterialView.ShowResult("提交成功");
+                    iCommitMaterialView.ChangePage();
+                }
 
-            @Override
-            public void commitFailed(String response) {
-                iCommitMaterialView.HideLoading();
-                iCommitMaterialView.ShowResult(response);
-            }
-        });
+                @Override
+                public void commitFailed(String response) {
+                    iCommitMaterialView.HideLoading();
+                    iCommitMaterialView.ShowResult(response);
+                }
+            });
+        }
+       /* if (MachineConfig.getMachineCode().isEmpty()) {
+            return;
+        }*/
+
     }
 }
