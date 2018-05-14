@@ -142,7 +142,7 @@ public class TaskService extends Service implements MqttCallback, IMqttActionLis
 
     private void checkSubSuccess() {
         int count = 3;
-        while (!isConnected()) {//当MQTT处于断开状态时进入循环判断开始计算
+        while (count>0) {//当MQTT处于断开状态时进入循环判断开始计算
 
             if (!isConnected()) {
                 if (count == 0) {
@@ -202,9 +202,9 @@ public class TaskService extends Service implements MqttCallback, IMqttActionLis
             this.mOnMachineCheckCallBackListener = mOnMachineCheckCallBackListener;
         }
         Log.d("连接中", ".......");
-        if (!isConnected()) {
+
             subcribeMqtt();
-        }
+
 
     }
 
