@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:layout_width="@dimen/taste_layout_width"
+        android:layout_height="@dimen/taste_layout_height">
+
+        <LinearLayout
+            android:layout_width="@dimen/taste_layout_width"
+            android:layout_height="@dimen/taste_layout_height"
+            android:layout_marginTop="@dimen/taste_layout_qr_layout_over_height"
+            android:background="@drawable/new_shape_taste_layout"
+            android:orientation="horizontal"
+            android:paddingBottom="@dimen/taste_layout_qr_layout_over_height"
+            android:paddingLeft="@dimen/taste_layout_qr_layout_over_width"
+            android:paddingRight="@dimen/taste_layout_qr_layout_over_width"
+            android:paddingTop="@dimen/taste_layout_qr_layout_over_height">
+
+            <LinearLayout
+                android:id="@+id/tasteLayout"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginRight="@dimen/taste_layout_margin_qr"
+                android:orientation="horizontal">
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/qrLayout"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="@dimen/taste_layout_qr_layout_over_width"
+            android:orientation="vertical">
+
+            <RelativeLayout
+                android:layout_width="@dimen/taste_layout_qr_width"
+                android:layout_height="@dimen/taste_layout_qr_width"
+                android:background="@drawable/new_shape_round"
+                android:padding="2dp">
+
+                <ImageView
+                    android:id="@+id/qrImg"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" />
+
+                <ProgressBar
+                    android:id="@+id/loadingBar"
+                    style="@android:style/Widget.Holo.ProgressBar.Large"
+                    android:layout_width="@dimen/taste_layout_qr_width"
+                    android:layout_height="@dimen/taste_layout_qr_width"
+                    android:layout_centerInParent="true"
+                    android:background="@drawable/new_layout_shape_bng"
+                    android:indeterminateTint="@color/coffeeColor" />
+
+                <TextView
+                    android:id="@+id/paying"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_centerInParent="true"
+                    android:layout_margin="1dp"
+                    android:background="@drawable/new_layout_shape_bng"
+                    android:gravity="center"
+                    android:text="正在支付中"
+                    android:textColor="@color/coffeeColor"
+                    android:visibility="gone" />
+
+                <TextView
+                    android:id="@+id/requestQRTxt"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_margin="1dp"
+                    android:background="@android:color/transparent"
+                    android:gravity="center"
+                    android:text="点击重新获取"
+                    android:textColor="@color/coffeeColor"
+                    android:visibility="gone" />
+
+
+            </RelativeLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="￥"
+                    android:textColor="@color/text_color"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/payPrice"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/text_color"
+                    android:textSize="28sp"
+                    android:textStyle="bold" />
+
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="微信或支付宝扫码支付"
+                android:textColor="@color/brown"
+                android:textSize="12sp" />
+
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/close"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_alignParentRight="true"
+            android:layout_marginTop="@dimen/taste_layout_qr_layout_over_height"
+            android:gravity="center"
+            android:src="@mipmap/ic_launcher_round"
+            android:text="x"
+            android:textColor="@color/brown"
+            android:textSize="30sp"
+            android:textStyle="bold" />
+
+    </RelativeLayout>
+</LinearLayout>

@@ -1,0 +1,288 @@
+package example.jni.com.coffeeseller.model.new_helper;
+
+import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
+import android.support.v4.content.ContextCompat;
+import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
+
+import com.bumptech.glide.Glide;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import example.jni.com.coffeeseller.R;
+import example.jni.com.coffeeseller.bean.Coffee;
+import example.jni.com.coffeeseller.bean.ReportBunker;
+import example.jni.com.coffeeseller.model.ChooseAndMking;
+import example.jni.com.coffeeseller.model.new_listenner.CoffeeItemSelectedListener;
+import example.jni.com.coffeeseller.utils.CornersTransmation;
+import example.jni.com.coffeeseller.utils.DensityUtil;
+import example.jni.com.coffeeseller.utils.ImageUtil;
+import example.jni.com.coffeeseller.utils.MyLog;
+import jp.wasabeef.glide.transformations.RoundedCornersTransformation;
+
+/**
+ * Created by WH on 2018/5/10.
+ */
+
+public class ViewPagerLayout {
+    private String TAG = "ViewPagerLayout";
+    private int OnePageCount = 4;
+    private Context context;
+    private CoffeeItemSelectedListener coffeeItemSelectedListener;
+    public List<ViewHolder> viewHolders;
+
+
+    public ViewPagerLayout(Context context, CoffeeItemSelectedListener coffeeItemSelectedListener) {
+        this.context = context;
+        this.coffeeItemSelectedListener = coffeeItemSelectedListener;
+        viewHolders = new ArrayList<>();
+    }
+
+    public List<LinearLayout> getLinearLayouts(List<Coffee> coffees) {
+        List<LinearLayout> layouts = new ArrayList<>();
+        if (coffees == null || coffees.size() <= 0) {
+            return layouts;
+        }
+
+        int countPage = coffees.size() / OnePageCount;
+        int count = coffees.size() % OnePageCount;
+        int totalPageCount = count == 0 ? countPage : countPage + 1;
+
+
+        for (int i = 0; i < totalPageCount; i++) {
+            List<Coffee> layoutCoffees = new ArrayList<>();
+            if (i + 1 != totalPageCount) {
+                layoutCoffees.addAll(coffees.subList(i * OnePageCount, (i + 1) * OnePageCount));
+            } else {
+                layoutCoffees.addAll(coffees.subList(i * OnePageCount, coffees.size()));
+            }
+
+            layouts.add(getLinearLayout(context, layoutCoffees, i));
+
+        }
+
+        return layouts;
+    }
+
+    private LinearLayout getLinearLayout(Context context, List<Coffee> coffees, final int page) {
+        final LinearLayout linearLayout = new LinearLayout(context);
+        LinearLayout.LayoutParams linearLayoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT);
+        linearLayout.setOrientation(LinearLayout.HORIZONTAL);
+        linearLayout.setLayoutParams(linearLayoutParams);
+
+
+        for (int i = 0; i < coffees.size(); i++) {
+            final Coffee coffee = coffees.get(i);
+
+            MyLog.d(TAG, "coffees.size =" + coffees.size());
+            final int position = i;
+
+            View view = LayoutInflater.from(context).inflate(R.layout.new_viewpager_item, linearLayout, false);
+
+            final ViewHolder viewHolder = new ViewHolder(view, context);
+
+            viewHolder.initData(coffee);
+
+            view.setTag(viewHolder);
+
+            LinearLayout.LayoutParams textViewParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,
+                    LinearLayout.LayoutParams.WRAP_CONTENT);
+            textViewParams.setMargins(36, 0, 0, 0);
+            view.setLayoutParams(textViewParams);
+
+            view.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                    if (coffeeItemSelectedListener != null) {
+                        coffeeItemSelectedListener.getView(coffee, page, position, viewHolder);
+                    }
+                }
+            });
+            viewHolders.add(viewHolder);
+            linearLayout.addView(view);
+        }
+        return linearLayout;
+    }
+
+    public void updateViewHolder(ViewHolder selectedViewHolder) {
+
+
+        if (selectedViewHolder.isOver) {
+            return;
+        }
+
+        if (selectedViewHolder.isSelected) {
+            MyLog.d(TAG, "selectedViewHolder.isSelected");
+
+            initViewHolder();
+            return;
+        }
+
+        for (int i = 0; i < viewHolders.size(); i++) {
+            ViewHolder viewHolder = viewHolders.get(i);
+
+            if (selectedViewHolder == viewHolder) {
+                selectedViewHolder.update(viewHolder, true);
+            } else {
+                viewHolder.update(viewHolder, false);
+            }
+        }
+    }
+
+    public void initViewHolder() {
+        for (ViewHolder viewHolderEach : viewHolders) {
+            viewHolderEach.init();
+        }
+    }
+
+    public class ViewHolder {
+        public View view;
+        public ImageView mCoffeeImg;
+        public TextView mCoffeeName;
+        public TextView mActiveImg;
+        public TextView mPrice;
+        public TextView mActivePrice;
+        public LinearLayout mOverLayout;
+        public LinearLayout mOverImgLayout;
+
+        public LinearLayout mViewPagerLayout;
+
+        public LinearLayout mPriceLayout, mActivityPriceLayout;
+        public TextView mYuanText, mCupText;
+
+
+        private Context mContext;
+        public boolean isOver;
+        public boolean isSelected = false;
+        public ChooseAndMking chooseAndMking;
+
+
+        public ViewHolder(View view, Context context) {
+            mContext = context;
+            this.view = view;
+            bindViews(view);
+        }
+
+        private void bindViews(View view) {
+
+            mCoffeeImg = (ImageView) view.findViewById(R.id.coffeeImg);
+            mCoffeeName = (TextView) view.findViewById(R.id.coffeeName);
+            mActiveImg = (TextView) view.findViewById(R.id.activeImg);
+            mPrice = (TextView) view.findViewById(R.id.price);
+            mActivePrice = (TextView) view.findViewById(R.id.activePrice);
+            mOverLayout = (LinearLayout) view.findViewById(R.id.overLayout);
+            mOverImgLayout = (LinearLayout) view.findViewById(R.id.overImgLayout);
+            mViewPagerLayout = (LinearLayout) view.findViewById(R.id.viewPagerContainnerLayout);
+
+            mActivityPriceLayout = (LinearLayout) view.findViewById(R.id.activityPriceLayout);
+            mPriceLayout = (LinearLayout) view.findViewById(R.id.priceLayout);
+            mYuanText = (TextView) view.findViewById(R.id.yuanText);
+            mCupText = (TextView) view.findViewById(R.id.cupText);
+
+        }
+
+        public void initData(Coffee coffee) {
+            if (coffee != null) {
+                mCoffeeName.setText(coffee.name);
+             /*   Glide.with(mContext)
+                        .load(coffee.cacheUrl)
+                        .transform(new CornersTransmation(mContext, 10))
+                        .placeholder(R.mipmap.no_coffee)
+                        .error(R.mipmap.no_coffee).into(mCoffeeImg);*/
+
+                Bitmap defaultBitmap = BitmapFactory.decodeResource(mContext.getResources(), R.mipmap.no_coffee);
+//                Drawable drawable = new BitmapDrawable(ImageUtil.drawTopRoundRect(defaultBitmap, 10));
+
+                Glide.with(mContext).load(coffee.cacheUrl)
+                        .placeholder(R.mipmap.no_coffee)
+                        .error(R.mipmap.no_coffee)
+                        .bitmapTransform(new RoundedCornersTransformation(mContext, DensityUtil.dp2px(context, 10), 0, RoundedCornersTransformation.CornerType.TOP))
+                        .into(mCoffeeImg);
+
+
+                if (!TextUtils.isEmpty(coffee.activitiesPrice) && !"null".equals(coffee.activitiesPrice)) {
+                    float activityPrice = Float.parseFloat(coffee.activitiesPrice);
+                    if (activityPrice > 0) {
+                        mActiveImg.setVisibility(View.VISIBLE);
+                        mActivePrice.setVisibility(View.VISIBLE);
+                        mActivePrice.setText(coffee.activitiesPrice);
+                        mActivityPriceLayout.setVisibility(View.VISIBLE);
+
+                        mPrice.setText(coffee.price);
+                        mPriceLayout.setBackgroundResource(R.drawable.shape_dialog);
+                        mPrice.setTextColor(ContextCompat.getColor(context, R.color.border_color));
+                        mYuanText.setTextColor(ContextCompat.getColor(context, R.color.border_color));
+                        mCupText.setTextColor(ContextCompat.getColor(context, R.color.border_color));
+                    } else {
+                        mPrice.setText(coffee.price);
+                        mPriceLayout.setBackgroundResource(0);
+                        mPrice.setTextColor(ContextCompat.getColor(context, R.color.red));
+                        mYuanText.setTextColor(ContextCompat.getColor(context, R.color.red));
+                        mCupText.setTextColor(ContextCompat.getColor(context, R.color.red));
+                    }
+                } else {
+                    mPrice.setText(coffee.price);
+                    mPriceLayout.setBackgroundResource(0);
+                    mPrice.setTextColor(ContextCompat.getColor(context, R.color.red));
+                    mYuanText.setTextColor(ContextCompat.getColor(context, R.color.red));
+                    mCupText.setTextColor(ContextCompat.getColor(context, R.color.red));
+                }
+
+
+                if (coffee.isOver) {
+                    mOverLayout.setVisibility(View.VISIBLE);
+                    mOverImgLayout.setVisibility(View.VISIBLE);
+                    view.setEnabled(false);
+                    isOver = true;
+                } else {
+                    mOverLayout.setVisibility(View.GONE);
+                    mOverImgLayout.setVisibility(View.GONE);
+                    view.setEnabled(true);
+                    isOver = false;
+                }
+            }
+        }
+
+        public void update(ViewHolder viewHolder, boolean isSelected) {
+
+            if (isSelected) {
+                mOverLayout.setVisibility(View.GONE);
+                viewHolder.isSelected = true;
+                viewHolder.mViewPagerLayout.setBackgroundResource(R.drawable.new_shape_viewpager_selected_item_bng);//shadow_11137
+            } else {
+                mOverLayout.setVisibility(View.VISIBLE);
+                viewHolder.isSelected = false;
+                viewHolder.mViewPagerLayout.setBackgroundResource(R.drawable.new_shape_viewpager_item_bng);//shadow_105312
+            }
+        }
+
+        public void init() {
+            isSelected = false;
+            mViewPagerLayout.setBackgroundResource(R.drawable.new_shape_viewpager_item_bng);
+            if (isOver) {
+                mOverLayout.setVisibility(View.VISIBLE);
+                mOverImgLayout.setVisibility(View.VISIBLE);
+                view.setEnabled(false);
+                isOver = true;
+            } else {
+                mOverLayout.setVisibility(View.GONE);
+                mOverImgLayout.setVisibility(View.GONE);
+                view.setEnabled(true);
+                isOver = false;
+            }
+        }
+    }
+}

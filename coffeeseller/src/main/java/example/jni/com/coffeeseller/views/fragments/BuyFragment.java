@@ -193,7 +193,7 @@ public class BuyFragment extends BasicFragment implements GridViewItemListener, 
     /*
    * 清洗机器
    * */
-    public void clearMachine(final List<ContainerConfig> containerConfigs) {
+ /*   public void clearMachine(final List<ContainerConfig> containerConfigs) {
 
         MyLog.d(TAG, "clearMachine");
         lastClearMachineTime = System.currentTimeMillis();
@@ -235,7 +235,7 @@ public class BuyFragment extends BasicFragment implements GridViewItemListener, 
         }
         clearMachineTimer = null;
         clearMachineTimerTask = null;
-    }
+    }*/
 
     /*
     * 更新在线情况

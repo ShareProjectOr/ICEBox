@@ -5,11 +5,10 @@
 
     <TextView
         android:id="@+id/point"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
+        android:layout_width="@dimen/viewpager_point_width"
+        android:layout_height="@dimen/viewpager_point_width"
         android:background="@drawable/selector_point"
         android:gravity="center"
         android:textColor="@color/coffeeColor"
-        android:text="1"
-        android:textSize="35sp"></TextView>
+        android:textSize="31sp"></TextView>
 </LinearLayout>

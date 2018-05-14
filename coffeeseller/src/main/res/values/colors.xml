@@ -38,4 +38,11 @@
     <color name="layoutgraybackground">#F2F2F2</color>
     <color name="lightorange">#FCC141</color>
     <color name="deeporange">#FD6F02</color>
+
+    <!--新的版本-->
+    <color name="border_color">#cccccc</color>
+    <color name="text_color">#ed120f</color>
+    <color name="brown">#320200</color>
+    <color name="orange">#f3620d</color>
+
 </resources>

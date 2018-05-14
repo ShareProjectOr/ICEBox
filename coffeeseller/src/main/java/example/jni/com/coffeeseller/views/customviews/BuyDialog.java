@@ -48,6 +48,7 @@ import example.jni.com.coffeeseller.model.listeners.MkCoffeeListenner;
 import example.jni.com.coffeeseller.utils.MyLog;
 import example.jni.com.coffeeseller.utils.ScreenUtil;
 import example.jni.com.coffeeseller.utils.TextUtil;
+import example.jni.com.coffeeseller.utils.Waiter;
 import example.jni.com.coffeeseller.views.fragments.BuyFragment;
 
 /**
@@ -117,7 +118,7 @@ public class BuyDialog extends Dialog implements ChooseCupListenner, MkCoffeeLis
 
     public void setInitView(int viewID) {
         if (viewID == VIEW_CHOOSE_CUP) {
-            final ChooseCup chooseCup = new ChooseCup(context, coffee, chooseCupListenner, handler);
+            final ChooseCup chooseCup = new ChooseCup(context, coffee, chooseCupListenner, handler, this);
             setContentView(chooseCup.getView());
             setOnCancleTouchListenner(true);
             setOnDismissListener(new OnDismissListener() {
@@ -157,6 +158,10 @@ public class BuyDialog extends Dialog implements ChooseCupListenner, MkCoffeeLis
         return curViewId;
     }
 
+    public long getLastMkTime() {
+        return lastMkTime;
+    }
+
     public void showDialog() {
         if (!isShowing())
             show();
@@ -166,7 +171,6 @@ public class BuyDialog extends Dialog implements ChooseCupListenner, MkCoffeeLis
 
     public void disDialog() {
 
-        stopTaskClearMachine();
         curViewId = -1;
         if (isShowing()) {
             dismiss();
@@ -174,16 +178,11 @@ public class BuyDialog extends Dialog implements ChooseCupListenner, MkCoffeeLis
 
     }
 
-    public void setOnCancleTouchListenner(boolean canCancle) {
-        setCanceledOnTouchOutside(canCancle);
-    }
-
-
     /*
-* 清洗机器
-* */
+     * 清洗机器
+     * */
     public void clearMachine(final List<ContainerConfig> containerConfigs) {
-        stopTaskClearMachine();
+
         MyLog.d(TAG, "clearMachine");
         lastClearMachineTime = System.currentTimeMillis();
         if (clearMachineTimer == null) {
@@ -194,16 +193,17 @@ public class BuyDialog extends Dialog implements ChooseCupListenner, MkCoffeeLis
                 @Override
                 public void run() {
 
-                    if (CheckCurMachineState.getInstance().isCupShelfRightPlaceClearMachineTest()) {
-//                        boolean isResultSuccess = ClearMachine.clearMachineByHotWater(100, 0);
-                        boolean isOver = ClearMachine.clearMachineAllModule(containerConfigs);
+                    if (CheckCurMachineState.getInstance().isCupShelfRightPlaceClearMachineTest()
+                            && CheckCurMachineState.getInstance().isDoorCloseMachineTest()) {
+                        boolean isResultSuccess = ClearMachine.clearMachineByHotWater(100, 0);
+                      /*  ClearMachine.clearMachineAllModule(containerConfigs);
                         if (System.currentTimeMillis() - lastClearMachineTime > 50 * 1000) {
 
                             MyLog.d(TAG, "clearMachine over 50s");
                             stopTaskClearMachine();
                             return;
-                        }
-                        if (isOver) {
+                        }*/
+                        if (isResultSuccess) {
                             MyLog.d(TAG, "clearMachine success!");
                             stopTaskClearMachine();
                         } else {
@@ -226,6 +226,10 @@ public class BuyDialog extends Dialog implements ChooseCupListenner, MkCoffeeLis
         clearMachineTimerTask = null;
     }
 
+
+    public void setOnCancleTouchListenner(boolean canCancle) {
+        setCanceledOnTouchOutside(canCancle);
+    }
 
     //更新数据库原料表
     private String updateMaterial(DealRecorder dealRecorder) {
@@ -424,15 +428,19 @@ public class BuyDialog extends Dialog implements ChooseCupListenner, MkCoffeeLis
                 MkCoffee mkCoffee = new MkCoffee(context, fomat, dealRecorder, mkCoffeeListenner, handler);
                 setContentView(mkCoffee.getView());
 
-                //上次制作后长时间没有制作就清洗机器
-                if (System.currentTimeMillis() - lastMkTime > TIME_BEFORE_MK_TO_CLEAR) {
-                    //清洗机器
-                    boolean isOver = ClearMachine.clearMachineAllModule(coffeeFomat.getContainerConfigs());
 
+                //上次制作后长时间没有制作就清洗机器
+              /*  if (System.currentTimeMillis() - lastMkTime > TIME_BEFORE_MK_TO_CLEAR) {
+                    //清洗机器
+                    int waitTime = ClearMachine.clearMachineAllModule(coffeeFomat.getContainerConfigs());
+
+                    Waiter.doWait(waitTime);
                     mkCoffee.startMkCoffee();
-                }else{
-                    mkCoffee.startMkCoffee();
-                }
+
+                } else {
+//                    mkCoffee.startMkCoffee();
+                }*/
+
 
                 curViewId = MK_COFFEE;
 
@@ -478,7 +486,7 @@ public class BuyDialog extends Dialog implements ChooseCupListenner, MkCoffeeLis
                 } else {
 
                     //清洗机器
-                    clearMachine(dealRecorder.getContainerConfigs());
+                    clearMachine(null);
                 }
 
             }

@@ -154,8 +154,7 @@ public class MkCoffee {
         makingViewHolder.mCoffeeName.setText(coffeeFomat.getCoffeeName());
 
 
-        countDownTime();
-        //    startMkCoffee();
+        startMkCoffee();
 
 
     }
@@ -172,7 +171,7 @@ public class MkCoffee {
         if (coffeeFomat != null && coffeeFomat.getContainerConfigs().size() >= 0) {
             buffer.setLength(0);
 
-            //     countDownTime();
+            countDownTime();
 
 //            isStartMkCoffee();
 
@@ -208,14 +207,14 @@ public class MkCoffee {
 
                 makingViewHolder.mMkTimerCount.setText(millisUntilFinished / 1000 + " s");
 
-                if (!isSendMkingComdSuccess) {
+              /*  if (!isSendMkingComdSuccess) {
                     makingViewHolder.mErrTip.setVisibility(View.VISIBLE);
                     makingViewHolder.mProgressBarLayout.setVisibility(GONE);
                     makingViewHolder.mErrTip.setText(TextUtil.textPointNum("清洗中", (int) (millisUntilFinished / 1000 % 3)));
                 } else {
                     makingViewHolder.mErrTip.setVisibility(View.GONE);
                     makingViewHolder.mProgressBarLayout.setVisibility(VISIBLE);
-                }
+                }*/
             }
 
             @Override

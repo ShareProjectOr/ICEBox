@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:paddingBottom="10dp"
+    android:paddingRight="10dp"
+    android:paddingTop="10dp">
+
+    <TextView
+        android:id="@+id/grid_item"
+        android:layout_width="@dimen/taste_grid_item_width"
+        android:layout_height="@dimen/taste_grid_item_height"
+        android:background="@drawable/selector_taste_bng"
+        android:gravity="center"
+        android:textColor="@color/new_selector_taste_text_color"
+        android:textSize="@dimen/taste_grid_item_textsize" />
+</LinearLayout>

@@ -34,7 +34,8 @@ public class AddFragment implements IAddFragment {
         FragmentManager fm = activity.getSupportFragmentManager();
         FragmentTransaction ft = fm.beginTransaction();
         ft.replace(Layout, fragment);
-        ft.commit();
+        ft.commitAllowingStateLoss();
+
     }
 
 }

@@ -140,7 +140,7 @@ public class CheckCurMachineState {
                 break;
 
             case HAS_ERR:
-                mBuffer.append("机器有故障: \n" + majorState.getHighErr_byte());
+                mBuffer.append("机器有故障: " + majorState.getHighErr_byte());
 
                 break;
 
@@ -161,7 +161,7 @@ public class CheckCurMachineState {
                 break;
 
             case UNKNOW_STATE:
-                mBuffer.append("错误:未知错误");
+                mBuffer.append("未知错误");
                 break;
 
         }
@@ -255,6 +255,14 @@ public class CheckCurMachineState {
     }
 
 
+    public boolean isHottingCheck() {
+        return mCoffMsger.getLastMachineState().getMajorState().getCurStateEnum() == StateEnum.HEAT_POT;
+    }
+
+    public boolean isClearingCheck() {
+        return mCoffMsger.getLastMachineState().getMajorState().getCurStateEnum() == StateEnum.CLEANING;
+    }
+
     public boolean isHotting() {
         return isHotting;
     }
@@ -279,6 +287,12 @@ public class CheckCurMachineState {
         CoffMsger coffMsger = CoffMsger.getInstance();
         MachineState machineState = coffMsger.getLastMachineState();
         return machineState.isCupShelfRightPlace();
+    }
+
+    public boolean isDoorCloseMachineTest() {
+        CoffMsger coffMsger = CoffMsger.getInstance();
+        MachineState machineState = coffMsger.getLastMachineState();
+        return machineState.isLittleDoorOpen();
     }
 
     /*

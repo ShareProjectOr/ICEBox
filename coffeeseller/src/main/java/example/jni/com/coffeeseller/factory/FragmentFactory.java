@@ -14,6 +14,7 @@ import example.jni.com.coffeeseller.views.fragments.DebugFragment;
 import example.jni.com.coffeeseller.views.fragments.HomeFragment;
 import example.jni.com.coffeeseller.views.fragments.LoginFragment;
 import example.jni.com.coffeeseller.views.fragments.MachineCheckFragment;
+import example.jni.com.coffeeseller.views.fragments.NewBuyFragment;
 import example.jni.com.coffeeseller.views.fragments.TradeFragment;
 
 /**
@@ -88,7 +89,8 @@ public class FragmentFactory {
 
             switch (pageType) {
                 case ChooseCupNumFragment:
-                    mFrag = new BuyFragment();
+//                    mFrag = new BuyFragment();
+                    mFrag = new NewBuyFragment();
                     break;
                 case MachineCheckFragment:
                     mFrag = new MachineCheckFragment();

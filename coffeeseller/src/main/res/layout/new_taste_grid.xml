@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingRight="36dp"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/tasteName"
+            android:layout_width="@dimen/taste_grid_width"
+            android:layout_height="wrap_content"
+            android:gravity="start"
+            android:textColor="@color/brown"
+            android:textSize="@dimen/taste_name_textsize" />
+
+        <GridView
+            android:id="@+id/taste_grid"
+            android:layout_width="@dimen/taste_grid_width"
+            android:layout_height="@dimen/taste_grid_height"
+            android:numColumns="3"></GridView>
+    </LinearLayout>
+
+</LinearLayout>

@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="@dimen/taste_layout_width"
+        android:layout_height="@dimen/taste_layout_height"
+        android:layout_marginTop="@dimen/taste_layout_qr_layout_over_height"
+        android:background="@drawable/new_shape_taste_layout"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:paddingTop="@dimen/taste_layout_qr_layout_over_height">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="208dp"
+            android:layout_marginRight="208dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/luobei"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="落杯中"
+                android:textColor="@color/new_selector_progress_text_color"
+                android:textSize="20sp" />
+
+            <TextView
+                android:id="@+id/modou"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="磨豆"
+                android:textColor="@color/new_selector_progress_text_color"
+                android:textSize="20sp" />
+
+            <TextView
+                android:id="@+id/liangzao"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="酿造"
+                android:textColor="@color/new_selector_progress_text_color"
+                android:textSize="20sp" />
+
+            <TextView
+                android:id="@+id/fuliao"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="添加辅料"
+                android:textColor="@color/new_selector_progress_text_color"
+                android:textSize="20sp" />
+
+            <TextView
+                android:id="@+id/zhuangbei"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="装杯"
+                android:textColor="@color/new_selector_progress_text_color"
+                android:textSize="20sp" />
+
+            <TextView
+                android:id="@+id/wancheng"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="right"
+                android:text="制作完成"
+                android:textColor="@color/new_selector_progress_text_color"
+                android:textSize="20sp" />
+
+
+        </LinearLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/progressbar_height"
+            android:layout_marginLeft="208dp"
+            android:layout_marginRight="208dp"
+            android:layout_marginTop="10dp">
+
+            <ProgressBar
+                android:id="@+id/progressBar"
+                style="@style/Base.Widget.AppCompat.ProgressBar.Horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/progressbar_height"
+                android:progressDrawable="@drawable/new_layer_list_progressbar" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:id="@+id/restTime"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center_vertical|left"
+                    android:padding="20dp"
+                    android:textColor="@color/black"
+                    android:textSize="28sp"
+                    android:textStyle="bold" />
+
+            </LinearLayout>
+
+        </RelativeLayout>
+
+        <TextView
+            android:id="@+id/errCaseTip"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="208px"
+            android:layout_marginRight="208px"
+            android:gravity="center"
+            android:paddingTop="10dp"
+            android:textColor="@color/red" />
+    </LinearLayout>
+</LinearLayout>

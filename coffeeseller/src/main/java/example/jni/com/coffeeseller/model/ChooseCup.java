@@ -54,6 +54,7 @@ import example.jni.com.coffeeseller.parse.PayResult;
 import example.jni.com.coffeeseller.utils.MyLog;
 import example.jni.com.coffeeseller.utils.QRMaker;
 import example.jni.com.coffeeseller.utils.TextUtil;
+import example.jni.com.coffeeseller.utils.Waiter;
 import example.jni.com.coffeeseller.views.customviews.BuyDialog;
 
 import static android.R.attr.button;
@@ -66,6 +67,7 @@ import static android.R.attr.track;
 public class ChooseCup implements View.OnClickListener, MsgTransListener {
     private static String TAG = "ChooseCup";
     private static int VIEW_SHOW_TIME = 2 * 60 * 1000;
+    private static long TIME_BEFORE_MK_TO_CLEAR = 2 * 60 * 60 * 1000;
     private static int NO_PAY = 0;
     private static int PAYING = 1;
     private static int PAYED = 2;
@@ -80,16 +82,19 @@ public class ChooseCup implements View.OnClickListener, MsgTransListener {
     private CountDownTimer countDownTimer;
     private Handler mHandler;
     private TradeMsgRequest tradeMsgRequest;
+    private BuyDialog mBuyDialog;
     private Bitmap qrBitmap;
     private int curPayState = NO_PAY;
     private String curOrder = null;
+    private long clearMachineWaitTime;
 
 
-    public ChooseCup(Context context, Coffee coffee, ChooseCupListenner listenner, Handler handler) {
+    public ChooseCup(Context context, Coffee coffee, ChooseCupListenner listenner, Handler handler, BuyDialog buyDialog) {
         mContext = context;
         mCoffee = coffee;
         mChooseCupListener = listenner;
         mHandler = handler;
+        mBuyDialog = buyDialog;
         init();
     }
 
@@ -341,14 +346,12 @@ public class ChooseCup implements View.OnClickListener, MsgTransListener {
 
             mDealRecorder.setPayed(true);
             mDealRecorder.setPayTime(msg.getPayTime());
-            if (mChooseCupListener != null) {
 
-                tradeMsgRequest.stopTaskCheckPay();
-                stopCountDownTimer();
-                getFinalContainerConfig();
-                mChooseCupListener.hasPay(mCoffeeFomat, mDealRecorder);
-            }
+            tradeMsgRequest.stopTaskCheckPay();
 
+            getFinalContainerConfig();
+
+            clearMachineWaitTime = System.currentTimeMillis();
         }
 /*
         if (msg.getPayResult() == 2) {
@@ -427,6 +430,33 @@ public class ChooseCup implements View.OnClickListener, MsgTransListener {
                 if (mDealRecorder.isPayed()) {
 
                     tradeMsgRequest.stopTaskCheckPay();
+
+                    setClearText((int) (millisUntilFinished / 100 % 3));
+
+
+                    MyLog.d(TAG, "isCanClear= " + (System.currentTimeMillis() - mBuyDialog.getLastMkTime() > TIME_BEFORE_MK_TO_CLEAR));
+                    if (System.currentTimeMillis() - mBuyDialog.getLastMkTime() > TIME_BEFORE_MK_TO_CLEAR) {
+                        //清洗机器
+                        int waitTime = ClearMachine.clearMachineAllModule(mCoffeeFomat.getContainerConfigs());
+
+
+                        if (System.currentTimeMillis() - clearMachineWaitTime > waitTime) {
+
+                            if (mChooseCupListener != null) {
+
+                                mChooseCupListener.hasPay(mCoffeeFomat, mDealRecorder);
+                                stopCountDownTimer();
+                            }
+                        }
+
+                        MyLog.d(TAG, "waitTime= " + waitTime);
+                    }
+                    if (mChooseCupListener != null) {
+
+                        mChooseCupListener.hasPay(mCoffeeFomat, mDealRecorder);
+                        stopCountDownTimer();
+                    }
+
                     stopCountDownTimer();
                     return;
                 }
@@ -449,6 +479,17 @@ public class ChooseCup implements View.OnClickListener, MsgTransListener {
         countDownTimer.start();
     }
 
+    public void setClearText(int pointNum) {
+        mViewHolder.mRequestQRTxt.setVisibility(View.VISIBLE);
+        mViewHolder.mQrCodeImage.setVisibility(View.GONE);
+        mViewHolder.mPaying.setVisibility(View.GONE);
+        mViewHolder.mLoadingBar.setVisibility(View.VISIBLE);
+
+        String tipText = TextUtil.textPointNum("清洗中", pointNum);
+
+        mViewHolder.mRequestQRTxt.setText(tipText);
+    }
+
     /*
     * 判断锅炉是否正在加热中，如果不在加热中，显示二维码
     * */
@@ -465,15 +506,6 @@ public class ChooseCup implements View.OnClickListener, MsgTransListener {
                 String tipText = TextUtil.textPointNum("锅炉加热中", (int) (millisUntilFinished / 1000 % 3));
 
                 mViewHolder.mRequestQRTxt.setText(tipText);
-            } else if (CheckCurMachineState.getInstance().isClearing()) {
-
-                mViewHolder.mRequestQRTxt.setVisibility(View.VISIBLE);
-                mViewHolder.mQrCodeImage.setVisibility(View.GONE);
-
-                String tipText = TextUtil.textPointNum("清洗中", (int) (millisUntilFinished / 1000 % 3));
-
-                mViewHolder.mRequestQRTxt.setText(tipText);
-
             } else {
                 mViewHolder.mRequestQRTxt.setVisibility(View.GONE);
 

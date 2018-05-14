@@ -145,11 +145,12 @@ public class ClearMachine {
         return -1;
     }
 
-    public static boolean clearMachineAllModule(List<ContainerConfig> containerConfigs) {
+    public static int clearMachineAllModule(List<ContainerConfig> containerConfigs) {
 
+        int time = 0;
         MyLog.W(TAG, "clearMachineAllModule called!");
         if (containerConfigs == null) {
-            return false;
+            return time;
         }
 
         List<Integer> moduleIds = new ArrayList<>();
@@ -172,15 +173,20 @@ public class ClearMachine {
 
                 boolean isSendOk = clearMechineByModuleID(moduleId, 1);
 
+                if (moduleId == BurstBubble) {
+                    time += 10 * 1000 + 1000;
+                } else {
+                    time += 5 * 1000 + 1000;
+                }
                 MyLog.W(TAG, "clear module!");
-                Waiter.doWait(5 * 1000 + 100);//再次发送清洗指令必须在5s后
+                Waiter.doWait(5 * 1000 );//再次发送清洗指令必须在5s后
             } else {
                 continue;
             }
             if (i + 1 == moduleIds.size()) {
-                return true;
+                return time;
             }
         }
-        return false;
+        return time;
     }
 }
