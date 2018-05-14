@@ -201,8 +201,12 @@ public class TaskService extends Service implements MqttCallback, IMqttActionLis
             this.mOnMachineCheckCallBackListener = mOnMachineCheckCallBackListener;
         }
         Log.d("连接中", ".......");
+          if (isConnected()){
+              checkSubSuccess();
+          }else {
+              subcribeMqtt();
+          }
 
-        subcribeMqtt();
 
 
     }
