@@ -19,7 +19,8 @@
 
             <ImageView
                 android:id="@+id/coffeeImg"
-                android:layout_width="@dimen/viewpager_item_width"
+                android:layout_width="match_parent"
+                android:scaleType="fitXY"
                 android:layout_height="@dimen/viewpager_item_coffee_img_height"
                 android:src="@mipmap/no_coffee" />
 
