@@ -29,6 +29,7 @@ import example.jni.com.coffeeseller.listener.MessageReceviedListener;
 import example.jni.com.coffeeseller.model.ChooseAndMking;
 import example.jni.com.coffeeseller.model.GetFormula;
 import example.jni.com.coffeeseller.model.listeners.ViewpagerPageChangedListener;
+import example.jni.com.coffeeseller.model.new_adapter.MyViewPagerAdapter;
 import example.jni.com.coffeeseller.model.new_adapter.ViewPagerAdapter;
 import example.jni.com.coffeeseller.model.new_helper.ViewPagerLayout;
 import example.jni.com.coffeeseller.model.new_listenner.CoffeeItemSelectedListener;
@@ -59,9 +60,9 @@ public class NewBuyFragment extends BasicFragment implements CoffeeItemSelectedL
     private List<LinearLayout> layouts;
     private Handler handler;
     private ViewPagerLayout mViewPagerLayout;
-    private ViewPagerAdapter mViewPagerAdapter;
+    // private ViewPagerAdapter mViewPagerAdapter;
     private ChooseAndMking mChooseAndMking;
-
+    private MyViewPagerAdapter mMyViewPagerAdapter;
     private boolean isViewPagerLooping = false;//是否再轮询中
     private boolean isCoffeeSelected = false;
     private boolean isAddPageChangeListenner = true;
@@ -112,8 +113,11 @@ public class NewBuyFragment extends BasicFragment implements CoffeeItemSelectedL
         layouts = mViewPagerLayout.getLinearLayouts(mCoffees);
         mChooseAndMking = new ChooseAndMking(homeActivity, this, handler);
 
-        mViewPagerAdapter = new ViewPagerAdapter(layouts);
-        mViewPager.setAdapter(mViewPagerAdapter);
+        //    mViewPagerAdapter = new ViewPagerAdapter(layouts);
+
+        // mViewPager.setAdapter(mViewPagerAdapter);
+        mMyViewPagerAdapter = new MyViewPagerAdapter(layouts);
+        mViewPager.setAdapter(mMyViewPagerAdapter);
         initPagerChangeListenner();
         mViewPager.addOnPageChangeListener(mViewpagerPageChangedListener);
 
@@ -247,8 +251,11 @@ public class NewBuyFragment extends BasicFragment implements CoffeeItemSelectedL
                 removePoint();
                 if (coffees != null && coffees.size() > 0) {
                     layouts = mViewPagerLayout.getLinearLayouts(coffees);
-                    mViewPagerAdapter = new ViewPagerAdapter(layouts);
-                    mViewPager.setAdapter(mViewPagerAdapter);
+
+                   // mViewPagerAdapter = new ViewPagerAdapter(layouts);
+                   // mViewPager.setAdapter(mViewPagerAdapter);
+                   /* mMyViewPagerAdapter = new MyViewPagerAdapter(layouts);
+                    mViewPager.setAdapter(mMyViewPagerAdapter);*/
                     addPoint();
                 }
             }

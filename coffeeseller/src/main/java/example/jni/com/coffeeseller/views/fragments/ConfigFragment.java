@@ -197,7 +197,6 @@ public class ConfigFragment extends BasicFragment implements IAddMaterialView, I
 
                 Result result = msger.Debug(DebugAction.RESET, 0, 0);//复位机器
                 if (result.getCode() == Result.SUCCESS) {
-                    msger.startCheckState();
                     Toast.makeText(getActivity(), "机器复位成功", Toast.LENGTH_LONG).show();
                 } else {
                     Toast.makeText(getActivity(), "机器复位失败" + result.getCode(), Toast.LENGTH_LONG).show();
@@ -360,12 +359,14 @@ public class ConfigFragment extends BasicFragment implements IAddMaterialView, I
     public void stateArrived(final MachineState machineState) {
         if (machineState != null) {
             mHandler.post(new Runnable() {
+
+
                 @Override
                 public void run() {
 
                     switch (machineState.getMajorState().getStateCode()) {
 
-                        case 0:
+                        case 00:
                             errCode.setText("异常状态:无异常");
                             break;
                         case 0x0a:
@@ -377,7 +378,7 @@ public class ConfigFragment extends BasicFragment implements IAddMaterialView, I
                     }
 
                     runState.setText("运行状态:" + DataSwitcher.byte2Hex(machineState.getMajorState().getState_byte()));
-                    netWorkState.setText("网络状态:" + MachineConfig.getNetworkType());
+                    netWorkState.setText("网络状态:" + MachineConfig.getNetWorkTypeString());
                     if (machineState.isCupShelfRightPlace()) {
                         cupShelfState.setText("杯架状态:正常");
                     } else {

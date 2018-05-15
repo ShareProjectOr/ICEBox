@@ -20,10 +20,11 @@
         android:theme="@style/AppTheme.NoActionBar">
         <activity
             android:name=".views.activities.HomeActivity"
-            android:configChanges="orientation|keyboardHidden|screenSize|mnc|mcc"
+            android:configChanges="orientation|keyboardHidden|screenSize|mnc|mcc|touchscreen|smallestScreenSize|screenLayout"
             android:launchMode="singleInstance"
             android:screenOrientation="landscape"
-            android:theme="@style/AppTheme.NoActionBar">
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="adjustPan">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.HOME" />

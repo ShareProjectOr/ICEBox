@@ -58,6 +58,19 @@ public class MachineConfig {
         return networkType;
     }
 
+    public static String getNetWorkTypeString() {
+        if (networkType == 1) {
+            return "移动网络";
+        } else if (networkType == 2) {
+            return "wifi";
+        } else if (networkType == 0) {
+            return "无网络";
+        }else {
+            return "";
+        }
+
+    }
+
     public static void setNetworkType(int networkType) {
         MachineConfig.networkType = networkType;
     }

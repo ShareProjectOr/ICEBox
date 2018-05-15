@@ -103,7 +103,6 @@ public class BindMaterial implements IBindMaterial {
                     window.setAdapter(new ArrayAdapter<>(context, android.R.layout.simple_expandable_list_item_1, materialNameList));
                     window.setAnchorView(textView);
                     window.setWidth(300);
-                    // window.setHorizontalOffset(textView.getWidth() / 4);
                     window.setModal(true);
                     window.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                         @Override
