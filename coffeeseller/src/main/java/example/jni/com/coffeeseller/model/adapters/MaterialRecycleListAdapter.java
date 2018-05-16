@@ -82,19 +82,20 @@ public class MaterialRecycleListAdapter extends RecyclerView.Adapter<RecyclerVie
             stockmg = Long.parseLong(list.get(position).getMaterialStock());
         }
 
-
-        double realstock = new BigDecimal(((float) stockmg / 1000)).setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
-        switch (list.get(position).getMaterialType()) {
-            case "3":
-                mHolder.CountAndLess.setText(realstock*1000 + "个");
-                break;
-            case "2":
-                mHolder.CountAndLess.setText(realstock + "L");
-                break;
-            default:
-                mHolder.CountAndLess.setText(realstock + "g");
-                break;
+        if (list.get(position).getMaterialType().equals("3")) {
+            mHolder.CountAndLess.setText(Long.parseLong(list.get(position).getMaterialStock()) + "个");
+        } else {
+            double realstock = new BigDecimal(((float) stockmg / 1000)).setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
+            switch (list.get(position).getMaterialType()) {
+                case "2":
+                    mHolder.CountAndLess.setText(realstock + "L");
+                    break;
+                default:
+                    mHolder.CountAndLess.setText(realstock + "g");
+                    break;
+            }
         }
+
 
         if (!list.get(position).getMaterialName().equals("未启用") || list.get(position).getMaterialName().equals("null")) {
             mHolder.bankersName.setTextColor(ContextCompat.getColor(mContext, R.color.black));//已经启用了的料仓才能重新绑定原料
@@ -103,7 +104,7 @@ public class MaterialRecycleListAdapter extends RecyclerView.Adapter<RecyclerVie
             mHolder.Opration.setOnClickListener(new View.OnClickListener() {// 启用了的料仓才能补料
                 @Override
                 public void onClick(View v) {
-                    Log.d("补料","bunkerType is "+list.get(position).getBunkerType());
+                    Log.d("补料", "bunkerType is " + list.get(position).getBunkerType());
                     if (list.get(position).getBunkerType().equals("3")) {  //如果为包装仓 则为补杯界面
                         bunkersID = list.get(position).getBunkerID();
                         presenter.addSepcialMaterial();
