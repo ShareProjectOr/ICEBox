@@ -12,12 +12,8 @@ import android.view.WindowManager;
 
 import com.alibaba.fastjson.JSONArray;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Timer;
@@ -34,7 +30,6 @@ import example.jni.com.coffeeseller.bean.Step;
 import example.jni.com.coffeeseller.contentprovider.Constance;
 import example.jni.com.coffeeseller.contentprovider.ConstanceMethod;
 import example.jni.com.coffeeseller.contentprovider.MaterialSql;
-import example.jni.com.coffeeseller.contentprovider.SharedPreferencesManager;
 import example.jni.com.coffeeseller.databases.DealOrderInfoManager;
 import example.jni.com.coffeeseller.httputils.JsonUtil;
 import example.jni.com.coffeeseller.httputils.OkHttpUtil;
@@ -47,8 +42,6 @@ import example.jni.com.coffeeseller.model.listeners.ChooseCupListenner;
 import example.jni.com.coffeeseller.model.listeners.MkCoffeeListenner;
 import example.jni.com.coffeeseller.utils.MyLog;
 import example.jni.com.coffeeseller.utils.ScreenUtil;
-import example.jni.com.coffeeseller.utils.TextUtil;
-import example.jni.com.coffeeseller.utils.Waiter;
 import example.jni.com.coffeeseller.views.fragments.BuyFragment;
 
 /**
@@ -400,7 +393,7 @@ public class BuyDialog extends Dialog implements ChooseCupListenner, MkCoffeeLis
     }
 
     @Override
-    public void paying() {
+    public void paying(boolean b) {
 
     }
 

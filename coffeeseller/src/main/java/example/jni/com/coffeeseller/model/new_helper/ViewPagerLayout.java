@@ -261,17 +261,17 @@ public class ViewPagerLayout {
             if (isSelected) {
                 mOverLayout.setVisibility(View.GONE);
                 viewHolder.isSelected = true;
-                viewHolder.mViewPagerLayout.setBackgroundResource(R.drawable.new_shape_viewpager_selected_item_bng);//shadow_11137
+                viewHolder.mViewPagerLayout.setBackgroundResource(R.drawable.new_layout_shape_selected);//shadow_11137
             } else {
                 mOverLayout.setVisibility(View.VISIBLE);
                 viewHolder.isSelected = false;
-                viewHolder.mViewPagerLayout.setBackgroundResource(R.drawable.new_shape_viewpager_item_bng);//shadow_105312
+                viewHolder.mViewPagerLayout.setBackgroundResource(R.drawable.new_layout_shape);//shadow_105312
             }
         }
 
         public void init() {
             isSelected = false;
-            mViewPagerLayout.setBackgroundResource(R.drawable.new_shape_viewpager_item_bng);
+            mViewPagerLayout.setBackgroundResource(R.drawable.new_layout_shape);
             if (isOver) {
                 mOverLayout.setVisibility(View.VISIBLE);
                 mOverImgLayout.setVisibility(View.VISIBLE);

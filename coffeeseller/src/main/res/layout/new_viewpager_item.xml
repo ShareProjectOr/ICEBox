@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
 
     <RelativeLayout
 
@@ -10,20 +10,21 @@
         android:layout_height="@dimen/viewpager_item_height"
         android:layout_centerInParent="true">
 
+        <!--new_shape_viewpager_item_bng-->
         <LinearLayout
             android:id="@+id/viewPagerContainnerLayout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@drawable/new_shape_viewpager_item_bng"
+            android:background="@drawable/new_layout_shape"
             android:orientation="vertical">
-
+            <!--   android:paddingLeft="1dp"
+                            android:paddingRight="1dp"
+                            android:paddingTop="1dp"-->
             <ImageView
                 android:id="@+id/coffeeImg"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/viewpager_item_coffee_img_height"
-                android:paddingLeft="1dp"
-                android:paddingRight="1dp"
-                android:paddingTop="1dp"
+
                 android:scaleType="fitXY"
                 android:src="@mipmap/no_coffee" />
 
@@ -40,6 +41,7 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentLeft="true"
                     android:gravity="center_vertical"
+                    android:text="123131232131231"
                     android:textColor="@color/brown"
                     android:textSize="16sp" />
 
@@ -55,21 +57,22 @@
                     android:textSize="16sp"
                     android:visibility="gone" />
             </RelativeLayout>
-
+            <!--android:layout_marginBottom="15dp"-->
             <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="15dp"
+                android:layout_height="match_parent"
+                android:layout_gravity="center_vertical"
                 android:layout_marginLeft="20dp"
                 android:layout_marginRight="20dp">
 
+                <!--android:layout_alignParentBottom="true"
+                 android:layout_marginBottom="15dp"-->
                 <LinearLayout
                     android:id="@+id/priceLayout"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentBottom="true"
                     android:layout_alignParentLeft="true"
-                    android:layout_marginBottom="15dp">
+                    android:layout_centerInParent="true">
 
                     <TextView
                         android:id="@+id/yuanText"
@@ -139,7 +142,9 @@
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:paddingBottom="10dp"
+            android:paddingTop="10dp">
 
             <LinearLayout
                 android:id="@+id/overImgLayout"

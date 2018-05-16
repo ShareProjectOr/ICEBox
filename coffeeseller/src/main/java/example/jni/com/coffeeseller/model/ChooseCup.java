@@ -1,44 +1,24 @@
 package example.jni.com.coffeeseller.model;
 
 import android.content.Context;
-import android.content.DialogInterface;
-import android.content.res.ColorStateList;
-import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
-import android.os.Build;
 import android.os.CountDownTimer;
 import android.os.Handler;
-import android.os.Message;
-import android.support.annotation.IdRes;
-import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
-import android.widget.RadioButton;
-import android.widget.RadioGroup;
 import android.widget.TextView;
 
-import java.lang.reflect.Field;
 import java.math.BigDecimal;
 import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
-import cof.ac.inter.CoffMsger;
 import cof.ac.inter.ContainerConfig;
-import cof.ac.inter.ContainerType;
-import cof.ac.inter.DebugAction;
-import cof.ac.inter.Result;
 import cof.ac.inter.WaterType;
 import example.jni.com.coffeeseller.MachineConfig.DealRecorder;
-import example.jni.com.coffeeseller.MachineConfig.QRMsger;
 import example.jni.com.coffeeseller.R;
 import example.jni.com.coffeeseller.bean.Coffee;
 import example.jni.com.coffeeseller.bean.CoffeeFomat;
@@ -54,11 +34,7 @@ import example.jni.com.coffeeseller.parse.PayResult;
 import example.jni.com.coffeeseller.utils.MyLog;
 import example.jni.com.coffeeseller.utils.QRMaker;
 import example.jni.com.coffeeseller.utils.TextUtil;
-import example.jni.com.coffeeseller.utils.Waiter;
 import example.jni.com.coffeeseller.views.customviews.BuyDialog;
-
-import static android.R.attr.button;
-import static android.R.attr.track;
 
 /**
  * Created by WH on 2018/4/25.
@@ -330,7 +306,7 @@ public class ChooseCup implements View.OnClickListener, MsgTransListener {
 
                         if (mChooseCupListener != null) {
 
-                            mChooseCupListener.paying();
+                            mChooseCupListener.paying(true);
                         }
                     }
                 });

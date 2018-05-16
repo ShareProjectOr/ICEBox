@@ -11,11 +11,13 @@
         android:layout_height="@dimen/viewpager_item_height"
         android:layout_alignParentLeft="true"
         android:gravity="center"
+        android:paddingTop="10dp"
+        android:paddingBottom="10dp"
         android:orientation="vertical">
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="626dp"
+            android:layout_height="match_parent"
             android:background="@mipmap/u43"
             android:gravity="center">
 
@@ -35,11 +37,13 @@
         android:layout_height="@dimen/viewpager_item_height"
         android:layout_alignParentRight="true"
         android:gravity="center"
+        android:paddingTop="10dp"
+        android:paddingBottom="10dp"
         android:orientation="vertical">
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="626dp"
+            android:layout_height="match_parent"
             android:background="@mipmap/u42"
             android:gravity="center">
 

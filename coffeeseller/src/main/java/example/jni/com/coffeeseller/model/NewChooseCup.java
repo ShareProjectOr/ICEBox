@@ -6,9 +6,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
-import android.os.CountDownTimer;
 import android.os.Handler;
-import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
@@ -33,7 +31,6 @@ import example.jni.com.coffeeseller.bean.Material;
 import example.jni.com.coffeeseller.bean.Step;
 import example.jni.com.coffeeseller.bean.Taste;
 import example.jni.com.coffeeseller.communicate.TaskService;
-import example.jni.com.coffeeseller.contentprovider.MaterialSql;
 import example.jni.com.coffeeseller.model.listeners.ChooseCupListenner;
 import example.jni.com.coffeeseller.model.listeners.MsgTransListener;
 import example.jni.com.coffeeseller.model.new_adapter.TasteGridAdapter;
@@ -44,7 +41,6 @@ import example.jni.com.coffeeseller.utils.ImageUtil;
 import example.jni.com.coffeeseller.utils.MyLog;
 import example.jni.com.coffeeseller.utils.QRMaker;
 import example.jni.com.coffeeseller.utils.TextUtil;
-import example.jni.com.coffeeseller.views.customviews.BuyDialog;
 
 /**
  * Created by WH on 2018/4/25.
@@ -342,7 +338,7 @@ public class NewChooseCup implements View.OnClickListener, MsgTransListener {
                         mChooseAndMking.setPaying(true);
                         if (mChooseCupListener != null) {
 
-                            mChooseCupListener.paying();
+                            mChooseCupListener.paying(true);
                         }
                     }
                 });
@@ -368,10 +364,10 @@ public class NewChooseCup implements View.OnClickListener, MsgTransListener {
                         mPaying.setText("支付完成");
                         mQrImg.setVisibility(View.GONE);
                         mLoadingBar.setProgress(View.VISIBLE);
-
+                        mChooseAndMking.setPayed(true);
                         if (mChooseCupListener != null) {
 
-                            mChooseCupListener.paying();
+                            mChooseCupListener.paying(true);
                         }
                     }
                 });

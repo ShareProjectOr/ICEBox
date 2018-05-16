@@ -131,10 +131,12 @@ public class NewBuyFragment extends BasicFragment implements CoffeeItemSelectedL
                     case MotionEvent.ACTION_DOWN:
 
 
+
                         cancleAutoLoop();
 
                         break;
                     case MotionEvent.ACTION_MOVE:
+
 
                         cancleAutoLoop();
 

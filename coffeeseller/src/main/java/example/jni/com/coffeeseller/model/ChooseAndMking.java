@@ -6,6 +6,7 @@ import android.os.Handler;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -74,9 +75,11 @@ public class ChooseAndMking implements ChooseCupListenner, MkCoffeeListenner {
     private boolean isShowing = false;
     private boolean isMaking = false;
     private boolean isPaying = false;
+    private boolean isPayed = false;
     private boolean isClearing = false;
     private long lastMkTime = 0;
     private int curTimeCount = 0;
+    private int downY;
 
 
     public ChooseAndMking(Context context, NewBuyFragment newBuyFragment, Handler handler) {
@@ -108,7 +111,7 @@ public class ChooseAndMking implements ChooseCupListenner, MkCoffeeListenner {
         }
         curTimeCount = 0;
         timeText.setVisibility(View.VISIBLE);
-
+        initViewTouchListenner();
         // countDownTime();
     }
 
@@ -116,6 +119,55 @@ public class ChooseAndMking implements ChooseCupListenner, MkCoffeeListenner {
         view = LayoutInflater.from(context).inflate(R.layout.new_taste_layout, null);
         layout = (LinearLayout) view.findViewById(R.id.layout);
         timeText = (TextView) view.findViewById(R.id.tasteTimeLimit);
+
+    }
+
+    private void initViewTouchListenner() {
+        view.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                switch (event.getAction()) {
+                    case MotionEvent.ACTION_DOWN:
+
+                        downY = (int) event.getY();
+                        break;
+                    case MotionEvent.ACTION_MOVE:
+
+                        if (!isShowing) {
+                            return true;
+                        }
+
+                        MyLog.d(TAG, "ACTION_MOVE = " + (event.getY() - downY));
+
+                        if (event.getY() - downY > 30) {
+                            if (curViewId == VIEW_CHOOSE_CUP) {
+
+                                if (newChooseCup != null && !isPayed) {//如果支付完成不能滑动
+                                    isShowing = false;
+                                    newChooseCup.cancle();
+                                    return true;
+                                }
+
+                            } else if (curViewId == VIEW_ERR_TIP) {
+                                isShowing = false;
+                                viewOutAnim(0);
+                                return true;
+                            } else if (curViewId == MK_COFFEE) {
+                                return true;
+                            }
+                        }
+
+                        break;
+                    case MotionEvent.ACTION_UP:
+
+                        break;
+                    case MotionEvent.ACTION_CANCEL:
+
+                        break;
+                }
+                return true;
+            }
+        });
     }
 
     private boolean isMachineRight() {
@@ -166,6 +218,10 @@ public class ChooseAndMking implements ChooseCupListenner, MkCoffeeListenner {
 
     public void setPaying(boolean paying) {
         isPaying = paying;
+    }
+
+    public void setPayed(boolean payed) {
+        isPayed = payed;
     }
 
     public boolean isPaying() {
@@ -549,13 +605,11 @@ public class ChooseAndMking implements ChooseCupListenner, MkCoffeeListenner {
 
         viewOutAnim(0);
 
-//        initState();
-
     }
 
     @Override
-    public void paying() {
-
+    public void paying(boolean b) {
+        this.isPaying = b;
     }
 
     @Override
