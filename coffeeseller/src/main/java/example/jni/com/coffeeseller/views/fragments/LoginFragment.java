@@ -42,7 +42,7 @@ public class LoginFragment extends BasicFragment implements Iloginview {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        view = super.onCreateView(inflater, container, FragmentFactory.getInstance().putLayoutId(R.layout.login_fragment_layout));
+        view = inflater.inflate(R.layout.login_fragment_layout, null);
         initview();
         return view;
     }
