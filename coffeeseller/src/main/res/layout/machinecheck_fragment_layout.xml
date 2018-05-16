@@ -23,7 +23,7 @@
             android:layout_height="wrap_content"
             android:gravity="center_vertical"
             android:paddingBottom="25dp"
-            android:paddingLeft="50dp"
+            android:paddingLeft="20dp"
             android:paddingRight="50dp"
             android:paddingTop="23dp">
 
@@ -36,13 +36,16 @@
 
                 android:progressDrawable="@drawable/new_layer_list_progressbar_finish" />
         </LinearLayout>
+
+        <TextView
+            android:id="@+id/machineCode_check_Tips"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:textColor="@color/brown"
+            android:textSize="@dimen/text_size_one" />
     </LinearLayout>
 
-    <TextView
-        android:id="@+id/machineCode_check_Tips"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textSize="@dimen/text_size_one" />
 
     <LinearLayout
         android:layout_width="wrap_content"
@@ -62,7 +65,7 @@
             android:layout_height="wrap_content"
             android:gravity="center_vertical"
             android:paddingBottom="25dp"
-            android:paddingLeft="50dp"
+            android:paddingLeft="20dp"
             android:paddingRight="50dp"
             android:paddingTop="23dp">
 
@@ -71,17 +74,18 @@
                 style="@style/Widget.AppCompat.ProgressBar.Horizontal"
                 android:layout_width="1200dp"
                 android:layout_height="40dp"
-
                 android:max="100"
                 android:progressDrawable="@drawable/new_layer_list_progressbar_finish" />
         </LinearLayout>
-    </LinearLayout>
 
-    <TextView
-        android:id="@+id/check_mainCtrl_Tips"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textSize="@dimen/text_size_one" />
+        <TextView
+            android:id="@+id/check_mainCtrl_Tips"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:textColor="@color/brown"
+            android:textSize="@dimen/text_size_one" />
+    </LinearLayout>
 
 
     <LinearLayout
@@ -103,7 +107,7 @@
 
             android:gravity="center_vertical"
             android:paddingBottom="25dp"
-            android:paddingLeft="50dp"
+            android:paddingLeft="20dp"
             android:paddingRight="50dp"
             android:paddingTop="23dp">
 
@@ -115,13 +119,16 @@
                 android:max="100"
                 android:progressDrawable="@drawable/new_layer_list_progressbar_finish" />
         </LinearLayout>
+
+        <TextView
+            android:id="@+id/getMaterial_Tips"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:textColor="@color/brown"
+            android:textSize="@dimen/text_size_one" />
     </LinearLayout>
 
-    <TextView
-        android:id="@+id/getMaterial_Tips"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textSize="@dimen/text_size_one" />
 
     <LinearLayout
         android:layout_width="wrap_content"
@@ -142,7 +149,7 @@
 
             android:gravity="center_vertical"
             android:paddingBottom="25dp"
-            android:paddingLeft="50dp"
+            android:paddingLeft="20dp"
             android:paddingRight="50dp"
             android:paddingTop="23dp">
 
@@ -154,19 +161,23 @@
                 android:max="100"
                 android:progressDrawable="@drawable/new_layer_list_progressbar_finish" />
         </LinearLayout>
+
+        <TextView
+            android:id="@+id/sub_Mqtt_Tips"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:textColor="@color/brown"
+            android:textSize="@dimen/text_size_one" />
+
     </LinearLayout>
 
-    <TextView
-        android:id="@+id/sub_Mqtt_Tips"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textSize="@dimen/text_size_one" />
 
     <TextView
         android:id="@+id/timeDownText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="@color/white"
+        android:textColor="@color/brown"
         android:textSize="@dimen/text_size_one"
         android:visibility="gone" />
 
@@ -174,6 +185,7 @@
         android:id="@+id/tologin"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:background="@drawable/shape_botton"
         android:text="登录"
         android:visibility="gone" />
 </LinearLayout>
