@@ -53,7 +53,6 @@ public class LoginFragment extends BasicFragment implements Iloginview {
         PassWord = (EditText) view.findViewById(R.id.passWord);
         login = (Button) view.findViewById(R.id.login);
         backToCheck = (TextView) view.findViewById(R.id.backToCheck);
-      //  PassWord.setText(SharedPreferencesManager.getInstance(getActivity()).getLoginPassword());
         homeActivity = HomeActivity.getInstance();
         login.setOnClickListener(this);
         backToCheck.setOnClickListener(this);
