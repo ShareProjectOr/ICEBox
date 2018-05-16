@@ -94,21 +94,6 @@ public class LoginFragment extends BasicFragment implements Iloginview {
         switch (v.getId()) {
             case R.id.login:
                 mUserLoginPresenter.PresenterLogin();
-            /*    new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        Map<String, Object> post = new HashMap<>();
-                        post.put("machineCode", "4545");
-                        post.put("loginPassword", PassWord.getText().toString());
-                        try {
-                            String resonse = OkHttpUtil.post(Constance.PASSWORD_CHANGE, JsonUtil.mapToJson(post));
-                            Log.e("--------",resonse );
-
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                }).start();*/
                 break;
             case R.id.backToCheck:
                 homeActivity.replaceFragment(FragmentEnum.LoginFragment, FragmentEnum.MachineCheckFragment);
