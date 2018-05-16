@@ -203,6 +203,7 @@ public class MaterialRecycleListAdapter extends RecyclerView.Adapter<RecyclerVie
 
     @Override
     public void updateUi() {
+        list = sql.getRecycleBunkersList();
         notifyDataSetChanged();
     }
 
