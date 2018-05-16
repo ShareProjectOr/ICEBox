@@ -74,6 +74,7 @@ public class ChooseAndMking implements ChooseCupListenner, MkCoffeeListenner {
     private boolean isShowing = false;
     private boolean isMaking = false;
     private boolean isPaying = false;
+    private boolean isClearing = false;
     private long lastMkTime = 0;
     private int curTimeCount = 0;
 
@@ -97,13 +98,18 @@ public class ChooseAndMking implements ChooseCupListenner, MkCoffeeListenner {
             CheckCurMachineState.getInstance().sendCloseDoorComd();
         }
         view.setVisibility(View.VISIBLE);
+
+        /*
+        * 如果布局没有显示出来，就开始显示动画，开启倒计时，如果已经显示出来，重置倒计时时间
+        * */
         if (!isShowing()) {
             viewEnterAnim();
+            countDownTime();
         }
         curTimeCount = 0;
         timeText.setVisibility(View.VISIBLE);
 
-        countDownTime();
+        // countDownTime();
     }
 
     private void initView() {
@@ -118,7 +124,12 @@ public class ChooseAndMking implements ChooseCupListenner, MkCoffeeListenner {
             MyLog.d(TAG, "machine is ok ");
             curViewId = VIEW_CHOOSE_CUP;
             VIEW_SHOW_TIME = 2 * 60 * 1000;
-            newChooseCup = null;
+
+            //每次请求前，清除上一次的计时器
+            if (newChooseCup != null) {
+                newChooseCup.stopTaskCheckPay();
+                newChooseCup = null;
+            }
             newChooseCup = new NewChooseCup(context, coffee, this, handler, this);
             layout.addView(newChooseCup.getView());
             return true;
@@ -126,10 +137,12 @@ public class ChooseAndMking implements ChooseCupListenner, MkCoffeeListenner {
             MyLog.d(TAG, "machine is has error ");
             curViewId = VIEW_ERR_TIP;
             VIEW_SHOW_TIME = 10 * 1000;
+
             newErrorTip = new NewErrorTip(context, this);
             newErrorTip.setErrTip(CheckCurMachineState.getInstance().getStateTip());
             layout.addView(newErrorTip.getView());
-            viewOutAnim(10000);
+
+            //  viewOutAnim(10000);
             return false;
         }
 
@@ -159,6 +172,10 @@ public class ChooseAndMking implements ChooseCupListenner, MkCoffeeListenner {
         return isPaying;
     }
 
+    public void setCurTimeCount(int curTimeCount) {
+        this.curTimeCount = curTimeCount;
+    }
+
     private void countDownTime() {
 
         stopCountTimer();
@@ -176,10 +193,15 @@ public class ChooseAndMking implements ChooseCupListenner, MkCoffeeListenner {
                         if (curViewId == VIEW_CHOOSE_CUP) {
 
                             newChooseCup.cancle();
-                            curTimeCount = 0;
-                            stopCountTimer();
+
+
+                            /*curTimeCount = 0;
+                            stopCountTimer();*/
+                        } else if (curViewId == VIEW_ERR_TIP) { //10s倒计时结束后就消失
+                            //   viewOutAnim(0);
                         }
                         //       cancle(null);
+                        viewOutAnim(0);
                         curTimeCount = 0;
                         stopCountTimer();
                     } else {
@@ -261,53 +283,70 @@ public class ChooseAndMking implements ChooseCupListenner, MkCoffeeListenner {
         for (int i = 0; i < coffee.getStepList().size(); i++) {
             Step step = coffee.getStepList().get(i);
 
-
             if (step != null)//&& step.getContainerConfig().getWater_capacity() == 0
 
-                if (step.getMaterial() != null) {
+                MyLog.d(TAG, "step getName = " + step.getMaterial().getName());
+            if (step.getContainerConfig() == null) { //如果没有步骤
+
+                continue;
+            }
 
 
-                    if (step.getContainerConfig().getWater_capacity() != 0 || TextUtils.equals(waterMaterialId, step.getMaterial().getMaterialID() + "")) {
+            MyLog.d(TAG, "step type = " + step.getMaterial().getName());
 
-                        //更新用水量
-                        waterUseTotal += step.getContainerConfig().getWater_capacity();
-
-                    }
+            if (step.getMaterial() != null) {
 
 
-                    MyLog.d(TAG, "materialID is " + step.getMaterial().getMaterialID());
+                if (step.getContainerConfig().getWater_capacity() != 0 || TextUtils.equals(waterMaterialId, step.getMaterial().getMaterialID() + "")) {
 
-                    String sqlRestMaterial = materialSql.getStorkByMaterialID(step.getMaterial().getMaterialID() + "");
+                    //更新用水量
+                    waterUseTotal += step.getContainerConfig().getWater_capacity();
 
-                    float sqlRestMaterialInt = Float.parseFloat(sqlRestMaterial);
-
-                    if (step.getContainerConfig().getMaterial_time() == 0) {
-                        continue;
-                    }
-
-                    float mkUseMaterialInt = dealRecorder.getContainerConfigs().get(i).getMaterial_time() / step.getContainerConfig().getMaterial_time() * step.getAmount();
-
-                    if (mkUseMaterialInt == 0) {
-                        continue;
-                    }
-
-                    Log.e(TAG, " materialID is  " + step.getMaterial().getMaterialID() + " stock is " + sqlRestMaterial + ",used= " + mkUseMaterialInt);
-
-                    Long stock = Long.parseLong((int) (sqlRestMaterialInt - mkUseMaterialInt) + "");
-
-                    boolean isUpdateSuccess = materialSql.updateMaterialStockByMaterialId(step.getMaterial().getMaterialID() + "", stock + "");
-
-                    MyLog.W(TAG, "update material is " + isUpdateSuccess + ", materialId=" + step.getMaterial().getMaterialID()
-                            + ", usedMaterial = " + mkUseMaterialInt + " sqlRestMaterial= " + sqlRestMaterialInt + ", stock=" + (sqlRestMaterialInt - mkUseMaterialInt));
-
-                    ReportBunker reportBunker = new ReportBunker();
-                    int bunkerId = Integer.parseInt(materialSql.getBunkerIDByMaterialD(step.getMaterial().getMaterialID() + ""));
-                    reportBunker.setBunkerID(bunkerId);
-                    reportBunker.setUnit(Math.round(mkUseMaterialInt) + "");
-                    reportBunker.setMaterialStock(Math.round((sqlRestMaterialInt - mkUseMaterialInt)) + "");
-
-                    bunkers.add(reportBunker);
                 }
+
+
+                MyLog.d(TAG, "materialID is " + step.getMaterial().getMaterialID());
+
+                MyLog.d(TAG, "getMaterial_time =  " + step.getContainerConfig().getMaterial_time());
+
+                String sqlRestMaterial = materialSql.getStorkByMaterialID(step.getMaterial().getMaterialID() + "");
+
+                float sqlRestMaterialInt = Float.parseFloat(sqlRestMaterial);
+
+                if (step.getContainerConfig().getMaterial_time() == 0) {
+
+
+                    continue;
+                }
+
+                float mkUseMaterialInt = ((float) dealRecorder.getContainerConfigs().get(i).getMaterial_time()) / step.getContainerConfig().getMaterial_time() * step.getAmount();
+
+                MyLog.d(TAG, "mkUseMaterialInt =  " + mkUseMaterialInt);
+                if (mkUseMaterialInt == 0) {
+
+
+                    continue;
+                }
+
+                Log.e(TAG, " materialID is  " + step.getMaterial().getMaterialID() + " stock is " + sqlRestMaterial + ",used= " + mkUseMaterialInt);
+
+                Long stock = Long.parseLong((int) (sqlRestMaterialInt - mkUseMaterialInt) + "");
+
+                boolean isUpdateSuccess = materialSql.updateMaterialStockByMaterialId(step.getMaterial().getMaterialID() + "", stock + "");
+
+                MyLog.W(TAG, "update material is " + isUpdateSuccess + ", materialId=" + step.getMaterial().getMaterialID()
+                        + ", usedMaterial = " + mkUseMaterialInt + " sqlRestMaterial= " + sqlRestMaterialInt + ", stock=" + (sqlRestMaterialInt - mkUseMaterialInt));
+
+                ReportBunker reportBunker = new ReportBunker();
+                int bunkerId = Integer.parseInt(materialSql.getBunkerIDByMaterialD(step.getMaterial().getMaterialID() + ""));
+
+                MyLog.d(TAG, "getMaterialID " + step.getMaterial().getMaterialID() + " , bunkerID =" + bunkerId);
+                reportBunker.setBunkerID(bunkerId);
+                reportBunker.setUnit(Math.round(mkUseMaterialInt) + "");
+                reportBunker.setMaterialStock(Math.round((sqlRestMaterialInt - mkUseMaterialInt)) + "");
+
+                bunkers.add(reportBunker);
+            }
 
         }
 /*
@@ -329,27 +368,31 @@ public class ChooseAndMking implements ChooseCupListenner, MkCoffeeListenner {
                     + " , stock= " + waterStock + ", isUpdateSuccess= " + isUpdateSuccess);
 
 
-            ReportBunker reportBunker = new ReportBunker();
             int bunkerId = Integer.parseInt(materialSql.getBunkerIDByMaterialD(waterMaterialId + ""));
+            ReportBunker reportBunker = new ReportBunker();
             reportBunker.setBunkerID(bunkerId);
             reportBunker.setUnit(Math.round(waterUseTotal) + "");
             reportBunker.setMaterialStock(Math.round(waterStock) + "");
 
             bunkers.add(reportBunker);
-
-            //更新杯子
-
-            String cupBunkerId = materialSql.getBunkerIDByContainerID("8");
-            String cupNum = materialSql.getStorkByBunkersID(cupBunkerId);
-            if (!TextUtils.isEmpty(cupNum)) {
-                int cupNumInt = Integer.parseInt(cupNum);
-                if (cupNumInt > 0) {
-                    materialSql.updateContact(cupBunkerId, "", "", "", "", "", (cupNumInt - 1) + "", "", "", "", "");
-                }
-            }
         }
 
+        //更新杯子
+        String cupBunkerId = materialSql.getBunkerIDByContainerID("8");
+        String cupNum = materialSql.getStorkByBunkersID(cupBunkerId);
+        if (!TextUtils.isEmpty(cupNum)) {
+            int cupNumInt = Integer.parseInt(cupNum);
+            if (cupNumInt > 0) {
+                materialSql.updateContact(cupBunkerId, "", "", "", "", "", (cupNumInt - 1) + "", "", "", "", "");
 
+                ReportBunker reportBunkerCup = new ReportBunker();
+                reportBunkerCup.setBunkerID(Integer.parseInt(cupBunkerId));
+                reportBunkerCup.setUnit(1 + "");
+                reportBunkerCup.setMaterialStock((cupNumInt - 1) + "");
+                bunkers.add(reportBunkerCup);
+
+            }
+        }
 
 
         /*
@@ -370,6 +413,8 @@ public class ChooseAndMking implements ChooseCupListenner, MkCoffeeListenner {
     * */
     public void clearMachine(final List<ContainerConfig> containerConfigs) {
 
+        stopTaskClearMachine();
+
         MyLog.d(TAG, "clearMachine");
         if (clearMachineTimer == null) {
             clearMachineTimer = new Timer();
@@ -389,6 +434,7 @@ public class ChooseAndMking implements ChooseCupListenner, MkCoffeeListenner {
                         } else {
                             MyLog.d(TAG, "clearMachine failed!");
                         }
+                        isClearing = false;
                     }
                 }
             };
@@ -427,10 +473,7 @@ public class ChooseAndMking implements ChooseCupListenner, MkCoffeeListenner {
                         if (view != null) {
                             view.clearAnimation();
                             view.setVisibility(View.GONE);
-                            isShowing = false;
-                            isMaking = false;
-                            isPaying = false;
-                            newBuyFragment.initLayout();
+                            initState();
                         }
                     }
 
@@ -443,7 +486,7 @@ public class ChooseAndMking implements ChooseCupListenner, MkCoffeeListenner {
                     view.startAnimation(anim);
                 }
             }
-        },waitTime);
+        }, waitTime);
 
 
     }
@@ -506,7 +549,7 @@ public class ChooseAndMking implements ChooseCupListenner, MkCoffeeListenner {
 
         viewOutAnim(0);
 
-        initState();
+//        initState();
 
     }
 
@@ -579,7 +622,11 @@ public class ChooseAndMking implements ChooseCupListenner, MkCoffeeListenner {
                 } else {
 
                     //清洗机器
-                    clearMachine(null);
+
+                    if (!isClearing) {
+                        clearMachine(null);
+                        isClearing = true;
+                    }
                 }
 
             }

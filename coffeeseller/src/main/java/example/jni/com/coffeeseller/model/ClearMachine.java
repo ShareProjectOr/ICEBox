@@ -179,7 +179,7 @@ public class ClearMachine {
                     time += 5 * 1000 + 1000;
                 }
                 MyLog.W(TAG, "clear module!");
-                Waiter.doWait(5 * 1000 );//再次发送清洗指令必须在5s后
+                Waiter.doWait(5 * 1000 + 1 * 1000);//再次发送清洗指令必须在5s后
             } else {
                 continue;
             }

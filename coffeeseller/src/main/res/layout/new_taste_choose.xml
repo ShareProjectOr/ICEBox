@@ -86,6 +86,7 @@
             </RelativeLayout>
 
             <LinearLayout
+                android:id="@+id/payLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
@@ -110,6 +111,7 @@
             </LinearLayout>
 
             <TextView
+                android:id="@+id/payTip"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
@@ -127,7 +129,7 @@
             android:layout_marginTop="@dimen/taste_layout_qr_layout_over_height"
             android:gravity="center"
             android:src="@mipmap/ic_launcher_round"
-            android:text="x"
+            android:text="×"
             android:textColor="@color/brown"
             android:textSize="30sp"
             android:textStyle="bold" />

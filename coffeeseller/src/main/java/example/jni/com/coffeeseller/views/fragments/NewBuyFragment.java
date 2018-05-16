@@ -29,7 +29,6 @@ import example.jni.com.coffeeseller.listener.MessageReceviedListener;
 import example.jni.com.coffeeseller.model.ChooseAndMking;
 import example.jni.com.coffeeseller.model.GetFormula;
 import example.jni.com.coffeeseller.model.listeners.ViewpagerPageChangedListener;
-import example.jni.com.coffeeseller.model.new_adapter.MyViewPagerAdapter;
 import example.jni.com.coffeeseller.model.new_adapter.ViewPagerAdapter;
 import example.jni.com.coffeeseller.model.new_helper.ViewPagerLayout;
 import example.jni.com.coffeeseller.model.new_listenner.CoffeeItemSelectedListener;
@@ -51,7 +50,7 @@ public class NewBuyFragment extends BasicFragment implements CoffeeItemSelectedL
     private LinearLayout mFloatLayout;
     private LinearLayout mContactsLayout;
     private RelativeLayout mViewpagerLayout;
-    private android.support.v4.view.ViewPager mViewPager;
+    private ViewPager mViewPager;
     private ViewPager.OnPageChangeListener mViewpagerPageChangedListener;
     private LinearLayout mPointLayout, mHelpLayout;
     private TextView mMachineCode, mDeviceCode;
@@ -60,9 +59,9 @@ public class NewBuyFragment extends BasicFragment implements CoffeeItemSelectedL
     private List<LinearLayout> layouts;
     private Handler handler;
     private ViewPagerLayout mViewPagerLayout;
-    // private ViewPagerAdapter mViewPagerAdapter;
+    private ViewPagerAdapter mViewPagerAdapter;
     private ChooseAndMking mChooseAndMking;
-    private MyViewPagerAdapter mMyViewPagerAdapter;
+
     private boolean isViewPagerLooping = false;//是否再轮询中
     private boolean isCoffeeSelected = false;
     private boolean isAddPageChangeListenner = true;
@@ -96,7 +95,7 @@ public class NewBuyFragment extends BasicFragment implements CoffeeItemSelectedL
         mContactsLayout = (LinearLayout) content.findViewById(R.id.contactsLayout);
         mViewpagerLayout = (RelativeLayout) content.findViewById(R.id.viewpagerLayout);
         mHelpLayout = (LinearLayout) content.findViewById(R.id.helpLayout);
-        mViewPager = (android.support.v4.view.ViewPager) content.findViewById(R.id.viewPager);
+        mViewPager = (ViewPager) content.findViewById(R.id.viewPager);
         mPointLayout = (LinearLayout) content.findViewById(R.id.pointLayout);
         mMachineCode = (TextView) content.findViewById(R.id.machineCode);
         mDeviceCode = (TextView) content.findViewById(R.id.deviceCode);
@@ -113,24 +112,24 @@ public class NewBuyFragment extends BasicFragment implements CoffeeItemSelectedL
         layouts = mViewPagerLayout.getLinearLayouts(mCoffees);
         mChooseAndMking = new ChooseAndMking(homeActivity, this, handler);
 
-        //    mViewPagerAdapter = new ViewPagerAdapter(layouts);
-
-        // mViewPager.setAdapter(mViewPagerAdapter);
-        mMyViewPagerAdapter = new MyViewPagerAdapter(layouts);
-        mViewPager.setAdapter(mMyViewPagerAdapter);
+        mViewPagerAdapter = new ViewPagerAdapter(layouts);
+        mViewPager.setAdapter(mViewPagerAdapter);
         initPagerChangeListenner();
         mViewPager.addOnPageChangeListener(mViewpagerPageChangedListener);
-
+        mViewPager.setOffscreenPageLimit(1);
 
         mViewPager.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
+
                 if (mChooseAndMking.isMaking() || mChooseAndMking.isPaying()) {
 
                     return true;
                 }
+
                 switch (event.getAction()) {
                     case MotionEvent.ACTION_DOWN:
+
 
                         cancleAutoLoop();
 
@@ -162,7 +161,16 @@ public class NewBuyFragment extends BasicFragment implements CoffeeItemSelectedL
 
             @Override
             public void onPageSelected(int position) {
-                changePoint(position);
+
+                if (layouts == null || layouts.size() == 0) {
+                    changePoint(0);
+                } else {
+                    int curPosition = position % layouts.size();
+                    changePoint(curPosition);
+                    MyLog.d(TAG, curPosition + "====onPageSelected = " + position);
+                }
+
+
             }
 
             @Override
@@ -192,6 +200,7 @@ public class NewBuyFragment extends BasicFragment implements CoffeeItemSelectedL
                 if (isViewPagerLooping) {
                     int currentItem = mViewPager.getCurrentItem();
                     mViewPager.setCurrentItem((currentItem + 1) % layouts.size(), true);
+//                    mViewPager.setCurrentItem((currentItem + 1), true);
                     handler.postDelayed(autoScrollRunnable, 4000);
                 }
             }
@@ -251,11 +260,8 @@ public class NewBuyFragment extends BasicFragment implements CoffeeItemSelectedL
                 removePoint();
                 if (coffees != null && coffees.size() > 0) {
                     layouts = mViewPagerLayout.getLinearLayouts(coffees);
-
-                   // mViewPagerAdapter = new ViewPagerAdapter(layouts);
-                   // mViewPager.setAdapter(mViewPagerAdapter);
-                   /* mMyViewPagerAdapter = new MyViewPagerAdapter(layouts);
-                    mViewPager.setAdapter(mMyViewPagerAdapter);*/
+                    mViewPagerAdapter = new ViewPagerAdapter(layouts);
+                    mViewPager.setAdapter(mViewPagerAdapter);
                     addPoint();
                 }
             }
@@ -320,9 +326,15 @@ public class NewBuyFragment extends BasicFragment implements CoffeeItemSelectedL
 
 
     public void initLayout() {
-        mViewPagerLayout.initViewHolder();
-        isCoffeeSelected = false;
-        isViewPagerLooping = true;
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                mViewPagerLayout.initViewHolder();
+                isCoffeeSelected = false;
+                isViewPagerLooping = true;
+            }
+        });
+
     }
 
     /*
@@ -401,6 +413,10 @@ public class NewBuyFragment extends BasicFragment implements CoffeeItemSelectedL
         switch (v.getId()) {
             case R.id.deviceCode:
 
+                if (mChooseAndMking.isMaking() || mChooseAndMking.isPaying()) {
+                    return;
+                }
+
                 MyLog.d(TAG, "onClick deviceCode");
                 homeActivity.replaceFragment(FragmentEnum.ChooseCupNumFragment, FragmentEnum.LoginFragment);
 
@@ -415,6 +431,10 @@ public class NewBuyFragment extends BasicFragment implements CoffeeItemSelectedL
 
             case R.id.leftLayout:
 
+                if (mChooseAndMking.isPaying() || mChooseAndMking.isMaking()) {
+                    return;
+                }
+
                 if (mViewPager.getCurrentItem() == 0) {
                     if (layouts.size() > 0) {
                         mViewPager.setCurrentItem(layouts.size() - 1, true);
@@ -423,9 +443,14 @@ public class NewBuyFragment extends BasicFragment implements CoffeeItemSelectedL
                 } else {
                     mViewPager.setCurrentItem((mViewPager.getCurrentItem() - 1) % layouts.size(), true);
                 }
-
                 break;
             case R.id.rightLayout:
+
+                if (mChooseAndMking.isPaying() || mChooseAndMking.isMaking()) {
+                    return;
+                }
+
+//                mViewPager.setCurrentItem((mViewPager.getCurrentItem() + 1) , true);
 
                 if (mViewPager.getCurrentItem() + 1 == layouts.size()) {
                     mViewPager.setCurrentItem(0, false);
@@ -445,6 +470,8 @@ public class NewBuyFragment extends BasicFragment implements CoffeeItemSelectedL
         if (mChooseAndMking.isMaking() || viewHolder.isOver || mChooseAndMking.isPaying()) {//制作中时点击无效
             return;
         }
+
+
         if (!viewHolder.isSelected) {
             isCoffeeSelected = true;
             mFloatLayout.removeAllViews();

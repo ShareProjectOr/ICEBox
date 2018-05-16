@@ -140,6 +140,7 @@ public class CheckCurMachineState {
                 break;
 
             case HAS_ERR:
+                MyLog.d(TAG, "---------"+DataSwitcher.byte2Hex(majorState.getHighErr_byte()));
                 mBuffer.append("机器有故障: " + majorState.getHighErr_byte());
 
                 break;

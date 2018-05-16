@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import cof.ac.inter.ContainerConfig;
+import example.jni.com.coffeeseller.bean.Step;
 
 public class DealRecorder {
 
@@ -14,6 +15,7 @@ public class DealRecorder {
     String tasteRadio;//口味：多糖-50
     String payTime;
     int formulaID;//Number 配方ID
+    Step step;
 
     String bunkers;
 
@@ -152,6 +154,15 @@ public class DealRecorder {
 
     public void setUploadCount(int uploadCount) {
         this.uploadCount = uploadCount;
+    }
+
+
+    public Step getStep() {
+        return step;
+    }
+
+    public void setStep(Step step) {
+        this.step = step;
     }
 
     public boolean isVlide() {

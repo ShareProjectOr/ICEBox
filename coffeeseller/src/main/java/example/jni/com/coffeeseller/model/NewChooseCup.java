@@ -20,6 +20,8 @@ import android.widget.TextView;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import cof.ac.inter.ContainerConfig;
 import cof.ac.inter.WaterType;
@@ -55,12 +57,12 @@ public class NewChooseCup implements View.OnClickListener, MsgTransListener {
     private static int PAYED = 2;
     private Context mContext;
     private View mView;
-    private LinearLayout mTasteLayout;
+    private LinearLayout mTasteLayout, mPayLayout;
     private ImageView mQrImg;
     private TextView mPaying;
     private TextView mRequestQRTxt;
     private ProgressBar mLoadingBar;
-    private TextView mPayPrice, mClose;
+    private TextView mPayPrice, mClose, mPayTip;
     private Coffee mCoffee;
     public DealRecorder mDealRecorder;
     public CoffeeFomat mCoffeeFomat;
@@ -69,6 +71,11 @@ public class NewChooseCup implements View.OnClickListener, MsgTransListener {
     private Handler mHandler;
     private ChooseAndMking mChooseAndMking;
     private TradeMsgRequest tradeMsgRequest;
+
+    private Timer countTimeTimer;
+    private TimerTask countTimeTimerTask;
+
+
     private Bitmap qrBitmap;
     private int curPayState = NO_PAY;
     private String curOrder = null;
@@ -109,13 +116,20 @@ public class NewChooseCup implements View.OnClickListener, MsgTransListener {
         mRequestQRTxt = (TextView) mView.findViewById(R.id.requestQRTxt);
         mLoadingBar = (ProgressBar) mView.findViewById(R.id.loadingBar);
         mPayPrice = (TextView) mView.findViewById(R.id.payPrice);
+        mPayTip = (TextView) mView.findViewById(R.id.payTip);
         mClose = (TextView) mView.findViewById(R.id.close);
+        mPayLayout = (LinearLayout) mView.findViewById(R.id.payLayout);
         mClose.setOnClickListener(this);
 
         mCoffeeFomat = new CoffeeFomat();
         mDealRecorder = new DealRecorder();
         tradeMsgRequest = new TradeMsgRequest();
         mMsgTransListener = this;
+
+        mCoffeeFomat.setWaterType(WaterType.HOT_WATER);//默认为热饮
+
+        mPayLayout.setVisibility(View.GONE);
+        mPayTip.setVisibility(View.GONE);
     }
 
 
@@ -128,7 +142,7 @@ public class NewChooseCup implements View.OnClickListener, MsgTransListener {
         /*
         * 初始化数据
         * */
-
+//        mDealRecorder.setStep(mCoffee.);
         mDealRecorder.setRqcup(1);
         mDealRecorder.setFormulaID(mCoffee.getFormulaID());
         BigDecimal bigDecimal = new BigDecimal(Float.parseFloat(mCoffee.price));
@@ -201,7 +215,7 @@ public class NewChooseCup implements View.OnClickListener, MsgTransListener {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
                 MyLog.d(TAG, "onItemClick position=" + position);
-                tasteGridAdapter.updateTasteSelected(mCoffeeFomat, step, position, index);
+                mCoffeeFomat = tasteGridAdapter.updateTasteSelected(mCoffeeFomat, step, position, index);
             }
         });
 
@@ -211,7 +225,7 @@ public class NewChooseCup implements View.OnClickListener, MsgTransListener {
         mHandler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                tasteGridAdapter.updateTasteSelected(mCoffeeFomat, step, tasteGridAdapter.getDefaultSelectedItem(), index);
+                mCoffeeFomat = tasteGridAdapter.updateTasteSelected(mCoffeeFomat, step, tasteGridAdapter.getDefaultSelectedItem(), index);
             }
         }, 100);
 
@@ -273,6 +287,8 @@ public class NewChooseCup implements View.OnClickListener, MsgTransListener {
         mHandler.post(new Runnable() {
             @Override
             public void run() {
+                mPayLayout.setVisibility(View.VISIBLE);
+                mPayTip.setVisibility(View.VISIBLE);
                 mPayPrice.setText(price);
             }
         });
@@ -289,7 +305,11 @@ public class NewChooseCup implements View.OnClickListener, MsgTransListener {
         Bitmap bitmap = mQrMaker.createBitmap(parseRqMsg.getQrCode(), 350, 350);
         setQR_Code(ImageUtil.getCornerBitmap(bitmap, DensityUtil.px2dp(mContext, 10)));
 
-        tradeMsgRequest.beginTaskCheckPay(mMsgTransListener, mDealRecorder);
+        if (!mDealRecorder.isPayed()) {
+
+            tradeMsgRequest.beginTaskCheckPay(mMsgTransListener, mDealRecorder);
+        }
+
         MyLog.W(TAG, "dealOrder = " + mDealRecorder.getOrder());
     }
 
@@ -362,7 +382,12 @@ public class NewChooseCup implements View.OnClickListener, MsgTransListener {
             mDealRecorder.setPayed(true);
             mDealRecorder.setPayTime(msg.getPayTime());
 
-            tradeMsgRequest.stopTaskCheckPay();
+            stopTaskCheckPay();
+
+                /*
+                * 重置倒计时
+              * */
+            mChooseAndMking.setCurTimeCount(0);
 
             if (System.currentTimeMillis() - mChooseAndMking.getLastMkTime() > ChooseAndMking.TIME_BEFORE_MK_TO_CLEAR) {
                 //清洗机器
@@ -374,7 +399,7 @@ public class NewChooseCup implements View.OnClickListener, MsgTransListener {
 
             } else {
                 hasPay();
-                tradeMsgRequest.stopTaskCheckPay();
+                stopTaskCheckPay();
                 mChooseAndMking.stopCountTimer();
             }
 
@@ -389,13 +414,14 @@ public class NewChooseCup implements View.OnClickListener, MsgTransListener {
             @Override
             public void run() {
                 hasPay();
-                tradeMsgRequest.stopTaskCheckPay();
+                stopTaskCheckPay();
                 mChooseAndMking.stopCountTimer();
             }
         }, waitTime);
     }
 
     public void hasPay() {
+        stopTaskCheckPay();
         if (mChooseCupListener != null) {
 
             mChooseCupListener.hasPay(mCoffeeFomat, mDealRecorder);
@@ -405,12 +431,65 @@ public class NewChooseCup implements View.OnClickListener, MsgTransListener {
 
     public void cancle() {
         if (mChooseCupListener != null) {
-            tradeMsgRequest.stopTaskCheckPay();
+            stopTaskCheckPay();
             mChooseCupListener.cancle(mDealRecorder.getOrder());
 
         }
     }
 
+    public void stopTaskCheckPay() {
+        tradeMsgRequest.stopTaskCheckPay();
+
+    }
+
+    int curTimeCount = 0;
+        /*
+    * 清洗机器完成的检测倒计时
+    * */
+
+/*    private void countDownTime() {
+
+        stopCountTimer();
+
+        if (countTimeTimer == null) {
+            countTimeTimer = new Timer();
+        }
+        if (countTimeTimerTask == null) {
+            countTimeTimerTask = new TimerTask() {
+                @Override
+                public void run() {
+
+                    if (VIEW_SHOW_TIME / 1000 - curTimeCount <= 0) {
+
+                        //如果倒计时结束
+                        stopCountTimer();
+
+                        mRestTime.setVisibility(View.GONE);
+                    } else {
+                        handler.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                mRestTime.setText((VIEW_SHOW_TIME / 1000 - curTimeCount) + " s");
+                            }
+                        });
+                        curTimeCount++;
+                    }
+                }
+            };
+        }
+
+        countTimeTimer.schedule(countTimeTimerTask, 0, 1000);
+    }
+
+    public void stopCountTimer() {
+
+        if (countTimeTimer != null) {
+            countTimeTimer.cancel();
+            countTimeTimer = null;
+            countTimeTimerTask = null;
+        }
+        curTimeCount = 0;
+    }*/
 
     public void setClearText(int pointNum) {
         mRequestQRTxt.setVisibility(View.VISIBLE);
@@ -522,9 +601,9 @@ public class NewChooseCup implements View.OnClickListener, MsgTransListener {
                 break;
             case R.id.close:
 
+                stopTaskCheckPay();
                 if (mChooseCupListener != null) {
 
-                    tradeMsgRequest.stopTaskCheckPay();
                     mChooseCupListener.cancle(mDealRecorder.getOrder());
                 }
                 break;

@@ -74,6 +74,7 @@ public class NewErrorTip implements View.OnClickListener {
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.close:
+
                 if (mChooseAndMking != null) {
                     mChooseAndMking.viewOutAnim(0);
                 }

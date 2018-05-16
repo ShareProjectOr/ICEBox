@@ -163,7 +163,7 @@ public class NewMkCoffee {
         coffMsger = CoffMsger.getInstance();
         buffer = new StringBuffer();
 
-        perProgressUnit = 100 / 5;
+        perProgressUnit = mProgressBar.getWidth() / 100;
         perTimePaddingLeft = mProgressBar.getWidth() / MAX_PROGRESS;
         mLuobei.setSelected(true);
 
@@ -189,6 +189,8 @@ public class NewMkCoffee {
             mkCoffee();
 
             countDownTime();
+
+            mRestTime.setVisibility(View.VISIBLE);
         } else {
 
             buffer.append("\n");
@@ -306,9 +308,14 @@ public class NewMkCoffee {
 
                         if (machineState.getMajorState().getCurStateEnum() == StateEnum.HAS_ERR) {
 
-                            coffeeMakeStateRecorder.state = CoffeeMakeState.COFFEEMAKING_FAILED;
-                            //     isCalculateMaterial = false;
+                            /*
+                            * 如果接收到0a时，出现的状态是落杯或初始化
+                            * */
+                            if (coffeeMakeStateRecorder.state == CoffeeMakeState.COFFEE_DOWN_CUP || coffeeMakeStateRecorder.state == CoffeeMakeState.COFFEE_MAKE_INIT) {
+                                isCalculateMaterial = false;
 
+                            }
+                            coffeeMakeStateRecorder.state = CoffeeMakeState.COFFEEMAKING_FAILED;
                             buffer.append("\n");
                             buffer.append("制作过程中接收到0a : " + machineState.getMajorState().getHighErr_byte());
 
@@ -528,6 +535,10 @@ public class NewMkCoffee {
         return false;
     }
 
+    /*
+    * 制作过程的倒计时
+    * */
+
     private void countDownTime() {
 
         stopCountTimer();
@@ -540,10 +551,18 @@ public class NewMkCoffee {
                 @Override
                 public void run() {
 
-                    if (VIEW_SHOW_TIME - curTimeCount <= 0) {
+                    if (VIEW_SHOW_TIME / 1000 - curTimeCount <= 0) {
 
                         //如果倒计时结束
                         stopCountTimer();
+
+                        handler.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                mRestTime.setVisibility(View.GONE);
+                            }
+                        });
+
                     } else {
                         handler.post(new Runnable() {
                             @Override
@@ -570,11 +589,11 @@ public class NewMkCoffee {
         curTimeCount = 0;
     }
 
-    //  public int initLeftMargin = DensityUtil.dp2px(context, 208);
     public int initLeftMargin = 0;
 
     public void updateProgressAnim() {
 
+        perProgressUnit = mProgressBar.getWidth() / 100;
         new AsyncTask<Void, Integer, Integer>() {
 
             @Override
@@ -605,23 +624,30 @@ public class NewMkCoffee {
 
 
                 setProgress(values[0]);
-              /*  ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-                LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
 
-
-                params.leftMargin = initLeftMargin;*/
-                Log.d(TAG, "文字移动 perProgressUnit is " + perProgressUnit + " initLeftMargin is " + initLeftMargin);
-                initLeftMargin += perProgressUnit;
-                mRestTime.setPadding(initLeftMargin, 20, 20, 20);
                 //  mRestTime.setLayoutParams(params);
-
+                updateTimeCountText(values[0], perProgressUnit);
                 super.onProgressUpdate(values);
 
             }
         }.execute();
     }
 
-    boolean isdoAnimal = false;
+    private void updateTimeCountText(int progress, int leveProgress) {
+        if (progress == 5 || progress * perProgressUnit - 100 < 0) {
+
+        } else if (progress == 100) {
+            mRestTime.setPadding(mProgressBar.getWidth() - 100, 0, 0, 0);
+
+        } else {
+            initLeftMargin += perProgressUnit;
+
+            mRestTime.setPadding(perProgressUnit * progress - 100, 0, 0, perProgressUnit);
+
+        }
+
+        mRestTime.invalidate();
+    }
 
     public void setProgress(int progress) {
 
@@ -634,6 +660,7 @@ public class NewMkCoffee {
             if (progress == perProgressUnit) {
                 mModou.setSelected(true);
             }
+
             return;
         }
         if (progress > perProgressUnit && progress <= 2 * perProgressUnit) {

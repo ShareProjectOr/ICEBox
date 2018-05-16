@@ -3,9 +3,9 @@ package example.jni.com.coffeeseller.model.new_adapter;
 import android.support.v4.view.PagerAdapter;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.GridView;
 import android.widget.LinearLayout;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -18,11 +18,15 @@ public class ViewPagerAdapter extends PagerAdapter {
 
     public ViewPagerAdapter(List<LinearLayout> layouts) {
         this.layouts = layouts;
+        if (this.layouts == null) {
+            this.layouts = new ArrayList<>();
+        }
     }
 
     @Override
     public int getCount() {
-        return layouts.size();
+
+        return layouts.size() ;// == 0 ? layouts.size() : Integer.MAX_VALUE
     }
 
     @Override
@@ -33,18 +37,30 @@ public class ViewPagerAdapter extends PagerAdapter {
     @Override
     public Object instantiateItem(ViewGroup container, int position) {
 
-        LinearLayout layout = layouts.get(position);
+        if (layouts.size() < 3) {
+            LinearLayout layout = layouts.get(position % layouts.size());
+            ViewGroup parent = (ViewGroup) layout.getParent();
+            if (parent != null) {
+                parent.removeView(layout);
+            }
+            container.addView(layout);
 
-        ViewGroup parent = (ViewGroup) layout.getParent();
-        if (parent != null) {
-            parent.removeView(layout);
+            return layout;
+
+        } else {
+            container.addView(layouts.get(position % layouts.size()));
+
+            return layouts.get(position % layouts.size());
         }
-        container.addView(layout);
-        return layout;
     }
 
     @Override
     public void destroyItem(ViewGroup container, int position, Object object) {
-        container.removeView(layouts.get(position));
+
+        if (layouts.size() < 3) {
+
+        } else {
+            container.removeView(layouts.get(position % layouts.size()));
+        }
     }
 }
