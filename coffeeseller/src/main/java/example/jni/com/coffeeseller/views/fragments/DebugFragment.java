@@ -261,7 +261,8 @@ public class DebugFragment extends BasicFragment implements IDebugDropMaterialVi
     }
 
     @Override
-    public void ShowEditDialog(String ContainerID) {
+    public void updateUi() {
 
     }
+
 }
