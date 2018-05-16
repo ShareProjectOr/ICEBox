@@ -17,11 +17,9 @@ import java.util.Arrays;
 
 import example.jni.com.coffeeseller.MachineConfig.MachineCheckState;
 import example.jni.com.coffeeseller.R;
-import example.jni.com.coffeeseller.communicate.TaskService;
 import example.jni.com.coffeeseller.factory.FragmentEnum;
 import example.jni.com.coffeeseller.factory.FragmentFactory;
 import example.jni.com.coffeeseller.presenter.MachineCheckPresenter;
-import example.jni.com.coffeeseller.utils.MyLog;
 import example.jni.com.coffeeseller.utils.Waiter;
 import example.jni.com.coffeeseller.views.activities.HomeActivity;
 import example.jni.com.coffeeseller.views.viewinterface.ICheckMachineView;

@@ -13,13 +13,10 @@
         android:gravity="center"
         android:orientation="horizontal">
 
-        <TextView
+        <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="<"
-            android:textColor="@color/brown"
-            android:textSize="60sp"
-            android:textStyle="bold" />
+            android:src="@mipmap/right_brown" />
 
         <TextView
             android:id="@+id/backToCheck"
@@ -28,8 +25,7 @@
             android:layout_marginLeft="10dp"
             android:text="返回"
             android:textColor="@color/brown"
-            android:textSize="50sp"
-            android:textStyle="bold" />
+            android:textSize="50sp" />
     </LinearLayout>
 
 
