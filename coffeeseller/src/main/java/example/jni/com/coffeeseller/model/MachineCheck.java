@@ -60,6 +60,8 @@ public class MachineCheck implements IMachineCheck {
 
         if (MachineConfig.getMachineCode() == null || MachineConfig.getMachineCode().isEmpty()) {
             mOnMachineCheckCallBackListener.MaterialGroupGetFailed("机器号未填写,配方获取失败");
+        } else if (MachineInitState.CHECK_MACHINECODE != MachineInitState.NORMAL) {
+            mOnMachineCheckCallBackListener.MaterialGroupGetFailed("机器号无效,配方获取失败");
         } else {
             Map<String, Object> body = new HashMap<>();
             body.put("machineCode", MachineConfig.getMachineCode());

@@ -146,6 +146,7 @@ public class TaskService extends Service implements MqttCallback, IMqttActionLis
 
             if (!isConnected()) {
                 if (count == 0) {
+                    mOnMachineCheckCallBackListener.MQTTSubcribeFailed();
                     tagMachineCheckResult();//如果三次检测还是失败 则直接标记为订阅失败
                     break;
                 } else {
