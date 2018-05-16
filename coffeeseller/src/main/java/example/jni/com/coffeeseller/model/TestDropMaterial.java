@@ -79,7 +79,7 @@ public class TestDropMaterial implements ITestDropMaterial {
                         testDropMaterialCallBackListener.TestFailed(result.getCode());
                     }
                 }
-                testDropMaterialCallBackListener.TestEnd();
+
             }
         });
         save.setOnClickListener(new View.OnClickListener() {
@@ -94,6 +94,7 @@ public class TestDropMaterial implements ITestDropMaterial {
                 String bunkersID = sql.getBunkerIDByContainerID(ContainerID + "");
                 sql.updateContact(bunkersID, "", "", "", "", "", "", materialDropSpeed.getText().toString(), "", "", "");//将校准值传入数据库
                 alertDialog.dismiss();
+                testDropMaterialCallBackListener.TestEnd();
             }
         });
         alertDialog.show();

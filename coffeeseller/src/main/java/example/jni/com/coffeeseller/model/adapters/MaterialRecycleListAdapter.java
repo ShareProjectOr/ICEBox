@@ -198,37 +198,12 @@ public class MaterialRecycleListAdapter extends RecyclerView.Adapter<RecyclerVie
 
     @Override
     public void ShowDropResult(String result, String ContainerID) {
-
+        Toast.makeText(mContext, result, Toast.LENGTH_LONG).show();
     }
 
     @Override
-    public void ShowEditDialog(final String ContainerID) {
-        View view = LayoutInflater.from(mContext).inflate(R.layout.edit_drop_dialog_layout, null);
-        AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
-        builder.setView(view);
-        final AlertDialog alertDialog = builder.create();
-        final EditText materialDropSpeed = (EditText) view.findViewById(R.id.materialDropSpeed);
-        Button sure, cancel;
-        sure = (Button) view.findViewById(R.id.sure);
-        cancel = (Button) view.findViewById(R.id.cancel);
-        cancel.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                alertDialog.dismiss();
-            }
-        });
-        sure.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (materialDropSpeed.getText().toString().isEmpty()) {
-                    Toast.makeText(mContext, "请输入出料量", Toast.LENGTH_LONG).show();
-                    return;
-                }
-                String bunkersID = sql.getBunkerIDByContainerID(ContainerID);
-                sql.updateContact(bunkersID, "", "", "", "", "", "", materialDropSpeed.getText().toString(), "", "", "");//将校准值传入数据库
-            }
-        });
-        alertDialog.show();
+    public void updateUi() {
+        notifyDataSetChanged();
     }
 
 

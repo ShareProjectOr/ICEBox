@@ -10,6 +10,6 @@ public interface IDebugDropMaterialView {
 
     void ShowDropResult(String result, String ContainerID);
 
-    void ShowEditDialog(String ContainerID);
+    void updateUi();
 
 }

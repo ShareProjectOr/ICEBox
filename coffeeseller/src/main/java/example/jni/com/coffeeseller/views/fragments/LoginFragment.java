@@ -86,7 +86,7 @@ public class LoginFragment extends BasicFragment implements Iloginview {
 
     @Override
     public void showFailedError(String err) {
-        Toast.makeText(getActivity(), err, Toast.LENGTH_LONG).show();
+        Toast.makeText(getActivity(), err, Toast.LENGTH_SHORT).show();
     }
 
     @Override
