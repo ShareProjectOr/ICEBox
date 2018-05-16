@@ -67,7 +67,7 @@ public class DebugFragment extends BasicFragment implements IDebugDropMaterialVi
     @Override
 
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        mView = inflater.inflate(R.layout.debug_fragment_layout,null,false);
+        mView = inflater.inflate(R.layout.debug_fragment_layout, null, false);
         initview();
         initdata();
 
@@ -117,7 +117,7 @@ public class DebugFragment extends BasicFragment implements IDebugDropMaterialVi
             case R.id.start_drop:
                 if (iscanDrop) {
                     iscanDrop = false;
-                   // mDropMaterialPresenter.startDrop();
+                    // mDropMaterialPresenter.startDrop();
 
                 } else {
                     Toast.makeText(getActivity(), "当前正在执行落粉中,别着急", Toast.LENGTH_LONG).show();

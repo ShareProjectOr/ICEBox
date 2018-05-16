@@ -7,7 +7,7 @@ import android.util.Log;
  */
 
 public class MyLog {
-    private static String mTAG = "CHJUICE";
+    private static String mTAG = "Coffee";
 
     public static void d(String TAG,String msg) {
 
