@@ -72,7 +72,7 @@ public class QRMsger {
                         break;
                     }
                 }
-                MyLog.W(TAG, "reqQR start recieve data---RESPONSE_TEXT = " + RESPONSE_TEXT);
+                MyLog.W(TAG, "reqQR start recieve data---RESPONSE_TEXT = " + RESPONSE_TEXT+"--");
                 if (!TextUtils.isEmpty(RESPONSE_TEXT)) {
                     ParseRQMsg parseRQMsg = ParseRQMsg.parseRQMsg(RESPONSE_TEXT);//解析收到的应答数据
 

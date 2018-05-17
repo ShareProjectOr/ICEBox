@@ -599,7 +599,7 @@ public class TaskService extends Service implements MqttCallback, IMqttActionLis
             if (dealRecorder.isReportSuccess()) {
                 continue;
             } else {
-                if (dealRecorder.getUploadCount() >= 1) {
+                if (dealRecorder.getUploadCount() >= 1 && dealRecorder.getUploadCount() <= 5) {
 
                     DealRecorder newDealRecorder = qrMsger.reportTradeToServer(dealRecorder, dealRecorder.getBunkers());
                     MyLog.d(TAG, "order= " + dealRecorder.getOrder() + ", report to server into taskservice");

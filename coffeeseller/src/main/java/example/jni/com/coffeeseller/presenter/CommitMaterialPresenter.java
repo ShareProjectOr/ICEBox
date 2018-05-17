@@ -54,7 +54,7 @@ public class CommitMaterialPresenter {
                 @Override
                 public void commitFailed(String response) {
                     iCommitMaterialView.HideLoading();
-                    iCommitMaterialView.ShowResult(response);
+                    iCommitMaterialView.ShowResult("");
                 }
             });
         }
