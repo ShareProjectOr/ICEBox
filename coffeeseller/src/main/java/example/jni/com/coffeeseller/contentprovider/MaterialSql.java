@@ -146,7 +146,7 @@ public class MaterialSql extends SQLiteOpenHelper {
     }
 
     public String getBunkerIDByMaterialD(String MaterialD) {
-        if (!getAllmaterialID().contains(MaterialD)){
+        if (!getAllmaterialID().contains(MaterialD)) {
             return "";
         }
         SQLiteDatabase db = this.getReadableDatabase();
@@ -163,11 +163,19 @@ public class MaterialSql extends SQLiteOpenHelper {
     }
 
     public String getStorkByBunkersID(String bunkesID) {
+        if (!getAllbunkersIDs().contains(bunkesID)) {
+            return "0";
+        }
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor res = db.rawQuery("select * from " + MATERIALS_TABLE_NAME + " where " + MATERIALS_COLUMN_BUNKERSID + " = " + bunkesID + "", null);
-        res.moveToFirst();
-        String MaterialStock = res.getString(res.getColumnIndex(MATERIALS_COLUMN_MATERIALSTOCK));
-        res.close();
+        String MaterialStock = "";
+        if (res != null && res.moveToFirst()) {
+            MaterialStock = res.getString(res.getColumnIndex(MATERIALS_COLUMN_MATERIALSTOCK));
+            res.close();
+        } else {
+            MaterialStock = "0";
+        }
+
         db.close();
         return MaterialStock;
     }
