@@ -100,4 +100,20 @@ public class ImageUtil {
         canvas.drawBitmap(bitmap, rect2, rect2, paint);
         return output;
     }
+
+
+    private Bitmap drawTopRoundRect(Bitmap bitmap, float right, float bottom, int radius) {
+
+        if (bitmap == null) return null;
+        Bitmap output = Bitmap.createBitmap(bitmap.getWidth(), bitmap.getHeight(), Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(output);
+        Paint paint = new Paint();
+        Rect rect = new Rect(0, 0, bitmap.getWidth(), bitmap.getHeight());
+        RectF rectF = new RectF(rect);
+        canvas.drawRoundRect(rectF, radius, radius, paint);
+        canvas.drawRect(new RectF(0, radius, right, bottom), paint);
+        paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));
+        canvas.drawBitmap(bitmap, rect, rect, paint);
+        return output;
+    }
 }

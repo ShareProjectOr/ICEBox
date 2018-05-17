@@ -206,6 +206,10 @@ public class ViewPagerLayout {
                 Bitmap defaultBitmap = BitmapFactory.decodeResource(mContext.getResources(), R.mipmap.no_coffee);
 //                Drawable drawable = new BitmapDrawable(ImageUtil.drawTopRoundRect(defaultBitmap, 10));
 
+                /*RoundedCornersTransformation roundedCornersTransformation = new RoundedCornersTransformation(mContext,
+                        DensityUtil.dp2px(context, 10), 0, RoundedCornersTransformation.CornerType.TOP);
+                roundedCornersTransformation.*/
+
                 Glide.with(mContext).load(coffee.cacheUrl)
                         .placeholder(R.mipmap.no_coffee)
                         .error(R.mipmap.no_coffee)

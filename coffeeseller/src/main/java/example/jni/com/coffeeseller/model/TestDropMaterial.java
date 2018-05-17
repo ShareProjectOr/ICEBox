@@ -65,7 +65,7 @@ public class TestDropMaterial implements ITestDropMaterial {
                         testDropMaterialCallBackListener.TestFailed(result.getCode());
                     }
                 } else if (ContainerID == 7) {
-                    Result result = coffMsger.Debug(DebugAction.OUT_HOTWATER, 256, 0);
+                    Result result = coffMsger.Debug(DebugAction.OUT_HOTWATER,0xff, 0);
                     if (result.getCode() == Result.SUCCESS) {
                         testDropMaterialCallBackListener.TestSuccess();
                     } else {
