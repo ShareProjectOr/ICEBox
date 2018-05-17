@@ -443,9 +443,17 @@ public class TaskService extends Service implements MqttCallback, IMqttActionLis
 
                     //	LocalDataBaseUtil.deleteOutDateItem();
                     sendStateMsg();
+
+
                     if (COUNT % 3 == 0) {//本地交易记录上传
 
+
                         sendLocDealMsg();
+                    }
+
+                    if (COUNT % 4 == 0) {//删除本地交易记录
+
+                        DealOrderInfoManager.getInstance(mInstance).deleteIfSizeOver200(200);
                     }
                   /*  if (COUNT % 120 == 0) {//版本检测
 

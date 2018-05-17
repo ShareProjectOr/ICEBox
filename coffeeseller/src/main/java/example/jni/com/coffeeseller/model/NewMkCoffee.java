@@ -347,7 +347,6 @@ public class NewMkCoffee {
                             buffer.append("发送咖啡制作指令，返回" + result.getErrDes());
                         }
 
-                        continue;
                     }
 
                     if (coffeeMakeStateRecorder.state == CoffeeMakeState.COFFEE_MAKE_INIT) {

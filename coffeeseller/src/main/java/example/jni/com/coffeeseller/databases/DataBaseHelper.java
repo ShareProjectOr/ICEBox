@@ -34,7 +34,8 @@ public class DataBaseHelper extends SQLiteOpenHelper {
     @Override
     public void onUpgrade(SQLiteDatabase arg0, int arg1, int arg2) {
         // TODO Auto-generated method stub
-
+        arg0.execSQL("DROP TABLE IF EXISTS" + "order_info");
+        onCreate(arg0);
     }
 
 

@@ -258,6 +258,7 @@ public class ViewPagerLayout {
 
         public void update(ViewHolder viewHolder, boolean isSelected) {
 
+
             if (isSelected) {
                 mOverLayout.setVisibility(View.GONE);
                 viewHolder.isSelected = true;

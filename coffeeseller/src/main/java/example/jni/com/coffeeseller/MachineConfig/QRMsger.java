@@ -7,6 +7,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -145,8 +146,8 @@ public class QRMsger {
             params.put("tradeCode", dealRecorder.getOrder());
             params.put("makeState", (dealRecorder.isMakeSuccess() ? 1 : 0));
             if (TextUtils.isEmpty(bunkers)) {
-                String[] nullArray = new String[1];
-                params.put("bunkers", nullArray);
+               List<String> nullList=new ArrayList<>();
+                params.put("bunkers", nullList);
             } else {
                 //  JSONArray bunkersArray=new JSONArray(bunkers);
                 com.alibaba.fastjson.JSONArray bunkersArr = com.alibaba.fastjson.JSONArray.parseArray(bunkers);
