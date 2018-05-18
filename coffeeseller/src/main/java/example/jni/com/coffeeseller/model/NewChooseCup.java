@@ -122,7 +122,7 @@ public class NewChooseCup implements View.OnClickListener, MsgTransListener {
         tradeMsgRequest = new TradeMsgRequest();
         mMsgTransListener = this;
 
-//        mCoffeeFomat.setWaterType(WaterType.HOT_WATER);//默认为热饮
+        mCoffeeFomat.setWaterType(WaterType.HOT_WATER);//默认为热饮
 
         mPayLayout.setVisibility(View.GONE);
         mPayTip.setVisibility(View.GONE);

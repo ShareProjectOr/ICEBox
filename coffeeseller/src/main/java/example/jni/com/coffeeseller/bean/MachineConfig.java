@@ -12,6 +12,7 @@ public class MachineConfig {
     private static String machineCode;
     private static int networkType = 1;
     private static String topic;
+    private static String errTip = "";
 
     private static StateEnum currentState;
 
@@ -58,6 +59,14 @@ public class MachineConfig {
         return networkType;
     }
 
+    public static String getErrCode() {
+        return errTip;
+    }
+
+    public static void setErrCode(String errTip) {
+        MachineConfig.errTip = errTip;
+    }
+
     public static String getNetWorkTypeString() {
         if (networkType == 1) {
             return "移动网络";
@@ -65,7 +74,7 @@ public class MachineConfig {
             return "wifi";
         } else if (networkType == 0) {
             return "无网络";
-        }else {
+        } else {
             return "";
         }
 

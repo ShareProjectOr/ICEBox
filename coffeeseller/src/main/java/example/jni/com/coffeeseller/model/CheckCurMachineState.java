@@ -104,8 +104,12 @@ public class CheckCurMachineState {
 
                     isClearing = true;
                     return true;
-                } else {
+                }
+          /*      else if (majorState.getCurStateEnum() == StateEnum.HAS_ERR && majorState.getHighErr_byte() == 90) {
 
+                    return true;
+                }*/
+                else {
                     init();
                     checkCurState(majorState);
                     return false;
@@ -140,9 +144,8 @@ public class CheckCurMachineState {
                 break;
 
             case HAS_ERR:
-                MyLog.d(TAG, "---------"+DataSwitcher.byte2Hex(majorState.getHighErr_byte()));
+                MyLog.d(TAG, "---------" + DataSwitcher.byte2Hex(majorState.getHighErr_byte()));
                 mBuffer.append("机器有故障: " + majorState.getHighErr_byte());
-
                 break;
 
             case WARNING:

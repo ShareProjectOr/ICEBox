@@ -87,7 +87,7 @@ public class ConfigFragment extends BasicFragment implements IAddMaterialView, I
     }
 
     private void initData() {
-
+        errCode.setText("异常状态:" + MachineConfig.getErrCode());
         addCupTime.setText(SharedPreferencesManager.getInstance(getActivity()).getAddCupTime());
         addWaterTime.setText(SharedPreferencesManager.getInstance(getActivity()).getAddWaterTime());
         mMachineCode.setText(SharedPreferencesManager.getInstance(getActivity()).getMachineCode());
@@ -364,7 +364,7 @@ public class ConfigFragment extends BasicFragment implements IAddMaterialView, I
                 @Override
                 public void run() {
 
-                    switch (machineState.getMajorState().getStateCode()) {
+                 /*   switch (machineState.getMajorState().getStateCode()) {
 
                         case 00:
                             errCode.setText("异常状态:无异常");
@@ -375,7 +375,7 @@ public class ConfigFragment extends BasicFragment implements IAddMaterialView, I
                         default:
                             errCode.setText("异常状态:" + DataSwitcher.byte2Hex(machineState.getMajorState().getLowErr_byte()));
                             break;
-                    }
+                    }*/
 
                     runState.setText("运行状态:" + DataSwitcher.byte2Hex(machineState.getMajorState().getState_byte()));
                     netWorkState.setText("网络状态:" + MachineConfig.getNetWorkTypeString());

@@ -29,6 +29,7 @@ import example.jni.com.coffeeseller.MachineConfig.DealRecorder;
 import example.jni.com.coffeeseller.R;
 import example.jni.com.coffeeseller.bean.CoffeeFomat;
 import example.jni.com.coffeeseller.bean.CoffeeMakeStateRecorder;
+import example.jni.com.coffeeseller.bean.MachineConfig;
 import example.jni.com.coffeeseller.databases.DealOrderInfoManager;
 import example.jni.com.coffeeseller.model.listeners.MkCoffeeListenner;
 import example.jni.com.coffeeseller.utils.DensityUtil;
@@ -104,6 +105,8 @@ public class NewMkCoffee {
         mProgressBar = (ProgressBar) view.findViewById(R.id.progressBar);
         mErrCaseTip = (TextView) view.findViewById(R.id.errCaseTip);
         mRestTime = (TextView) view.findViewById(R.id.restTime);
+
+        mProgressBar.setProgress(INIT_PROGRESS);
 
     }
 
@@ -316,8 +319,9 @@ public class NewMkCoffee {
 
                             }
                             coffeeMakeStateRecorder.state = CoffeeMakeState.COFFEEMAKING_FAILED;
+
                             buffer.append("\n");
-                            buffer.append("制作过程中接收到0a : " + machineState.getMajorState().getHighErr_byte());
+                            buffer.append("制作过程中接收到0a : " + machineState.getMajorState().getHighErr_byte() + machineState.getMajorState().getLowErr_byte());//getHighErr_byte
 
                         }
                     } else {
@@ -710,8 +714,11 @@ public class NewMkCoffee {
                 mWancheng.setTextColor(ContextCompat.getColor(context, R.color.red));
 
                 mErrCaseTip.setText("失败" + buffer.toString());
+                mErrCaseTip.setVisibility(View.GONE);
                 MyLog.W(TAG, "making err order : " + dealRecorder.getOrder());
                 MyLog.W(TAG, "making err: " + buffer.toString());
+
+                MachineConfig.setErrCode(buffer.toString());
             }
         });
     }
