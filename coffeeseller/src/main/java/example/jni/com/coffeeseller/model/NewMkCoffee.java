@@ -332,9 +332,11 @@ public class NewMkCoffee {
 
                     if (coffeeMakeStateRecorder.state == null && !isSendMkingComdSuccess) {
 
-                        MyLog.d(TAG, "send mkCoffee comd");
 
                         Result result = coffMsger.mkCoffee(coffeeFomat.getContainerConfigs());
+
+                        MyLog.d(TAG, "send mkCoffee comd : " + result.getReturn_bytes());
+
                         if (result.getCode() == Result.SUCCESS) {
 
                             coffeeMakeStateRecorder.state = CoffeeMakeState.COFFEE_MAKE_INIT;
