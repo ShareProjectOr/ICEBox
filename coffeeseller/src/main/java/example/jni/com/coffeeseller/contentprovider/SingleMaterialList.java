@@ -63,13 +63,13 @@ public class SingleMaterialList {
                 coffee.setOver(false);
                 org.json.JSONArray stepArray = coffeeObject.getJSONArray("process");
 
-                for (int j = 0; j < stepArray.length(); j++) {
+                for (int j = 0; j < stepArray.length(); j++) {//计算每一步所需的原料的用量在当前的机器料仓里是否还充足
                     org.json.JSONObject stepObject = (org.json.JSONObject) stepArray.opt(j);
                     String materialID = stepObject.getJSONObject("material").getString("materialID");
 
                     Log.d(TAG, "currentStep need materialID is " + materialID);
                     org.json.JSONArray taste = stepObject.getJSONArray("taste");
-                    if (taste.length() != 0) { //有口味的配方
+                    if (taste.length() != 0) { //有口味的步骤
                         int amount = 300;
                         for (int k = 0; k < taste.length(); k++) { //遍历取出最小百分比
                             org.json.JSONObject tasteObject = (org.json.JSONObject) taste.opt(k);
@@ -86,7 +86,7 @@ public class SingleMaterialList {
                         } else {
                             coffee.setOver(false);
                         }
-                    } else {   //无口味的配方
+                    } else {   //无口味的步骤
                         Log.d(TAG, "location all materialID is " + sql.getAllmaterialID().toString());
                         if (!sql.getAllmaterialID().contains(materialID)) { //本地料仓里面不含有这个原料
                             Log.d(TAG, "location have not this material");
@@ -190,14 +190,34 @@ public class SingleMaterialList {
                     containerConfig.setMaterial_time(intmaterialTime);
                     containerConfig.setRotate_speed(stepObject.getInt("loadingSpeed"));
                     containerConfig.setStir_speed(stepObject.getInt("mixingSpeed"));
-                    switch (stepObject.getInt("waterType")) {
-                        case 0:
+                    if (stepObject.getInt("waterType") == 0) {
+                        if (!containerID.equals("1")) { //假如出冷饮的这一步原料所在的料仓不为1时 没法出冷饮认为是售罄
+                            coffee.setOver(true);
+                            break;
+                        } else {
                             containerConfig.setWater_type(WaterType.COLD_WATER);
+                        }
+
+
+                    } else if (stepObject.getInt("waterType") == 1) {
+
+
+                        containerConfig.setWater_type(WaterType.HOT_WATER);
+
+
+                    } else {//第三种出水
+                        coffee.setOver(true);
+
+                        break;
+                    }
+                  /*  switch (stepObject.getInt("waterType")) {
+                        case 0:
+
                             break;
                         case 1:
-                            containerConfig.setWater_type(WaterType.HOT_WATER);
+
                             break;
-                    }
+                    }*/
                     step.setContainerConfig(containerConfig);
                     org.json.JSONArray tasteArray = stepObject.getJSONArray("taste");
                     List<Taste> tastesList = new ArrayList<>();
