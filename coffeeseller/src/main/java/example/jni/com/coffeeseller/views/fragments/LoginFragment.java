@@ -47,6 +47,13 @@ public class LoginFragment extends BasicFragment implements Iloginview {
         return view;
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        UserName.setText("");
+        PassWord.setText("");
+    }
+
     private void initview() {
 
         UserName = (EditText) view.findViewById(R.id.userName);
