@@ -44,7 +44,6 @@ public class UpdateAppManager {
     // 准备安装新版本应用标记
     private static final int INSTALL_TOKEN = 0x31;
     private Context context;
-    private String message = "检测到本程序有新版本发布，建议您更新!";
     private String spec;
     // 下载应用的对话框
     private Dialog dialog;
@@ -91,6 +90,7 @@ public class UpdateAppManager {
     };
 
     private void showNoticeDialog() {
+        String message = "检测到本程序有新版本发布，建议您更新!";
         new Builder(context).setTitle("软件版本更新").setMessage(message)
                 .setOnKeyListener(keylistener).setCancelable(false)
                 .setPositiveButton("下载", new OnClickListener() {

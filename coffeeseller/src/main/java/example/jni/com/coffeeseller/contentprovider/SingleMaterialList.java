@@ -191,7 +191,7 @@ public class SingleMaterialList {
                     containerConfig.setRotate_speed(stepObject.getInt("loadingSpeed"));
                     containerConfig.setStir_speed(stepObject.getInt("mixingSpeed"));
                     if (stepObject.getInt("waterType") == 0) {
-                        if (!containerID.equals("1")) { //假如出冷饮的这一步原料所在的料仓不为1时 没法出冷饮认为是售罄
+                        if (!containerID.equals("1") && !containerID.equals("2")) { //假如出冷饮的这一步原料所在的料仓不为1并且也不在2号仓时 没法出冷饮认为是售罄
                             coffee.setOver(true);
                             break;
                         } else {
