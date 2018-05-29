@@ -90,6 +90,7 @@ public class SingleMaterialList {
                         Log.d(TAG, "location all materialID is " + sql.getAllmaterialID().toString());
                         if (!sql.getAllmaterialID().contains(materialID)) { //本地料仓里面不含有这个原料
                             Log.d(TAG, "location have not this material");
+                            Log.d(TAG, "此时的配方为:" + coffeeObject.getString("name"));
                             coffee.setOver(true);
                             continue;
                         }
@@ -191,12 +192,16 @@ public class SingleMaterialList {
                     containerConfig.setRotate_speed(stepObject.getInt("loadingSpeed"));
                     containerConfig.setStir_speed(stepObject.getInt("mixingSpeed"));
                     if (stepObject.getInt("waterType") == 0) {//出冷饮的步骤
-                        if (!containerID.equals("1") && !containerID.equals("2")) { //假如出冷饮的这一步原料所在的料仓不为1并且也不在2号仓时 没法出冷饮认为是售罄
-                            Log.d(TAG, "current containerID is " + containerID);
-                            coffee.setOver(true);
-                            break;
-                        } else {
-                            containerConfig.setWater_type(WaterType.COLD_WATER);
+                        if (containerID.equals("0")) {  //如果是咖啡豆要出冷饮,则直接规定为出热饮
+                            containerConfig.setWater_type(WaterType.HOT_WATER);
+                        } else {   //原料不为咖啡豆时
+                            if (!containerID.equals("1") && !containerID.equals("2")) { //假如出冷饮的这一步原料所在的料仓不为1并且也不在2号仓时 没法出冷饮认为是售罄
+                                Log.d(TAG, "current containerID is " + containerID);
+                                coffee.setOver(true);
+                                break;
+                            } else {
+                                containerConfig.setWater_type(WaterType.COLD_WATER);
+                            }
                         }
 
 
@@ -212,6 +217,11 @@ public class SingleMaterialList {
                         break;
                     }
 
+                    if (stepObject.getInt("waterType") == 0) {
+                        containerConfig.setWater_type(WaterType.COLD_WATER);
+                    } else {
+                        containerConfig.setWater_type(WaterType.HOT_WATER);
+                    }
                     step.setContainerConfig(containerConfig);
                     org.json.JSONArray tasteArray = stepObject.getJSONArray("taste");
                     List<Taste> tastesList = new ArrayList<>();

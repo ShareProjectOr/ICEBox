@@ -25,7 +25,7 @@ import example.jni.com.coffeeseller.views.activities.HomeActivity;
 
 public class TradeFragment extends BasicFragment implements View.OnClickListener {
     private View content;
-    private Button back;
+    private Button back, clearTrade;
     private ListView listView;
     private TradeListAdapter adapter;
     private HomeActivity homeActivity;
@@ -43,11 +43,13 @@ public class TradeFragment extends BasicFragment implements View.OnClickListener
     private void initView() {
         homeActivity = (HomeActivity) getActivity();
         back = (Button) content.findViewById(R.id.back);
+        clearTrade = (Button) content.findViewById(R.id.clearTrade);
         listView = (ListView) content.findViewById(R.id.tradeList);
         dealRecorderList = DealOrderInfoManager.getInstance(homeActivity).getLocalTableDatas();
         adapter = new TradeListAdapter(homeActivity, dealRecorderList);
         listView.setAdapter(adapter);
         back.setOnClickListener(this);
+        clearTrade.setOnClickListener(this);
     }
 
     private void initData() {
@@ -58,6 +60,8 @@ public class TradeFragment extends BasicFragment implements View.OnClickListener
         switch (v.getId()) {
             case R.id.back:
                 homeActivity.replaceFragment(FragmentEnum.TradeFragment, FragmentEnum.ConfigFragment);
+                break;
+            case R.id.clearTrade:
                 break;
         }
     }

@@ -8,13 +8,31 @@
         android:id="@+id/back"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_above="@+id/clearTrade"
+        android:layout_alignParentStart="true"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:background="@drawable/shape_botton"
+        android:text="返回"
+        android:textColor="@color/white" />
+
+    <Button
+        android:id="@+id/clearTrade"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:text="返回" />
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:layout_marginTop="10dp"
+        android:background="@drawable/shape_botton"
+        android:text="清空订单"
+        android:textColor="@color/white" />
 
     <ListView
         android:id="@+id/tradeList"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_marginBottom="10dp"
         android:layout_above="@id/back">
 
     </ListView>

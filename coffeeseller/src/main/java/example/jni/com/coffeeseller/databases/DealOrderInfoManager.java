@@ -108,6 +108,7 @@ public class DealOrderInfoManager {
         MyLog.W(TAG, "update is over");
     }
 
+
     public List<DealRecorder> getLocalTableDatas() {
 
         synchronized (this) {
@@ -149,6 +150,18 @@ public class DealOrderInfoManager {
             localSQLiteDatabase.close();
             return mList;
         }
+    }
+
+    public boolean deleteAllContent() {
+
+        if (getLocalTableDatas().size() != 0) {
+           // SQLiteDatabase db = this.getWritableDatabase();
+            SQLiteDatabase localSQLiteDatabase = mDataBaseHelper.getWritableDatabase();
+         //   localSQLiteDatabase.delete(MATERIALS_TABLE_NAME, null, null);
+            localSQLiteDatabase.close();
+        }
+
+        return true;
     }
 
     /*

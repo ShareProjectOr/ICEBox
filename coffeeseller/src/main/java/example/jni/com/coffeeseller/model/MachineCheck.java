@@ -71,7 +71,7 @@ public class MachineCheck implements IMachineCheck {
 
                 List<bunkerData> list = new ArrayList<>();
                 if (MachineConfig.getHostUrl().isEmpty()) {
-
+                    mOnMachineCheckCallBackListener.MaterialGroupGetFailed("服务器地址获取为空,配方获取失败");
                 } else {
 
                 }
@@ -257,6 +257,7 @@ public class MachineCheck implements IMachineCheck {
         } else {
             postBody.put("machineCode", SharedPreferencesManager.getInstance(mContext).getMachineCode());
             postBody.put("loginPassword", SharedPreferencesManager.getInstance(mContext).getLoginPassword());
+
             Log.d(TAG, "machineCode is " + SharedPreferencesManager.getInstance(mContext).getMachineCode() + "password is " + SharedPreferencesManager.getInstance(mContext).getLoginPassword());
             try {
                 String response = OkHttpUtil.post(Constance.MachineAuthentication_URL, JsonUtil.mapToJson(postBody));
@@ -299,13 +300,7 @@ public class MachineCheck implements IMachineCheck {
             } else {
                 getFormula();
             }
-
             Waiter.doWait(2000);
-          /*  if (MachineInitState.CHECK_OPENMAINCTRL == MachineInitState.NORMAL && MachineInitState.GET_FORMULA == MachineInitState.NORMAL) {
-                mOnMachineCheckCallBackListener.MachineCheckEnd(true);
-            } else {
-                mOnMachineCheckCallBackListener.MachineCheckEnd(false);
-            }*/
             subMQTT();
             Waiter.doWait(1500);
 

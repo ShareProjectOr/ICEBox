@@ -189,8 +189,15 @@ public class ConfigFragment extends BasicFragment implements IAddMaterialView, I
         changePassword.setOnClickListener(this);
     }
 
+    private long lastPointTime = 0;
+
     @Override
     public void onClick(View v) {
+        long currentPointTime = System.currentTimeMillis();
+        if (currentPointTime - lastPointTime <= 1000) {
+            return;
+        }
+        lastPointTime = currentPointTime;
         switch (v.getId()) {
             case R.id.debug_machine:
 
