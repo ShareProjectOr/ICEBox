@@ -52,13 +52,11 @@ import example.jni.com.coffeeseller.views.activities.HomeActivity;
 
 
 public class TaskService extends Service implements MqttCallback, IMqttActionListener {
-    public static final String HOST = "tcp://" + "196.168.4.192" + ":61613";//tcp://127.0.0.1:616
     private static MqttClient client;
     private MqttConnectOptions options;
     private String userName = "admin";
     private String passWord = "password";
     private OnMachineCheckCallBackListener mOnMachineCheckCallBackListener;
-    private boolean isSubSuccess = true;
     static String TAG = "TaskService";
     static Handler mHandler;
     Timer mTimer = null;
@@ -81,7 +79,6 @@ public class TaskService extends Service implements MqttCallback, IMqttActionLis
             public void handleMessage(Message msg) {
                 super.handleMessage(msg);
                 if (msg.obj == null) {
-                    isSubSuccess = false;
                     ReSubMqtt();
                 } else {
 
@@ -105,15 +102,6 @@ public class TaskService extends Service implements MqttCallback, IMqttActionLis
 
 
                                 JSONObject d = msgObject.getJSONObject("d");
-                                JSONObject formulaObject = d.getJSONObject("formula");
-                                if (d.getString("updateType").equals("remove")) {//updateType
-
-
-                                } else if (d.getString("updateType").equals("update")) {
-
-                                } else if (d.getString("updateType").equals("add")) {
-
-                                }
                                 if (messageReceviedListener != null) {
                                     //  messageReceviedListener.getMsgType(formulaObject.getString("formulaID"));//formulaID
                                     messageReceviedListener.getMsgType(msgObject.toString());
@@ -284,7 +272,6 @@ public class TaskService extends Service implements MqttCallback, IMqttActionLis
         Log.d(TAG, "onCreate");
         mInstance = this;
         dealHandler();
-        //settingDataManager = SettingDataManager.getSettingDataManager(mInstance);
     }
 
     public void breakClient() {
@@ -300,11 +287,7 @@ public class TaskService extends Service implements MqttCallback, IMqttActionLis
     }
 
     public boolean isConnected() {
-        if (client != null) {
-            return client.isConnected();
-        } else {
-            return false;
-        }
+        return client != null && client.isConnected();
     }
 
     private void init() {
@@ -416,11 +399,7 @@ public class TaskService extends Service implements MqttCallback, IMqttActionLis
 
     private boolean hasTimerTask() {
 
-        if (mTimer == null || mTimerTask == null) {
-
-            return false;
-        }
-        return true;
+        return !(mTimer == null || mTimerTask == null);
     }
 
     private void createTimerTask() {
@@ -512,6 +491,11 @@ public class TaskService extends Service implements MqttCallback, IMqttActionLis
             } else {
                 msg.put("cupHolderState", 0);
             }
+            if (state.hasCup()) {
+                msg.put("cupHouseState", 1);
+            } else {
+                msg.put("cupHouseState", 0);
+            }
             msg.put("boilerTemperature", (int) state.getPotTemp());
             msg.put("boilerPressure", state.getPotPressure());
             if (state.isFrontDoorOpen()) {
@@ -553,7 +537,7 @@ public class TaskService extends Service implements MqttCallback, IMqttActionLis
 
             msg.put("doorState", null);
 
-
+            msg.put("cupHouseState", null);
             msg.put("cupDoorState", null);
 
             msg.put("driverVersion", "1.0.0");
