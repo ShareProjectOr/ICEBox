@@ -13,7 +13,7 @@ public class MachineConfig {
     private static int networkType = 1;
     private static String topic;
     private static String errTip = "";
-
+    private static String phone = "";
     private static StateEnum currentState;
 
     public static String getTopic() {
@@ -30,6 +30,30 @@ public class MachineConfig {
         return currentState;
     }
 
+    public static String getPhone() {
+        StringBuilder sb = new StringBuilder();
+        if (phone.isEmpty()) {
+            return "";
+        }
+        for (int i = 0; i < phone.length(); i++) {
+            if (i != 3 && i != 8 && phone.charAt(i) == ' ') {
+
+                continue;
+
+            } else {
+                sb.append(phone.charAt(i));
+                if ((sb.length() == 4 || sb.length() == 9) && sb.charAt(sb.length() - 1) != ' ') {
+                    sb.insert(sb.length() - 1, ' ');
+                }
+            }
+        }
+
+        return phone;
+    }
+
+    public static void setPhone(String phone) {
+        MachineConfig.phone = phone;
+    }
 
     public static void setTopic(String topic) {
         MachineConfig.topic = topic;

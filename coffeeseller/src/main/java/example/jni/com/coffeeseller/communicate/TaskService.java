@@ -502,7 +502,6 @@ public class TaskService extends Service implements MqttCallback, IMqttActionLis
         msg.put("sendTime", SecondToDate.getDateToString(System.currentTimeMillis()));
         Log.d(TAG, SecondToDate.getDateToString(System.currentTimeMillis()));
         msg.put("networkType", MachineConfig.getNetworkType());
-        msg.put("cupHouseState", null);
         CoffMsger msger = CoffMsger.getInstance();
         MachineState state = msger.getLastMachineState();
         Result result = state.getResult();
@@ -560,10 +559,11 @@ public class TaskService extends Service implements MqttCallback, IMqttActionLis
             msg.put("driverVersion", "1.0.0");
             msg.put("errCode", "");
             // }
-            msg.put("clientVersion", HomeActivity.getInstance().getVersion());
-            msg.put("mediaVersion", "1.0.0");
 
         }
+        msg.put("clientVersion", HomeActivity.getInstance().getVersion());
+        msg.put("mediaVersion", "1.0.0");
+
         message.setPayload(JsonUtil.mapToJson(msg).getBytes());
 
         if (client != null) {  //为了防止 在订阅之前 被调用时会 抛出client为空的异常
