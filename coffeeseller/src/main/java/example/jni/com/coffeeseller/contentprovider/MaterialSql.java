@@ -84,9 +84,11 @@ public class MaterialSql extends SQLiteOpenHelper {
 
     public String getContainerIDByMaterialID(String MaterialID) {
         SQLiteDatabase db = this.getReadableDatabase();
+        String ContainerID="";
         Cursor res = db.rawQuery("select * from " + MATERIALS_TABLE_NAME + " where " + MATERIALS_COLUMN_MATERIALID + " = " + MaterialID + " limit 1 ", null);
-        res.moveToFirst();
-        String ContainerID = res.getString(res.getColumnIndex(MATERIALS_COLUMN_CONTAINERID));
+       if (res.moveToFirst()){
+           ContainerID = res.getString(res.getColumnIndex(MATERIALS_COLUMN_CONTAINERID));
+       }
         res.close();
         db.close();
         return ContainerID;

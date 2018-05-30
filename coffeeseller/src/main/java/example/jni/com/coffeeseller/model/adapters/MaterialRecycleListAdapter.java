@@ -67,7 +67,12 @@ public class MaterialRecycleListAdapter extends RecyclerView.Adapter<RecyclerVie
     public void onBindViewHolder(RecyclerView.ViewHolder holder, final int position) {
         final ContentViewHolder mHolder = (ContentViewHolder) holder;
         mHolder.bankersName.setText(list.get(position).getBunkersName());
-        mHolder.Material.setText(list.get(position).getMaterialName());
+        if (list.get(position).getMaterialName().equals("null") || list.get(position).getMaterialName().equals("")) {
+            mHolder.Material.setText("未绑定");
+        } else {
+            mHolder.Material.setText(list.get(position).getMaterialName());
+        }
+
         mHolder.AddTime.setText(list.get(position).getLastLoadingTime());
         if (list.get(position).getMaterialDropSpeed().equals("null") || list.get(position).getMaterialDropSpeed().equals("0") || list.get(position).getMaterialDropSpeed().equals("")) {
             mHolder.output.setText("未设置");

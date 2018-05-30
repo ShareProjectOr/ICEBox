@@ -43,6 +43,7 @@ import example.jni.com.coffeeseller.presenter.CheckVersionPresenter;
 import example.jni.com.coffeeseller.presenter.CommitMaterialPresenter;
 import example.jni.com.coffeeseller.utils.MyLog;
 import example.jni.com.coffeeseller.views.activities.HomeActivity;
+import example.jni.com.coffeeseller.views.customviews.MoveSetFlowButton;
 import example.jni.com.coffeeseller.views.customviews.SetFloatButton;
 import example.jni.com.coffeeseller.views.viewinterface.IAddCupView;
 import example.jni.com.coffeeseller.views.viewinterface.IAddMaterialView;
@@ -55,7 +56,7 @@ import example.jni.com.coffeeseller.views.viewinterface.ICommitMaterialView;
 
 public class ConfigFragment extends BasicFragment implements IAddMaterialView, ICommitMaterialView, ICheckVersionView, StateListener, IAddCupView, CompoundButton.OnCheckedChangeListener {
     private View mView;
-    private Button toDebug, materialCommit, checkVersion, saveConfig, changePassword, searchTrade, toSystem, closeDoor, openDoor;
+    private Button toDebug, materialCommit, checkVersion, saveConfig, changePassword, searchTrade, toSystem, closeDoor, openDoor, RepairMachineCode;
     private HomeActivity homeActivity;
     private TextView back;
     private RecyclerView materialList;
@@ -138,6 +139,8 @@ public class ConfigFragment extends BasicFragment implements IAddMaterialView, I
         mMachineName.setOnClickListener(this);
         toSystem = (Button) mView.findViewById(R.id.toSystem);
         toSystem.setOnClickListener(this);
+        RepairMachineCode = (Button) mView.findViewById(R.id.repairMachineCode);
+
         passWord = (EditText) mView.findViewById(R.id.passWord);
         saveConfig = (Button) mView.findViewById(R.id.saveConfig);
         searchTrade = (Button) mView.findViewById(R.id.search_trade);
@@ -177,6 +180,17 @@ public class ConfigFragment extends BasicFragment implements IAddMaterialView, I
         addWater = (TextView) mView.findViewById(R.id.add_water);
         materialList.setAdapter(mAdapter);
         materialList.setLayoutManager(new LinearLayoutManager(getActivity()));
+        mMachineCode.setEnabled(false);
+        mMachineCode.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (hasFocus) {
+                    mMachineCode.setEnabled(true);
+                } else {
+                    mMachineCode.setEnabled(false);
+                }
+            }
+        });
         materialList.setHasFixedSize(true);
         back.setOnClickListener(this);
         saveConfig.setOnClickListener(this);
@@ -191,6 +205,7 @@ public class ConfigFragment extends BasicFragment implements IAddMaterialView, I
         addWater.setOnClickListener(this);
         materialCommit.setOnClickListener(this);
         changePassword.setOnClickListener(this);
+        RepairMachineCode.setOnClickListener(this);
     }
 
     private long lastPointTime = 0;
@@ -227,6 +242,9 @@ public class ConfigFragment extends BasicFragment implements IAddMaterialView, I
                 break;
             case R.id.check_update:
                 checkVersionPresenter.CheckVersion();
+                break;
+            case R.id.repairMachineCode:
+                mMachineCode.setEnabled(true);
                 break;
             case R.id.saveConfig:
                 if (passWord.getText().toString().isEmpty() || passWord.getText().length() < 6) {
@@ -265,7 +283,7 @@ public class ConfigFragment extends BasicFragment implements IAddMaterialView, I
                 goSystemSetting();*/
                 break;
             case R.id.toSystem:
-                SetFloatButton.getInstance(getActivity()).showFlowButton();
+                MoveSetFlowButton.getInstance(homeActivity).showFlowButton();
                 goSystemSetting();
                 break;
             case R.id.closeDoor:

@@ -232,7 +232,6 @@ public class MachineCheck implements IMachineCheck {
                     MachineInitState.CHECK_OPENMAINCTRL = MachineInitState.NORMAL;
                     mOnMachineCheckCallBackListener.OpenMainCrilSuccess();
                     MachineConfig.setHasReserve(true);
-                } else {
                     mOnMachineCheckCallBackListener.OpenMainCrilFailed("主控板复位出错,错误:" + result.getErrDes());
                 }
             }
@@ -268,7 +267,7 @@ public class MachineCheck implements IMachineCheck {
                     SharedPreferencesManager.getInstance(mContext).setLoginPassword(object.getJSONObject("d").getString("loginPassword"));
                     MachineConfig.setTcpIP(object.getJSONObject("d").getString("tcpIP"));
                     MachineConfig.setTopic(object.getJSONObject("d").getString("topic"));
-                    //     MachineConfig.setPhone(object.getJSONObject("d").getString("tel"));
+                //    MachineConfig.setPhone(object.getJSONObject("d").getString("tel"));
                     MachineInitState.CHECK_MACHINECODE = MachineInitState.NORMAL;
                     mOnMachineCheckCallBackListener.MachineCodeCheckSuccess();
                 } else {

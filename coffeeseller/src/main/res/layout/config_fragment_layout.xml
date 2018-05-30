@@ -531,10 +531,21 @@
 
                 <EditText
                     android:id="@+id/machineCode"
-                    android:layout_width="300dp"
+                    android:layout_width="200dp"
                     android:layout_height="40dp"
                     android:layout_marginLeft="20dp"
-                    android:background="@drawable/shape_config_edit" />
+                    android:background="@drawable/shape_config_edit"
+                     />
+
+                <Button
+                    android:id="@+id/repairMachineCode"
+                    android:layout_width="wrap_content"
+                    android:layout_height="30dp"
+                    android:layout_marginLeft="50dp"
+                    android:background="@drawable/shape_botton"
+                    android:text="修改机器号"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/text_size_one" />
             </LinearLayout>
 
             <TextView
@@ -692,7 +703,8 @@
                     android:id="@+id/passWord"
                     android:layout_width="300dp"
                     android:layout_height="40dp"
-                    android:background="@drawable/shape_config_edit" />
+                    android:background="@drawable/shape_config_edit"
+                    android:inputType="textPassword" />
 
                 <Button
                     android:id="@+id/changePassword"
