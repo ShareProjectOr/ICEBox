@@ -1,5 +1,9 @@
 package example.jni.com.coffeeseller.views.fragments;
 
+import android.animation.Animator;
+import android.animation.TimeInterpolator;
+import android.animation.ValueAnimator;
+import android.nfc.Tag;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
@@ -14,6 +18,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.IllegalFormatCodePointException;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -29,10 +34,14 @@ import example.jni.com.coffeeseller.listener.MessageReceviedListener;
 import example.jni.com.coffeeseller.model.ChooseAndMking;
 import example.jni.com.coffeeseller.model.GetFormula;
 import example.jni.com.coffeeseller.model.listeners.ViewpagerPageChangedListener;
+import example.jni.com.coffeeseller.model.new_adapter.MyViewPager;
 import example.jni.com.coffeeseller.model.new_adapter.ViewPagerAdapter;
 import example.jni.com.coffeeseller.model.new_helper.ViewPagerLayout;
 import example.jni.com.coffeeseller.model.new_listenner.CoffeeItemSelectedListener;
+import example.jni.com.coffeeseller.utils.DensityUtil;
 import example.jni.com.coffeeseller.utils.MyLog;
+import example.jni.com.coffeeseller.utils.ObjectAnimatorUtil;
+import example.jni.com.coffeeseller.utils.Waiter;
 import example.jni.com.coffeeseller.views.activities.HomeActivity;
 
 /**
@@ -72,6 +81,10 @@ public class NewBuyFragment extends BasicFragment implements CoffeeItemSelectedL
 
     private long lastHelpContactsShowTime;
     private long lastDownTime;
+    private long lastClickLeftRight;
+    private int curItemPosition = 0;
+    private int lastItemPosition = 0;
+    private long lastHuadongFinish;//上一次滑动完成
 
     @Nullable
     @Override
@@ -109,15 +122,13 @@ public class NewBuyFragment extends BasicFragment implements CoffeeItemSelectedL
         mViewPagerLayout = new ViewPagerLayout(homeActivity, this);
         mCoffees = new ArrayList<>();
         mCoffees = SingleMaterialList.getInstance(homeActivity).getCoffeeList();
-        layouts = mViewPagerLayout.getLinearLayouts(mCoffees);
         mChooseAndMking = new ChooseAndMking(homeActivity, this, handler);
-
+        layouts = mViewPagerLayout.getLinearLayouts(mCoffees);
         mViewPagerAdapter = new ViewPagerAdapter(layouts);
         mViewPager.setAdapter(mViewPagerAdapter);
         initPagerChangeListenner();
         mViewPager.addOnPageChangeListener(mViewpagerPageChangedListener);
-        mViewPager.setOffscreenPageLimit(1);
-
+        // mViewPager.setOffscreenPageLimit(1);
         mViewPager.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
@@ -129,7 +140,6 @@ public class NewBuyFragment extends BasicFragment implements CoffeeItemSelectedL
 
                 switch (event.getAction()) {
                     case MotionEvent.ACTION_DOWN:
-
 
 
                         cancleAutoLoop();
@@ -159,35 +169,52 @@ public class NewBuyFragment extends BasicFragment implements CoffeeItemSelectedL
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
 
+                /*
+                * 如果距离上一次滑动时间少于250ms不处理
+                * */
+                if (System.currentTimeMillis() - lastHuadongFinish < 250) {
+                    return;
+                }
             }
 
             @Override
             public void onPageSelected(int position) {
 
-                if (layouts == null || layouts.size() == 0) {
+                if (System.currentTimeMillis() - lastHuadongFinish < 250) {
+                    return;
+                }
+
+                lastItemPosition = curItemPosition;
+                curItemPosition = position % layouts.size();
+
+                changePoint(absPosition(curItemPosition));
+                MyLog.d(TAG, position + "====onPageSelected = " + curItemPosition);
+
+      /*          if (layouts == null || layouts.size() == 0) {
                     changePoint(0);
                 } else {
                     int curPosition = position % layouts.size();
-                    changePoint(curPosition);
-                    MyLog.d(TAG, curPosition + "====onPageSelected = " + position);
-                }
-
-
+                    changePoint(absPosition(curPosition));
+                    MyLog.d(TAG, position + "====onPageSelected = " + curPosition);
+                }*/
             }
 
             @Override
             public void onPageScrollStateChanged(int state) {
-
+                lastHuadongFinish = System.currentTimeMillis();
             }
         };
     }
 
     private void startAutoLoop() {
+
         isViewPagerLooping = true;
         handler.postDelayed(autoScrollRunnable, 4000);
+
     }
 
     private void cancleAutoLoop() {
+
         isViewPagerLooping = false;
         handler.removeCallbacks(autoScrollRunnable);
     }
@@ -196,13 +223,24 @@ public class NewBuyFragment extends BasicFragment implements CoffeeItemSelectedL
 
         mCoffees = new ArrayList<>();
         addPoint();
+        if (layouts.size() != 1) {
+            mViewPager.setCurrentItem(layouts.size() * 100);
+        }
         autoScrollRunnable = new Runnable() {
             @Override
             public void run() {
                 if (isViewPagerLooping) {
                     int currentItem = mViewPager.getCurrentItem();
-                    mViewPager.setCurrentItem((currentItem + 1) % layouts.size(), true);
-//                    mViewPager.setCurrentItem((currentItem + 1), true);
+//                    mViewPager.setCurrentItem((currentItem + 1) % layouts.size(), true);
+                    if (currentItem == Integer.MAX_VALUE) {
+
+                        mViewPager.setCurrentItem((Integer.MAX_VALUE % layouts.size()) + layouts.size() * 100, true);
+
+                    } else {
+                        mViewPager.setCurrentItem((currentItem + 1), true);
+                    }
+//                    curItemPosition = (currentItem + 1) % layouts.size();
+                    mViewPager.setCurrentItem((currentItem + 1), true);
                     handler.postDelayed(autoScrollRunnable, 4000);
                 }
             }
@@ -218,12 +256,18 @@ public class NewBuyFragment extends BasicFragment implements CoffeeItemSelectedL
     }
 
     private void addPoint() {
-        for (int i = 0; i < layouts.size(); i++) {
+        int size = mViewPagerLayout.getPageCount();
+
+        MyLog.d(TAG, "--------------size = " + size);
+
+        for (int i = 0; i < size; i++) {
             final int index = i;
             View pointView = LayoutInflater.from(homeActivity).inflate(R.layout.new_point, null);
             TextView point = (TextView) pointView.findViewById(R.id.point);
             if (i == 0) {
                 point.setSelected(true);
+                addPointSelectedAnim(point);
+                curItemPosition = 0;
             }
             point.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -235,28 +279,169 @@ public class NewBuyFragment extends BasicFragment implements CoffeeItemSelectedL
         }
     }
 
+    private void addPointSelectedAnim(final TextView pointView) {
+
+        pointView.clearAnimation();
+        pointView.getLayoutParams().width = DensityUtil.dp2px(homeActivity, 16);
+        pointView.requestLayout();
+
+        ValueAnimator valueAnimator = ValueAnimator.ofInt(DensityUtil.dp2px(homeActivity, 16), DensityUtil.dp2px(homeActivity, 48));
+        valueAnimator.setDuration(250);
+        valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator animation) {
+
+                Integer value = (Integer) animation.getAnimatedValue();
+                pointView.getLayoutParams().width = value;
+
+                MyLog.d(TAG, "width =" + value);
+
+                pointView.requestLayout();
+
+            }
+        });
+        valueAnimator.addListener(new Animator.AnimatorListener() {
+            @Override
+            public void onAnimationStart(Animator animation) {
+                pointView.setSelected(true);
+            }
+
+            @Override
+            public void onAnimationEnd(Animator animation) {
+
+
+                if (pointView.getLayoutParams().width != DensityUtil.dp2px(homeActivity, 48)) {
+
+                    MyLog.d(TAG, "onAnimationEnd  = " + pointView.getLayoutParams().width);
+
+                    pointView.getLayoutParams().width = DensityUtil.dp2px(homeActivity, 16);
+                    pointView.requestLayout();
+                    pointView.setSelected(false);
+                } else {
+                    pointView.setSelected(true);
+
+                }
+            }
+
+            @Override
+            public void onAnimationCancel(Animator animation) {
+
+            }
+
+            @Override
+            public void onAnimationRepeat(Animator animation) {
+
+            }
+        });
+        valueAnimator.start();
+    }
+
+    private void addPointUnSelectedAnim(final TextView pointView) {
+
+        pointView.clearAnimation();
+
+        ValueAnimator valueAnimator = ValueAnimator.ofInt(DensityUtil.dp2px(homeActivity, 48), DensityUtil.dp2px(homeActivity, 16));
+        valueAnimator.setDuration(250);
+        valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator animation) {
+
+                Integer value = (Integer) animation.getAnimatedValue();
+                pointView.getLayoutParams().width = value;
+                //   curVaule = value;
+
+                MyLog.d(TAG, "width =" + value);
+
+                pointView.requestLayout();
+
+            }
+        });
+        valueAnimator.addListener(new Animator.AnimatorListener() {
+            @Override
+            public void onAnimationStart(Animator animation) {
+            }
+
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                pointView.setSelected(false);
+                pointView.getLayoutParams().width = DensityUtil.dp2px(homeActivity, 16);
+                pointView.requestLayout();
+                pointView.clearAnimation();
+            }
+
+            @Override
+            public void onAnimationCancel(Animator animation) {
+
+            }
+
+            @Override
+            public void onAnimationRepeat(Animator animation) {
+            }
+        });
+        valueAnimator.start();
+
+        if (pointView.getAnimation() == null) {
+            pointView.getLayoutParams().width = DensityUtil.dp2px(homeActivity, 16);
+            pointView.requestLayout();
+            pointView.clearAnimation();
+        }
+    }
+
     public void removePoint() {
         mPointLayout.removeAllViews();
     }
 
     private void changePoint(int index) {
 
-        for (int i = 0; i < mPointLayout.getChildCount(); i++) {
+        int pointCount = mPointLayout.getChildCount();
+        int position = index % pointCount;
+
+        MyLog.d(TAG, "changePoint  = " + position);
+
+        for (int i = 0; i < pointCount; i++) {
             LinearLayout layout = (LinearLayout) mPointLayout.getChildAt(i);
             TextView point = (TextView) layout.findViewById(R.id.point);
-            if (i == index) {
+
+            if (i != position) {
+
+                if (lastItemPosition == i) {
+                    addPointUnSelectedAnim(point);
+                } else {
+                    point.setSelected(false);
+                    point.getLayoutParams().width = DensityUtil.dp2px(homeActivity, 16);
+                    point.requestLayout();
+                }
+
+            } else if (i == position) {
+
                 point.setSelected(true);
-                mViewPager.setCurrentItem(index, true);
-            } else {
-                point.setSelected(false);
+                addPointSelectedAnim(point);
             }
+
+           /* if (i == position) {
+                point.setSelected(true);
+                addPointSelectedAnim(point);
+
+            } else {
+
+                if (lastItemPosition == i) {
+                    addPointUnSelectedAnim(point);
+                } else {
+                    point.setSelected(false);
+                    point.getLayoutParams().width = DensityUtil.dp2px(homeActivity, 16);
+                    point.requestLayout();
+                }
+            }*/
         }
+        //  curItemPosition = index;
     }
 
     public void updateUi() {
         handler.post(new Runnable() {
             @Override
             public void run() {
+
+                cancleAutoLoop();
                 List<Coffee> coffees = SingleMaterialList.getInstance(homeActivity).getCoffeeList();
                 mViewPager.removeAllViews();
                 removePoint();
@@ -265,6 +450,12 @@ public class NewBuyFragment extends BasicFragment implements CoffeeItemSelectedL
                     mViewPagerAdapter = new ViewPagerAdapter(layouts);
                     mViewPager.setAdapter(mViewPagerAdapter);
                     addPoint();
+                    if (layouts.size() != 1) {
+                        mViewPager.setCurrentItem(layouts.size() * 100);
+                    }
+                    curItemPosition = 0;
+                    lastItemPosition = 0;
+                    initLayout();
                 }
             }
         });
@@ -291,7 +482,7 @@ public class NewBuyFragment extends BasicFragment implements CoffeeItemSelectedL
                         cancleAutoLoop();
                     }
 
-                    initContactLayout();
+//                    initContactLayout();
                 }
             };
         }
@@ -326,16 +517,25 @@ public class NewBuyFragment extends BasicFragment implements CoffeeItemSelectedL
         autoScrollTimerTask = null;
     }
 
-
     public void initLayout() {
         handler.post(new Runnable() {
             @Override
             public void run() {
                 mViewPagerLayout.initViewHolder();
                 isCoffeeSelected = false;
-                isViewPagerLooping = true;
+                isViewPagerLooping = false;
             }
         });
+
+    }
+
+    private int absPosition(int position) {
+
+        if (position < 0) {
+            return Math.abs(position % layouts.size());
+        } else {
+            return position % layouts.size();
+        }
 
     }
 
@@ -428,37 +628,68 @@ public class NewBuyFragment extends BasicFragment implements CoffeeItemSelectedL
 
                 //做个延时操作
 
-                mContactsLayout.setVisibility(View.VISIBLE);
+                //      mContactsLayout.setVisibility(View.VISIBLE);
                 break;
 
             case R.id.leftLayout:
 
+                cancleAutoLoop();
+
                 if (mChooseAndMking.isPaying() || mChooseAndMking.isMaking()) {
                     return;
                 }
 
-                if (mViewPager.getCurrentItem() == 0) {
+                if (System.currentTimeMillis() - lastClickLeftRight <= 250) {
+                    return;
+                }
+
+                int viewPagerItemPosition = mViewPager.getCurrentItem() - 1;
+
+                MyLog.d(TAG, " leftLayout position = " + viewPagerItemPosition);
+
+                mViewPager.setCurrentItem(viewPagerItemPosition, true);
+//                curItemPosition = absPosition(viewPagerItemPosition);
+
+              /*  if (mViewPager.getCurrentItem() == 0) {
                     if (layouts.size() > 0) {
                         mViewPager.setCurrentItem(layouts.size() - 1, true);
+                        curItemPosition = (layouts.size() - 1) % layouts.size();
                     }
 
                 } else {
                     mViewPager.setCurrentItem((mViewPager.getCurrentItem() - 1) % layouts.size(), true);
-                }
+                    curItemPosition = (mViewPager.getCurrentItem() - 1) % layouts.size();
+                }*/
+                lastClickLeftRight = System.currentTimeMillis();
                 break;
             case R.id.rightLayout:
+
+                cancleAutoLoop();
 
                 if (mChooseAndMking.isPaying() || mChooseAndMking.isMaking()) {
                     return;
                 }
 
-//                mViewPager.setCurrentItem((mViewPager.getCurrentItem() + 1) , true);
+                if (System.currentTimeMillis() - lastClickLeftRight <= 250) {
+                    return;
+                }
 
-                if (mViewPager.getCurrentItem() + 1 == layouts.size()) {
+                mViewPager.setCurrentItem(mViewPager.getCurrentItem() + 1, true);
+
+                MyLog.d(TAG, "----------------- " + mViewPager.getCurrentItem());
+
+//                curItemPosition = (mViewPager.getCurrentItem() + 1) % layouts.size();
+
+             /*   if (mViewPager.getCurrentItem() + 1 == layouts.size()) {
                     mViewPager.setCurrentItem(0, false);
+                    curItemPosition = 0;
                 } else {
                     mViewPager.setCurrentItem((mViewPager.getCurrentItem() + 1) % layouts.size(), true);
-                }
+
+                    curItemPosition = (mViewPager.getCurrentItem() + 1) % layouts.size();
+                }*/
+
+                lastClickLeftRight = System.currentTimeMillis();
 
                 break;
         }

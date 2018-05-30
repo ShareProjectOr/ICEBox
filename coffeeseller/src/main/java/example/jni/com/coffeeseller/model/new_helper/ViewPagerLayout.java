@@ -41,12 +41,17 @@ public class ViewPagerLayout {
     private Context context;
     private CoffeeItemSelectedListener coffeeItemSelectedListener;
     public List<ViewHolder> viewHolders;
+    private int pageCount;
 
 
     public ViewPagerLayout(Context context, CoffeeItemSelectedListener coffeeItemSelectedListener) {
         this.context = context;
         this.coffeeItemSelectedListener = coffeeItemSelectedListener;
         viewHolders = new ArrayList<>();
+    }
+
+    public int getPageCount() {
+        return pageCount;
     }
 
     public List<LinearLayout> getLinearLayouts(List<Coffee> coffees) {
@@ -59,7 +64,21 @@ public class ViewPagerLayout {
         int count = coffees.size() % OnePageCount;
         int totalPageCount = count == 0 ? countPage : countPage + 1;
 
+        pageCount = totalPageCount;
 
+        if (totalPageCount == 2) {
+            for (int i = 0; i < 2; i++) {
+                addLayout(coffees, layouts, totalPageCount);
+            }
+        } else {
+            addLayout(coffees, layouts, totalPageCount);
+        }
+
+
+        return layouts;
+    }
+
+    private void addLayout(List<Coffee> coffees, List<LinearLayout> layouts, int totalPageCount) {
         for (int i = 0; i < totalPageCount; i++) {
             List<Coffee> layoutCoffees = new ArrayList<>();
             if (i + 1 != totalPageCount) {
@@ -71,8 +90,6 @@ public class ViewPagerLayout {
             layouts.add(getLinearLayout(context, layoutCoffees, i));
 
         }
-
-        return layouts;
     }
 
     private LinearLayout getLinearLayout(Context context, List<Coffee> coffees, final int page) {

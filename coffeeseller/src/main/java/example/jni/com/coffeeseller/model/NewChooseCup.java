@@ -122,7 +122,7 @@ public class NewChooseCup implements View.OnClickListener, MsgTransListener {
         tradeMsgRequest = new TradeMsgRequest();
         mMsgTransListener = this;
 
-        mCoffeeFomat.setWaterType(WaterType.HOT_WATER);//默认为热饮
+//        mCoffeeFomat.setWaterType(WaterType.HOT_WATER);//默认为热饮
 
         mPayLayout.setVisibility(View.GONE);
         mPayTip.setVisibility(View.GONE);
@@ -172,6 +172,9 @@ public class NewChooseCup implements View.OnClickListener, MsgTransListener {
             containerConfig.setRotate_speed(step.getContainerConfig().getRotate_speed());
             containerConfig.setStir_speed(step.getContainerConfig().getStir_speed());
             containerConfig.setWater_capacity(step.getContainerConfig().getWater_capacity());
+
+            MyLog.d(TAG,"containerConfig.setWater_type= =  "+step.getContainerConfig().getWater_type());
+
 
             mCoffeeFomat.getContainerConfigs().add(i, containerConfig);
 
@@ -535,10 +538,10 @@ public class NewChooseCup implements View.OnClickListener, MsgTransListener {
     * */
     private List<ContainerConfig> getFinalContainerConfig() {
 
-        for (int i = 0; i < mCoffeeFomat.getContainerConfigs().size(); i++) {
+       /* for (int i = 0; i < mCoffeeFomat.getContainerConfigs().size(); i++) {
             if (mCoffeeFomat.getContainerConfigs().get(i).getWater_capacity() != 0)
                 mCoffeeFomat.getContainerConfigs().get(i).setWater_type(mCoffeeFomat.getWaterType());
-        }
+        }*/
 
         mCoffeeFomat.setCoffeeName(mCoffee.name);
 

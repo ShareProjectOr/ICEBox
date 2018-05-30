@@ -36,7 +36,7 @@
     <dimen name="taste_grid_item_width">74dp</dimen>
 
     <!--滑动布局-->
-    <dimen name="viewpager_point_width">31dp</dimen>
+    <dimen name="viewpager_point_width">16dp</dimen>
     <dimen name="viewpager_padding_bottom">297dp</dimen>
     <dimen name="viewpager_point_margin_top">650dp</dimen>
 

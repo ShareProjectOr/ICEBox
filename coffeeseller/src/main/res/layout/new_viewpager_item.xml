@@ -147,6 +147,15 @@
             android:paddingTop="10dp">
 
             <LinearLayout
+                android:id="@+id/overLayout"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:alpha="0.8"
+                android:background="@drawable/new_shape_gray_round"
+                android:orientation="horizontal">
+
+            </LinearLayout>
+            <LinearLayout
                 android:id="@+id/overImgLayout"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
@@ -157,17 +166,6 @@
                     android:layout_height="match_parent"
                     android:src="@mipmap/over" />
             </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/overLayout"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:alpha="0.8"
-                android:background="@drawable/new_shape_gray_round"
-                android:orientation="horizontal">
-
-            </LinearLayout>
-
         </RelativeLayout>
     </RelativeLayout>
 

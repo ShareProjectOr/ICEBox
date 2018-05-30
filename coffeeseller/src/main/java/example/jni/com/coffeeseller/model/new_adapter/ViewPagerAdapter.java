@@ -1,5 +1,6 @@
 package example.jni.com.coffeeseller.model.new_adapter;
 
+import android.support.v4.graphics.drawable.TintAwareDrawable;
 import android.support.v4.view.PagerAdapter;
 import android.view.View;
 import android.view.ViewGroup;
@@ -8,25 +9,35 @@ import android.widget.LinearLayout;
 import java.util.ArrayList;
 import java.util.List;
 
+import example.jni.com.coffeeseller.utils.MyLog;
+
 /**
  * Created by WH on 2018/5/10.
  */
 
 public class ViewPagerAdapter extends PagerAdapter {
 
-    private List<LinearLayout> layouts;
+    private List<LinearLayout> viewLayouts;
 
     public ViewPagerAdapter(List<LinearLayout> layouts) {
-        this.layouts = layouts;
-        if (this.layouts == null) {
-            this.layouts = new ArrayList<>();
+
+        if (this.viewLayouts == null) {
+            this.viewLayouts = new ArrayList<>();
         }
+
+        for (int i = 0; i < layouts.size(); i++) {
+            this.viewLayouts.add(layouts.get(i));
+        }
+
+
+        MyLog.d("-------------------------", viewLayouts.size() + "");
+
     }
 
     @Override
     public int getCount() {
 
-        return layouts.size() ;// == 0 ? layouts.size() : Integer.MAX_VALUE
+        return viewLayouts.size() <= 1 ? viewLayouts.size() : Integer.MAX_VALUE;
     }
 
     @Override
@@ -37,8 +48,20 @@ public class ViewPagerAdapter extends PagerAdapter {
     @Override
     public Object instantiateItem(ViewGroup container, int position) {
 
-        if (layouts.size() < 3) {
-            LinearLayout layout = layouts.get(position % layouts.size());
+        LinearLayout layout = viewLayouts.get(position % viewLayouts.size());
+
+        MyLog.d("-------------------------", position + " , " + position % viewLayouts.size());
+
+        ViewGroup parent = (ViewGroup) layout.getParent();
+        if (parent != null) {
+            parent.removeView(layout);
+        }
+        container.addView(layout);
+
+        return layout;
+
+    /*    if (viewLayouts.size() < 3) {
+            LinearLayout layout = viewLayouts.get(position % viewLayouts.size());
             ViewGroup parent = (ViewGroup) layout.getParent();
             if (parent != null) {
                 parent.removeView(layout);
@@ -48,19 +71,20 @@ public class ViewPagerAdapter extends PagerAdapter {
             return layout;
 
         } else {
-            container.addView(layouts.get(position % layouts.size()));
 
-            return layouts.get(position % layouts.size());
-        }
+            container.addView(viewLayouts.get(position % viewLayouts.size()));
+
+            return viewLayouts.get(position % viewLayouts.size());
+        }*/
     }
 
     @Override
     public void destroyItem(ViewGroup container, int position, Object object) {
 
-        if (layouts.size() < 3) {
+        if (viewLayouts.size() <= 3) {
 
         } else {
-            container.removeView(layouts.get(position % layouts.size()));
+            container.removeView(viewLayouts.get(position % viewLayouts.size()));
         }
     }
 }

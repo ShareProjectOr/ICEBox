@@ -335,7 +335,7 @@ public class NewMkCoffee {
 
                         Result result = coffMsger.mkCoffee(coffeeFomat.getContainerConfigs());
 
-                        MyLog.d(TAG, "send mkCoffee comd : " + result.getReturn_bytes());
+                        MyLog.d(TAG, "send mkCoffee comd : " );//+ result.getReturn_bytes()
 
                         if (result.getCode() == Result.SUCCESS) {
 

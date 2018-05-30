@@ -39,13 +39,13 @@
             android:layout_height="match_parent"
             android:layout_alignParentRight="true"
             android:layout_marginRight="10dp"
-            android:orientation="horizontal"
-            android:visibility="gone">
+            android:orientation="horizontal">
 
+            <!-- android:gravity="bottom|center"-->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:gravity="bottom|center"
+                android:gravity="center"
                 android:text="客服电话："
                 android:textColor="@color/brown"
                 android:textSize="20sp" />
@@ -53,8 +53,8 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:gravity="bottom|center"
-                android:text="17313567544"
+                android:gravity="center"
+                android:text="173 1356 7544"
                 android:textColor="@color/brown"
                 android:textSize="20sp" />
 
@@ -65,9 +65,9 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_toLeftOf="@id/contactsLayout"
-
             android:paddingLeft="20dp"
-            android:paddingRight="20dp">
+            android:paddingRight="20dp"
+            android:visibility="gone">
 
 
             <TextView

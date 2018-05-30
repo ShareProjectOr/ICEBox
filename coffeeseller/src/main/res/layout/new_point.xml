@@ -4,7 +4,13 @@
     android:layout_height="wrap_content">
 
     <LinearLayout
-        android:layout_width="67dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_marginRight="@dimen/viewpager_point_width"
         android:layout_height="wrap_content">
 
         <TextView
@@ -13,5 +19,5 @@
             android:layout_height="@dimen/viewpager_point_width"
             android:background="@drawable/new_selector_point" />
     </LinearLayout>
-
+    </LinearLayout>
 </LinearLayout>
