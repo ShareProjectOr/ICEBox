@@ -15,9 +15,18 @@ public class MachineConfig {
     private static String errTip = "";
     private static String phone = "";
     private static StateEnum currentState;
+    private static boolean hasReserve = false;
 
     public static String getTopic() {
         return topic;
+    }
+
+    public static boolean isHasReserve() {
+        return hasReserve;
+    }
+
+    public static void setHasReserve(boolean hasReserve) {
+        MachineConfig.hasReserve = hasReserve;
     }
 
     public static StateEnum getCurrentState() {

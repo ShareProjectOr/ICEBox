@@ -16,6 +16,8 @@ import java.util.List;
 import java.util.Map;
 
 import cof.ac.inter.CoffMsger;
+import cof.ac.inter.DebugAction;
+import cof.ac.inter.Result;
 import example.jni.com.coffeeseller.MachineConfig.MachineInitState;
 import example.jni.com.coffeeseller.bean.MachineConfig;
 import example.jni.com.coffeeseller.bean.bunkerData;
@@ -219,29 +221,22 @@ public class MachineCheck implements IMachineCheck {
 
     public void checkMainCtrl() {
         CoffMsger mCoffmsger = CoffMsger.getInstance();
-
         if (mCoffmsger.init()) {
             mCoffmsger.startCheckState();
-       /*     //
-            if (!hasReserve) {
-                Result result = mCoffmsger.Debug(DebugAction.RESET, 0, 0);//复位机器
-                Waiter.doWait(700);
-                if (result.getCode() == Result.SUCCESS) {
-                    mCoffmsger.startCheckState();
-                    MachineInitState.CHECK_OPENMAINCTRL = MachineInitState.NORMAL;
-                    mOnMachineCheckCallBackListener.OpenMainCrilSuccess();
-                    hasReserve = true;
-                } else {
-                    mOnMachineCheckCallBackListener.OpenMainCrilFailed("主控板检测出错,错误:" + result.getErrDes());
-                }
-
-            } else {
+            if (MachineConfig.isHasReserve()) {  //已经自检过了
                 MachineInitState.CHECK_OPENMAINCTRL = MachineInitState.NORMAL;
                 mOnMachineCheckCallBackListener.OpenMainCrilSuccess();
-            }*/
+            } else {   //还没自检过
+                Result result = mCoffmsger.Debug(DebugAction.RESET, 0, 0);//复位机器
+                if (result.getCode() == Result.SUCCESS) {
+                    MachineInitState.CHECK_OPENMAINCTRL = MachineInitState.NORMAL;
+                    mOnMachineCheckCallBackListener.OpenMainCrilSuccess();
+                    MachineConfig.setHasReserve(true);
+                } else {
+                    mOnMachineCheckCallBackListener.OpenMainCrilFailed("主控板复位出错,错误:" + result.getErrDes());
+                }
+            }
 
-            MachineInitState.CHECK_OPENMAINCTRL = MachineInitState.NORMAL;
-            mOnMachineCheckCallBackListener.OpenMainCrilSuccess();
         } else {
             mOnMachineCheckCallBackListener.OpenMainCrilFailed("串口打开失败,请检测串口输入是否正确");
         }
@@ -273,7 +268,7 @@ public class MachineCheck implements IMachineCheck {
                     SharedPreferencesManager.getInstance(mContext).setLoginPassword(object.getJSONObject("d").getString("loginPassword"));
                     MachineConfig.setTcpIP(object.getJSONObject("d").getString("tcpIP"));
                     MachineConfig.setTopic(object.getJSONObject("d").getString("topic"));
-               //     MachineConfig.setPhone(object.getJSONObject("d").getString("phone"));
+                    //     MachineConfig.setPhone(object.getJSONObject("d").getString("phone"));
                     MachineInitState.CHECK_MACHINECODE = MachineInitState.NORMAL;
                     mOnMachineCheckCallBackListener.MachineCodeCheckSuccess();
                 } else {

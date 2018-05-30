@@ -55,7 +55,7 @@ import example.jni.com.coffeeseller.views.viewinterface.ICommitMaterialView;
 
 public class ConfigFragment extends BasicFragment implements IAddMaterialView, ICommitMaterialView, ICheckVersionView, StateListener, IAddCupView, CompoundButton.OnCheckedChangeListener {
     private View mView;
-    private Button toDebug, materialCommit, checkVersion, saveConfig, changePassword, searchTrade, toSystem;
+    private Button toDebug, materialCommit, checkVersion, saveConfig, changePassword, searchTrade, toSystem, closeDoor, openDoor;
     private HomeActivity homeActivity;
     private TextView back;
     private RecyclerView materialList;
@@ -158,6 +158,8 @@ public class ConfigFragment extends BasicFragment implements IAddMaterialView, I
         isOutCupAutoClear.setOnCheckedChangeListener(this);
         onClear = (CheckBox) mView.findViewById(R.id.onClear);
         onClear.setOnCheckedChangeListener(this);
+        closeDoor = (Button) mView.findViewById(R.id.closeDoor);
+        openDoor = (Button) mView.findViewById(R.id.openDoor);
         usuallyWaterType = (CheckBox) mView.findViewById(R.id.usuallyWaterType);
         hotAndColdWaterType = (CheckBox) mView.findViewById(R.id.hotAndColdWaterType);
         materialList = (RecyclerView) mView.findViewById(R.id.material_list);
@@ -184,6 +186,8 @@ public class ConfigFragment extends BasicFragment implements IAddMaterialView, I
         sql = new MaterialSql(getActivity());
         toDebug.setOnClickListener(this);
         addCup.setOnClickListener(this);
+        closeDoor.setOnClickListener(this);
+        openDoor.setOnClickListener(this);
         addWater.setOnClickListener(this);
         materialCommit.setOnClickListener(this);
         changePassword.setOnClickListener(this);
@@ -263,6 +267,22 @@ public class ConfigFragment extends BasicFragment implements IAddMaterialView, I
             case R.id.toSystem:
                 SetFloatButton.getInstance(getActivity()).showFlowButton();
                 goSystemSetting();
+                break;
+            case R.id.closeDoor:
+                Result closeResult = msger.Debug(DebugAction.OPEN_DOOR, 0, 0);
+                if (closeResult.getCode() == Result.SUCCESS) {
+                    Toast.makeText(getActivity(), "大门关闭成功", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(getActivity(), "大门关闭失败,错误 " + closeResult.getErrDes(), Toast.LENGTH_LONG).show();
+                }
+                break;
+            case R.id.openDoor:
+                Result openResult = msger.Debug(DebugAction.OPEN_DOOR, 0, 1);
+                if (openResult.getCode() == Result.SUCCESS) {
+                    Toast.makeText(getActivity(), "大门打开成功", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(getActivity(), "大门打开失败,错误 " + openResult.getErrDes(), Toast.LENGTH_LONG).show();
+                }
                 break;
         }
     }

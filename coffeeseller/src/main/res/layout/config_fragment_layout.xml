@@ -625,7 +625,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="20dp"
-                android:text="模式设置:"
+                android:text="开关门:"
                 android:textColor="@color/black"
                 android:textSize="@dimen/text_size_one" />
 
@@ -636,6 +636,27 @@
                 android:layout_marginRight="20dp"
                 android:orientation="horizontal">
 
+                <Button
+                    android:id="@+id/openDoor"
+                    android:layout_width="wrap_content"
+                    android:layout_height="30dp"
+                    android:background="@drawable/shape_botton"
+                    android:gravity="center"
+                    android:text="打开大门"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/text_size_one" />
+
+                <Button
+                    android:id="@+id/closeDoor"
+                    android:layout_width="wrap_content"
+                    android:layout_height="30dp"
+                    android:layout_marginLeft="50dp"
+                    android:background="@drawable/shape_botton"
+                    android:gravity="center"
+                    android:text="关闭大门"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/text_size_one" />
+
                 <CheckBox
                     android:id="@+id/usuallyWaterType"
                     android:layout_width="wrap_content"
@@ -643,7 +664,8 @@
                     android:buttonTint="@color/blue"
                     android:text="常温水产品"
                     android:textColor="@color/gray"
-                    android:textSize="@dimen/text_size_one" />
+                    android:textSize="@dimen/text_size_one"
+                    android:visibility="gone" />
 
                 <CheckBox
                     android:id="@+id/hotAndColdWaterType"
@@ -653,7 +675,8 @@
                     android:buttonTint="@color/blue"
                     android:text="冷热水切换"
                     android:textColor="@color/gray"
-                    android:textSize="@dimen/text_size_one" />
+                    android:textSize="@dimen/text_size_one"
+                    android:visibility="gone" />
             </LinearLayout>
 
             <LinearLayout
