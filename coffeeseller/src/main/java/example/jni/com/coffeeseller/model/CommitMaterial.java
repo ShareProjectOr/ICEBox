@@ -32,7 +32,7 @@ public class CommitMaterial implements ICommitMaterial {
         final Map<String, Object> postBody = new HashMap<>();
         postBody.put("machineCode", MachineConfig.getMachineCode());
         postBody.put("bunkers", list);
-        Log.e(TAG, "commit position = 1 BunkerID is " + String.valueOf(list.get(1).getBunkerID()));
+//        Log.e(TAG, "commit position = 1 BunkerID is " + String.valueOf(list.get(1).getBunkerID()));
         new AsyncTask<Void, Boolean, Boolean>() {
             String response;
 
