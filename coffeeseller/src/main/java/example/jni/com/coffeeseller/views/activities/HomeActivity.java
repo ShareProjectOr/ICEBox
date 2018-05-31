@@ -6,11 +6,15 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.telephony.TelephonyManager;
 import android.util.Log;
+import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 
 import cof.ac.inter.CoffMsger;
 import cof.ac.inter.MachineState;
@@ -44,12 +48,53 @@ public class HomeActivity extends AppCompatActivity implements IAddFragmentView,
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_main);
         init();
         //动态注册，此广播只能动态注册才能接收到
         IntentFilter filter = new IntentFilter();
         filter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);//网络的连接（包括wifi和移动网络）
         checkNetWorkType();
+       // hideNav();
+    }
+
+    //全屏显示
+    void hideNav() {
+        getWindow().getDecorView().setSystemUiVisibility(
+                View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                        | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                        | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                        | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION // 隐藏状态栏的抽屉
+                        | View.SYSTEM_UI_FLAG_FULLSCREEN // 隐藏状态栏额bar
+        );
+        final Window window = getWindow();
+        window.getDecorView().setOnSystemUiVisibilityChangeListener(new View.OnSystemUiVisibilityChangeListener() {
+            @Override
+            public void onSystemUiVisibilityChange(int visibility) {
+                setHideVirtualKey(window);//隐藏后要保持布局状态,不然又会恢复
+            }
+        });
+        WindowManager.LayoutParams params = window.getAttributes();
+        params.systemUiVisibility = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION;
+        window.setAttributes(params);
+    }
+
+    public void setHideVirtualKey(Window window) {
+        //保持布局状态
+        int uiOptions = View.SYSTEM_UI_FLAG_LAYOUT_STABLE |
+                //布局位于状态栏下方
+                View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION |
+                //全屏
+                View.SYSTEM_UI_FLAG_FULLSCREEN;
+              /*  //隐藏导航栏
+                 | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION |
+                View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN;*/
+        if (Build.VERSION.SDK_INT >= 19) {
+            uiOptions |= 0x00001000;
+        } else {
+            uiOptions |= View.SYSTEM_UI_FLAG_LOW_PROFILE;
+        }
+        window.getDecorView().setSystemUiVisibility(uiOptions);
     }
 
     private boolean checkNetWorkType() {
