@@ -76,6 +76,7 @@
                 android:gravity="left|center_vertical"
                 android:imeOptions="actionDone"
                 android:paddingLeft="20dp"
+                android:singleLine="true"
                 android:textSize="25sp" />
         </LinearLayout>
 
@@ -95,6 +96,7 @@
                 android:imeOptions="actionDone"
                 android:inputType="textPassword"
                 android:paddingLeft="20dp"
+                android:singleLine="true"
                 android:textSize="25sp" />
         </LinearLayout>
 

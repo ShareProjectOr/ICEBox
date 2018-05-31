@@ -534,6 +534,7 @@
                     android:layout_width="200dp"
                     android:layout_height="40dp"
                     android:layout_marginLeft="20dp"
+                    android:singleLine="true"
                     android:imeOptions="actionDone"
                     android:background="@drawable/shape_config_edit"
                      />
@@ -577,6 +578,7 @@
                     android:layout_height="40dp"
                     android:background="@drawable/shape_config_edit"
                     android:hint="0-2.5s"
+                    android:singleLine="true"
                     android:imeOptions="actionDone"
                     android:inputType="numberDecimal"
                     android:paddingLeft="5dp" />
@@ -595,6 +597,7 @@
                     android:layout_height="40dp"
                     android:background="@drawable/shape_config_edit"
                     android:hint="0-100"
+                    android:singleLine="true"
                     android:imeOptions="actionDone"
                     android:inputType="number"
                     android:paddingLeft="5dp" />
@@ -707,6 +710,7 @@
                     android:layout_width="300dp"
                     android:layout_height="40dp"
                     android:imeOptions="actionDone"
+                    android:singleLine="true"
                     android:background="@drawable/shape_config_edit"
                     android:inputType="textPassword" />
 
