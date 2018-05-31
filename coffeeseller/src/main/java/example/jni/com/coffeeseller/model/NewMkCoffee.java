@@ -78,6 +78,7 @@ public class NewMkCoffee {
     private int perTimePaddingLeft = 10;//时间左边距
 
     private StringBuffer buffer;
+    private AsyncTask updateAnimProgressTask;
 
     public NewMkCoffee(Context context, CoffeeFomat coffeeFomat, DealRecorder dealRecorder, MkCoffeeListenner mkCoffeeListenner, Handler handler) {
         this.context = context;
@@ -107,6 +108,9 @@ public class NewMkCoffee {
         mRestTime = (TextView) view.findViewById(R.id.restTime);
 
         mProgressBar.setProgress(INIT_PROGRESS);
+
+        coffMsger = CoffMsger.getInstance();
+        buffer = new StringBuffer();
 
     }
 
@@ -163,8 +167,6 @@ public class NewMkCoffee {
             DealOrderInfoManager.getInstance(context).update(dealRecorder);
         }
 
-        coffMsger = CoffMsger.getInstance();
-        buffer = new StringBuffer();
 
         perProgressUnit = mProgressBar.getWidth() / 100;
         perTimePaddingLeft = mProgressBar.getWidth() / MAX_PROGRESS;
@@ -187,7 +189,9 @@ public class NewMkCoffee {
         }
         coffeeMakeStateRecorder.init();
         if (coffeeFomat != null && coffeeFomat.getContainerConfigs().size() >= 0) {
-            buffer.setLength(0);
+            if (buffer != null) {
+                buffer.setLength(0);
+            }
 
             mkCoffee();
 
@@ -195,19 +199,17 @@ public class NewMkCoffee {
 
             mRestTime.setVisibility(View.VISIBLE);
         } else {
-
-            buffer.append("\n");
-            buffer.append("没有设置配方");
-
-
-            showErr(true);
-
-            if (mkCoffeeListenner != null) {
-                dealRecorder.setMakeSuccess(false);
-                mkCoffeeListenner.getMkResult(dealRecorder, false, isCalculateMaterial);
-                stopCountTimer();
+            if (buffer != null) {
+                buffer.append("\n");
+                buffer.append("没有设置配方");
             }
 
+            showErr(true);
+            dealRecorder.setMakeSuccess(false);
+            if (mkCoffeeListenner != null) {
+                mkCoffeeListenner.getMkResult(dealRecorder, false, isCalculateMaterial);
+            }
+            stopCountTimer();
             MyLog.W(TAG, "containerConfigs is null");
         }
     }
@@ -217,29 +219,29 @@ public class NewMkCoffee {
         if (coffeeMakeStateRecorder.state == CoffeeMakeState.COFFEE_DOWN_CUP && !isStartMaking) {
 
             isStartMaking = true;
-            updateProgressAnim();
+            updateProgressAnim(false);
 
         } else if (coffeeMakeStateRecorder.state == CoffeeMakeState.COFFEE_ISMAKING && !isStartMaking) {
 
             isStartMaking = true;
-            updateProgressAnim();
+            updateProgressAnim(false);
 
         } else if (coffeeMakeStateRecorder.state == CoffeeMakeState.COFFEE_DOWN_POWER && !isStartMaking) {
 
             isStartMaking = true;
-            updateProgressAnim();
+            updateProgressAnim(false);
 
         } else if (coffeeMakeStateRecorder.state == CoffeeMakeState.COFFEEFINISHED_CUPNOTAKEN && isStartMaking) {
 
             isStartMaking = false;
             makeSuccess = true;
-            updateProgressAnim();
+            updateProgressAnim(true);
 
         } else if (coffeeMakeStateRecorder.state == CoffeeMakeState.COFFEEMAKING_FAILED) {
 
             isStartMaking = false;
             makeSuccess = true;
-            updateProgressAnim();
+            updateProgressAnim(true);
         }
     }
 
@@ -253,9 +255,10 @@ public class NewMkCoffee {
         Runnable runnable = new Runnable() {
             @Override
             public void run() {
-
-                buffer.setLength(0);
-                buffer.append("提示：");
+                if (buffer != null) {
+                    buffer.setLength(0);
+                    buffer.append("提示：");
+                }
                 MachineState machineState = null;
                 lastStateTime = System.currentTimeMillis();
                 totalMakingTime = System.currentTimeMillis();
@@ -279,7 +282,8 @@ public class NewMkCoffee {
                                 dealRecorder.setMakeSuccess(false);
                                 isCalculateMaterial = false;
                                 if (!isMkingOver) {
-                                    mkCoffeeListenner.getMkResult(dealRecorder, false, isCalculateMaterial);
+                                    if (mkCoffeeListenner != null)
+                                        mkCoffeeListenner.getMkResult(dealRecorder, false, isCalculateMaterial);
                                     stopCountTimer();
                                 }
                                 break;
@@ -295,7 +299,7 @@ public class NewMkCoffee {
                                     dealRecorder.setMakeSuccess(true);
                                 }
                                 isCalculateMaterial = true;
-                                if (!isMkingOver) {
+                                if (!isMkingOver && mkCoffeeListenner != null) {
                                     mkCoffeeListenner.getMkResult(dealRecorder, dealRecorder.isMakeSuccess(), isCalculateMaterial);
                                     stopCountTimer();
                                 }
@@ -320,9 +324,12 @@ public class NewMkCoffee {
                             }
                             coffeeMakeStateRecorder.state = CoffeeMakeState.COFFEEMAKING_FAILED;
 
-                            buffer.append("\n");
-                            buffer.append("制作过程中接收到0a : " + machineState.getMajorState().getHighErr_byte() + machineState.getMajorState().getLowErr_byte());//getHighErr_byte
+                            MyLog.W(TAG, "err return : " + machineState.getResult().getReturn_bytes());
 
+                            if (buffer != null) {
+                                buffer.append("\n");
+                                buffer.append("制作过程中接收到0a : " + machineState.getMajorState().getHighErr_byte() + machineState.getMajorState().getLowErr_byte());//getHighErr_byte
+                            }
                         }
                     } else {
 
@@ -335,7 +342,7 @@ public class NewMkCoffee {
 
                         Result result = coffMsger.mkCoffee(coffeeFomat.getContainerConfigs());
 
-                        MyLog.d(TAG, "send mkCoffee comd : " );//+ result.getReturn_bytes()
+                        MyLog.d(TAG, "send mkCoffee comd : ");//+ result.getReturn_bytes()
 
                         if (result.getCode() == Result.SUCCESS) {
 
@@ -347,10 +354,16 @@ public class NewMkCoffee {
 
                         } else {
 
+                            MyLog.W(TAG, "send mkCoffee comd result = " + result.getCode());
+
                             coffeeMakeStateRecorder.state = CoffeeMakeState.COFFEEMAKING_FAILED;
                             isCalculateMaterial = false;
-                            buffer.append("/n");
-                            buffer.append("发送咖啡制作指令，返回" + result.getErrDes());
+                            if (buffer != null) {
+                                buffer.append("/n");
+                                buffer.append("发送咖啡制作指令，返回" + result.getErrDes());
+
+                                MyLog.W(TAG, "send mkCoffee comd err return : " + machineState.getResult().getReturn_bytes());
+                            }
                         }
 
                     }
@@ -394,7 +407,10 @@ public class NewMkCoffee {
 
                         updateProgress();
                         dealRecorder.setMakeSuccess(true);
-                        mkCoffeeListenner.getMkResult(dealRecorder, true, isCalculateMaterial);
+                        if (mkCoffeeListenner != null) {
+                            mkCoffeeListenner.getMkResult(dealRecorder, true, isCalculateMaterial);
+                        }
+
                         stopCountTimer();
                         isMkingOver = true;
 
@@ -423,7 +439,9 @@ public class NewMkCoffee {
                             public void run() {
 
                                 dealRecorder.setMakeSuccess(false);
-                                mkCoffeeListenner.getMkResult(dealRecorder, false, isCalculateMaterial);
+                                if (mkCoffeeListenner != null) {
+                                    mkCoffeeListenner.getMkResult(dealRecorder, false, isCalculateMaterial);
+                                }
                                 stopCountTimer();
                                 isMkingOver = true;
 
@@ -527,8 +545,10 @@ public class NewMkCoffee {
         long curTime = System.currentTimeMillis();
         if (curTime - lastStateTime > MAX_STATE_TIME) {
 
-            buffer.append("\n");
-            buffer.append("5s内接收的状态没有更新");
+            if (buffer != null) {
+                buffer.append("\n");
+                buffer.append("5s内接收的状态没有更新");
+            }
             return true;
         }
         return false;
@@ -599,46 +619,94 @@ public class NewMkCoffee {
 
     public int initLeftMargin = 0;
 
-    public void updateProgressAnim() {
+    public void updateProgressAnim(boolean isFinish) {
 
-        perProgressUnit = mProgressBar.getWidth() / 100;
-        new AsyncTask<Void, Integer, Integer>() {
-
-            @Override
-            protected Integer doInBackground(Void... params) {
-                if (!makeSuccess) {
-                    for (int i = INIT_PROGRESS; i <= MAX_MAKING_PROGRESS; i++) {
-
-                        publishProgress(i);
-
-                        if (i == MAX_MAKING_PROGRESS) {
-                            break;
-                        }
-                        if (makeSuccess) {
-                            publishProgress(MAX_PROGRESS);
-                            break;
-                        }
-                        Waiter.doWait(CONTAIN_MAKING_PROGRESS_TIME / MAX_MAKING_PROGRESS);
-                    }
-                } else {
-                    publishProgress(MAX_PROGRESS);
+        if (isFinish) {
+            if (updateAnimProgressTask != null) {
+                updateAnimProgressTask.cancel(true);
+                updateAnimProgressTask = null;
+            }
+            handler.post(new Runnable() {
+                @Override
+                public void run() {
+                    setProgress(100);
+                    updateTimeCountText(100, perProgressUnit);
                 }
+            });
+        } else {
 
-                return null;
+            if (updateAnimProgressTask == null) {
+                perProgressUnit = mProgressBar.getWidth() / 100;
+                updateAnimProgressTask = new AsyncTask<Void, Integer, Integer>() {
+
+                    @Override
+                    protected Integer doInBackground(Void... params) {
+                        if (!makeSuccess) {
+                            for (int i = INIT_PROGRESS; i <= MAX_MAKING_PROGRESS; i++) {
+
+                                publishProgress(i);
+
+                                if (i == MAX_MAKING_PROGRESS) {
+                                    break;
+                                }
+                                if (makeSuccess) {
+                                    publishProgress(MAX_PROGRESS);
+                                    break;
+                                }
+                                Waiter.doWait(CONTAIN_MAKING_PROGRESS_TIME / MAX_MAKING_PROGRESS);
+                            }
+                        } else {
+                            publishProgress(MAX_PROGRESS);
+                        }
+
+                        return null;
+                    }
+
+                    @Override
+                    protected void onProgressUpdate(final Integer... values) {
+
+                        final int progress = values[0];
+
+                        setProgress(progress);
+
+                        //  mRestTime.setLayoutParams(params);
+                        handler.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                updateTimeCountText(progress, perProgressUnit);
+                            }
+                        });
+
+                        super.onProgressUpdate(values);
+
+                    }
+
+                    @Override
+                    protected void onCancelled() {
+
+                        if (updateAnimProgressTask != null) {
+                            updateAnimProgressTask.cancel(true);
+                            updateAnimProgressTask = null;
+                        }
+                        super.onCancelled();
+
+                    }
+
+                    @Override
+                    protected void onPostExecute(Integer integer) {
+
+                        if (updateAnimProgressTask != null) {
+                            updateAnimProgressTask.cancel(true);
+                            updateAnimProgressTask = null;
+                        }
+
+                        super.onPostExecute(integer);
+                    }
+                }.execute();
             }
-
-            @Override
-            protected void onProgressUpdate(Integer... values) {
+        }
 
 
-                setProgress(values[0]);
-
-                //  mRestTime.setLayoutParams(params);
-                updateTimeCountText(values[0], perProgressUnit);
-                super.onProgressUpdate(values);
-
-            }
-        }.execute();
     }
 
     private void updateTimeCountText(int progress, int leveProgress) {
@@ -715,12 +783,16 @@ public class NewMkCoffee {
                 mWancheng.setTextColor(ContextCompat.getColor(context, R.color.red));
                 mWancheng.setTextColor(ContextCompat.getColor(context, R.color.red));
 
-                mErrCaseTip.setText("失败" + buffer.toString());
-                mErrCaseTip.setVisibility(View.GONE);
                 MyLog.W(TAG, "making err order : " + dealRecorder.getOrder());
-                MyLog.W(TAG, "making err: " + buffer.toString());
+                if (buffer != null) {
+                    mErrCaseTip.setText("失败" + buffer.toString());
+                    mErrCaseTip.setVisibility(View.GONE);
+                    MyLog.W(TAG, "making err: " + buffer.toString());
 
-                MachineConfig.setErrCode(buffer.toString());
+                    MachineConfig.setErrCode(buffer.toString());
+                }
+
+
             }
         });
     }

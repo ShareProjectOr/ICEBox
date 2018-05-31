@@ -87,4 +87,21 @@ public class ViewPagerAdapter extends PagerAdapter {
             container.removeView(viewLayouts.get(position % viewLayouts.size()));
         }
     }
+
+    @Override
+    public int getItemPosition(Object object) {
+        return POSITION_NONE;
+    }
+
+    public void updateLayouts(List<LinearLayout> layouts) {
+
+
+        for (int i=0;i<viewLayouts.size();i++){
+            viewLayouts.remove(i);
+        }
+
+        viewLayouts = layouts;
+
+        notifyDataSetChanged();
+    }
 }

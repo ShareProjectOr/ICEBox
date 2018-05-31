@@ -66,6 +66,10 @@ public class ViewPagerLayout {
 
         pageCount = totalPageCount;
 
+
+/*
+* 如果下面的可以使用，就注释掉
+* */
         if (totalPageCount == 2) {
             for (int i = 0; i < 2; i++) {
                 addLayout(coffees, layouts, totalPageCount);
@@ -89,6 +93,16 @@ public class ViewPagerLayout {
 
             layouts.add(getLinearLayout(context, layoutCoffees, i));
 
+
+        }
+        /*
+        * 保证2页时，第三第四页用的是第一第二页的数据
+        * */
+        if (pageCount == 2) {
+            for (int i = 0; i < layouts.size(); i++) {
+                LinearLayout linearLayout = layouts.get(i);
+                layouts.add(linearLayout);
+            }
         }
     }
 
@@ -124,6 +138,7 @@ public class ViewPagerLayout {
                 public void onClick(View v) {
 
                     if (coffeeItemSelectedListener != null) {
+
                         coffeeItemSelectedListener.getView(coffee, page, position, viewHolder);
                     }
                 }

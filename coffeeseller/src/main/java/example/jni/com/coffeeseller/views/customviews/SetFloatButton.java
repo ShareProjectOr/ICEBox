@@ -77,8 +77,11 @@ public class SetFloatButton {
         params.width = 90;
         params.height = 90;
         params.gravity = Gravity.BOTTOM;
-        windowManager.addView(getButton(), params);
+        View view = getButton();
 
+        if (view != null && !view.isAttachedToWindow()) {
+            windowManager.addView(getButton(), params);
+        }
     }
 
 
@@ -100,7 +103,9 @@ public class SetFloatButton {
             public void onClick(View view) {
 
                 Log.d("TAG", "---back---");
-                windowManager.removeView(button);
+                if (button!=null && button.isAttachedToWindow()){
+                    windowManager.removeView(button);
+                }
                 Intent intent = new Intent(Intent.ACTION_MAIN);
                 //display top-level
                 intent.addCategory(Intent.CATEGORY_LAUNCHER);

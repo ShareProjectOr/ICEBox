@@ -20,7 +20,7 @@ public class MyLog {
 
     public static void W(String TAG,String msg) {
 
-        Log.d(mTAG, TAG+"--"+msg);
+            Log.d(mTAG, TAG+"--"+msg);
         LogFileOperator mLogFileOperator = LogFileOperator.getInstance();
         if(mLogFileOperator != null) {
 

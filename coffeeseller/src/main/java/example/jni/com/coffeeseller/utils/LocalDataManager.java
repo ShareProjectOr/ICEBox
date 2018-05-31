@@ -191,7 +191,7 @@ public class LocalDataManager {
 	}
 	
 	public String getLastCreateLogfileTime(){
-		String lastCreateLogfileTime = sharedPreferences.getString("sharedPreferences", 
+		String lastCreateLogfileTime = sharedPreferences.getString("lastCreateLogfileTime",
 				(new SimpleDateFormat("yyyy-MM-dd",Locale.getDefault())).format(new Date()));
 		return lastCreateLogfileTime;
 	}

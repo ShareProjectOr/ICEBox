@@ -5,6 +5,7 @@ import java.util.List;
 
 import cof.ac.inter.ContainerConfig;
 import example.jni.com.coffeeseller.bean.Step;
+import example.jni.com.coffeeseller.utils.SecondToDate;
 
 public class DealRecorder {
 
@@ -106,12 +107,20 @@ public class DealRecorder {
     }
 
     public String getPayTime() {
-
         return payTime;
     }
 
     public void setPayTime(String payTime) {
-        this.payTime = payTime;
+
+        if (payTime.isEmpty()) {
+            this.payTime = "";
+        } else {
+            try {
+                this.payTime = SecondToDate.getDateToString(Long.parseLong(payTime));
+            } catch (Exception e) {
+                this.payTime = "";
+            }
+        }
     }
 
     public List<ContainerConfig> getContainerConfigs() {

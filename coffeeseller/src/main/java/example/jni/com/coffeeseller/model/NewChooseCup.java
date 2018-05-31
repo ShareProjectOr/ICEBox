@@ -173,7 +173,7 @@ public class NewChooseCup implements View.OnClickListener, MsgTransListener {
             containerConfig.setStir_speed(step.getContainerConfig().getStir_speed());
             containerConfig.setWater_capacity(step.getContainerConfig().getWater_capacity());
 
-            MyLog.d(TAG,"containerConfig.setWater_type= =  "+step.getContainerConfig().getWater_type());
+            MyLog.d(TAG, "containerConfig.setWater_type= =  " + step.getContainerConfig().getWater_type());
 
 
             mCoffeeFomat.getContainerConfigs().add(i, containerConfig);
@@ -388,9 +388,11 @@ public class NewChooseCup implements View.OnClickListener, MsgTransListener {
                 //清洗机器
                 int waitTime = ClearMachine.clearMachineAllModule(mCoffeeFomat.getContainerConfigs());
 
-                MyLog.d(TAG, "waitTime= " + waitTime);
+                int newWaitTime = waitTime + 10 * 1000;
 
-                checkCanSendMkingComd(waitTime);
+                MyLog.d(TAG, "waitTime= " + newWaitTime);
+
+                checkCanSendMkingComd(newWaitTime);
 
             } else {
                 hasPay();

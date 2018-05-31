@@ -513,8 +513,6 @@ public class ChooseAndMking implements ChooseCupListenner, MkCoffeeListenner {
     * */
     public void viewOutAnim(int waitTime) {
 
-        initState();
-
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -531,7 +529,8 @@ public class ChooseAndMking implements ChooseCupListenner, MkCoffeeListenner {
                         if (view != null) {
                             view.clearAnimation();
                             view.setVisibility(View.GONE);
-                          //  initState();
+                            initState();
+
                         }
                     }
 
@@ -688,12 +687,12 @@ public class ChooseAndMking implements ChooseCupListenner, MkCoffeeListenner {
             }
         }).start();
 
-
         //更新BuyFragment ui
         if (newBuyFragment != null) {
-            newBuyFragment.updateUi();
+            newBuyFragment.updateUi(0);
         }
 
         viewOutAnim(10000);
+
     }
 }

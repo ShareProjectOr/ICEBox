@@ -23,6 +23,7 @@ import example.jni.com.coffeeseller.factory.FragmentFactory;
 import example.jni.com.coffeeseller.model.listeners.TaskServiceListener;
 import example.jni.com.coffeeseller.parse.PayResult;
 import example.jni.com.coffeeseller.presenter.AddFragmentPresenter;
+import example.jni.com.coffeeseller.utils.LogFileOperator;
 import example.jni.com.coffeeseller.views.fragments.BasicFragment;
 import example.jni.com.coffeeseller.views.viewinterface.IAddFragmentView;
 
@@ -101,6 +102,7 @@ public class HomeActivity extends AppCompatActivity implements IAddFragmentView,
 
     private void initDatas() {
         Version = getVersion();
+        LogFileOperator.getInstance(this);
     }
 
     private void initViews() {

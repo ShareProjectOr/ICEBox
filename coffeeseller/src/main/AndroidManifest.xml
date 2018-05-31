@@ -12,6 +12,7 @@
     <uses-permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS" />
 
     <application
+        android:name="example.jni.com.coffeeseller.crash.CrashApplication"
         android:allowBackup="true"
         android:icon="@mipmap/coffee_logo"
         android:label="@string/app_name"
@@ -27,6 +28,7 @@
             android:windowSoftInputMode="adjustPan">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.HOME" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.LAUNCHER" />
