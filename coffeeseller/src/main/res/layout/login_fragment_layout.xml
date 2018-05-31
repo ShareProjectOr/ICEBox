@@ -75,6 +75,7 @@
                 android:background="@android:color/transparent"
                 android:gravity="left|center_vertical"
                 android:paddingLeft="20dp"
+                android:imeOptions="actionDone"
                 android:textSize="25sp" />
         </LinearLayout>
 
