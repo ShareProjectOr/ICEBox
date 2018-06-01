@@ -33,6 +33,7 @@ public class MoveSetFlowButton {
     LayoutParams params;
 
     private static MoveSetFlowButton instance = null;
+    private static boolean isAttachToWindow = false;
 
     public static MoveSetFlowButton getInstance(Context context) {
 
@@ -69,9 +70,30 @@ public class MoveSetFlowButton {
 
     public void showFlowButton() {
 
+        if (!isAttachToWindow) {
 
-        windowManager.addView(getButton(), params);
+            View view = getButton();
+//        if (view != null && !view.isAttachedToWindow()) {  //工控机配置低,出现没有该方法
+            windowManager.addView(view, params);
 
+//        }
+
+            isAttachToWindow = true;
+        }
+
+
+    }
+
+    public void removeFlowButton() {
+        //                if (button.isAttachedToWindow()){
+
+        if (isAttachToWindow) {
+            windowManager.removeView(button);
+
+            isAttachToWindow = false;
+        }
+
+//                }
     }
 
     private View getButton() {
@@ -92,7 +114,14 @@ public class MoveSetFlowButton {
             public void onClick(View view) {
 
                 Log.d("TAG", "---back---");
+/*//                if (button.isAttachedToWindow()){
                 windowManager.removeView(button);
+
+                isAttachToWindow = false;
+//                }*/
+
+                removeFlowButton();
+
                 Intent intent = new Intent(Intent.ACTION_MAIN);
                 //display top-level
                 intent.addCategory(Intent.CATEGORY_LAUNCHER);

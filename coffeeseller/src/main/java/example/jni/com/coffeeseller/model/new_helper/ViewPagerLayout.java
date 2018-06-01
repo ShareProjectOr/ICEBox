@@ -66,19 +66,15 @@ public class ViewPagerLayout {
 
         pageCount = totalPageCount;
 
-
-/*
-* 如果下面的可以使用，就注释掉
-* */
-        if (totalPageCount == 2) {
+   /*     if (totalPageCount == 2) {
             for (int i = 0; i < 2; i++) {
                 addLayout(coffees, layouts, totalPageCount);
             }
         } else {
             addLayout(coffees, layouts, totalPageCount);
-        }
+        }*/
 
-
+        addLayout(coffees, layouts, totalPageCount);
         return layouts;
     }
 
@@ -94,15 +90,6 @@ public class ViewPagerLayout {
             layouts.add(getLinearLayout(context, layoutCoffees, i));
 
 
-        }
-        /*
-        * 保证2页时，第三第四页用的是第一第二页的数据
-        * */
-        if (pageCount == 2) {
-            for (int i = 0; i < layouts.size(); i++) {
-                LinearLayout linearLayout = layouts.get(i);
-                layouts.add(linearLayout);
-            }
         }
     }
 
@@ -120,7 +107,7 @@ public class ViewPagerLayout {
             MyLog.d(TAG, "coffees.size =" + coffees.size());
             final int position = i;
 
-            View view = LayoutInflater.from(context).inflate(R.layout.new_viewpager_item, linearLayout, false);
+            final View view = LayoutInflater.from(context).inflate(R.layout.new_viewpager_item, linearLayout, false);
 
             final ViewHolder viewHolder = new ViewHolder(view, context);
 
@@ -147,6 +134,49 @@ public class ViewPagerLayout {
             linearLayout.addView(view);
         }
         return linearLayout;
+    }
+
+    public void updateSameViewHOlderIF2(boolean isSelected) {
+        if (pageCount != 2) {
+            return;
+        }
+        for (int i = 0; i < viewHolders.size() / 2; i++) {
+            int count = viewHolders.size() / 2;
+            for (int j = viewHolders.size() / 2; j < viewHolders.size(); j++) {
+                int curPosition = j % count;
+                if (i == curPosition) {
+
+                    if (isSelected){
+                        if (viewHolders.get(i).isSelected && !viewHolders.get(j).isSelected) {
+                            viewHolders.get(j).isSelected = true;
+                            viewHolders.get(j).update(viewHolders.get(j), true);
+                        } else if (viewHolders.get(j).isSelected && !viewHolders.get(i).isSelected) {
+                            viewHolders.get(i).isSelected = true;
+                            viewHolders.get(i).update(viewHolders.get(i), true);
+                        }
+                    }else{
+                        if (viewHolders.get(i).isSelected && !viewHolders.get(j).isSelected) {
+                            viewHolders.get(j).isSelected = false;
+                            viewHolders.get(j).update(viewHolders.get(i), false);
+                        } else if (viewHolders.get(j).isSelected && !viewHolders.get(i).isSelected) {
+                            viewHolders.get(i).isSelected = true;
+                            viewHolders.get(i).update(viewHolders.get(j), false);
+                        }
+                    }
+
+                    if (viewHolders.get(i).isSelected && !viewHolders.get(j).isSelected) {
+                        viewHolders.get(j).isSelected = true;
+                        viewHolders.get(j).update(viewHolders.get(j), true);
+                    } else if (viewHolders.get(j).isSelected && !viewHolders.get(i).isSelected) {
+                        viewHolders.get(i).isSelected = true;
+                        viewHolders.get(i).update(viewHolders.get(i), true);
+                    } else {
+                        viewHolders.get(i).update(viewHolders.get(i), false);
+                        viewHolders.get(j).update(viewHolders.get(j), false);
+                    }
+                }
+            }
+        }
     }
 
     public void updateViewHolder(ViewHolder selectedViewHolder) {

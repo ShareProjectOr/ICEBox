@@ -328,7 +328,7 @@ public class NewMkCoffee {
 
                             if (buffer != null) {
                                 buffer.append("\n");
-                                buffer.append("制作过程中接收到0a : " + machineState.getMajorState().getHighErr_byte() + machineState.getMajorState().getLowErr_byte());//getHighErr_byte
+                                buffer.append("制作过程中接收到0a : " + machineState.getMajorState().getHighErr_byte() + "--" + machineState.getMajorState().getLowErr_byte());//getHighErr_byte
                             }
                         }
                     } else {

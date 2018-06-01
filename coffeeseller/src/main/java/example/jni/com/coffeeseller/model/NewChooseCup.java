@@ -321,86 +321,103 @@ public class NewChooseCup implements View.OnClickListener, MsgTransListener {
         if (curPayState == NO_PAY) {
             if (msg.getPayResult() == PAYING) {
                 curPayState = PAYING;
+                operationIfPaying();
             }
             if (msg.getPayResult() == PAYED) {
                 curPayState = PAYED;
+                operationIfPayed(msg);
             }
 
             MyLog.W(TAG, "check pay result is not pay ");
         }
         if (curPayState == PAYING) {
 
-            if (mHandler != null) {
-                mHandler.post(new Runnable() {
-                    @Override
-                    public void run() {
-
-                        mPaying.setVisibility(View.VISIBLE);
-                        mQrImg.setVisibility(View.GONE);
-                        mLoadingBar.setProgress(View.VISIBLE);
-                        mChooseAndMking.setPaying(true);
-                        if (mChooseCupListener != null) {
-
-                            mChooseCupListener.paying(true);
-                        }
-                    }
-                });
-            }
-            MyLog.W(TAG, "check pay result is paying ");
-
             if (msg.getPayResult() == PAYED) {
                 curPayState = PAYED;
+                operationIfPayed(msg);
             }
         }
-        if (curPayState == PAYED) {
+    }
 
-            if (mDealRecorder.isPayed()) {
-                return;
-            }
-            MyLog.W(TAG, " check pay result has payed");
+    /*
+    * 正在支付中的操作
+    * */
+    private void operationIfPaying() {
+        if (mHandler != null) {
+            mHandler.post(new Runnable() {
+                @Override
+                public void run() {
 
-            if (mHandler != null) {
-                mHandler.post(new Runnable() {
-                    @Override
-                    public void run() {
+                    mPaying.setVisibility(View.VISIBLE);
+                    mQrImg.setVisibility(View.GONE);
+                    mLoadingBar.setProgress(View.VISIBLE);
+                    mChooseAndMking.setPaying(true);
+                    if (mChooseCupListener != null) {
 
-                        mPaying.setText("支付完成");
-                        mQrImg.setVisibility(View.GONE);
-                        mLoadingBar.setProgress(View.VISIBLE);
-                        mChooseAndMking.setPayed(true);
+                        mChooseCupListener.paying(true);
                     }
-                });
-            }
+                }
+            });
+        }
+        MyLog.W(TAG, "check pay result is paying ");
+    }
 
-            getFinalContainerConfig();
+    /*
+    * 如果已经检测到支付成功
+    * */
+    private void operationIfPayed(PayResult msg) {
+        if (mDealRecorder.isPayed()) {
+            return;
+        }
+        MyLog.W(TAG, " check pay result has payed");
 
-            mDealRecorder.setPayed(true);
-            mDealRecorder.setPayTime(msg.getPayTime());
+        if (mHandler != null) {
+            mHandler.post(new Runnable() {
+                @Override
+                public void run() {
 
-            stopTaskCheckPay();
+                    mPaying.setText("支付完成");
+                    mQrImg.setVisibility(View.GONE);
+                    mLoadingBar.setProgress(View.VISIBLE);
+                    mChooseAndMking.setPayed(true);
+                }
+            });
+        }
+
+        getFinalContainerConfig();
+
+        mDealRecorder.setPayed(true);
+        mDealRecorder.setPayTime(msg.getPayTime());
+
+        stopTaskCheckPay();
 
                 /*
                 * 重置倒计时
               * */
-            mChooseAndMking.setCurTimeCount(0);
+        mChooseAndMking.setCurTimeCount(0);
 
-            if (System.currentTimeMillis() - mChooseAndMking.getLastMkTime() > ChooseAndMking.TIME_BEFORE_MK_TO_CLEAR) {
-                //清洗机器
-                int waitTime = ClearMachine.clearMachineAllModule(mCoffeeFomat.getContainerConfigs());
-
-                int newWaitTime = waitTime + 10 * 1000;
-
-                MyLog.d(TAG, "waitTime= " + newWaitTime);
-
-                checkCanSendMkingComd(newWaitTime);
-
-            } else {
-                hasPay();
-                stopTaskCheckPay();
-                mChooseAndMking.stopCountTimer();
-            }
+        if (System.currentTimeMillis() - mChooseAndMking.getLastMkTime() > ChooseAndMking.TIME_BEFORE_MK_TO_CLEAR) {
+            mHandler.post(new Runnable() {
+                @Override
+                public void run() {
+                    setClearText(-1);
+                }
+            });
 
 
+            //清洗机器
+            int waitTime = ClearMachine.clearMachineAllModule(mCoffeeFomat.getContainerConfigs());
+
+            int newWaitTime = waitTime + 10 * 1000;
+
+            MyLog.d(TAG, "waitTime= " + newWaitTime);
+
+            checkCanSendMkingComd(newWaitTime);
+
+        } else {
+            hasPay();
+            stopTaskCheckPay();
+            mChooseAndMking.stopCountTimer();
         }
     }
 

@@ -485,5 +485,14 @@ public class ConfigFragment extends BasicFragment implements IAddMaterialView, I
                 break;
         }
     }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (homeActivity != null && MoveSetFlowButton.getInstance(homeActivity) != null) {
+            MoveSetFlowButton.getInstance(homeActivity).removeFlowButton();
+        }
+
+    }
 }
 

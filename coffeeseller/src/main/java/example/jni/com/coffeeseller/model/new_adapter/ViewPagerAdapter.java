@@ -37,7 +37,8 @@ public class ViewPagerAdapter extends PagerAdapter {
     @Override
     public int getCount() {
 
-        return viewLayouts.size() <= 1 ? viewLayouts.size() : Integer.MAX_VALUE;
+//        return viewLayouts.size() <= 1 ? viewLayouts.size() : Integer.MAX_VALUE;
+        return viewLayouts.size();
     }
 
     @Override
@@ -48,7 +49,7 @@ public class ViewPagerAdapter extends PagerAdapter {
     @Override
     public Object instantiateItem(ViewGroup container, int position) {
 
-        LinearLayout layout = viewLayouts.get(position % viewLayouts.size());
+   /*     LinearLayout layout = viewLayouts.get(position % viewLayouts.size());
 
         MyLog.d("-------------------------", position + " , " + position % viewLayouts.size());
 
@@ -58,9 +59,9 @@ public class ViewPagerAdapter extends PagerAdapter {
         }
         container.addView(layout);
 
-        return layout;
+        return layout;*/
 
-    /*    if (viewLayouts.size() < 3) {
+        if (viewLayouts.size() < 3) {
             LinearLayout layout = viewLayouts.get(position % viewLayouts.size());
             ViewGroup parent = (ViewGroup) layout.getParent();
             if (parent != null) {
@@ -75,7 +76,7 @@ public class ViewPagerAdapter extends PagerAdapter {
             container.addView(viewLayouts.get(position % viewLayouts.size()));
 
             return viewLayouts.get(position % viewLayouts.size());
-        }*/
+        }
     }
 
     @Override
@@ -96,7 +97,7 @@ public class ViewPagerAdapter extends PagerAdapter {
     public void updateLayouts(List<LinearLayout> layouts) {
 
 
-        for (int i=0;i<viewLayouts.size();i++){
+        for (int i = 0; i < viewLayouts.size(); i++) {
             viewLayouts.remove(i);
         }
 

@@ -99,9 +99,9 @@ public class TasteGridAdapter extends BaseAdapter {
 
                     float materialTime = ((float) step.getTastes().get(position).getAmount()) / 100;
 
-                    int useMaterial = Math.round(materialTime * step.getContainerConfig().getMaterial_time());
+                    int useMaterial = Math.round(materialTime * step.getContainerConfig().getMaterial_time());//
 
-                    MyLog.d(TAG, "containerConfig.getMaterial_time()= " + step.getContainerConfig().getMaterial_time()
+                    MyLog.d(TAG, "step.getMaterial_time()= " + step.getContainerConfig().getMaterial_time()
                             + " ,time= " + materialTime + ",getMaterial_time= " + useMaterial + " ----i= " + step.getTastes().get(position).getRemark());
 
                     containerConfig.setMaterial_time(useMaterial);

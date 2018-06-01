@@ -432,14 +432,12 @@ public class NewBuyFragment extends BasicFragment implements CoffeeItemSelectedL
                 if (coffees != null && coffees.size() > 0) {
                     layouts = mViewPagerLayout.getLinearLayouts(coffees);
 
-                   /*
+/*
+                    //  数据更新，待测试，如果可以，下面的可以注释
 
-                   数据更新，待测试，如果可以，下面的可以注释
-
-                   mViewPagerAdapter.updateLayouts(layouts);
+                    mViewPagerAdapter.updateLayouts(layouts);
 
                     addPoint();*/
-
                     if (layouts != null && layouts.size() > 0) {
                         mViewPagerAdapter = new ViewPagerAdapter(layouts);
                         mViewPager.setAdapter(mViewPagerAdapter);
@@ -642,14 +640,14 @@ public class NewBuyFragment extends BasicFragment implements CoffeeItemSelectedL
                     return;
                 }
 
-                int viewPagerItemPosition = mViewPager.getCurrentItem() - 1;
+         /*       int viewPagerItemPosition = mViewPager.getCurrentItem() - 1;
 
                 MyLog.d(TAG, " leftLayout position = " + viewPagerItemPosition);
 
-                mViewPager.setCurrentItem(viewPagerItemPosition, true);
+                mViewPager.setCurrentItem(viewPagerItemPosition , true);*/
 //                curItemPosition = absPosition(viewPagerItemPosition);
 
-              /*  if (mViewPager.getCurrentItem() == 0) {
+                if (mViewPager.getCurrentItem() == 0) {
                     if (layouts.size() > 0) {
                         mViewPager.setCurrentItem(layouts.size() - 1, true);
                         curItemPosition = (layouts.size() - 1) % layouts.size();
@@ -658,7 +656,7 @@ public class NewBuyFragment extends BasicFragment implements CoffeeItemSelectedL
                 } else {
                     mViewPager.setCurrentItem((mViewPager.getCurrentItem() - 1) % layouts.size(), true);
                     curItemPosition = (mViewPager.getCurrentItem() - 1) % layouts.size();
-                }*/
+                }
                 lastClickLeftRight = System.currentTimeMillis();
                 break;
             case R.id.rightLayout:
@@ -672,21 +670,21 @@ public class NewBuyFragment extends BasicFragment implements CoffeeItemSelectedL
                 if (System.currentTimeMillis() - lastClickLeftRight <= 250) {
                     return;
                 }
-
+/*
                 mViewPager.setCurrentItem(mViewPager.getCurrentItem() + 1, true);
 
-                MyLog.d(TAG, "----------------- " + mViewPager.getCurrentItem());
+                MyLog.d(TAG, "----------------- " + mViewPager.getCurrentItem());*/
 
 //                curItemPosition = (mViewPager.getCurrentItem() + 1) % layouts.size();
 
-             /*   if (mViewPager.getCurrentItem() + 1 == layouts.size()) {
+                if (mViewPager.getCurrentItem() + 1 == layouts.size()) {
                     mViewPager.setCurrentItem(0, false);
                     curItemPosition = 0;
                 } else {
                     mViewPager.setCurrentItem((mViewPager.getCurrentItem() + 1) % layouts.size(), true);
 
                     curItemPosition = (mViewPager.getCurrentItem() + 1) % layouts.size();
-                }*/
+                }
 
                 lastClickLeftRight = System.currentTimeMillis();
 
@@ -710,12 +708,15 @@ public class NewBuyFragment extends BasicFragment implements CoffeeItemSelectedL
             mChooseAndMking.init(coffee);
             cancleAutoLoop();
             mFloatLayout.addView(mChooseAndMking.getView());
+            mViewPagerLayout.updateSameViewHOlderIF2(true);
         } else {
             isCoffeeSelected = false;
             mFloatLayout.removeAllViews();
+            mViewPagerLayout.updateSameViewHOlderIF2(false);
         }
 
         mViewPagerLayout.updateViewHolder(viewHolder);
+
         return;
     }
 }
