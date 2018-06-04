@@ -320,12 +320,15 @@ public class NewChooseCup implements View.OnClickListener, MsgTransListener {
 
         if (curPayState == NO_PAY) {
             if (msg.getPayResult() == PAYING) {
-                curPayState = PAYING;
+
                 operationIfPaying();
+                curPayState = PAYING;
+
             }
             if (msg.getPayResult() == PAYED) {
-                curPayState = PAYED;
+
                 operationIfPayed(msg);
+                curPayState = PAYED;
             }
 
             MyLog.W(TAG, "check pay result is not pay ");
@@ -333,8 +336,9 @@ public class NewChooseCup implements View.OnClickListener, MsgTransListener {
         if (curPayState == PAYING) {
 
             if (msg.getPayResult() == PAYED) {
-                curPayState = PAYED;
+
                 operationIfPayed(msg);
+                curPayState = PAYED;
             }
         }
     }
@@ -380,6 +384,11 @@ public class NewChooseCup implements View.OnClickListener, MsgTransListener {
                     mQrImg.setVisibility(View.GONE);
                     mLoadingBar.setProgress(View.VISIBLE);
                     mChooseAndMking.setPayed(true);
+
+                  /*  if (System.currentTimeMillis() - mChooseAndMking.getLastMkTime() > ChooseAndMking.TIME_BEFORE_MK_TO_CLEAR) {
+                        setClearText(-1);
+                    }*/
+
                 }
             });
         }
@@ -396,14 +405,7 @@ public class NewChooseCup implements View.OnClickListener, MsgTransListener {
               * */
         mChooseAndMking.setCurTimeCount(0);
 
-        if (System.currentTimeMillis() - mChooseAndMking.getLastMkTime() > ChooseAndMking.TIME_BEFORE_MK_TO_CLEAR) {
-            mHandler.post(new Runnable() {
-                @Override
-                public void run() {
-                    setClearText(-1);
-                }
-            });
-
+/*        if (System.currentTimeMillis() - mChooseAndMking.getLastMkTime() > ChooseAndMking.TIME_BEFORE_MK_TO_CLEAR) {
 
             //清洗机器
             int waitTime = ClearMachine.clearMachineAllModule(mCoffeeFomat.getContainerConfigs());
@@ -414,11 +416,11 @@ public class NewChooseCup implements View.OnClickListener, MsgTransListener {
 
             checkCanSendMkingComd(newWaitTime);
 
-        } else {
+        } else {*/
             hasPay();
             stopTaskCheckPay();
             mChooseAndMking.stopCountTimer();
-        }
+//        }
     }
 
     public void checkCanSendMkingComd(final int waitTime) {

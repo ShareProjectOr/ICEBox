@@ -250,9 +250,6 @@ public class ChooseAndMking implements ChooseCupListenner, MkCoffeeListenner {
 
                             newChooseCup.cancle();
 
-
-                            /*curTimeCount = 0;
-                            stopCountTimer();*/
                         } else if (curViewId == VIEW_ERR_TIP) { //10s倒计时结束后就消失
                             //   viewOutAnim(0);
                         }
@@ -528,8 +525,8 @@ public class ChooseAndMking implements ChooseCupListenner, MkCoffeeListenner {
                     public void onAnimationEnd(Animation animation) {
                         if (view != null) {
                             view.clearAnimation();
-                            view.setVisibility(View.GONE);
                             initState();
+                            view.setVisibility(View.GONE);
 
                         }
                     }

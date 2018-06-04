@@ -221,15 +221,18 @@ public class NewBuyFragment extends BasicFragment implements CoffeeItemSelectedL
 
         mCoffees = new ArrayList<>();
         addPoint();
+     /*   //无限轮播
         if (layouts.size() != 1) {
             mViewPager.setCurrentItem(layouts.size() * 100);
-        }
+        }*/
         autoScrollRunnable = new Runnable() {
             @Override
             public void run() {
                 if (isViewPagerLooping) {
                     int currentItem = mViewPager.getCurrentItem();
-//                    mViewPager.setCurrentItem((currentItem + 1) % layouts.size(), true);
+                    mViewPager.setCurrentItem((currentItem + 1) % layouts.size(), true);
+
+/*                   // 无限轮滑判断
                     if (currentItem == Integer.MAX_VALUE) {
 
                         mViewPager.setCurrentItem((Integer.MAX_VALUE % layouts.size()) + layouts.size() * 100, true);
@@ -238,7 +241,7 @@ public class NewBuyFragment extends BasicFragment implements CoffeeItemSelectedL
                         mViewPager.setCurrentItem((currentItem + 1), true);
                     }
 //                    curItemPosition = (currentItem + 1) % layouts.size();
-                    mViewPager.setCurrentItem((currentItem + 1), true);
+                    mViewPager.setCurrentItem((currentItem + 1), true);*/
                     handler.postDelayed(autoScrollRunnable, 4000);
                 }
             }
@@ -461,7 +464,11 @@ public class NewBuyFragment extends BasicFragment implements CoffeeItemSelectedL
 
     public void autoScrollTimeCheck() {
 
-        stopAutoScrollTimer();
+        // stopAutoScrollTimer();
+
+        if (autoScrollTimer != null && autoScrollTimerTask != null) {
+            return;
+        }
 
         if (autoScrollTimer == null) {
             autoScrollTimer = new Timer();
@@ -521,6 +528,8 @@ public class NewBuyFragment extends BasicFragment implements CoffeeItemSelectedL
                 mViewPagerLayout.initViewHolder();
                 isCoffeeSelected = false;
                 isViewPagerLooping = false;
+                stopAutoScrollTimer();
+                autoScrollTimeCheck();
             }
         });
 
@@ -708,11 +717,9 @@ public class NewBuyFragment extends BasicFragment implements CoffeeItemSelectedL
             mChooseAndMking.init(coffee);
             cancleAutoLoop();
             mFloatLayout.addView(mChooseAndMking.getView());
-            mViewPagerLayout.updateSameViewHOlderIF2(true);
         } else {
             isCoffeeSelected = false;
             mFloatLayout.removeAllViews();
-            mViewPagerLayout.updateSameViewHOlderIF2(false);
         }
 
         mViewPagerLayout.updateViewHolder(viewHolder);

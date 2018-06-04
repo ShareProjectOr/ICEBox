@@ -265,190 +265,64 @@ public class NewMkCoffee {
                 while (true) {
 
                     machineState = coffMsger.getLastMachineState();
-
                     if (isMkTimeOut()) {
 
-                        if (coffeeMakeStateRecorder.state == null
-                                || coffeeMakeStateRecorder.state == CoffeeMakeState.COFFEEFINISHED_CUPNOTAKEN
-                                || coffeeMakeStateRecorder.state == CoffeeMakeState.COFFEEFINISHED_CUPISTAKEN) {
-                            MyLog.W(TAG, " make successed but time is too long ");
-
-
-                        } else {
-                            if (coffeeMakeStateRecorder.state == CoffeeMakeState.COFFEE_DOWN_CUP || coffeeMakeStateRecorder.state == CoffeeMakeState.COFFEE_MAKE_INIT) {
-
-                                MyLog.W(TAG, " make failed and time is too long," + coffeeMakeStateRecorder.state + "  state is remaining ");
-
-                                dealRecorder.setMakeSuccess(false);
-                                isCalculateMaterial = false;
-                                if (!isMkingOver) {
-                                    if (mkCoffeeListenner != null)
-                                        mkCoffeeListenner.getMkResult(dealRecorder, false, isCalculateMaterial);
-                                    stopCountTimer();
-                                }
-                                break;
-
-                            } else if (coffeeMakeStateRecorder.state == CoffeeMakeState.COFFEE_ISMAKING
-                                    || coffeeMakeStateRecorder.state == CoffeeMakeState.COFFEE_DOWN_POWER) {
-
-                                MyLog.W(TAG, " make failed and time is too long,other state is remaining ");
-
-                                if (machineState.hasCupOnShelf()) {
-                                    dealRecorder.setMakeSuccess(false);
-                                } else {
-                                    dealRecorder.setMakeSuccess(true);
-                                }
-                                isCalculateMaterial = true;
-                                if (!isMkingOver && mkCoffeeListenner != null) {
-                                    mkCoffeeListenner.getMkResult(dealRecorder, dealRecorder.isMakeSuccess(), isCalculateMaterial);
-                                    stopCountTimer();
-                                }
-
-                                break;
-
-                            }
-                        }
-
+                        dealMkTimeOut(machineState);
                         break;
                     }
                     if (DealMachineState(machineState)) {
 
                         if (machineState.getMajorState().getCurStateEnum() == StateEnum.HAS_ERR) {
 
-                            /*
-                            * 如果接收到0a时，出现的状态是落杯或初始化
-                            * */
-                            if (coffeeMakeStateRecorder.state == CoffeeMakeState.COFFEE_DOWN_CUP || coffeeMakeStateRecorder.state == CoffeeMakeState.COFFEE_MAKE_INIT) {
-                                isCalculateMaterial = false;
-
-                            }
-                            coffeeMakeStateRecorder.state = CoffeeMakeState.COFFEEMAKING_FAILED;
-
-                            MyLog.W(TAG, "err return : " + machineState.getResult().getReturn_bytes());
-
-                            if (buffer != null) {
-                                buffer.append("\n");
-                                buffer.append("制作过程中接收到0a : " + machineState.getMajorState().getHighErr_byte() + "--" + machineState.getMajorState().getLowErr_byte());//getHighErr_byte
-                            }
+                            dealHasErr(machineState);
                         }
                     } else {
-
                         continue;
                     }
 
-
                     if (coffeeMakeStateRecorder.state == null && !isSendMkingComdSuccess) {
 
-
                         Result result = coffMsger.mkCoffee(coffeeFomat.getContainerConfigs());
-
                         MyLog.d(TAG, "send mkCoffee comd : ");//+ result.getReturn_bytes()
-
-                        if (result.getCode() == Result.SUCCESS) {
-
-                            coffeeMakeStateRecorder.state = CoffeeMakeState.COFFEE_MAKE_INIT;
-
-                            isSendMkingComdSuccess = true;
-
-                            MyLog.W(TAG, " cur state is init");
-
-                        } else {
-
-                            MyLog.W(TAG, "send mkCoffee comd result = " + result.getCode());
-
-                            coffeeMakeStateRecorder.state = CoffeeMakeState.COFFEEMAKING_FAILED;
-                            isCalculateMaterial = false;
-                            if (buffer != null) {
-                                buffer.append("/n");
-                                buffer.append("发送咖啡制作指令，返回" + result.getErrDes());
-
-                                MyLog.W(TAG, "send mkCoffee comd err return : " + machineState.getResult().getReturn_bytes());
-                            }
-                        }
-
+                        sendMkCoffeeResult(machineState, result);
                     }
-
                     if (coffeeMakeStateRecorder.state == CoffeeMakeState.COFFEE_MAKE_INIT) {
 
                         dealStateMakeInit(machineState);
-
-
                         continue;
                     }
                     if (coffeeMakeStateRecorder.state == CoffeeMakeState.COFFEE_DOWN_CUP) {
 
                         dealStateDownCup(machineState);
-
                         updateProgress();
-
                         continue;
                     }
-
                     if (coffeeMakeStateRecorder.state == CoffeeMakeState.COFFEE_ISMAKING) {
 
                         dealMakingState(machineState);
-
                         updateProgress();
-
                         continue;
                     }
-
                     if (coffeeMakeStateRecorder.state == CoffeeMakeState.COFFEE_DOWN_POWER) {
 
                         dealStateDownPower(machineState);
-
                         updateProgress();
-
                         continue;
                     }
-
                     if (coffeeMakeStateRecorder.state == CoffeeMakeState.COFFEEFINISHED_CUPNOTAKEN) {
-                        //上报交易记录
 
-                        updateProgress();
-                        dealRecorder.setMakeSuccess(true);
-                        if (mkCoffeeListenner != null) {
-                            mkCoffeeListenner.getMkResult(dealRecorder, true, isCalculateMaterial);
-                        }
-
-                        stopCountTimer();
-                        isMkingOver = true;
-
+                        dealCupNotTaken();
                         break;
-
                     }
                     if (coffeeMakeStateRecorder.state == CoffeeMakeState.COFFEEFINISHED_CUPISTAKEN) {
 
                         coffeeMakeStateRecorder.state = null;
-
                         isMkingOver = false;
-
-//                        MyLog.d(TAG, "cur state is take cup ");
-
                         break;
-
                     }
                     if (coffeeMakeStateRecorder.state == CoffeeMakeState.COFFEEMAKING_FAILED) {
 
-                        updateProgress();
-
-                        showErr(true);
-
-                        handler.postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-
-                                dealRecorder.setMakeSuccess(false);
-                                if (mkCoffeeListenner != null) {
-                                    mkCoffeeListenner.getMkResult(dealRecorder, false, isCalculateMaterial);
-                                }
-                                stopCountTimer();
-                                isMkingOver = true;
-
-                            }
-                        }, 4000);
-
-
+                        dealMakingFailed();
                         MyLog.d(TAG, "cur state is failed ");
                         break;
                     }
@@ -456,7 +330,131 @@ public class NewMkCoffee {
             }
         };
         new Thread(runnable).start();
+    }
 
+    private void dealMakingFailed() {
+        updateProgress();
+
+        showErr(true);
+
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+
+                dealRecorder.setMakeSuccess(false);
+                if (mkCoffeeListenner != null) {
+                    mkCoffeeListenner.getMkResult(dealRecorder, false, isCalculateMaterial);
+                }
+                stopCountTimer();
+                isMkingOver = true;
+
+            }
+        }, 4000);
+    }
+
+    private void dealCupNotTaken() {
+        //上报交易记录
+
+        updateProgress();
+        dealRecorder.setMakeSuccess(true);
+        if (mkCoffeeListenner != null) {
+            mkCoffeeListenner.getMkResult(dealRecorder, true, isCalculateMaterial);
+        }
+
+        stopCountTimer();
+        isMkingOver = true;
+    }
+
+    private void dealHasErr(MachineState machineState) {
+    /*
+    * 如果接收到0a时，出现的状态是落杯或初始化
+    * */
+        if (coffeeMakeStateRecorder.state == CoffeeMakeState.COFFEE_DOWN_CUP || coffeeMakeStateRecorder.state == CoffeeMakeState.COFFEE_MAKE_INIT) {
+            isCalculateMaterial = false;
+
+        }
+        coffeeMakeStateRecorder.state = CoffeeMakeState.COFFEEMAKING_FAILED;
+
+        MyLog.W(TAG, "err return : " + machineState.getResult().getReturn_bytes());
+
+        if (buffer != null) {
+            buffer.append("\n");
+            buffer.append("制作过程中接收到0a : " + machineState.getMajorState().getHighErr_byte() + "--" + machineState.getMajorState().getLowErr_byte());//getHighErr_byte
+        }
+    }
+
+    /*
+    * 制作过程超时后的处理
+    * */
+    private void dealMkTimeOut(MachineState machineState) {
+        if (coffeeMakeStateRecorder.state == null
+                || coffeeMakeStateRecorder.state == CoffeeMakeState.COFFEEFINISHED_CUPNOTAKEN
+                || coffeeMakeStateRecorder.state == CoffeeMakeState.COFFEEFINISHED_CUPISTAKEN) {
+            MyLog.W(TAG, " make successed but time is too long ");
+
+
+        } else {
+            if (coffeeMakeStateRecorder.state == CoffeeMakeState.COFFEE_DOWN_CUP || coffeeMakeStateRecorder.state == CoffeeMakeState.COFFEE_MAKE_INIT) {
+
+                MyLog.W(TAG, " make failed and time is too long," + coffeeMakeStateRecorder.state + "  state is remaining ");
+
+                dealRecorder.setMakeSuccess(false);
+                isCalculateMaterial = false;
+                if (!isMkingOver) {
+                    if (mkCoffeeListenner != null)
+                        mkCoffeeListenner.getMkResult(dealRecorder, false, isCalculateMaterial);
+                    stopCountTimer();
+                }
+                return;
+
+            } else if (coffeeMakeStateRecorder.state == CoffeeMakeState.COFFEE_ISMAKING
+                    || coffeeMakeStateRecorder.state == CoffeeMakeState.COFFEE_DOWN_POWER) {
+
+                MyLog.W(TAG, " make failed and time is too long,other state is remaining ");
+
+                if (machineState.hasCupOnShelf()) {
+                    dealRecorder.setMakeSuccess(false);
+                } else {
+                    dealRecorder.setMakeSuccess(true);
+                }
+                isCalculateMaterial = true;
+                if (!isMkingOver && mkCoffeeListenner != null) {
+                    mkCoffeeListenner.getMkResult(dealRecorder, dealRecorder.isMakeSuccess(), isCalculateMaterial);
+                    stopCountTimer();
+                }
+
+                return;
+
+            }
+        }
+    }
+
+    private void sendMkCoffeeResult(MachineState machineState, Result result) {
+        if (result.getCode() == Result.SUCCESS) {
+
+            coffeeMakeStateRecorder.state = CoffeeMakeState.COFFEE_MAKE_INIT;
+
+            isSendMkingComdSuccess = true;
+
+            MyLog.W(TAG, " cur state is init");
+
+        } else {
+
+            MyLog.W(TAG, "send mkCoffee comd result = " + result.getCode()
+                    + " send mkCoffee comd err return : " + result.getReturn_bytes());
+
+
+            isCalculateMaterial = false;
+            if (buffer != null) {
+                buffer.append("/n");
+                buffer.append("发送咖啡制作指令，返回" + result.getErrDes());
+
+                MyLog.W(TAG, "send mkCoffee comd err return : " + result.getReturn_bytes());
+            }
+
+
+            coffeeMakeStateRecorder.state = CoffeeMakeState.COFFEEMAKING_FAILED;
+        }
     }
 
 
