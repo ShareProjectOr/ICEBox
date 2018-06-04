@@ -1,3 +1,32 @@
 <resources>
     <string name="app_name">coffeeseller</string>
+    <string name="wash_machine">机器清洗</string>
+    <string name="sterilize_machine">机器消毒</string>
+    <string name="divide_cup">分杯测试</string>
+    <string name="out_hot_water">出热水</string>
+    <string name="open_door">打开大门</string>
+    <string name="close_door">关闭大门</string>
+    <string name="reset">机器复位</string>
+    <string name="out_ingredient">料盒掉粉测试</string>
+    <string name="crush_bean">咖啡豆磨豆测试（2秒）</string>
+    <string name="move_tray_out">移出杯托</string>
+    <string name="move_tray_in">移入杯托</string>
+    <string name="down_tea">泡茶器掉茶测试</string>
+    <string name="move_cup">运杯系统测试</string>
+    <string name="control_little_door_open">打开小门</string>
+    <string name="control_little_door_close">关闭小门</string>
+    <string name="clear_water_box">清空水箱</string>
+    <string name="clear_pot">清空锅炉</string>
+    <string name="air_pump_test">air pump测试</string>
+    <string name="close">关闭</string>
+    <string name="confirm">确定</string>
+
+    <string name="brew_up">冲泡器提升</string>
+    <string name="brew_out">冲泡器移出</string>
+    <string name="brew_test">冲泡器测试</string>
+    <string name="container_test">料盒%1$d掉粉2秒</string>
+    <string name="clear_brew">清洗冲泡器</string>
+    <string name="clear_mix">清洗搅拌器</string>
+    <string name="success">成功</string>
+    <string name="failure">失败</string>
 </resources>

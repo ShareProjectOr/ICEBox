@@ -56,7 +56,7 @@ import example.jni.com.coffeeseller.views.viewinterface.ICommitMaterialView;
 
 public class ConfigFragment extends BasicFragment implements IAddMaterialView, ICommitMaterialView, ICheckVersionView, StateListener, IAddCupView, CompoundButton.OnCheckedChangeListener {
     private View mView;
-    private Button toDebug, materialCommit, checkVersion, saveConfig, changePassword, searchTrade, toSystem, closeDoor, openDoor, RepairMachineCode;
+    private Button toDebug, materialCommit, checkVersion, saveConfig, changePassword, searchTrade, toSystem, closeDoor, openDoor, RepairMachineCode, mActionMachine;
     private HomeActivity homeActivity;
     private TextView back;
     private RecyclerView materialList;
@@ -136,6 +136,7 @@ public class ConfigFragment extends BasicFragment implements IAddMaterialView, I
         netWorkState = (TextView) mView.findViewById(R.id.netWorkState);
         CupNum = (TextView) mView.findViewById(R.id.CupNum);
         mMachineName = (TextView) mView.findViewById(R.id.machineName);
+        mActionMachine = (Button) mView.findViewById(R.id.action_machine);
         mMachineName.setOnClickListener(this);
         toSystem = (Button) mView.findViewById(R.id.toSystem);
         toSystem.setOnClickListener(this);
@@ -206,6 +207,7 @@ public class ConfigFragment extends BasicFragment implements IAddMaterialView, I
         materialCommit.setOnClickListener(this);
         changePassword.setOnClickListener(this);
         RepairMachineCode.setOnClickListener(this);
+        mActionMachine.setOnClickListener(this);
     }
 
     private long lastPointTime = 0;
@@ -229,7 +231,13 @@ public class ConfigFragment extends BasicFragment implements IAddMaterialView, I
                 }
                 break;
             case R.id.backToCheck:
-                materialPresenter.CommitMaterial2();
+                MaterialSql sql1 = new MaterialSql(homeActivity);
+                if (sql1.getAllCotacts().size() == 0) {
+                    homeActivity.replaceFragment(FragmentEnum.ConfigFragment, FragmentEnum.MachineCheckFragment);
+                } else {
+                    materialPresenter.CommitMaterial2();
+                }
+
                 break;
             case R.id.add_cup:
                 addCupPresenter.AddCup();
@@ -238,6 +246,11 @@ public class ConfigFragment extends BasicFragment implements IAddMaterialView, I
                 BunkersID = 7;
                 break;
             case R.id.material_commit:
+                if (sql.getAllCotacts().size() == 0) {
+                    Toast.makeText(homeActivity, "当前原料数据为空,不能提交", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
                 materialPresenter.CommitMaterial();
                 break;
             case R.id.check_update:
@@ -257,8 +270,8 @@ public class ConfigFragment extends BasicFragment implements IAddMaterialView, I
                 }
                 //检测到机器号改变了 则删除所有行
                 if (!SharedPreferencesManager.getInstance(getActivity()).getMachineCode().equals(mMachineCode.getText().toString())) {
-                    MaterialSql sql = new MaterialSql(getActivity());
-                    sql.deleteAllContent();
+                    MaterialSql sql2 = new MaterialSql(getActivity());
+                    sql2.deleteAllContent();
                 }
                 SharedPreferencesManager.getInstance(getActivity()).setMachineCode(mMachineCode.getText().toString());
                 SharedPreferencesManager.getInstance(getActivity()).setLoginPassword(passWord.getText().toString());
@@ -301,6 +314,9 @@ public class ConfigFragment extends BasicFragment implements IAddMaterialView, I
                 } else {
                     Toast.makeText(getActivity(), "大门打开失败,错误 " + openResult.getErrDes(), Toast.LENGTH_LONG).show();
                 }
+                break;
+            case R.id.action_machine:
+                homeActivity.replaceFragment(FragmentEnum.ConfigFragment, FragmentEnum.DebugActionFragment);
                 break;
         }
     }
@@ -359,6 +375,7 @@ public class ConfigFragment extends BasicFragment implements IAddMaterialView, I
 
     @Override
     public void ShowLoading() {
+
         dialog = ProgressDialog.show(getActivity(), null, "正在提交原料中,请稍等", false, false);
         dialog.show();
     }
@@ -484,15 +501,6 @@ public class ConfigFragment extends BasicFragment implements IAddMaterialView, I
                 }
                 break;
         }
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        if (homeActivity != null && MoveSetFlowButton.getInstance(homeActivity) != null) {
-            MoveSetFlowButton.getInstance(homeActivity).removeFlowButton();
-        }
-
     }
 }
 

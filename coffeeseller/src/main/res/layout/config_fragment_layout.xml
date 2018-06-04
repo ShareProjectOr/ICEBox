@@ -98,6 +98,22 @@
                         android:layout_weight="1" />
 
                     <Button
+                        android:id="@+id/action_machine"
+                        android:layout_width="wrap_content"
+                        android:layout_height="30dp"
+                        android:layout_marginBottom="10dp"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginRight="10dp"
+                        android:layout_marginTop="10dp"
+                        android:background="@drawable/shape_botton"
+                        android:gravity="center"
+                        android:paddingLeft="30dp"
+                        android:paddingRight="30dp"
+                        android:text="调试机器"
+                        android:textColor="@color/white"
+                        android:textSize="@dimen/text_size_one" />
+
+                    <Button
                         android:id="@+id/debug_machine"
                         android:layout_width="wrap_content"
                         android:layout_height="30dp"
@@ -534,10 +550,9 @@
                     android:layout_width="200dp"
                     android:layout_height="40dp"
                     android:layout_marginLeft="20dp"
-                    android:singleLine="true"
-                    android:imeOptions="actionDone"
                     android:background="@drawable/shape_config_edit"
-                     />
+                    android:imeOptions="actionDone"
+                    android:singleLine="true" />
 
                 <Button
                     android:id="@+id/repairMachineCode"
@@ -578,10 +593,10 @@
                     android:layout_height="40dp"
                     android:background="@drawable/shape_config_edit"
                     android:hint="0-2.5s"
-                    android:singleLine="true"
                     android:imeOptions="actionDone"
                     android:inputType="numberDecimal"
-                    android:paddingLeft="5dp" />
+                    android:paddingLeft="5dp"
+                    android:singleLine="true" />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -597,10 +612,10 @@
                     android:layout_height="40dp"
                     android:background="@drawable/shape_config_edit"
                     android:hint="0-100"
-                    android:singleLine="true"
                     android:imeOptions="actionDone"
                     android:inputType="number"
-                    android:paddingLeft="5dp" />
+                    android:paddingLeft="5dp"
+                    android:singleLine="true" />
             </LinearLayout>
 
             <TextView
@@ -709,10 +724,10 @@
                     android:id="@+id/passWord"
                     android:layout_width="300dp"
                     android:layout_height="40dp"
-                    android:imeOptions="actionDone"
-                    android:singleLine="true"
                     android:background="@drawable/shape_config_edit"
-                    android:inputType="textPassword" />
+                    android:imeOptions="actionDone"
+                    android:inputType="textPassword"
+                    android:singleLine="true" />
 
                 <Button
                     android:id="@+id/changePassword"

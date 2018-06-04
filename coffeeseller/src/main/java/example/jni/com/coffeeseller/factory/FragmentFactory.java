@@ -10,6 +10,7 @@ import java.util.List;
 import example.jni.com.coffeeseller.views.fragments.BasicFragment;
 import example.jni.com.coffeeseller.views.fragments.BuyFragment;
 import example.jni.com.coffeeseller.views.fragments.ConfigFragment;
+import example.jni.com.coffeeseller.views.fragments.DebugActionFragment;
 import example.jni.com.coffeeseller.views.fragments.DebugFragment;
 import example.jni.com.coffeeseller.views.fragments.HomeFragment;
 import example.jni.com.coffeeseller.views.fragments.LoginFragment;
@@ -109,6 +110,10 @@ public class FragmentFactory {
                     break;
                 case TradeFragment:
                     mFrag = new TradeFragment();
+                    break;
+                case DebugActionFragment:
+                    mFrag = new DebugActionFragment();
+                    break;
             }
             if (mFrag != null) {
 
