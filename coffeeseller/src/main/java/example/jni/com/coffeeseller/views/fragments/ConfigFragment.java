@@ -332,7 +332,7 @@ public class ConfigFragment extends BasicFragment implements IAddMaterialView, I
             startActivity(it1);
         } catch (Exception e) {
 
-            MyLog.d("configFragment", "error occured opening system setting");
+            MyLog.d(TAG, "error occured opening system setting");
         }
     }
 
