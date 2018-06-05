@@ -42,7 +42,6 @@ public class MachineCheck implements IMachineCheck {
     private HomeActivity mContext;
     private Handler handler = new Handler(Looper.getMainLooper());
     private String TAG = "MachineCheck";
-    private boolean hasReserve = false;
 
     public MachineCheck(HomeActivity context) {
         MachineInitState.init();
@@ -189,10 +188,7 @@ public class MachineCheck implements IMachineCheck {
     }
 
     private boolean isCanUse(List<bunkerData> list) {
-        if (list.size() == 0) {
-            return false;
-        }
-        return true;
+        return list.size() != 0;
     }
 
     private void subMQTT() {
@@ -219,7 +215,7 @@ public class MachineCheck implements IMachineCheck {
 
     }
 
-    public void checkMainCtrl() {
+    private void checkMainCtrl() {
         CoffMsger mCoffmsger = CoffMsger.getInstance();
         if (mCoffmsger.init()) {
             mCoffmsger.startCheckState();
@@ -242,7 +238,7 @@ public class MachineCheck implements IMachineCheck {
 
     }
 
-    public void checkMachineCode() {
+    private void checkMachineCode() {
         Map<String, Object> postBody = new HashMap<>();
         if (SharedPreferencesManager.getInstance(mContext).getMachineCode().isEmpty()) {
 
@@ -267,15 +263,13 @@ public class MachineCheck implements IMachineCheck {
                     SharedPreferencesManager.getInstance(mContext).setLoginPassword(object.getJSONObject("d").getString("loginPassword"));
                     MachineConfig.setTcpIP(object.getJSONObject("d").getString("tcpIP"));
                     MachineConfig.setTopic(object.getJSONObject("d").getString("topic"));
-                //    MachineConfig.setPhone(object.getJSONObject("d").getString("tel"));
+                    //    MachineConfig.setPhone(object.getJSONObject("d").getString("tel"));
                     MachineInitState.CHECK_MACHINECODE = MachineInitState.NORMAL;
                     mOnMachineCheckCallBackListener.MachineCodeCheckSuccess();
                 } else {
                     mOnMachineCheckCallBackListener.MachineCodeCheckFailed(object.getString("err"));
                 }
-            } catch (IOException e) {
-                mOnMachineCheckCallBackListener.MachineCodeCheckFailed(e.getMessage());
-            } catch (JSONException e) {
+            } catch (IOException | JSONException e) {
                 mOnMachineCheckCallBackListener.MachineCodeCheckFailed(e.getMessage());
             }
         }

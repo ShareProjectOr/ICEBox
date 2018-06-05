@@ -2,7 +2,10 @@ package example.jni.com.coffeeseller.communicate;
 
 
 import android.app.Service;
+import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Looper;
@@ -444,6 +447,22 @@ public class TaskService extends Service implements MqttCallback, IMqttActionLis
             mTimer.schedule(mTimerTask, 0, RUN_PERIOD);
         }
 
+    }
+
+    public static boolean isNetworkAvailable(Context context) {
+        ConnectivityManager connectivity = (ConnectivityManager) context
+                .getSystemService(Context.CONNECTIVITY_SERVICE);
+        if (connectivity != null) {
+            NetworkInfo info = connectivity.getActiveNetworkInfo();
+            if (info != null && info.isConnected()) {
+                // 当前网络是连接的
+                if (info.getState() == NetworkInfo.State.CONNECTED) {
+                    // 当前所连接的网络可用
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     private void destroyTimerTask() {

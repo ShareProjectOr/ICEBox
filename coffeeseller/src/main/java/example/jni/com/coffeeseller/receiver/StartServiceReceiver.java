@@ -18,43 +18,12 @@ import example.jni.com.coffeeseller.bean.MachineConfig;
 public class StartServiceReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
-        // 监听wifi的打开与关闭，与wifi的连接无关
-        if (WifiManager.WIFI_STATE_CHANGED_ACTION.equals(intent.getAction())) {
-            int wifiState = intent.getIntExtra(WifiManager.EXTRA_WIFI_STATE, 0);
-            if (wifiState == WifiManager.WIFI_STATE_DISABLED) {//wifi关闭
-                Log.d("netstatus", "wifi已关闭");
-            } else if (wifiState == WifiManager.WIFI_STATE_ENABLED) {//wifi开启
-                Log.d("netstatus", "wifi已开启");
-            } else if (wifiState == WifiManager.WIFI_STATE_ENABLING) {//wifi开启中
-                Log.d("netstatus", "wifi开启中");
-            } else if (wifiState == WifiManager.WIFI_STATE_DISABLING) {//wifi关闭中
-                Log.d("netstatus", "wifi关闭中");
-            }
-        }
-        // 监听wifi的连接状态即是否连上了一个有效无线路由
-        if (WifiManager.NETWORK_STATE_CHANGED_ACTION.equals(intent.getAction())) {
-            Parcelable parcelableExtra = intent.getParcelableExtra(WifiManager.EXTRA_NETWORK_INFO);
-            if (parcelableExtra != null) {
-                Log.d("netstatus", "wifi parcelableExtra不为空");
-                NetworkInfo networkInfo = (NetworkInfo) parcelableExtra;
-                if (networkInfo.getState() == NetworkInfo.State.CONNECTED) {//已连接网络
-                    Log.d("netstatus", "wifi 已连接网络");
-                    if (networkInfo.isAvailable()) {//并且网络可用
-                        MachineConfig.setNetworkType(2);
-                        Log.d("netstatus", "wifi 已连接网络，并且可用");
-                    } else {//并且网络不可用
-                        MachineConfig.setNetworkType(0);
-                        Log.d("netstatus", "wifi 已连接网络，但不可用");
-                    }
-                } else {//网络未连接
-                    MachineConfig.setNetworkType(0);
-                    Log.d("netstatus", "wifi 未连接网络");
-                }
-            } else {
-                MachineConfig.setNetworkType(0);
-                Log.d("netstatus", "wifi parcelableExtra为空");
-            }
-        }
+
+        isNetworkAvailable(context, intent);//当网络变化时 会收到消息
+
+    }
+
+    private void isWifiOrMobile(Intent intent) {
         // 监听网络连接，总网络判断，即包括wifi和移动网络的监听
         if (ConnectivityManager.CONNECTIVITY_ACTION.equals(intent.getAction())) {
             NetworkInfo networkInfo = intent.getParcelableExtra(ConnectivityManager.EXTRA_NETWORK_INFO);
@@ -67,29 +36,28 @@ public class StartServiceReceiver extends BroadcastReceiver {
                 Log.d("netstatus", "总网络 连接的是移动网络");
             }
             //具体连接状态判断
-            checkNetworkStatus(networkInfo);
+            //  checkNetworkStatus(networkInfo);
+
         }
     }
 
-    private void checkNetworkStatus(NetworkInfo networkInfo) {
-        if (networkInfo != null) {
-            Log.d("netstatus", "总网络 info非空");
-            if (networkInfo.getState() == NetworkInfo.State.CONNECTED) {//已连接网络
-                Log.d("netstatus", "总网络 已连接网络");
-                if (networkInfo.isAvailable()) {//并且网络可用
-                    MachineConfig.setNetworkType(1);
-                    Log.d("netstatus", "总网络 已连接网络，并且可用");
-                } else {//并且网络不可用
-                    MachineConfig.setNetworkType(0);
-                    Log.d("netstatus", "总网络 已连接网络，但不可用");
+    private boolean isNetworkAvailable(Context context, Intent intent) {
+        ConnectivityManager connectivity = (ConnectivityManager) context
+                .getSystemService(Context.CONNECTIVITY_SERVICE);
+        if (connectivity != null) {
+            NetworkInfo info = connectivity.getActiveNetworkInfo();
+            if (info != null && info.isConnected()) {
+                // 当前网络是连接的
+                if (info.getState() == NetworkInfo.State.CONNECTED) {
+                    // 当前所连接的网络可用
+                    isWifiOrMobile(intent);
+                    return true;
                 }
-            } else if (networkInfo.getState() == NetworkInfo.State.DISCONNECTED) {//网络未连接
-                Log.d("netstatus", "总网络 未连接网络");
-                MachineConfig.setNetworkType(0);
             }
-        } else {
-            MachineConfig.setNetworkType(0);
-            Log.d("netstatus", "总网络 info为空");
         }
+        MachineConfig.setNetworkType(0);
+        return false;
     }
+
+
 }

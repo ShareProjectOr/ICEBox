@@ -42,6 +42,7 @@ import example.jni.com.coffeeseller.presenter.AddCupPresenter;
 import example.jni.com.coffeeseller.presenter.CheckVersionPresenter;
 import example.jni.com.coffeeseller.presenter.CommitMaterialPresenter;
 import example.jni.com.coffeeseller.utils.MyLog;
+import example.jni.com.coffeeseller.utils.NetWorkCheckUtils;
 import example.jni.com.coffeeseller.views.activities.HomeActivity;
 import example.jni.com.coffeeseller.views.customviews.MoveSetFlowButton;
 import example.jni.com.coffeeseller.views.customviews.SetFloatButton;
@@ -116,6 +117,11 @@ public class ConfigFragment extends BasicFragment implements IAddMaterialView, I
             }
         } else {
 
+        }
+        if (NetWorkCheckUtils.isNetworkAvailable(homeActivity)) {
+            netWorkState.setText("网络状态:" + MachineConfig.getNetWorkTypeString());
+        } else {
+            netWorkState.setText("网络状态:" + "网络不可用");
         }
 
         updateTimeAndVersion.setText("最后更新于 " + SharedPreferencesManager.getInstance(getActivity()).getLastAppUpdateTime() + " 当前版本: " + getVersion());
@@ -440,7 +446,7 @@ public class ConfigFragment extends BasicFragment implements IAddMaterialView, I
                     }*/
 
                     runState.setText("运行状态:" + DataSwitcher.byte2Hex(machineState.getMajorState().getState_byte()));
-                    netWorkState.setText("网络状态:" + MachineConfig.getNetWorkTypeString());
+
                     if (machineState.isCupShelfRightPlace()) {
                         cupShelfState.setText("杯架状态:正常");
                     } else {
