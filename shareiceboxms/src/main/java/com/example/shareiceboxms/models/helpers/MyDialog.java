@@ -93,7 +93,6 @@ public class MyDialog {
         window.setBackgroundDrawable(ContextCompat.getDrawable(context, R.drawable.shape_loading_layout));
         dialog.setCancelable(true);//dialog可以取消
         dialog.setCanceledOnTouchOutside(false);//dialog框外不能取消
-
         return dialog;
     }
 

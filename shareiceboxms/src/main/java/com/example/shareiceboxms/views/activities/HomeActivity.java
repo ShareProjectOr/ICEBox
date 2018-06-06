@@ -1,5 +1,6 @@
 package com.example.shareiceboxms.views.activities;
 
+import android.app.Activity;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -116,7 +117,6 @@ public class HomeActivity extends BaseActivity
     public static HomeActivity getInstance() {
 
         if (mInstance == null) {
-
             mInstance = new HomeActivity();
         }
         return mInstance;

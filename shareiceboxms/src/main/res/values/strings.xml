@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">长虹共享冰箱</string>
+    <string name="app_name">长虹共享冰箱(阿里云测试版)</string>
     <string name="title_activity_home">HomeActivity</string>
 
     <string name="navigation_drawer_open">Open navigation drawer</string>

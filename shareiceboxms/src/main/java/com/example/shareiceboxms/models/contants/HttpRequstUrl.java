@@ -6,18 +6,20 @@ package com.example.shareiceboxms.models.contants;
 
 public interface HttpRequstUrl {
 
-    boolean isTest = true;//当前使用ip是否为测试版
+    boolean isTest = false;//当前使用ip是否为测试版
 
     /*
     *  外网服务器地址
      */
-    String IP_RUN = "202.98.157.25";
-    String HOST_URL_RUN = "http://server.aichance.com.cn/fridgesManage_server/";//外网服务器
-
+    //String IP_RUN = "202.98.157.25";
+    String IP_RUN = "119.23.71.185";
+   String HOST_URL_RUN = "http://server.aichance.com.cn/fridgesManage_server/";//外网服务器
+   // String HOST_URL_RUN = "http://119.23.71.185/refrigerator/";//阿里云
     /*
     * 测试服务器地址
      */
-    String IP_TEST = "10.21.161.45";
+    //  String IP_TEST = "10.21.161.45";
+    String IP_TEST = "192.168.4.107";
     String HOST_URL_TEST = "http://" + IP_TEST + ":8082/";
 
     /*
@@ -25,7 +27,6 @@ public interface HttpRequstUrl {
     * */
     String IP = (!isTest ? IP_RUN : IP_TEST);
     String HOST_URL = (!isTest ? HOST_URL_RUN : HOST_URL_TEST);
-
 
 
     String GET_APP_VERSION_URL = HOST_URL + "/upload/GetAppURL";
