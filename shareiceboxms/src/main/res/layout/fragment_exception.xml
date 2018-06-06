@@ -12,12 +12,19 @@
         android:layout_height="wrap_content"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
+        <TextView
+            android:id="@+id/nothing"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/white"
+            android:gravity="center"
+            android:text="暂时没有数据哦!"
+            android:visibility="gone" />
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/exception_list"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            ></android.support.v7.widget.RecyclerView>
+            android:layout_height="wrap_content"></android.support.v7.widget.RecyclerView>
     </android.support.v4.widget.SwipeRefreshLayout>
 
     <include layout="@layout/fragment_exception_barlayout" />

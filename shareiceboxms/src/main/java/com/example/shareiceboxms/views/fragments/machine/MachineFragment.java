@@ -61,7 +61,7 @@ public class MachineFragment extends BaseFragment implements HomeActivity.OnBack
     private FrameLayout detailFrameLayout;
     private EditText inputMachineName;
     private Button search;
-    private TextView title;
+    private TextView title, nothing;
     private int curPage, requestNum, totalNum, totalPage;
     private List<ItemMachine> itemMachines;
     private MachineListAdapter adapter;
@@ -96,6 +96,7 @@ public class MachineFragment extends BaseFragment implements HomeActivity.OnBack
         inputMachineName = (EditText) containerView.findViewById(R.id.inputMachineName);
         search = (Button) containerView.findViewById(R.id.search);
         title = (TextView) containerView.findViewById(R.id.title);
+        nothing = (TextView) containerView.findViewById(R.id.nothing);
     }
 
     private void initLisenner() {
@@ -333,8 +334,10 @@ public class MachineFragment extends BaseFragment implements HomeActivity.OnBack
                 }
                 if (machines.size() <= 0) {
                     Toast.makeText(homeActivity, "没有数据啦！", Toast.LENGTH_SHORT).show();
+                    nothing.setVisibility(View.VISIBLE);
                     return;
                 }
+                nothing.setVisibility(View.GONE);
                 itemMachines.addAll(machines);
                 if (curPage < totalPage) {
                     itemMachines.add(null);

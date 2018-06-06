@@ -64,7 +64,7 @@ public class ExceptionFragment extends BaseFragment implements CompoundButton.On
     private Context mContext;
     private ExceptionListData contentprovider;
     private TextView exceptionType;
-    private TextView mTimeSelect;
+    private TextView mTimeSelect,nothing;
     private ListPopupWindow mTilePopup;
     private Button chooseIsDetails;
     private LinearLayout exceptionTypeLayout;
@@ -132,6 +132,7 @@ public class ExceptionFragment extends BaseFragment implements CompoundButton.On
         initPostBody = RequestParamsContants.getInstance().getExceptionListParams();
         drawerIcon = (ImageView) containerView.findViewById(R.id.drawerIcon);
         mTimeSelect = (TextView) containerView.findViewById(R.id.timeSelector);
+        nothing = (TextView) containerView.findViewById(R.id.nothing);
         exceptionList = (RecyclerView) containerView.findViewById(R.id.exception_list);
         saoma = (ImageView) containerView.findViewById(R.id.saoma);
         selectTimeLayout = (RelativeLayout) containerView.findViewById(R.id.selectTime);
