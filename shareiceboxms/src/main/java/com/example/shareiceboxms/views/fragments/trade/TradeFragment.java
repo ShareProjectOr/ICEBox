@@ -14,6 +14,7 @@ import android.widget.Toast;
 
 import com.example.shareiceboxms.R;
 import com.example.shareiceboxms.models.adapters.ViewPagerAdapter;
+import com.example.shareiceboxms.models.beans.PerSonMessage;
 import com.example.shareiceboxms.models.contants.Constants;
 import com.example.shareiceboxms.models.factories.FragmentFactory;
 import com.example.shareiceboxms.models.helpers.MyDialog;
@@ -52,7 +53,11 @@ public class TradeFragment extends BaseFragment implements HomeActivity.OnBackPr
         drawerIcon = (ImageView) containerView.findViewById(R.id.drawerIcon);
         saoma = (ImageView) containerView.findViewById(R.id.saoma);
         tradeDetailLayout = (FrameLayout) containerView.findViewById(R.id.detailFrameLayout);
-        adapter = new ViewPagerAdapter(getChildFragmentManager(), FragmentFactory.getInstance().getTradeChildFragments(), Constants.TradeTabTitles);
+        if (PerSonMessage.userType == Constants.MACHINE_MANAGER) {
+            adapter = new ViewPagerAdapter(getChildFragmentManager(), FragmentFactory.getInstance().getTradeChildFragments(), Constants.TradeTabTitlesForManager);
+        } else {
+            adapter = new ViewPagerAdapter(getChildFragmentManager(), FragmentFactory.getInstance().getTradeChildFragments(), Constants.TradeTabTitles);
+        }
         viewPager.setAdapter(adapter);
         tabLayout.setupWithViewPager(viewPager);
         drawerIcon.setOnClickListener(this);

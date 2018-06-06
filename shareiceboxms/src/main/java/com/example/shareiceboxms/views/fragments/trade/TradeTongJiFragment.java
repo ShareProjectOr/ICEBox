@@ -22,6 +22,7 @@ import android.widget.TextView;
 import com.example.shareiceboxms.R;
 import com.example.shareiceboxms.models.beans.ItemPerson;
 import com.example.shareiceboxms.models.beans.PerSonMessage;
+import com.example.shareiceboxms.models.beans.trade.ItemTradeTongji;
 import com.example.shareiceboxms.models.beans.trade.ItemTradeTotal;
 import com.example.shareiceboxms.models.contants.Constants;
 import com.example.shareiceboxms.models.contants.HttpRequstUrl;
@@ -51,30 +52,18 @@ import java.util.Map;
  * 财务明细
  */
 
-public class TradeTotalFragment extends BaseFragment {
+public class TradeTongJiFragment extends BaseFragment {
     private static String TAG = "TradeTotalFragment";
     private View containerView;
     private HomeActivity activity;
     private TextView timeSelector;
-    private LinearLayout agentHas;
-    private TextView totalMoneyNum, hasPayNum, notPayNum;
-
-    private TextView totalMoneyNum_2, hasPayNum_2, notPayNum_2;
-
-    private TextView totalMoneyNum_3, hasPayNum_3, notPayNum_3;
-
-    private TextView totalMoneyNum_4, hasPayNum_4, notPayNum_4;
-
-    private TextView settledMoney, unsettleMoney, incomeMoney;
-
-    private Button choosePerson;
+    private TextView incomeMoney, costomerNum, refundMoney, notPayMoney, totalMoneyNum;
     private RadioGroup dateGroup;
     private RelativeLayout selectTime;
     private SwipeRefreshLayout refreshLayout;
-    private ItemTradeTotal itemTradeTotal;
-    private TradeTotalFragment tradeTotalFragment;
+    private ItemTradeTongji itemTradeTongji;
+    private TradeTongJiFragment tradeTotalFragment;
     private String[] time;
-    private int companyID = -1;
 
     private DoubleDatePickerDialog datePickerDialog;
 
@@ -82,7 +71,7 @@ public class TradeTotalFragment extends BaseFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         if (containerView == null) {
-            containerView = super.onCreateView(inflater, container, FragmentFactory.getInstance().putLayoutId(R.layout.fragment_trade_total));
+            containerView = super.onCreateView(inflater, container, FragmentFactory.getInstance().putLayoutId(R.layout.fragment_trade_tongji));
             initViews();
             initDatas();
         }
@@ -91,35 +80,15 @@ public class TradeTotalFragment extends BaseFragment {
 
     private void initViews() {
         selectTime = (RelativeLayout) containerView.findViewById(R.id.selectTime);
-        choosePerson = (Button) containerView.findViewById(R.id.choosePerson);
         timeSelector = (TextView) containerView.findViewById(R.id.timeSelector);
         refreshLayout = (SwipeRefreshLayout) containerView.findViewById(R.id.refresh);
         dateGroup = (RadioGroup) containerView.findViewById(R.id.dateGroup);
 
         totalMoneyNum = (TextView) containerView.findViewById(R.id.totalMoneyNum);
-        hasPayNum = (TextView) containerView.findViewById(R.id.hasPayNum);
-        notPayNum = (TextView) containerView.findViewById(R.id.notPayNum);
-
-        totalMoneyNum_2 = (TextView) containerView.findViewById(R.id.totalMoneyNum_2);
-        hasPayNum_2 = (TextView) containerView.findViewById(R.id.hasPayNum_2);
-        notPayNum_2 = (TextView) containerView.findViewById(R.id.notPayNum_2);
-
-        totalMoneyNum_3 = (TextView) containerView.findViewById(R.id.totalMoneyNum_3);
-        hasPayNum_3 = (TextView) containerView.findViewById(R.id.hasPayNum_3);
-        notPayNum_3 = (TextView) containerView.findViewById(R.id.notPayNum_3);
-
-        hasPayNum_4 = (TextView) containerView.findViewById(R.id.hasPayNum_4);
-        notPayNum_4 = (TextView) containerView.findViewById(R.id.notPayNum_4);
-
-        settledMoney = (TextView) containerView.findViewById(R.id.settledMoney);
-        unsettleMoney = (TextView) containerView.findViewById(R.id.unsettleMoney);
+        notPayMoney = (TextView) containerView.findViewById(R.id.notPayMoney);
+        refundMoney = (TextView) containerView.findViewById(R.id.refundMoney);
+        costomerNum = (TextView) containerView.findViewById(R.id.costomerNum);
         incomeMoney = (TextView) containerView.findViewById(R.id.incomeMoney);
-
-        agentHas = (LinearLayout) containerView.findViewById(R.id.agentHas);
-
-        if (PerSonMessage.userType >= Constants.MACHINE_MANAGER) {
-            agentHas.setVisibility(View.GONE);
-        }
 
         selectTime.setOnClickListener(this);
         dateGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
@@ -129,20 +98,20 @@ public class TradeTotalFragment extends BaseFragment {
                 switch (checkedId) {
                     case R.id.todayDate:
                         time = SecondToDate.getDateParams(SecondToDate.TODAY_CODE);
-                        Log.d("todayDate=",time.toString());
+                        Log.d("todayDate=", time.toString());
                         break;
                     case R.id.weekDate:
                         time = SecondToDate.getDateParams(SecondToDate.WEEK_CODE);
-                        Log.d("weekDate=",time.toString());
+                        Log.d("weekDate=", time.toString());
                         break;
                     case R.id.monthDate:
                         time = SecondToDate.getDateParams(SecondToDate.MONTH_CODE);
-                        Log.d("monthDate=",time.toString());
+                        Log.d("monthDate=", time.toString());
 
                         break;
                     case R.id.yearDate:
                         time = SecondToDate.getDateParams(SecondToDate.YEAR_CODE);
-                        Log.d("yearDate=",time.toString());
+                        Log.d("yearDate=", time.toString());
                         break;
                 }
                 timeSelector.setText(SecondToDate.getDateUiShow(time));
@@ -151,11 +120,6 @@ public class TradeTotalFragment extends BaseFragment {
         });
         dateGroup.check(R.id.todayDate);
         refreshLayout.setOnRefreshListener(this);
-        if (PerSonMessage.userType <= Constants.SYSTEM_MANAGER) {
-            choosePerson.setOnClickListener(this);
-        } else {
-            choosePerson.setVisibility(View.GONE);
-        }
 
         refreshLayout.setColorSchemeColors(ContextCompat.getColor(getContext(), R.color.blue));
     }
@@ -165,28 +129,15 @@ public class TradeTotalFragment extends BaseFragment {
         tradeTotalFragment = this;
         time = RequestParamsContants.getInstance().getTimeSelectorParams();
         time = SecondToDate.getDateParams(SecondToDate.TODAY_CODE);//默认为今天的
-        itemTradeTotal = new ItemTradeTotal();
+        itemTradeTongji = new ItemTradeTongji();
         datePickerDialog = new DoubleDatePickerDialog(getContext(), 0, this
                 , Calendar.getInstance().get(Calendar.YEAR), Calendar.getInstance().get(Calendar.MONTH)
                 , Calendar.getInstance().get(Calendar.DATE), true);
     }
 
     public Map<String, Object> getParams() {
-        Map<String, Object> params = RequestParamsContants.getInstance().getTradeTotalParams();
-        params.put("searchTime", RequestParamsContants.getInstance().getSelectTime(time));
-      /*  switch (PerSonMessage.userType) {
-            case Constants.AGENT_MANAGER:
-                if (PerSonMessage.company != null) {
-                    params.put("companyID", PerSonMessage.company.companyID);
-                }
-                break;
-            case Constants.MACHINE_MANAGER:
-                params.put("userID", PerSonMessage.userId);
-                break;
-            case Constants.SYSTEM_MANAGER:
-                params.put("companyID", "");
-                break;
-        }*/
+        Map<String, Object> params = RequestParamsContants.getInstance().getTradeTongjiParams();
+        params.put("createTime", RequestParamsContants.getInstance().getSelectTime(time));
         return params;
     }
 
@@ -195,21 +146,9 @@ public class TradeTotalFragment extends BaseFragment {
         task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
     }
 
-    public void switchAgentName(String name) {
-        choosePerson.setText(name);
-    }
-
-    public void setCompanyID(int companyID) {
-        this.companyID = companyID;
-    }
-
     @Override
     public void onRefresh() {
-       /* if (refreshLayout.isRefreshing()) {
-            return;
-        }*/
         getDatas(getParams());
-        Log.d("777777777777777777", "onRefresh");
         refreshLayout.setRefreshing(false);//关闭刷新
     }
 
@@ -218,28 +157,6 @@ public class TradeTotalFragment extends BaseFragment {
         switch (v.getId()) {
             case R.id.selectTime:
                 datePickerDialog.show();
-                break;
-            case R.id.choosePerson:
-                if (PerSonMessage.childPerson.size() <= 0) {
-                    GetAgentsToCreateAccountHelper.getInstance().setContext(activity);
-                    GetAgentsToCreateAccountHelper.getInstance().setGetAgentsLisenner(new GetAgentsToCreateAccountHelper.GetAgentsLisenner() {
-                        @Override
-                        public void getAgents(List<ItemPerson> agents) {
-                            if (PerSonMessage.childPerson != null) {
-                                PerSonMessage.childPerson.clear();
-                                PerSonMessage.childPerson.add(null);
-                                PerSonMessage.childPerson.addAll(agents);
-                                ChoosePopupWindow.setAdapter(PerSonMessage.childPerson, activity);
-                                ChoosePopupWindow.getAdapter().notifyDataSetChanged();
-                                ChoosePopupWindow.showPopFormBottom(containerView, activity, tradeTotalFragment);
-                            }
-                        }
-                    });
-                    GetAgentsToCreateAccountHelper.getInstance().getDatas();
-                } else {
-                    ChoosePopupWindow.showPopFormBottom(containerView, activity, tradeTotalFragment);
-                }
-
                 break;
         }
     }
@@ -254,55 +171,15 @@ public class TradeTotalFragment extends BaseFragment {
         time = super.onDateSet(startDatePicker, startYear, startMonthOfYear, startDayOfMonth, endDatePicker, endYear, endMonthOfYear, endDayOfMonth);
         timeSelector.setText(SecondToDate.getDateUiShow(time));
         getDatas(getParams());
-        Log.d("777777777777777777", "onDateSet");
         return null;
     }
 
     private void updateUi() {
-
-        //    totalMoney:1500.00,//Number 交易总金额
-        //    unreceiveMoney:400.00,//Number 未收到的交易总额
-        //    receiveMoney:1100.00,//Number 已收到的交易总额金额
-
-        //    serviceCharge:21,//Number 手续费
-        //    alipayPoundage:6.00,//Number 支付宝手续费
-        //    wechatPoundage:0.00,//Number 微信手续费
-
-        //    refundMoney:100.00,//Number  交易退款金额
-        //    realRefundMoney:45415.2,//Number 实退金额
-        //    refundServiceCharge:0.03,//Number 退回手续费
-
-
-        //    offsetedMoney:10.00,//Number 已冲抵金额
-        //    unoffsetMoney:29.76,//Number 待冲抵金额
-
-        //    settledMoney:300.00,//Number 已结算金额
-        //    unsettleMoney:534.96,//Number 待结算金额
-
-
-        //    incomeMoney:994.00,//Number 净利润
-
-        totalMoneyNum.setText(itemTradeTotal.totalMoney);
-        hasPayNum.setText(itemTradeTotal.receiveMoney);
-        notPayNum.setText(itemTradeTotal.unreceiveMoney);
-
-        totalMoneyNum_2.setText(itemTradeTotal.serviceCharge);
-        hasPayNum_2.setText(itemTradeTotal.alipayPoundage);
-        notPayNum_2.setText(itemTradeTotal.wechatPoundage);
-
-        totalMoneyNum_3.setText(itemTradeTotal.realRefundMoney);
-      /*  hasPayNum_3.setText(itemTradeTotal.realRefundMoney);
-        notPayNum_3.setText(itemTradeTotal.refundServiceCharge);*/
-
-        if (PerSonMessage.userType < Constants.MACHINE_MANAGER) {
-
-            hasPayNum_4.setText(itemTradeTotal.offsettedMoney);
-            notPayNum_4.setText(itemTradeTotal.unoffsetMoney);
-
-            settledMoney.setText(itemTradeTotal.settledMoney);
-            unsettleMoney.setText(itemTradeTotal.unsettleMoney);
-        }
-        incomeMoney.setText(itemTradeTotal.incomeMoney);
+        totalMoneyNum.setText(itemTradeTongji.totalMoney);
+        notPayMoney.setText(itemTradeTongji.unreceiveMoney);
+        refundMoney.setText(itemTradeTongji.refundMoney);
+        incomeMoney.setText(itemTradeTongji.receiveMoney);
+        costomerNum.setText(itemTradeTongji.totalCustomer + "人");
     }
 
     //获取交易统计异步任务
@@ -310,7 +187,7 @@ public class TradeTotalFragment extends BaseFragment {
 
         private String response;
         private String err = "";
-        private ItemTradeTotal tradeTotal;
+        private ItemTradeTongji tradeTotal;
         private Map<String, Object> params;
         private Dialog dialog;
 
@@ -328,9 +205,9 @@ public class TradeTotalFragment extends BaseFragment {
         @Override
         protected Boolean doInBackground(Void... params) {
             try {
-                Log.e(TAG, "request URL: " + HttpRequstUrl.TRADE_TOTAL_URL);
+                Log.e(TAG, "request URL: " + HttpRequstUrl.TRADE_TONGJI_URL);
                 Log.e(TAG, "request params: " + JsonUtil.mapToJson(this.params));
-                response = OkHttpUtil.post(HttpRequstUrl.TRADE_TOTAL_URL, JsonUtil.mapToJson(this.params));
+                response = OkHttpUtil.post(HttpRequstUrl.TRADE_TONGJI_URL, JsonUtil.mapToJson(this.params));
                 Log.e(TAG, "response" + response.toString());
                 if (response == null) {
                     return false;
@@ -340,7 +217,7 @@ public class TradeTotalFragment extends BaseFragment {
                         return false;
                     }
                 }
-                tradeTotal = ItemTradeTotal.bindTradeTotal(JsonDataParse.getInstance().getSingleObject(response.toString()));
+                tradeTotal = ItemTradeTongji.bindTradeTongji(JsonDataParse.getInstance().getSingleObject(response.toString()));
 
                 return true;
             } catch (IOException e) {
@@ -363,7 +240,7 @@ public class TradeTotalFragment extends BaseFragment {
                 dialog.dismiss();
             }
             if (success) {
-                itemTradeTotal = tradeTotal;
+                itemTradeTongji = tradeTotal;
                 updateUi();
             } else {
             }

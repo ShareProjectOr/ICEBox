@@ -19,6 +19,8 @@ public class ExceptionTypeUtils {
                 break;
             case "04":
                 ExceptionType = "销售提示";
+            case "05":
+                ExceptionType = "告罄提示";
                 break;
             case "11":
                 ExceptionType = "锁关门开";

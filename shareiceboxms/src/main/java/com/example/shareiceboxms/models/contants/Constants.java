@@ -17,9 +17,13 @@ public interface Constants {
     int INVILIDE_USER_TYPE = -1;//针对所有用户不起效
 
     String[] TabTitles = {"交易", "机器", "异常", "商品"};
+    String[] TabTitlesForManager = {"机器", "异常", "商品"};
     int[] TabIcons = {R.drawable.selector_trade, R.drawable.selector_machine,
             R.drawable.selector_exception, R.drawable.selector_product};
-    String[] TradeTabTitles = {"财务明细", "交易记录", "工单结算"};
+    int[] TabIconsForManager = { R.drawable.selector_machine,
+            R.drawable.selector_exception, R.drawable.selector_product};
+    String[] TradeTabTitles = {"交易统计", "财务明细", "交易记录", "工单结算"};
+    String[] TradeTabTitlesForManager = {"交易统计", "交易记录"};
     /*
     * 交易统计
     * */

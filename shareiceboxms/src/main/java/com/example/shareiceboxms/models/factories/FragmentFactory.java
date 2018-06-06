@@ -1,6 +1,7 @@
 package com.example.shareiceboxms.models.factories;
 
 import android.os.Bundle;
+import android.text.TextUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,6 +17,7 @@ import com.example.shareiceboxms.views.fragments.product.UpLoadGoodsRecordFragme
 import com.example.shareiceboxms.views.fragments.trade.TradeAccountFragment;
 import com.example.shareiceboxms.views.fragments.trade.TradeFragment;
 import com.example.shareiceboxms.views.fragments.trade.TradeRecordsFragment;
+import com.example.shareiceboxms.views.fragments.trade.TradeTongJiFragment;
 import com.example.shareiceboxms.views.fragments.trade.TradeTotalFragment;
 
 /**
@@ -47,20 +49,32 @@ public class FragmentFactory {
 
     public List<BaseFragment> getTradeChildFragments() {
         List<BaseFragment> mFragments = new ArrayList<>();
-        mFragments.add(new TradeTotalFragment());
-        mFragments.add(new TradeRecordsFragment());
 
         switch (PerSonMessage.userType) {
             case Constants.SUPER_MANAGER://'系统管理员,运营商'
+                mFragments.add(new TradeTongJiFragment());
+                mFragments.add(new TradeTotalFragment());
+                mFragments.add(new TradeRecordsFragment());
                 mFragments.add(new TradeAccountFragment());
                 break;
             case Constants.SYSTEM_MANAGER:
+                mFragments.add(new TradeTongJiFragment());
+                mFragments.add(new TradeTotalFragment());
+                mFragments.add(new TradeRecordsFragment());
                 mFragments.add(new TradeAccountFragment());
                 break;
             case Constants.AGENT_MANAGER://'代理商'
+                mFragments.add(new TradeTongJiFragment());
+                mFragments.add(new TradeTotalFragment());
+                mFragments.add(new TradeRecordsFragment());
                 mFragments.add(new TradeAccountFragment());
                 break;
             case Constants.MACHINE_MANAGER://'机器管理员'
+                //如果有查看交易权利
+                if (PerSonMessage.role.contains("1")) {
+                    mFragments.add(new TradeTongJiFragment());
+                    mFragments.add(new TradeRecordsFragment());
+                }
                 break;
             default:
                 break;

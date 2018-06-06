@@ -11,9 +11,11 @@ public interface HttpRequstUrl {
     /*
     *  外网服务器地址
      */
-    //String IP_RUN = "202.98.157.25";
-    String IP_RUN = "119.23.71.185";
-   String HOST_URL_RUN = "http://server.aichance.com.cn/fridgesManage_server/";//外网服务器
+    String IP_RUN = "202.98.157.25";
+/*    String IP_RUN = "119.23.71.185";
+   String HOST_URL_RUN = "http://server.aichance.com.cn/fridgesManage_server/";//外网服务器  */
+
+   String HOST_URL_RUN = "http://202.98.157.25/fridgesManage_server/";//外网服务器0
    // String HOST_URL_RUN = "http://119.23.71.185/refrigerator/";//阿里云
     /*
     * 测试服务器地址
@@ -64,6 +66,7 @@ public interface HttpRequstUrl {
     * 交易统计
     * */
     String TRADE_TOTAL_URL = HOST_URL + "trade/financialTotal";
+    String TRADE_TONGJI_URL = HOST_URL + "trade/getLine";
     String TRADE_RECORDS_URL = HOST_URL + "trade/search";
     String TRADE_RECOR_DETAIL_URL = HOST_URL + "trade/get";
     String TRADE_RECOR_DETAIL_PRODUCT_URL = HOST_URL + "goods/search";

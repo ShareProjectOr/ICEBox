@@ -1,5 +1,6 @@
 package com.example.shareiceboxms.models.beans;
 
+import android.text.TextUtils;
 import android.util.Log;
 
 import org.json.JSONException;
@@ -12,7 +13,7 @@ import org.json.JSONObject;
 public class ItemUpload {
     public int recordID;
     public String unlockTime;
-    public String openingTime;
+    public String openingTime = "";
     public String closingTime;
     public int userID;
     public String name;
@@ -28,13 +29,15 @@ public class ItemUpload {
     public String UpLoadNum;
 
     public void bindData(JSONObject object) throws JSONException {
-        Log.d("上下货",object.toString());
+        Log.d("上下货", object.toString());
         recordID = object.getInt("recordID");
         unlockTime = object.getString("unlockTime");
-        openingTime = object.getString("openingTime");
+        if (!"null".equals(object.getString("openingTime")) && !TextUtils.isEmpty(object.getString("openingTime"))) {
+            openingTime = object.getString("openingTime");
+        }
         closingTime = object.getString("closingTime");
-        UpLoadNum  = object.getString("exhibitNum");
-        DownLoadNum  = object.getString("offShelfNum");
+        UpLoadNum = object.getString("exhibitNum");
+        DownLoadNum = object.getString("offShelfNum");
         JSONObject user = object.getJSONObject("operator");
         JSONObject machine = object.getJSONObject("machine");
         //    userID = user.getInt("userID");

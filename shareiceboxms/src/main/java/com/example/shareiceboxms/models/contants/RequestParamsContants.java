@@ -36,7 +36,7 @@ public class RequestParamsContants {
             } else {
                 params.put("agentID", null);
             }
-            params.put("managerID", "");
+            params.put("managerID",PerSonMessage.userId);
         } else {
             params.put("agentID", "");
             params.put("managerID", "");
@@ -204,6 +204,20 @@ public class RequestParamsContants {
         params.put("userID", PerSonMessage.userId);
         return params;
     }
+
+    /*
+* 交易统计-交易统计 请求参数
+* */
+    public Map<String, Object> getTradeTongjiParams() {
+        Map<String, Object> params = new HashMap<>();
+        params.put("appUserID", PerSonMessage.userId);
+        params.put("userID", PerSonMessage.userId);
+        params.put("machineCode", "");
+        params.put("createTime", "");
+        putId(params);
+        return params;
+    }
+
 
     /*
 * 交易统计-财务明细 请求参数
