@@ -48,7 +48,7 @@ import java.util.Map;
 
 /**
  * Created by WH on 2017/11/27.
- * 财务明细
+ * 交易统计
  */
 
 public class TradeTotalFragment extends BaseFragment {
@@ -129,24 +129,25 @@ public class TradeTotalFragment extends BaseFragment {
                 switch (checkedId) {
                     case R.id.todayDate:
                         time = SecondToDate.getDateParams(SecondToDate.TODAY_CODE);
-                        Log.d("todayDate=",time.toString());
+                        Log.d("777777777777777777", "todayDate");
                         break;
                     case R.id.weekDate:
                         time = SecondToDate.getDateParams(SecondToDate.WEEK_CODE);
-                        Log.d("weekDate=",time.toString());
+                        Log.d("777777777777777777", "weekDate");
                         break;
                     case R.id.monthDate:
                         time = SecondToDate.getDateParams(SecondToDate.MONTH_CODE);
-                        Log.d("monthDate=",time.toString());
+                        Log.d("777777777777777777", "monthDate");
 
                         break;
                     case R.id.yearDate:
                         time = SecondToDate.getDateParams(SecondToDate.YEAR_CODE);
-                        Log.d("yearDate=",time.toString());
+                        Log.d("777777777777777777", "yearDate");
                         break;
                 }
                 timeSelector.setText(SecondToDate.getDateUiShow(time));
                 getDatas(getParams());
+                Log.d("777777777777777777", "setOnCheckedChangeListener");
             }
         });
         dateGroup.check(R.id.todayDate);
@@ -164,7 +165,6 @@ public class TradeTotalFragment extends BaseFragment {
         activity = (HomeActivity) getActivity();
         tradeTotalFragment = this;
         time = RequestParamsContants.getInstance().getTimeSelectorParams();
-        time = SecondToDate.getDateParams(SecondToDate.TODAY_CODE);//默认为今天的
         itemTradeTotal = new ItemTradeTotal();
         datePickerDialog = new DoubleDatePickerDialog(getContext(), 0, this
                 , Calendar.getInstance().get(Calendar.YEAR), Calendar.getInstance().get(Calendar.MONTH)
@@ -205,9 +205,9 @@ public class TradeTotalFragment extends BaseFragment {
 
     @Override
     public void onRefresh() {
-       /* if (refreshLayout.isRefreshing()) {
+        if (refreshLayout.isRefreshing()) {
             return;
-        }*/
+        }
         getDatas(getParams());
         Log.d("777777777777777777", "onRefresh");
         refreshLayout.setRefreshing(false);//关闭刷新

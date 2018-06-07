@@ -58,6 +58,7 @@ public class TradeFragment extends BaseFragment implements HomeActivity.OnBackPr
         } else {
             adapter = new ViewPagerAdapter(getChildFragmentManager(), FragmentFactory.getInstance().getTradeChildFragments(), Constants.TradeTabTitles);
         }
+
         viewPager.setAdapter(adapter);
         tabLayout.setupWithViewPager(viewPager);
         drawerIcon.setOnClickListener(this);

@@ -130,23 +130,17 @@ public class HomeActivity extends BaseActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
-     /*   SaveUserMessager();
-        initViews();
-        startMqttService();
-        initData();
-        initListener();
-        initHandler();*/
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
         SaveUserMessager();
         initViews();
         startMqttService();
         initData();
         initListener();
         initHandler();
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
 
     }
 
@@ -277,29 +271,6 @@ public class HomeActivity extends BaseActivity
 
     private void initData() {
 
-        if (PerSonMessage.userType == Constants.MACHINE_MANAGER && !PerSonMessage.role.contains("1")) {
-            addPartTab();
-        } else {
-            addAllTab();
-        }
-        switchFragment();
-        setNotifySnackbar();
-        MnanagerNameAndTimePart.setText(PerSonMessage.name + ", " + SecondToDate.getTimePart());
-    }
-
-    private void addPartTab() {
-        tabLayout.removeAllTabs();
-        for (int i = 0; i < Constants.TabTitlesForManager.length; i++) {
-            TabLayout.Tab tab = tabLayout.newTab();
-            tab.setIcon(Constants.TabIconsForManager[i]);
-            tab.setText(Constants.TabTitlesForManager[i]);
-            tabLayout.addTab(tab);
-        }
-        curFragment = new MachineFragment();
-    }
-
-    private void addAllTab() {
-        tabLayout.removeAllTabs();
         for (int i = 0; i < Constants.TabTitles.length; i++) {
             TabLayout.Tab tab = tabLayout.newTab();
             tab.setIcon(Constants.TabIcons[i]);
@@ -307,6 +278,9 @@ public class HomeActivity extends BaseActivity
             tabLayout.addTab(tab);
         }
         curFragment = new TradeFragment();
+        switchFragment();
+        setNotifySnackbar();
+        MnanagerNameAndTimePart.setText(PerSonMessage.name + ", " + SecondToDate.getTimePart());
     }
 
 
@@ -550,26 +524,13 @@ public class HomeActivity extends BaseActivity
     public void getCurFragment() {
         switch (currentHomePageNum) {
             case 0:
-                if (PerSonMessage.userType == Constants.MACHINE_MANAGER && !PerSonMessage.role.contains("1")) {
-                    curFragment = new MachineFragment();
-                } else {
-                    curFragment = new TradeFragment();
-                }
+                curFragment = new TradeFragment();
                 break;
             case 1:
-                if (PerSonMessage.userType == Constants.MACHINE_MANAGER && !PerSonMessage.role.contains("1")) {
-                    curFragment = new ExceptionFragment();
-                } else {
-                    curFragment = new MachineFragment();
-                }
+                curFragment = new MachineFragment();
                 break;
             case 2:
-
-                if (PerSonMessage.userType == Constants.MACHINE_MANAGER && !PerSonMessage.role.contains("1")) {
-                    curFragment = new ProductFragment();
-                } else {
-                    curFragment = new ExceptionFragment();
-                }
+                curFragment = new ExceptionFragment();
                 break;
             case 3:
                 curFragment = new ProductFragment();
@@ -825,59 +786,32 @@ public class HomeActivity extends BaseActivity
         currentHomePageNum = tab.getPosition();
         switch (tab.getPosition()) {
             case 0:
-                if (PerSonMessage.userType == Constants.MACHINE_MANAGER && !PerSonMessage.role.contains("1")) {
-                    addCurMachineFragment();
-                } else {
-                    addCurTradFragment();
+                if (!(curFragment instanceof TradeFragment)) {
+                    curFragment = new TradeFragment();
+
                 }
+
                 break;
             case 1:
-
-                if (PerSonMessage.userType == Constants.MACHINE_MANAGER && !PerSonMessage.role.contains("1")) {
-                    addCurExecptionFragment();
-                } else {
-                    addCurMachineFragment();
+                if (!(curFragment instanceof MachineFragment)) {
+                    curFragment = new MachineFragment();
                 }
                 break;
             case 2:
-                if (PerSonMessage.userType == Constants.MACHINE_MANAGER && !PerSonMessage.role.contains("1")) {
-                    addCurProductFragment();
-                } else {
-                    addCurExecptionFragment();
+                if (!(curFragment instanceof ExceptionFragment)) {
+                    curFragment = new ExceptionFragment();
                 }
                 break;
             case 3:
-                addCurProductFragment();
+                if (!(curFragment instanceof ProductFragment)) {
+                    curFragment = new ProductFragment();
+                }
                 break;
             default:
                 break;
         }
         switchFragment();
 
-    }
-
-    private void addCurExecptionFragment() {
-        if (!(curFragment instanceof ExceptionFragment)) {
-            curFragment = new ExceptionFragment();
-        }
-    }
-
-    private void addCurProductFragment() {
-        if (!(curFragment instanceof ProductFragment)) {
-            curFragment = new ProductFragment();
-        }
-    }
-
-    private void addCurMachineFragment() {
-        if (!(curFragment instanceof MachineFragment)) {
-            curFragment = new MachineFragment();
-        }
-    }
-
-    private void addCurTradFragment() {
-        if (!(curFragment instanceof TradeFragment)) {
-            curFragment = new TradeFragment();
-        }
     }
 
     @Override
@@ -975,7 +909,9 @@ public class HomeActivity extends BaseActivity
 
 
             //接收notification点击事件
-            addCurExecptionFragment();
+            if (!(curFragment instanceof ExceptionFragment)) {
+                curFragment = new ExceptionFragment();
+            }
             selectedException();
             showHomepage = true;
             switchFragment();
