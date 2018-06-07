@@ -271,13 +271,27 @@ public class HomeActivity extends BaseActivity
 
     private void initData() {
 
-        for (int i = 0; i < Constants.TabTitles.length; i++) {
-            TabLayout.Tab tab = tabLayout.newTab();
-            tab.setIcon(Constants.TabIcons[i]);
-            tab.setText(Constants.TabTitles[i]);
-            tabLayout.addTab(tab);
+        if (PerSonMessage.userType == Constants.MACHINE_MANAGER && !PerSonMessage.role.contains("1")) {
+
+            for (int i = 0; i < Constants.TabTitlesForManager.length; i++) {
+                TabLayout.Tab tab = tabLayout.newTab();
+                tab.setIcon(Constants.TabIconsForManager[i]);
+                tab.setText(Constants.TabTitlesForManager[i]);
+                tabLayout.addTab(tab);
+            }
+            curFragment = new MachineFragment();
+
+        }else{
+            for (int i = 0; i < Constants.TabTitles.length; i++) {
+                TabLayout.Tab tab = tabLayout.newTab();
+                tab.setIcon(Constants.TabIcons[i]);
+                tab.setText(Constants.TabTitles[i]);
+                tabLayout.addTab(tab);
+            }
+            curFragment = new TradeFragment();
         }
-        curFragment = new TradeFragment();
+
+
         switchFragment();
         setNotifySnackbar();
         MnanagerNameAndTimePart.setText(PerSonMessage.name + ", " + SecondToDate.getTimePart());
@@ -524,13 +538,31 @@ public class HomeActivity extends BaseActivity
     public void getCurFragment() {
         switch (currentHomePageNum) {
             case 0:
-                curFragment = new TradeFragment();
+                if (PerSonMessage.userType == Constants.MACHINE_MANAGER && !PerSonMessage.role.contains("1")) {
+                    curFragment = new MachineFragment();
+                }else{
+                    curFragment = new TradeFragment();
+                }
+
                 break;
             case 1:
-                curFragment = new MachineFragment();
+
+                if (PerSonMessage.userType == Constants.MACHINE_MANAGER && !PerSonMessage.role.contains("1")) {
+                    curFragment = new ExceptionFragment();
+                }else{
+                    curFragment = new MachineFragment();
+                }
+
+
                 break;
             case 2:
-                curFragment = new ExceptionFragment();
+
+                if (PerSonMessage.userType == Constants.MACHINE_MANAGER && !PerSonMessage.role.contains("1")) {
+                    curFragment = new ProductFragment();
+                }else{
+                    curFragment = new ExceptionFragment();
+                }
+
                 break;
             case 3:
                 curFragment = new ProductFragment();
@@ -786,32 +818,63 @@ public class HomeActivity extends BaseActivity
         currentHomePageNum = tab.getPosition();
         switch (tab.getPosition()) {
             case 0:
-                if (!(curFragment instanceof TradeFragment)) {
-                    curFragment = new TradeFragment();
-
+                if (PerSonMessage.userType == Constants.MACHINE_MANAGER && !PerSonMessage.role.contains("1")) {
+                    addCurMachineFrag();
+                }else{
+                    addCurTradeFrag();
                 }
 
                 break;
             case 1:
-                if (!(curFragment instanceof MachineFragment)) {
-                    curFragment = new MachineFragment();
+
+                if (PerSonMessage.userType == Constants.MACHINE_MANAGER && !PerSonMessage.role.contains("1")) {
+                    addCurExecptionFrag();
+                }else{
+                    addCurMachineFrag();
                 }
+
                 break;
             case 2:
-                if (!(curFragment instanceof ExceptionFragment)) {
-                    curFragment = new ExceptionFragment();
+
+                if (PerSonMessage.userType == Constants.MACHINE_MANAGER && !PerSonMessage.role.contains("1")) {
+                    addCurProductFrag();
+                }else{
+                    addCurExecptionFrag();
                 }
+
                 break;
             case 3:
-                if (!(curFragment instanceof ProductFragment)) {
-                    curFragment = new ProductFragment();
-                }
+                addCurProductFrag();
                 break;
             default:
                 break;
         }
         switchFragment();
 
+    }
+
+    private void addCurProductFrag() {
+        if (!(curFragment instanceof ProductFragment)) {
+            curFragment = new ProductFragment();
+        }
+    }
+
+    private void addCurExecptionFrag() {
+        if (!(curFragment instanceof ExceptionFragment)) {
+            curFragment = new ExceptionFragment();
+        }
+    }
+
+    private void addCurTradeFrag() {
+        if (!(curFragment instanceof TradeFragment)) {
+            curFragment = new TradeFragment();
+        }
+    }
+
+    private void addCurMachineFrag() {
+        if (!(curFragment instanceof MachineFragment)) {
+            curFragment = new MachineFragment();
+        }
     }
 
     @Override
@@ -909,9 +972,7 @@ public class HomeActivity extends BaseActivity
 
 
             //接收notification点击事件
-            if (!(curFragment instanceof ExceptionFragment)) {
-                curFragment = new ExceptionFragment();
-            }
+            addCurExecptionFrag();
             selectedException();
             showHomepage = true;
             switchFragment();
