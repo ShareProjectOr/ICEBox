@@ -40,6 +40,11 @@ public class TradeFragment extends BasicFragment implements View.OnClickListener
         return content;
     }
 
+    @Override
+    public void onDetach() {
+        super.onDetach();
+    }
+
     private void initView() {
         homeActivity = (HomeActivity) getActivity();
         back = (Button) content.findViewById(R.id.back);

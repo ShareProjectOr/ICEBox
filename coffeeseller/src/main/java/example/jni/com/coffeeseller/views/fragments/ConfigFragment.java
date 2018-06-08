@@ -129,6 +129,10 @@ public class ConfigFragment extends BasicFragment implements IAddMaterialView, I
 
     }
 
+    @Override
+    public void onDetach() {
+        super.onDetach();
+    }
 
     private void initView() {
 

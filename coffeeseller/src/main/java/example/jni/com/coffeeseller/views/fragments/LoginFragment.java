@@ -48,6 +48,11 @@ public class LoginFragment extends BasicFragment implements Iloginview {
     }
 
     @Override
+    public void onDetach() {
+        super.onDetach();
+    }
+
+    @Override
     public void onResume() {
         super.onResume();
         UserName.setText("");

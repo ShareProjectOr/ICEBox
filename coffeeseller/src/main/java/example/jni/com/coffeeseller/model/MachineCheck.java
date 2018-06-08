@@ -178,9 +178,9 @@ public class MachineCheck implements IMachineCheck {
                     mOnMachineCheckCallBackListener.MaterialGroupGetFailed(object.getString("err"));
                 }
             } catch (IOException e) {
-                mOnMachineCheckCallBackListener.MaterialGroupGetFailed("网络错误,配方获取失败" + e.getMessage());
+                mOnMachineCheckCallBackListener.MaterialGroupGetFailed("网络错误或不可用,配方获取失败");
             } catch (JSONException e) {
-                mOnMachineCheckCallBackListener.MaterialGroupGetFailed(e.getMessage());
+                mOnMachineCheckCallBackListener.MaterialGroupGetFailed("服务器解析错误");
             }
         }
 
@@ -269,8 +269,10 @@ public class MachineCheck implements IMachineCheck {
                 } else {
                     mOnMachineCheckCallBackListener.MachineCodeCheckFailed(object.getString("err"));
                 }
-            } catch (IOException | JSONException e) {
-                mOnMachineCheckCallBackListener.MachineCodeCheckFailed(e.getMessage());
+            } catch (JSONException e) {
+                mOnMachineCheckCallBackListener.MachineCodeCheckFailed("服务器解析错误");
+            } catch (IOException e) {
+                mOnMachineCheckCallBackListener.MachineCodeCheckFailed("网络错误或不可用,鉴权失败");
             }
         }
 

@@ -83,6 +83,11 @@ public class BuyFragment extends BasicFragment implements GridViewItemListener, 
         initDatas();
     }
 
+    @Override
+    public void onDetach() {
+        super.onDetach();
+    }
+
     private void initViews() {
         homeActivity = HomeActivity.getInstance();
         mLogo = (ImageView) content.findViewById(R.id.logo);
