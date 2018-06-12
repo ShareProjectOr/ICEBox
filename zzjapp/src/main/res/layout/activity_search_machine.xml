@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/menudialog_bg_gray"
+    tools:context="com.example.zhazhijiguanlixitong.Activity.SearchMachineActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="42dp"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/title"
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:layout_marginBottom="10dp"
+            android:gravity="center"
+            android:text="所有设备"
+            android:textColor="@color/orange"
+            android:textStyle="bold" />
+
+
+        <android.support.v4.widget.SwipeRefreshLayout
+            android:id="@+id/refresh"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1">
+
+            <ListView
+                android:id="@+id/machine_list"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:divider="@drawable/shadow_line"
+                android:dividerHeight="1dp"
+                android:layerType="software" />
+        </android.support.v4.widget.SwipeRefreshLayout>
+    </LinearLayout>
+
+    <RadioGroup
+        android:id="@+id/stateMachineType"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="2dp"
+        android:gravity="center"
+        android:orientation="horizontal">
+
+        <RadioButton
+            android:id="@+id/all"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:button="@null"
+            android:checked="true"
+            android:drawableTop="@drawable/button_all"
+            android:gravity="center"
+            android:text="所有"
+            android:textColor="@drawable/all_title" />
+
+        <RadioButton
+            android:id="@+id/exception"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:button="@null"
+            android:drawableTop="@drawable/button_exception"
+            android:gravity="center"
+            android:text="异常"
+            android:textColor="@drawable/exception_title" />
+
+        <RadioButton
+            android:id="@+id/normal"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:button="@null"
+            android:drawableTop="@drawable/button_normal"
+            android:gravity="center"
+            android:text="正常"
+            android:textColor="@drawable/normal_title" />
+
+
+    </RadioGroup>
+
+    <Button
+        android:id="@+id/top_btn"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_above="@+id/stateMachineType"
+        android:layout_alignParentEnd="true"
+        android:layout_marginBottom="2dp"
+        android:layout_marginRight="6dp"
+        android:background="@mipmap/backtop"
+        android:gravity="center"
+        android:visibility="gone" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:layout_above="@+id/stateMachineType"
+        android:background="@color/black" />
+
+    <ImageView
+        android:id="@+id/tips"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:layout_margin="30dp"
+        android:src="@mipmap/ex_page_tips"
+        android:visibility="gone" />
+</RelativeLayout>

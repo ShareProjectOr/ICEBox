@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:background="#F98508"
+        android:gravity="center">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/machine_manager_page_title"
+            android:textColor="#ffffff"
+            android:textSize="16sp" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <ListView
+            android:id="@+id/machine_list"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:divider="@color/ed"
+            android:dividerHeight="1dp"></ListView>
+        <!--<Button-->
+        <!--android:id="@+id/query_machine_list"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_marginLeft="30dp"-->
+        <!--android:layout_marginRight="30dp"-->
+        <!--android:layout_marginTop="10dp"-->
+        <!--android:background="@drawable/button_style"-->
+        <!--android:text="@string/query_machine_list" />-->
+
+        <!--<Button-->
+        <!--android:id="@+id/query_machine_exp_list"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_marginLeft="30dp"-->
+        <!--android:layout_marginRight="30dp"-->
+        <!--android:layout_marginTop="10dp"-->
+        <!--android:background="@drawable/button_style"-->
+        <!--android:text="查询机器异常信息记录" />-->
+
+        <!--<Button-->
+        <!--android:id="@+id/add_machine"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_marginLeft="30dp"-->
+        <!--android:layout_marginRight="30dp"-->
+        <!--android:layout_marginTop="10dp"-->
+        <!--android:background="@drawable/button_style"-->
+        <!--android:text="添加机器" />-->
+
+        <!--<Button-->
+        <!--android:id="@+id/remote_shutdown"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_marginLeft="30dp"-->
+        <!--android:layout_marginRight="30dp"-->
+        <!--android:layout_marginTop="10dp"-->
+        <!--android:background="@drawable/button_style"-->
+        <!--android:text="获取未处理异常信息总数" />-->
+
+
+        <TextView
+            android:id="@+id/needdealex"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="30dp"
+            android:textColor="@color/black" />
+    </LinearLayout>
+</LinearLayout>

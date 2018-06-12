@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/inverted_order"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:gravity="center"
+        android:text="倒序"
+        android:textColor="@color/orange"
+        android:textSize="18sp" />
+
+    <EditText
+        android:id="@+id/chooseagent"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:layout_margin="5dp"
+        android:background="@drawable/change_per_info_edit_style"
+        android:focusable="false"
+        android:gravity="center"
+        android:hint="点击选择代理商"
+        android:padding="5dp"
+        android:textSize="12sp" />
+
+    <EditText
+        android:id="@+id/choosemanager"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:layout_margin="5dp"
+        android:background="@drawable/change_per_info_edit_style"
+        android:focusable="false"
+        android:gravity="center"
+        android:hint="选择机器管理员"
+        android:padding="5dp"
+        android:textSize="12sp" />
+
+    <EditText
+        android:id="@+id/isDeal"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:layout_margin="5dp"
+        android:background="@drawable/change_per_info_edit_style"
+        android:focusable="false"
+        android:gravity="center"
+        android:hint="未处理故障"
+        android:padding="5dp"
+        android:textSize="12sp" />
+
+    <EditText
+        android:id="@+id/choose_creatTime"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="5dp"
+        android:background="@null"
+        android:focusable="false"
+        android:gravity="center"
+        android:hint="筛选出现时间段"
+        android:textSize="16sp" />
+
+    <EditText
+        android:id="@+id/choose_dealTime"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="5dp"
+        android:background="@null"
+        android:focusable="false"
+        android:gravity="center"
+        android:hint="筛选处理时间段"
+        android:textSize="16sp" />
+</LinearLayout>

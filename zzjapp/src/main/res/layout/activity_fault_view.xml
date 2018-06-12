@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:id="@+id/draw_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="故障次数趋势图"
+                android:textColor="@color/orange"
+                android:textSize="25sp" />
+
+            <com.github.mikephil.charting.charts.CombinedChart
+                android:id="@+id/one_chart"
+                android:layout_width="match_parent"
+                android:layout_height="300dp"></com.github.mikephil.charting.charts.CombinedChart>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="累积耗时趋势图"
+                android:textColor="@color/orange"
+                android:textSize="25sp" />
+
+            <com.github.mikephil.charting.charts.CombinedChart
+                android:id="@+id/two_chart"
+                android:layout_width="match_parent"
+                android:layout_height="300dp"
+                android:layout_marginTop="50dp"></com.github.mikephil.charting.charts.CombinedChart>
+        </LinearLayout>
+    </LinearLayout>
+</ScrollView>

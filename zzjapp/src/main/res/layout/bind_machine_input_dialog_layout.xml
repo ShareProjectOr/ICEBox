@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <EditText
+        android:id="@+id/agentID"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/agent_id"
+        android:imeOptions="actionNext"
+        android:inputType="text"
+        android:lines="1" />
+
+    <EditText
+        android:id="@+id/machineCode"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/machineCode"
+        android:imeOptions="actionDone"
+        android:inputType="number"
+        android:lines="1" />
+</LinearLayout>

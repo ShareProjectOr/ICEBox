@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:layout_marginTop="20dp"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <Button
+            android:id="@+id/appoint_agent"
+            android:layout_width="fill_parent"
+            android:layout_height="40dp"
+            android:background="@drawable/change_per_info_edit_style"
+            android:gravity="center"
+            android:text="@string/appointAgent"
+            android:textSize="13sp" />
+
+        <Button
+            android:id="@+id/appoint_machine_manager"
+            android:layout_width="fill_parent"
+            android:layout_height="40dp"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/change_per_info_edit_style"
+            android:gravity="center"
+            android:text="@string/appointMachineManager"
+            android:textSize="13sp" />
+
+        <Button
+            android:id="@+id/appoint_machine"
+            android:layout_width="fill_parent"
+            android:layout_height="40dp"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/change_per_info_edit_style"
+            android:gravity="center"
+            android:text="@string/appointMachine"
+            android:textSize="13sp" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp">
+
+        <TextView
+            android:id="@+id/create_time"
+            android:layout_width="fill_parent"
+            android:layout_height="50dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:background="@drawable/change_per_info_edit_style"
+            android:gravity="center"
+            android:text="@string/creatTime" />
+    </LinearLayout>
+</LinearLayout>

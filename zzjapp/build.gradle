@@ -1,0 +1,78 @@
+apply plugin: 'com.android.application'
+//apply plugin: 'kotlin-android'
+android {
+    compileSdkVersion 25
+    buildToolsVersion '25.0.3'
+    aaptOptions {
+        cruncherEnabled = false
+        useNewCruncher = false
+    }
+
+    useLibrary 'org.apache.http.legacy'
+    defaultConfig {
+        applicationId "com.example.zhazhijiguanlixitong"
+        minSdkVersion 19
+        targetSdkVersion 25
+        versionCode 1
+        versionName "1.0.7"//解决 修改密码界面在少部分安卓机型上无限旋转的bug  更改时间 2018.05.18
+
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        externalNativeBuild {
+            cmake {
+                cppFlags ""
+            }
+        }
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    task nativeLibsToJar(type: Zip, description: "create a jar archive of the native libs") {
+        destinationDir file("$projectDir/libs")
+        baseName "Native_Libs2"
+        extension "jar"
+        from fileTree(dir: "libs", include: "**/*.so")
+        into "lib"
+    }
+
+    tasks.withType(JavaCompile) {
+        compileTask -> compileTask.dependsOn(nativeLibsToJar)
+    }
+
+}
+
+dependencies {
+    //compile fileTree(dir: 'libs', include: ['*.jar'])
+    androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
+        exclude group: 'com.android.support', module: 'support-annotations'
+    })
+    compile files('libs/commons-io-1.4.jar')
+    compile files('libs/Volley.jar')
+    compile files('libs/xUtils-2.6.14.jar')
+    compile files('libs/jxl.jar')
+    compile files('libs/nineoldandroids-2.4.0.jar')
+    compile files('libs/mpchartlib.jar')
+    //compile "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
+    compile files('libs/glide-full-4.0.0.jar')
+    compile files('libs/ZBarDecoder.jar')
+    compile 'com.alex.alexswitch:alexswitch:1.1.2'
+    compile 'com.android.support:appcompat-v7:25.3.1'
+    compile 'com.android.support.constraint:constraint-layout:1.0.2'
+    compile 'com.ashokvarma.android:bottom-navigation-bar:0.9.5'
+    compile 'com.android.support:design:25.3.1'
+    compile 'com.android.support:support-v4:25.3.1'
+    compile 'org.greenrobot:eventbus:3.0.0'
+    compile 'com.bigkoo:alertview:1.0.3'
+ //  compile 'com.github.lygttpod:SuperTextView:2.1.4'
+    testCompile 'junit:junit:4.12'
+    compile 'org.zackratos:ultimatebar:1.0.3'
+    compile files('libs/classes.jar')
+    compile 'com.github.rey5137:material:1.2.2'
+
+}
+repositories {
+    mavenCentral()
+}

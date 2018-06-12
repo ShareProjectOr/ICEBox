@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center"
+    android:orientation="vertical">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/inverted_orderbystartTime"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="@string/inverted_orderbystartTime"
+            android:textColor="@color/black"
+            android:textSize="14sp" />
+
+        <TextView
+            android:id="@+id/inverted_orderbyendTime"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="@string/inverted_orderbyendTime"
+            android:textColor="@color/black"
+            android:textSize="14sp" />
+
+        <TextView
+            android:id="@+id/inverted_order_bytradeMoney"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="@string/inverted_order_bytradeMoney"
+            android:textColor="@color/black"
+            android:textSize="14sp" />
+    </LinearLayout>
+
+    <EditText
+        android:id="@+id/chooseagent"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:layout_margin="5dp"
+        android:background="@drawable/change_per_info_edit_style"
+        android:focusable="false"
+        android:gravity="center"
+        android:hint="@string/pointchooseagent"
+        android:padding="5dp"
+        android:textSize="12sp" />
+
+    <EditText
+        android:id="@+id/choosemanager"
+        android:layout_width="100dp"
+        android:layout_height="wrap_content"
+        android:layout_margin="5dp"
+        android:background="@drawable/change_per_info_edit_style"
+        android:focusable="false"
+        android:gravity="center"
+        android:hint="@string/choosemanager"
+        android:padding="5dp"
+        android:textSize="12sp"
+        android:visibility="gone" />
+
+    <EditText
+        android:id="@+id/choosemachine"
+        android:layout_width="100dp"
+        android:layout_height="wrap_content"
+        android:layout_margin="5dp"
+        android:background="@drawable/change_per_info_edit_style"
+        android:focusable="false"
+        android:gravity="center"
+        android:hint="@string/choosemachine"
+        android:padding="5dp"
+        android:textSize="12sp"
+        android:visibility="gone" />
+
+    <EditText
+        android:id="@+id/choosepaytype"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:layout_margin="5dp"
+        android:background="@drawable/change_per_info_edit_style"
+        android:focusable="false"
+        android:gravity="center"
+        android:hint="@string/paytypenochoose"
+        android:padding="5dp"
+        android:textSize="12sp" />
+
+    <EditText
+        android:id="@+id/chooseisRefund"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:layout_margin="5dp"
+        android:background="@drawable/change_per_info_edit_style"
+        android:focusable="false"
+        android:gravity="center"
+        android:hint="@string/chooseisRefund"
+        android:padding="5dp"
+        android:textSize="12sp" />
+
+    <EditText
+        android:id="@+id/choose_startTime"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@null"
+        android:focusable="false"
+        android:gravity="center"
+        android:layout_margin="5dp"
+        android:hint="@string/choose_startTime"
+        android:textSize="16sp" />
+    <EditText
+        android:id="@+id/choose_endTime"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@null"
+        android:focusable="false"
+        android:layout_margin="5dp"
+        android:gravity="center"
+        android:hint="@string/choose_endTime"
+        android:textSize="16sp" />
+</LinearLayout>

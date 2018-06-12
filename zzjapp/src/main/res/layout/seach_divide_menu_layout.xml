@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center"
+    android:orientation="vertical">
+
+    <Button
+        android:id="@+id/chooseagent"
+        android:layout_width="150dp"
+        android:layout_height="30dp"
+        android:layout_margin="10dp"
+        android:background="@color/orange"
+        android:gravity="center"
+        android:padding="5dp"
+        android:text="@string/chooseagent"
+        android:textColor="@color/white"
+        android:textSize="12sp" />
+
+    <RadioGroup
+        android:id="@+id/type_tag"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="left"
+        android:orientation="horizontal"
+        android:paddingLeft="5dp">
+
+        <RadioButton
+            android:id="@+id/type4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:buttonTint="@color/orange"
+            android:checked="true"
+            android:text="@string/all"
+            android:textColor="@color/orange"
+            android:textSize="14sp" />
+
+        <RadioButton
+            android:id="@+id/type1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:buttonTint="@color/orange"
+            android:text="未审核"
+            android:textColor="@color/orange"
+            android:textSize="14sp" />
+
+        <RadioButton
+            android:id="@+id/type2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:buttonTint="@color/orange"
+            android:text="已审核"
+            android:textColor="@color/orange"
+            android:textSize="14sp" />
+
+        <RadioButton
+            android:id="@+id/type3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:buttonTint="@color/orange"
+            android:text="@string/have_money"
+            android:textColor="@color/orange"
+            android:textSize="14sp" />
+
+
+    </RadioGroup>
+
+    <EditText
+        android:id="@+id/choose_start_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="5dp"
+        android:background="@color/white"
+        android:focusable="false"
+        android:gravity="center"
+        android:hint="@string/choose_start_time"
+        android:textColor="@color/black"
+        android:textColorHint="@color/orange"
+        android:textSize="16sp" />
+
+    <EditText
+        android:id="@+id/choose_end_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="5dp"
+        android:background="@color/white"
+        android:focusable="false"
+        android:gravity="center"
+        android:hint="@string/choose_end_time"
+        android:textColor="@color/black"
+        android:textColorHint="@color/orange"
+        android:textSize="16sp" />
+</LinearLayout>

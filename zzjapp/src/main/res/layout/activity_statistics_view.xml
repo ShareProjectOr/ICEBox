@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:id="@+id/draw_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <LinearLayout
+            android:id="@+id/one_chart_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="交易次数趋势图"
+                android:textColor="@color/orange"
+                android:textSize="25sp" />
+
+            <com.github.mikephil.charting.charts.CombinedChart
+                android:id="@+id/one_chart"
+                android:layout_width="match_parent"
+                android:layout_height="400dp"></com.github.mikephil.charting.charts.CombinedChart>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/two_chart_layout"
+            android:layout_width="match_parent"
+            android:layout_height="450dp"
+            android:layout_marginTop="50dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="交易数量趋势图"
+                android:textColor="@color/orange"
+                android:textSize="25sp" />
+
+            <com.github.mikephil.charting.charts.CombinedChart
+                android:id="@+id/two_chart"
+                android:layout_width="match_parent"
+                android:layout_height="400dp"
+                android:layout_marginTop="10dp"></com.github.mikephil.charting.charts.CombinedChart>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/three_chart_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="50dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="交易金额趋势图"
+                android:textColor="@color/orange"
+                android:textSize="25sp" />
+
+            <com.github.mikephil.charting.charts.CombinedChart
+                android:id="@+id/three_chart"
+                android:layout_width="match_parent"
+                android:layout_height="400dp"
+                android:layout_marginTop="10dp"></com.github.mikephil.charting.charts.CombinedChart>
+        </LinearLayout>
+    </LinearLayout>
+</ScrollView>

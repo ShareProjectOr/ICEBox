@@ -1,0 +1,526 @@
+<resources>
+    <string name="app_name">榨汁机后台管理系统</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">你好</string>
+    <string name="title_activity_login">Sign in</string>
+    <!-- Strings related to login -->
+    <string name="prompt_email">Email</string>
+    <string name="prompt_password">Password (optional)</string>
+    <string name="action_sign_in">Sign in or register</string>
+    <string name="action_sign_in_short">Sign in</string>
+    <string name="error_invalid_email">This email address is invalid</string>
+    <string name="error_invalid_password">密码位数不正确</string>
+    <string name="error_incorrect_password">密码不正确</string>
+    <string name="error_field_required">该项不能为空</string>
+    <string name="num_is_null">账号不能为空！</string>
+    <string name="name_is_null">用户名不能为空！</string>
+    <string name="pass_is_null">密码不能为空！</string>
+    <string name="pass_is_too_short">密码至少为6位数！</string>
+    <string name="manager_address_is_null">地址不能为空！</string>
+    <string name="phone_is_null">电话号码不能为空！</string>
+    <string name="idcard_is_null">身份证号不能为空！</string>
+    <string name="email_not_valid">邮箱格式不正确！</string>
+    <string name="company_name_is_null">公司名称不能为空！</string>
+    <string name="company_address_is_null">公司地址不能为空！</string>
+    <string name="company_code_is_null">组织机构代码不能为空！</string>
+    <string name="company_bank_is_null">银行卡号不能为空！</string>
+    <string name="company_bank_not_legal">银行卡卡号无效！</string>
+    <string name="pass_not_matche">密码不匹配！</string>
+
+
+    <string name="create">创建</string>
+    <string name="query">获取用户列表</string>
+    <string name="person_info">个人信息</string>
+
+    <string name="create_sys_manager">创建系统管理员</string>
+    <string name="create_agent">创建代理商</string>
+    <string name="create_machine_manager">创建机器管理员</string>
+
+    <string name="drop_out_login">退出登陆</string>
+    <string name="commit">一键提交</string>
+
+    <string name="change">修改</string>
+    <string name="cancle">取消</string>
+
+    <string name="managerNum">账号：</string>
+    <string name="managerName">用户姓名：</string>
+    <string name="managerTelephone">用户电话：</string>
+    <string name="managerEmail">用户邮箱：</string>
+    <string name="managerAddress">用户地址：</string>
+    <string name="managerAddressDetail">详细地址：</string>
+    <string name="managerCard">身份证号：</string>
+    <string name="managerCompany">公司地址：</string>
+    <string name="companyAddress">公司名称：</string>
+    <string name="companyNum">机构代码：</string>
+    <string name="companyBank">银行卡号：</string>
+    <string name="agentName">代理商：</string>
+    <string name="actitivedType">用户状态：</string>
+    <string name="managerType">用户权限：</string>
+
+    <string name="superManager">超级管理员</string>
+    <string name="sysManager">系统管理员</string>
+    <string name="agent">代理商</string>
+    <string name="machineManager">机器管理员</string>
+
+    <string name="tradeTotal">交易统计</string>
+    <string name="breakDownTotal">故障统计</string>
+
+    <string name="appointMachine">指定机器</string>
+    <string name="appointAgent">指定代理商</string>
+    <string name="appointMachineManager">指定机器管理员</string>
+    <string name="appointTime">指定时间</string>
+    <string name="payWay">支付方式</string>
+    <string name="isRefund">交易状态</string>
+
+    <string name="allPayMode">所有</string>
+    <string name="alipay">支付宝</string>
+    <string name="not_refund">未退款</string>
+    <string name="has_refund">已退款</string>
+    <string name="total">交易次数</string>
+    <string name="cupNum">杯数</string>
+    <string name="orangeNum">用橙数</string>
+    <string name="tradeMoney">交易金额</string>
+    <string name="tradeRight">交易正常</string>
+    <string name="refundMoney">退款金额</string>
+    <string name="hasRefundMoney">已退款金额</string>
+    <string name="notRefundMoney">未退款金额</string>
+    <string name="successTotal">交易成功次数</string>
+    <string name="failTotal">交易失败次数</string>
+    <string name="weChat">微信</string>
+    <string name="cash">现金</string>
+    <string name="time">交易时间</string>
+
+    <string name="dealTime">故障处理时间区</string>
+    <string name="creatTime">故障产生时间区</string>
+    <string name="isDeal">处理状态</string>
+    <string name="hasDeal">已处理</string>
+    <string name="notDeal">未处理</string>
+    <string name="faultTotal">故障次数</string>
+    <string name="spandTime">累积耗时S</string>
+
+    <string name="avgTime">平均耗时S（/故障）</string>
+
+    <string name="dealTotal">已处理异常总数</string>
+    <string name="nDealTotal">未处理异常总数</string>
+
+    <string name="permission_rationale">"Contacts permissions are needed for providing emailcompletions."</string>
+    <string name="title_activity_main2">Main2Activity</string>
+
+    <string name="title_activity_home">Home</string>
+    <string name="dummy_button">Dummy Button</string>
+    <string name="dummy_content">DUMMY\nCONTENT</string>
+    <string name="machine_manager_page_title">机器管理</string>
+    <string name="query_machine_list">查询机器列表</string>
+    <string name="open_or_stop_machine">启用或禁止机器</string>
+    <string name="remote_shutdown">远程关机</string>
+    <string name="inverted_order">按时间倒序</string>
+    <string name="production_time">生产时间</string>
+    <string name="jump">跳转</string>
+    <string name="downpage">下一页</string>
+    <string name="uppage">上一页</string>
+    <string name="agentname">代理商</string>
+    <string name="user_manager_title">用户管理</string>
+    <string name="manager">管理员</string>
+    <string name="machinename">机器名称</string>
+    <string name="screen">筛选</string>
+    <string name="caninputmachinename">可输入机器名字</string>
+
+    <string name="query_machine_fault_record">查询机器异常信息记录</string>
+    <string name="add_machine">添加机器</string>
+    <string name="get_fault_count_nodeal">获取未处理异常信息总数</string>
+
+    <string name="bind_machine_foragent">绑定机器给代理商</string>
+    <string name="bind_machine_formanager">绑定机器给机器管理员</string>
+    <string name="bind_machine">绑定机器</string>
+    <string name="please_input_about_key">请输入相关项</string>
+    <string name="machineCode">机器编号</string>
+    <string name="agent_id">代理商编号</string>
+    <string name="bind">绑定</string>
+    <string name="cancel">取消</string>
+    <string name="loading_page">等待界面</string>
+    <string name="phone">电话</string>
+    <string name="email">邮箱</string>
+    <string name="address">地址</string>
+    <string name="companyname">公司名称</string>
+    <string name="idcard">身份证号码</string>
+    <string name="savecommit">提交修改</string>
+    <string name="please_perfect_bindmessage">请将绑定信息填写完整</string>
+    <string name="net_work_error">网络不给力...</string>
+    <string name="data_is_submitted">数据提交中...</string>
+    <string name="data_send_fail">数据发送失败...</string>
+    <string name="bind_success">绑定成功!</string>
+    <string name="machine_manager_id">机器管理员编号</string>
+    <string name="activatedType">用户状态</string>
+    <string name="on">激活</string>
+    <string name="off">禁止</string>
+    <string name="norule">无限制</string>
+    <string name="exceptionType">异常情况</string>
+    <string name="machine_activatedType">激活状态</string>
+    <string name="state_normal">状态正常</string>
+    <string name="state_error">状态异常</string>
+    <string name="stateCupNum">杯子数量</string>
+    <string name="stateCapNum">盖子数量</string>
+    <string name="title_activity_test">TestActivity</string>
+    <string name="searchuserinputhint">输入名字/电话/地址/公司名称</string>
+    <string name="state_null">无</string>
+    <string name="factoryTime">出厂时间</string>
+    <string name="machine_address">放置位置</string>
+    <string name="customaddress">详细地址</string>
+    <string name="customaddresshint">输入详细地址,如:街道号等(可不填)</string>
+    <string name="edit_machine_message">编辑机器信息</string>
+    <string name="machine_content">机器详情</string>
+    <string name="managerId">管理员编号</string>
+    <string name="agent_name">代理商</string>
+    <string name="exception_custom">异常详情</string>
+    <string name="query_AccountLog_list">获取出入账记录</string>
+    <string name="query_Trade_list">查询交易信息列表</string>
+    <string name="trade_manager">交易管理</string>
+    <string name="choosemachine">点击选择机器</string>
+    <string name="choosemanager">选择机器管理员</string>
+    <string name="paytype">支付方式</string>
+    <string name="chooseisRefund">是否退款未限定</string>
+    <string name="choose_creatTime">点击筛选创建时间段</string>
+    <string name="choose_endTime">点击筛选结束时间段</string>
+    <string name="orderStatus">订单状态</string>
+    <string name="paytypenochoose">支付方式未限定</string>
+    <string name="tradeCode">交易单号</string>
+    <string name="pointchooseagent">点击选择代理商</string>
+    <string name="inverted_order_bytradeMoney">按交易金额倒序</string>
+    <string name="inverted_orderbyendTime">按完成时间倒序</string>
+    <string name="inverted_orderbystartTime">按生成时间倒序</string>
+    <string name="startTime">交易生成时间</string>
+    <string name="choose_startTime">点击筛选开始时间段</string>
+    <string name="inverted_orderbyaccountTime">按出账时间倒序</string>
+    <string name="accountId">出入帐编号</string>
+    <string name="repairpassword">修改密码</string>
+    <string name="opencameraerror">打开相机异常</string>
+    <string name="aplaycamerapermission_msg">请检查应用是否具有开启相机的权限。 如果应用提示申请相机权限，请设置允许！然后重试。</string>
+    <string name="loading">数据加载中...</string>
+    <string name="exception_code">异常编号</string>
+    <string name="idcard_not_legal">身份证号码无效！</string>
+    <string name="email_not_legal">邮箱格式无效！</string>
+    <string name="art">\@</string>
+    <string name="phone_not_legal">电话号码无效！</string>
+
+    <string name="transaction_settlement">分成工单</string>
+    <string name="chooseagent">点击选择代理商</string>
+    <string name="choose_start_time">点击筛选开始时间段</string>
+    <string name="choose_end_time">点击筛选结束时间段</string>
+    <string name="have_money">已打款</string>
+    <string name="all">所有</string>
+    <string name="divide_type">工单类型</string>
+    <string name="divide_Money">结算总金额</string>
+    <string name="divideProportion_text">分成比例：</string>
+    <string name="divideProportion_is_null">分成比例不能为空</string>
+    <string name="divideProportion">分成比例</string>
+    <string name="endtime">交易时间</string>
+    <string name="search_machine_ex_tip">输入机器名进行模糊查询</string>
+    <string name="icon">图标</string>
+    <string name="shenjiliuchengbiaozhi">审核流程标志</string>
+    <string name="weishenhe">未审核</string>
+    <string name="yishenhe">已审核</string>
+    <string name="yidakuan">已打款</string>
+    <string name="suoyou">所有</string>
+    <string name="jujueshoujishiyongquanxian">您拒绝了系统调用摄像头权限,请手动打开相机权限</string>
+    <string name="Scanning">Scanning...</string>
+    <string name="jianchedaoxinbanben">检测到最新版本,是否更新?</string>
+    <string name="zhanshibuyong">暂时不用</string>
+    <string name="queding">确定</string>
+    <string name="tishi">提示</string>
+    <string name="huoquxiazaidizhicuowu">获取下载地址错误...</string>
+    <string name="yuequan">机器管理员不能查看分成管理</string>
+    <string name="tuichuguanlixitong">退出管理系统</string>
+    <string name="quexiao">取消</string>
+    <string name="denglutishi">手机端目前只开放代理商和机器管理员使用  系统管理员或超级管理员请使用网页版</string>
+    <string name="wangluobugeili">网络不给力...</string>
+    <string name="yonghubucunzai">用户不存在</string>
+    <string name="mimacuowu">密码错误</string>
+    <string name="deshebei">的设备</string>
+    <string name="shujujiazaiwanbi">偷偷告诉你,数据已经全部加载...</string>
+    <string name="inputguanjishijian">请输入延时关机时间</string>
+    <string name="shengcanshijian">生产时间</string>
+    <string name="chuchangshijian">出厂时间</string>
+    <string name="jihuoshijian">激活时间</string>
+    <string name="yijingshidiyiyele">当前已经是第一页了</string>
+    <string name="yijingshizuihouyiyele">已经到最后一页了</string>
+    <string name="noting">啥都没填呢</string>
+    <string name="tijiaozhong">数据正在提交中...</string>
+    <string name="caozuochenggong">操作成功</string>
+    <string name="cuowu">错误</string>
+    <string name="canshucuowu">参数错误</string>
+    <string name="suoyoushebei">所有设备</string>
+    <string name="zhengchangshebei">正常设备</string>
+    <string name="yichangshebei">异常设备</string>
+    <string name="shebeihao">设备号:</string>
+    <string name="mingcheng">名称:</string>
+    <string name="wucheng">无橙</string>
+    <string name="xiugaichenggong">修改成功</string>
+    <string name="qingqiushibai">请求失败</string>
+    <string name="jiaoyi">交易</string>
+    <string name="zhazhishibaituikuan">榨汁失败退款</string>
+    <string name="caoshituikuan">超时退款</string>
+    <string name="chuzhang">出账</string>
+    <string name="ruzhang">入账</string>
+    <string name="xianjing">现金</string>
+    <string name="weixin">微信</string>
+    <string name="zhifubao">支付宝</string>
+    <string name="wangluocuowu">网络错误</string>
+    <string name="huangetiaojianshaxuan">啥都没筛选出来,换个条件吧!</string>
+    <string name="zhengzaijiazairenyuanlibiao">正在加载代理商/机器管理员列表......</string>
+    <string name="wangluobugeili2">网络不给力</string>
+    <string name="meiyouchuangjiandailishang">啊哦,您还没创建过代理商...</string>
+    <string name="shujujiazaizhong">加载数据中...</string>
+    <string name="jiqibianma">机器编码</string>
+    <string name="danjie_yuan">单价(元)</string>
+    <string name="zhifubaodanjia_yuan">支付宝单价(元)</string>
+    <string name="weixindanjia_yuan">微信支付单价(元)</string>
+    <string name="ruanjianmeitibanben">软件媒体版本</string>
+    <string name="xianjindanjia_yuan">现金单价(元)</string>
+    <string name="meitibanbenhao">媒体版本号</string>
+    <string name="kehuduanbanben">客户端版本</string>
+    <string name="zhanshidanjia">展示单价</string>
+    <string name="zaixianzhuangtai">在线状态</string>
+    <string name="genxingshijian">更新时间</string>
+    <string name="jiqimingcheng">机器名称</string>
+    <string name="weijihuo">未激活</string>
+    <string name="jihuo">激活</string>
+    <string name="fanzhiweizhi">放置位置</string>
+    <string name="jihuozhuangtai">激活状态</string>
+    <string name="zhibiji">纸币机</string>
+    <string name="wu">无</string>
+    <string name="you">有</string>
+    <string name="yingbiji">硬币机</string>
+    <string name="guanggaoping">广告屏</string>
+    <string name="ic_dukaqi">IC卡读卡器</string>
+    <string name="zhaolingqi">找零器</string>
+    <string name="shuakaqi">刷卡器</string>
+    <string name="qudongbanben">驱动版本</string>
+    <string name="shoumairuanjianbanben">售卖软件版本</string>
+    <string name="meitiruanjianbanben">媒体软件版本</string>
+    <string name="yichangbiaozhi">异常标志</string>
+    <string name="jinweidu">经纬度</string>
+    <string name="chengzishuliang">橙子数量(百分比)</string>
+    <string name="beizishuliang">杯子数量(百分比)</string>
+    <string name="gaizishuliang">盖子数量(百分比)</string>
+    <string name="shebeizhuangtai">设备状态</string>
+    <string name="zhengchang">正常</string>
+    <string name="yichang">异常</string>
+    <string name="qianxiangzhuangtai">钱箱状态</string>
+    <string name="zhongduanjijiemianzhuangtai">终端界面状态</string>
+    <string name="jiemianchaoshi">界面超时</string>
+    <string name="changshijianbuqubei">长时间不取杯</string>
+    <string name="changshijianbuquka">长时间不取卡</string>
+    <string name="zhaolingqizhuangtai">找零器状态</string>
+    <string name="ic_dukaiqizhuangtai">IC卡读卡器状态</string>
+    <string name="guanliyuanbianhao">管理员编号</string>
+    <string name="guanliyuanxingming">管理员姓名</string>
+    <string name="dailishangbianhao">代理商编号</string>
+    <string name="dailishangxingming">代理商姓名</string>
+    <string name="guanliyuan">管理员:</string>
+    <string name="dailishang">代理商:</string>
+    <string name="meiyourenhexinxi">该机器没有任何信息,请联系系统管理员</string>
+    <string name="guzhangshijian">请选择故障产生时间区</string>
+    <string name="qingxuanzeshijian">请选着时间</string>
+    <string name="wangluobukeyong">网络不可用</string>
+    <string name="fuwuqikaixiaocai">服务器开小差</string>
+    <string name="fuwuqikaixiaocai_chongshi">服务器开小差了,请重新尝试</string>
+    <string name="wancheng">完成</string>
+    <string name="weiwancheng">未完成</string>
+    <string name="dingdanshibai">订单失败</string>
+    <string name="yyyy_mm_dd">yyyy年MM月dd日</string>
+    <string name="hh_mm">HH时mm分</string>
+    <string name="que_ding">确 定</string>
+    <string name="que_xixao">取 消</string>
+    <string name="sanjiliebiao">三级列表</string>
+    <string name="wufahuoqushaomiaojieguo">无法获取扫描结果</string>
+    <string name="shujushangchuanzhong">数据上传中...</string>
+    <string name="tianjiachenggong">添加成功</string>
+    <string name="canshutijiaocuowu">参数提交错误...</string>
+    <string name="buchongxinxi">请将信息补充完整</string>
+    <string name="json_jiexicuowu">json解析错误</string>
+    <string name="yidaozhang">已到账</string>
+    <string name="bianhao">编号:</string>
+    <string name="shujutijiaozhong">数据正在提交中...</string>
+    <string name="baocun">保存</string>
+    <string name="fangzhiweizhi">放置位置</string>
+    <string name="xianjing1">现金</string>
+    <string name="lixian">离线</string>
+    <string name="zhanshidanjiebunengwei0">展示单价不能为0</string>
+    <string name="yinghangkahao">所属公司银行卡卡号:</string>
+    <string name="meiyouquanxianxiugaixinxi">您没有权限修改该管理员资料</string>
+    <string name="shengfenzhenggeshibuzhengque">您输入的身份证号格式不正确</string>
+    <string name="shurumimayanzheng">请输入登录密码进行验证</string>
+    <string name="fenchengbilitishi">分层比例不得大于100%3,</string>
+    <string name="xiugaishibai">修改失败...</string>
+    <string name="mimaweitianxi">密码未填写</string>
+    <string name="keyixiugaifenchengbili">现在您可以修改分成比例了!!!</string>
+    <string name="mimabuzhengque">密码不正确!!!</string>
+    <string name="qingjiangneirongtianxiewanzheng">请将内容填写完整</string>
+    <string name="shuruyuanmimayouwu">输入的原密码有误</string>
+    <string name="mimabuyizhi">两次填写的新密码不一致</string>
+    <string name="xiugaichenggong_1">修改成功!</string>
+    <string name="xinmimawei">新密码为:</string>
+    <string name="qingninaoji">请您牢记!</string>
+    <string name="cuowu_1">错误</string>
+    <string name="zhi">至</string>
+    <string name="tiaozhuanyemianbunengweikong">跳转页面不能为空</string>
+    <string name="zuiduonengtiaozhuandao">最多能跳转到</string>
+    <string name="ye">页</string>
+    <string name="tiaozhuanyemianbunengwei0">跳转页面不能为0</string>
+    <string name="tianxietiaozhuanyemian">请先填写要跳转的页面</string>
+    <string name="xinxi">信息</string>
+    <string name="jieqibianhao">机器编号:</string>
+    <string name="chuzhangyuanying">出入账原因:</string>
+    <string name="jiaoyidanhao">交易单号:</string>
+    <string name="ruzhangfangshi">出入账方式:</string>
+    <string name="weichuliguzhang">未处理故障</string>
+    <string name="yichuliguzhang">已处理故障</string>
+    <string name="gaiguzhangshangweichui">该故障尚未处理</string>
+    <string name="guzhangchuxianshijian">故障出现时间:</string>
+    <string name="guzhangchulishijian">故障处理时间:</string>
+    <string name="guzhangxiangxixinxi">故障详细信息:</string>
+    <string name="qingshurushousuoneirong">请先输入搜索内容</string>
+    <string name="weituikuan">未退款</string>
+    <string name="yituikuan">已退款</string>
+    <string name="zheshisuoyoudingdanle">偷偷告诉你,这是所有的订单了...</string>
+    <string name="tuikuan">退款</string>
+    <string name="shebei">设备:</string>
+    <string name="zanwushuju">暂无数据</string>
+    <string name="chenggong_bei">成功：- 杯</string>
+    <string name="shibai_bei">失败：- 杯</string>
+    <string name="shijianxuanzebuhefa">时间段选择不合法，请重新选择！</string>
+    <string name="chaxunbenniandu">时间段查询暂时只支持查看本年度！</string>
+    <string name="tongjishijianduan">统计时间段：</string>
+    <string name="jinrishouyi">今日收益</string>
+    <string name="tongjishouyi">统计收益</string>
+    <string name="shibai">失败：</string>
+    <string name="chenggong">成功：</string>
+    <string name="bei">杯</string>
+    <string name="bei_0">0杯</string>
+    <string name="jiaoyijinxingzhong">交易进行中</string>
+    <string name="jiaoyiyiwancheng">交易已完成</string>
+    <string name="wutuikuan">无退款</string>
+    <string name="wushuju">无数据</string>
+    <string name="bumanzhutuikuantiaojian">该交易不满足退款条件</string>
+    <string name="mimabixuyanzheng">密码必须验证,不能为空!!</string>
+    <string name="quxiao">取消</string>
+    <string name="wangluoqingqiuzhong">网络请求中...</string>
+    <string name="fenchengbilibunengdaoyu100">分成比例不能大于100%</string>
+    <string name="chuanjianshibai_wangluoshibai">创建失败:网络连接失败</string>
+    <string name="chuanjianchenggong">创建成功!</string>
+    <string name="shijianquyuwuxiao">时间区域无效，请重新选择！</string>
+    <string name="meiyoushuju_chongshi">没有数据，请重试</string>
+    <string name="meiyouquanxianjiazaijiqi">当前用户没有权限添加机器</string>
+    <string name="wufahuoquyichangzhongshu">当前用户无法获取异常信息总数</string>
+    <string name="jiazaijiqiguanliyuanlibiao">正在加载机器管理员列表......</string>
+    <string name="chakanzijide">查看自己的</string>
+    <string name="fuwuqiqingqiucuowu">服务器请求错误</string>
+    <string name="weichuliyichangzhongshu">未处理的异常总数:</string>
+    <string name="cuowu_3">错误...</string>
+    <string name="jiqiguanliyuan_bunengchakanjiaoyi">机器管理员不能查看交易信息列表</string>
+    <string name="dailishangbunengchakanruzhangjilu">代理商不能查看出入账记录</string>
+    <string name="chengxuyichang_tuichu">很抱歉,程序出现异常,即将退出.</string>
+    <string name="shoujixinghao">手机机型</string>
+    <string name="androidbanben">android系统版本号</string>
+    <string name="sdkxinghao">SDK号</string>
+    <string name="shoujixinghao2">手机型号:</string>
+    <string name="android_xitongbanbenhao">android系统版本号:</string>
+    <string name="sdk_hao">SDK号:</string>
+    <string name="shujuxiugaichenggong">数据修改成功!</string>
+    <string name="tijiaocuowu_wangluoshibai">提交错误：网络连接失败！</string>
+    <string name="fen">分</string>
+    <string name="mia">秒</string>
+    <string name="shengfenzheng18_15">错误：输入的身份证号不是15位和18位的</string>
+    <string name="shengfenzhengcuowu_1_2">错误：输入的身份证号的地区码(1-2位)[</string>
+    <string name="buhefa">]不符合中国行政区划分代码规定(GB/T2260-1999)</string>
+    <string name="shengfenzhengcuowu">错误：输入的身份证号</string>
+    <string name="xinxi11_12">(11-12位)</string>
+    <string name="xinxi9_10">(9-10位)</string>
+    <string name="bucunzai">不存在[</string>
+    <string name="bufuheyaoqiu">]月份,不符合要求(GB/T7408)</string>
+    <string name="xinxi13_14">(13-14位)</string>
+    <string name="xinxi11_13">(11-13位)</string>
+    <string name="tianshubufuhe">]号不符合小月1-30天大月1-31天的规定(GB/T7408)</string>
+    <string name="xinxi_">[</string>
+    <string name="haozai_">]号在</string>
+    <string name="renniantishi">闰年的情况下未符合1-29号的规定(GB/T7408)</string>
+    <string name="pinniantishi">平年的情况下未符合1-28号的规定(GB/T7408)</string>
+    <string name="di">第</string>
+    <string name="zimu">位包含字母</string>
+    <string name="weishucuowu">错误：输入的身份证号最末尾的数字验证码错误</string>
+    <string name="riqi">日期</string>
+    <string name="nin_zanwushuju">您暂无数据</string>
+    <string name="meiyoushujuxianshi">没有数据显示</string>
+    <string name="haimeiyoushuju">还没有数据</string>
+    <string name="jiazaizhong">加载中...</string>
+
+    <string-array name="home_texts">
+        <item>用户管理</item>
+        <item>机器管理</item>
+        <item>订单查看</item>
+        <item>统计管理</item>
+        <item>分成管理</item>
+    </string-array>
+    <array name="home_imgs">
+        <item>@drawable/user</item>
+        <item>@drawable/machine</item>
+        <item>@drawable/trade</item>
+        <item>@drawable/fault</item>
+        <item>@drawable/finance</item>
+    </array>
+
+    <array name="err_codes">
+        <item>00|没有错误</item>
+        <item>01|客户端串口打开失败</item>
+        <item>02|榨汁机应答超时</item>
+        <item>21|排杆上失败</item>
+        <item>22|</item>
+        <item>23|关门失败(取杯)</item>
+        <item>24|出杯处有杯子没取走</item>
+        <item>25|排杆下失败</item>
+        <item>28|移动到C处失败</item>
+        <item>29|落杯失败</item>
+        <item>2a|移动到D处失败</item>
+        <item>2b|开门失败</item>
+        <item>2c|注杯失败,无橙</item>
+        <item>2d|注杯失败,落橙超时(卡橙)</item>
+        <item>2e|落盖失败</item>
+        <item>2f|注杯失败,用橙超限</item>
+        <item>30|转盘微动开关信号错误(同时检测到有效信号)</item>
+        <item>31|落料准备超时</item>
+        <item>fe|开关门异常</item>
+        <item>ff|榨汁电机复位超时(20s)</item>
+        <item>1000|一次通信失败</item>
+        <item>1001|多次通信失败且超时</item>
+        <item>1002|榨汁超时</item>
+        <item>1003|榨汁请求被拒绝</item>
+    </array>
+    <!--
+        <array name="machine_code_detail">
+            <item name="00">没有错误</item>
+            <item name="01">客户端串口打开失败</item>
+            <item name="02">榨汁机应答超时</item>
+            <item name="21">排杆上失败</item>
+            <item name="22"></item>
+            <item name="23">关门失败(取杯)</item>
+            <item name="24">出杯处有杯子没取走</item>
+            <item name="25">排杆下失败</item>
+            <item name="28">移动到C处失败</item>
+            <item name="29">落杯失败</item>
+            <item name="2a">移动到D处失败</item>
+            <item name="2b">开门失败</item>
+            <item name="2c">注杯失败,无橙</item>
+            <item name="2d">注杯失败,落橙超时(卡橙)</item>
+            <item name="2e">落盖失败</item>
+            <item name="2f">注杯失败,用橙超限</item>
+            <item name="30">转盘微动开关信号错误(同时检测到有效信号)</item>
+            <item name="31">落料准备超时</item>
+            <item name="fe">开关门异常</item>
+            <item name="ff">榨汁电机复位超时(20s)</item>
+            <item name="1000">一次通信失败</item>
+            <item name="1001">多次通信失败且超时</item>
+            <item name="1002">榨汁超时</item>
+            <item name="1003">榨汁请求被拒绝</item>
+        </array>-->
+</resources>
