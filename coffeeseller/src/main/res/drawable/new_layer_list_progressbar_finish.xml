@@ -5,7 +5,7 @@
 
         <shape>
 
-            <corners android:radius="50dip" />
+            <corners android:radius="@dimen/progressbar_height" />
             <stroke
                 android:width="1dp"
                 android:color="@color/red" />
@@ -22,10 +22,10 @@
 
             <shape>
                 <corners
-                    android:bottomLeftRadius="50dp"
+                    android:bottomLeftRadius="@dimen/progressbar_height"
                     android:bottomRightRadius="0dp"
-                    android:topLeftRadius="50dp"
-                    android:topRightRadius="50dp" />
+                    android:topLeftRadius="@dimen/progressbar_height"
+                    android:topRightRadius="@dimen/progressbar_height" />
             </shape>
         </clip>
     </item>
@@ -34,7 +34,7 @@
 
         <clip>
             <shape android:shape="rectangle">
-                <corners android:radius="50dp" />
+                <corners android:radius="@dimen/progressbar_height" />
                 <stroke
                     android:width="1dp"
                     android:color="@color/orange" />

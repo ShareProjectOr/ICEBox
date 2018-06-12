@@ -272,7 +272,7 @@ public class MachineCheck implements IMachineCheck {
             } catch (JSONException e) {
                 mOnMachineCheckCallBackListener.MachineCodeCheckFailed("服务器解析错误");
             } catch (IOException e) {
-                mOnMachineCheckCallBackListener.MachineCodeCheckFailed("网络错误或不可用,鉴权失败");
+                mOnMachineCheckCallBackListener.MachineCodeCheckFailed("网络错误或不可用,鉴权失败,请确保网络通畅");
             }
         }
 

@@ -1,6 +1,7 @@
 package example.jni.com.coffeeseller.model;
 
 import android.os.CountDownTimer;
+import android.text.TextUtils;
 import android.view.View;
 
 import java.util.Timer;
@@ -11,6 +12,7 @@ import example.jni.com.coffeeseller.MachineConfig.QRMsger;
 import example.jni.com.coffeeseller.bean.Coffee;
 import example.jni.com.coffeeseller.model.listeners.MsgTransListener;
 import example.jni.com.coffeeseller.utils.MyLog;
+import example.jni.com.coffeeseller.utils.TextUtil;
 
 /**
  * Created by WH on 2018/5/1.
@@ -41,6 +43,12 @@ public class TradeMsgRequest {
 * */
     public void beginTaskCheckPay(final MsgTransListener msgTransListener, final DealRecorder mDealRecorder) {
 
+        /*
+        * 订单号不为空时才能开启轮询
+        * */
+        if (TextUtils.isEmpty(mDealRecorder.getOrder())) {
+            return;
+        }
         mCurRequest = REQUEST_CHECK_PAY;
 
         if (mTimer == null) {

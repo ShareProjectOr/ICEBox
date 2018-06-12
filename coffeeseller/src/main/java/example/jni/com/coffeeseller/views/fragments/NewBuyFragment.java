@@ -62,7 +62,7 @@ public class NewBuyFragment extends BasicFragment implements CoffeeItemSelectedL
     private ViewPager mViewPager;
     private ViewPager.OnPageChangeListener mViewpagerPageChangedListener;
     private LinearLayout mPointLayout, mHelpLayout;
-    private TextView mMachineCode, mDeviceCode;
+    private TextView mMachineCode, mDeviceCode, mContactPhone;
 
     private List<Coffee> mCoffees;
     private List<LinearLayout> layouts;
@@ -112,6 +112,7 @@ public class NewBuyFragment extends BasicFragment implements CoffeeItemSelectedL
         mPointLayout = (LinearLayout) content.findViewById(R.id.pointLayout);
         mMachineCode = (TextView) content.findViewById(R.id.machineCode);
         mDeviceCode = (TextView) content.findViewById(R.id.deviceCode);
+        mContactPhone = (TextView) content.findViewById(R.id.contactPhone);
 
         mDeviceCode.setOnClickListener(this);
         mHelpLayout.setOnClickListener(this);
@@ -150,6 +151,7 @@ public class NewBuyFragment extends BasicFragment implements CoffeeItemSelectedL
 
                         cancleAutoLoop();
 
+                        break;
 
                     case MotionEvent.ACTION_UP:
                         //手松开的时间记录
@@ -219,6 +221,7 @@ public class NewBuyFragment extends BasicFragment implements CoffeeItemSelectedL
 
     private void initDatas() {
 
+    //    mContactPhone.setText(MachineConfig.getPhone());
         mCoffees = new ArrayList<>();
         addPoint();
      /*   //无限轮播
@@ -393,9 +396,13 @@ public class NewBuyFragment extends BasicFragment implements CoffeeItemSelectedL
     }
 
     private void changePoint(int index) {
+        if (mPointLayout.getChildCount() == 0) {
+            return;
+        }
 
         int pointCount = mPointLayout.getChildCount();
         int position = index % pointCount;
+        ;
 
         MyLog.d(TAG, "changePoint  = " + position);
 
@@ -428,24 +435,28 @@ public class NewBuyFragment extends BasicFragment implements CoffeeItemSelectedL
             @Override
             public void run() {
 
-                cancleAutoLoop();
+                // cancleAutoLoop();
                 List<Coffee> coffees = SingleMaterialList.getInstance(homeActivity).getCoffeeList();
                 mViewPager.removeAllViews();
                 removePoint();
                 if (coffees != null && coffees.size() > 0) {
                     layouts = mViewPagerLayout.getLinearLayouts(coffees);
 
-/*
-                    //  数据更新，待测试，如果可以，下面的可以注释
+              /*      //  数据更新，待测试，如果可以，下面的可以注释
 
                     mViewPagerAdapter.updateLayouts(layouts);
 
                     addPoint();*/
+
+                    addPoint();
+
                     if (layouts != null && layouts.size() > 0) {
                         mViewPagerAdapter = new ViewPagerAdapter(layouts);
                         mViewPager.setAdapter(mViewPagerAdapter);
 
-                        addPoint();
+                        initState();
+                        curItemPosition = 0;
+                        lastItemPosition = 0;
                     }
 
 
@@ -464,8 +475,6 @@ public class NewBuyFragment extends BasicFragment implements CoffeeItemSelectedL
 
     public void autoScrollTimeCheck() {
 
-        // stopAutoScrollTimer();
-
         if (autoScrollTimer != null && autoScrollTimerTask != null) {
             return;
         }
@@ -478,19 +487,22 @@ public class NewBuyFragment extends BasicFragment implements CoffeeItemSelectedL
                 @Override
                 public void run() {
 
+                    MyLog.d(TAG,"isViewPagerLooping= "+isViewPagerLooping);
+                    MyLog.d(TAG,"isCoffeeSelected= "+isCoffeeSelected);
+                    MyLog.d(TAG,"isMaking= "+mChooseAndMking.isMaking());
+                    MyLog.d(TAG,"isPaying= "+mChooseAndMking.isPaying());
+
                     if (System.currentTimeMillis() - lastDownTime > WAIT_TIME_TO_SCROLL) {
                         if (!isViewPagerLooping && !isCoffeeSelected && !mChooseAndMking.isMaking() && !mChooseAndMking.isPaying()) {
                             startAutoLoop();
                         }
-                    } else {
-                        cancleAutoLoop();
                     }
 
 //                    initContactLayout();
                 }
             };
         }
-        autoScrollTimer.schedule(autoScrollTimerTask, 0, 2000);
+        autoScrollTimer.schedule(autoScrollTimerTask, 0, 1000);
     }
 
     private void initContactLayout() {
@@ -526,13 +538,15 @@ public class NewBuyFragment extends BasicFragment implements CoffeeItemSelectedL
             @Override
             public void run() {
                 mViewPagerLayout.initViewHolder();
-                isCoffeeSelected = false;
-                isViewPagerLooping = false;
-                stopAutoScrollTimer();
-                autoScrollTimeCheck();
+                initState();
             }
         });
 
+    }
+
+    private void initState() {
+        isCoffeeSelected = false;
+        isViewPagerLooping = false;
     }
 
     private int absPosition(int position) {
@@ -608,7 +622,6 @@ public class NewBuyFragment extends BasicFragment implements CoffeeItemSelectedL
     public void notifyDataSetChange() {
 
     }
-
 
     @Override
     public void onDestroy() {

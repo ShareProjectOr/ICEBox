@@ -253,7 +253,7 @@ public class ChooseAndMking implements ChooseCupListenner, MkCoffeeListenner {
                         } else if (curViewId == VIEW_ERR_TIP) { //10s倒计时结束后就消失
                             //   viewOutAnim(0);
                         }
-                        //       cancle(null);
+                      // cancle(null);
                         viewOutAnim(0);
                         curTimeCount = 0;
                         stopCountTimer();
@@ -597,7 +597,7 @@ public class ChooseAndMking implements ChooseCupListenner, MkCoffeeListenner {
                 }
             }).start();
         }
-        MyLog.d(TAG, "choosecup is cancle");
+        MyLog.W(TAG, "choosecup is cancle");
 
         stopCountTimer();
 

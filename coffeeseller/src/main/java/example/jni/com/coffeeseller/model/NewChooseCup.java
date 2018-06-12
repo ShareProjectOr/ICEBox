@@ -7,6 +7,7 @@ import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Handler;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
@@ -304,7 +305,7 @@ public class NewChooseCup implements View.OnClickListener, MsgTransListener {
         Bitmap bitmap = mQrMaker.createBitmap(parseRqMsg.getQrCode(), 350, 350);
         setQR_Code(ImageUtil.getCornerBitmap(bitmap, DensityUtil.px2dp(mContext, 10)));
 
-        if (!mDealRecorder.isPayed()) {
+        if (!mDealRecorder.isPayed() && !TextUtils.isEmpty(mDealRecorder.getOrder())) {
 
             tradeMsgRequest.beginTaskCheckPay(mMsgTransListener, mDealRecorder);
         }
@@ -417,9 +418,9 @@ public class NewChooseCup implements View.OnClickListener, MsgTransListener {
             checkCanSendMkingComd(newWaitTime);
 
         } else {*/
-            hasPay();
-            stopTaskCheckPay();
-            mChooseAndMking.stopCountTimer();
+        hasPay();
+        stopTaskCheckPay();
+        mChooseAndMking.stopCountTimer();
 //        }
     }
 
@@ -446,8 +447,8 @@ public class NewChooseCup implements View.OnClickListener, MsgTransListener {
     }
 
     public void cancle() {
+        stopTaskCheckPay();
         if (mChooseCupListener != null) {
-            stopTaskCheckPay();
             mChooseCupListener.cancle(mDealRecorder.getOrder());
 
         }
