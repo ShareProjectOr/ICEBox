@@ -204,11 +204,6 @@ public class DebugActionFragment extends BasicFragment implements ActionDialog.I
     }
 
     @Override
-    public void onDetach() {
-        super.onDetach();
-    }
-
-    @Override
     public void onConfirm(HashMap map, int position) {
         tvMessage.setText(listAction.get(position).get("name").toString());
         tvMessage.setText("");

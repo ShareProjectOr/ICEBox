@@ -369,6 +369,8 @@ public class NewMkCoffee {
         }
         coffeeMakeStateRecorder.state = CoffeeMakeState.COFFEEMAKING_FAILED;
 
+        dealRecorder.setErrCode(machineState.getMajorState().getHighErr_byte() + "");
+
         MyLog.W(TAG, "machineState return hasErr, err msg : " + machineState.getResult().getReturn_bytes());
 
         if (buffer != null) {
@@ -446,7 +448,7 @@ public class NewMkCoffee {
                 MyLog.W(TAG, " resultId= " + result.getId() + " send mkCoffee comd err return : " + result.getReturn_bytes());
             }
 
-
+            dealRecorder.setErrCode(result.getErrDes() + "");
             coffeeMakeStateRecorder.state = CoffeeMakeState.COFFEEMAKING_FAILED;
         }
     }
@@ -524,7 +526,7 @@ public class NewMkCoffee {
             return true;
         } else {
             if (isTimeOut()) {
-
+                dealRecorder.setErrCode("not receive state into 5 s");
                 coffeeMakeStateRecorder.state = CoffeeMakeState.COFFEEMAKING_FAILED;
                 isCalculateMaterial = false;
             }

@@ -29,6 +29,7 @@ public class DealRecorder {
     int uploadCount=0;
 
     List<ContainerConfig> containerConfigs;
+    String errCode="00";
 
     public DealRecorder() {
     }
@@ -157,6 +158,13 @@ public class DealRecorder {
         this.uploadCount = uploadCount;
     }
 
+    public String getErrCode() {
+        return errCode;
+    }
+
+    public void setErrCode(String errCode) {
+        this.errCode = errCode;
+    }
 
     public Step getStep() {
         return step;

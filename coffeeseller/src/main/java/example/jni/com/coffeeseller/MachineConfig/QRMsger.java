@@ -72,7 +72,7 @@ public class QRMsger {
                         break;
                     }
                 }
-                MyLog.W(TAG, "reqQR start recieve data---RESPONSE_TEXT = " + RESPONSE_TEXT+"--");
+                MyLog.W(TAG, "reqQR start recieve data---RESPONSE_TEXT = " + RESPONSE_TEXT + "--");
                 if (!TextUtils.isEmpty(RESPONSE_TEXT)) {
                     ParseRQMsg parseRQMsg = ParseRQMsg.parseRQMsg(RESPONSE_TEXT);//解析收到的应答数据
 
@@ -145,8 +145,9 @@ public class QRMsger {
             Map<String, Object> params = ConstanceMethod.getParams();
             params.put("tradeCode", dealRecorder.getOrder());
             params.put("makeState", (dealRecorder.isMakeSuccess() ? 1 : 0));
+            params.put("errCode", dealRecorder.getErrCode());
             if (TextUtils.isEmpty(bunkers)) {
-               List<String> nullList=new ArrayList<>();
+                List<String> nullList = new ArrayList<>();
                 params.put("bunkers", nullList);
             } else {
                 //  JSONArray bunkersArray=new JSONArray(bunkers);

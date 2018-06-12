@@ -160,10 +160,6 @@ public class DebugFragment extends BasicFragment implements IDebugDropMaterialVi
         }
     }
 
-    @Override
-    public void onDetach() {
-        super.onDetach();
-    }
 /*    @Override
     public int getContainerID() {
         Log.d("Debug","点击位置:"+Position);

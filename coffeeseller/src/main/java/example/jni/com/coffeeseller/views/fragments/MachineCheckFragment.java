@@ -128,11 +128,6 @@ public class MachineCheckFragment extends BasicFragment implements ICheckMachine
     }
 
     @Override
-    public void onDetach() {
-        super.onDetach();
-    }
-
-    @Override
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.tologin:

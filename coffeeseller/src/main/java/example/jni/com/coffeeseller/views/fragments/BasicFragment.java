@@ -8,8 +8,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 
-import java.lang.reflect.Field;
-
 /**
  * Created by Administrator on 2018/4/11.
  */
@@ -35,19 +33,5 @@ public class BasicFragment extends Fragment implements View.OnClickListener {
 
     }
 
-    @Override
-    public void onDetach() {
-        super.onDetach();
 
-        try {
-            Field childFragmentManager = Fragment.class.getDeclaredField("mChildFragmentManager");
-            childFragmentManager.setAccessible(true);
-            childFragmentManager.set(this, null);
-
-        } catch (NoSuchFieldException e) {
-            throw new RuntimeException(e);
-        } catch (IllegalAccessException e) {
-            throw new RuntimeException(e);
-        }
-    }
 }
