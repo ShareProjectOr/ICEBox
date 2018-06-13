@@ -528,7 +528,28 @@ public class NewChooseCup implements View.OnClickListener, MsgTransListener {
             }
             return true;
         } else {
-            if (CheckCurMachineState.getInstance().isHottingCheck()) {
+
+            if(!CheckCurMachineState.getInstance().canShowQrCode()){
+                mRequestQRTxt.setVisibility(View.VISIBLE);
+                mLoadingBar.setProgress(View.VISIBLE);
+                mQrImg.setVisibility(View.GONE);
+
+                MyLog.d(TAG, "机器准备中");
+                String tipText = TextUtil.textPointNum("机器准备中", (int) (millisUntilFinished % 3));
+
+                mRequestQRTxt.setText(tipText);
+            } else {
+
+                mRequestQRTxt.setVisibility(View.GONE);
+                mLoadingBar.setProgress(View.GONE);
+                mRequestQRTxt.setText("点击重新获取");
+
+                if (tradeMsgRequest.mCurRequest == TradeMsgRequest.DEFAULT) {
+                    tradeMsgRequest.requestQRCode(mMsgTransListener, mDealRecorder, mCoffee);
+                }
+            }
+
+           /* if (CheckCurMachineState.getInstance().isHottingCheck()) {
                 mRequestQRTxt.setVisibility(View.VISIBLE);
                 mLoadingBar.setProgress(View.VISIBLE);
                 mQrImg.setVisibility(View.GONE);
@@ -550,7 +571,7 @@ public class NewChooseCup implements View.OnClickListener, MsgTransListener {
                 if (tradeMsgRequest.mCurRequest == TradeMsgRequest.DEFAULT) {
                     tradeMsgRequest.requestQRCode(mMsgTransListener, mDealRecorder, mCoffee);
                 }
-            }
+            }*/
             return false;
         }
     }
@@ -559,12 +580,6 @@ public class NewChooseCup implements View.OnClickListener, MsgTransListener {
     * 获取最终的配方步骤
     * */
     private List<ContainerConfig> getFinalContainerConfig() {
-
-       /* for (int i = 0; i < mCoffeeFomat.getContainerConfigs().size(); i++) {
-            if (mCoffeeFomat.getContainerConfigs().get(i).getWater_capacity() != 0)
-                mCoffeeFomat.getContainerConfigs().get(i).setWater_type(mCoffeeFomat.getWaterType());
-        }*/
-
         mCoffeeFomat.setCoffeeName(mCoffee.name);
 
         int count = mTasteLayout.getChildCount();
