@@ -49,6 +49,7 @@ public class NewMkCoffee {
     private int MAX_MAKING_PROGRESS = 92;
     private int INIT_PROGRESS = 5;
     private int CONTAIN_MAKING_PROGRESS_TIME = 550;
+    private long mlTimerUnit = 100;
     private Context context;
 
     private View view;
@@ -74,6 +75,10 @@ public class NewMkCoffee {
     private long lastStateTime;
     private long totalMakingTime = 0;
     private int curTimeCount = 0;
+    private int mlCount = 0;
+    private int totalSec = 0;
+    private int yushu = 0;
+    private int min = 0, sec = 0;
     private int perProgressUnit;//间隔进度条长度
     private int perTimePaddingLeft = 10;//时间左边距
 
@@ -195,7 +200,8 @@ public class NewMkCoffee {
 
             mkCoffee();
 
-            countDownTime();
+            countTime();
+      //      countDownTime();
 
             mRestTime.setVisibility(View.VISIBLE);
         } else {
@@ -560,7 +566,7 @@ public class NewMkCoffee {
     /*
     * 制作过程的倒计时
     * */
-
+/*
     private void countDownTime() {
 
         stopCountTimer();
@@ -599,6 +605,50 @@ public class NewMkCoffee {
         }
 
         countTimeTimer.schedule(countTimeTimerTask, 0, 1000);
+    } */
+/*
+* 计时
+* */
+    private void countTime() {
+
+        if (countTimeTimer != null || countTimeTimerTask != null) {
+            return;
+        }
+
+        if (null == countTimeTimer) {
+            if (null == countTimeTimerTask) {
+                countTimeTimerTask = new TimerTask() {
+                    @Override
+                    public void run() {
+                        // TODO Auto-generated method stub
+                        handler.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                mlCount++;
+                                totalSec = 0;
+                                // 100 millisecond
+                                totalSec = (int) (mlCount / (1000/mlTimerUnit));
+                                yushu = (int) (mlCount %  (1000/mlTimerUnit));
+                                // Set time display
+                                min = (totalSec / 60);
+                                sec = (totalSec % 60);
+                                try {
+                                    // 100 millisecond
+                                    mRestTime.setText(String.format("%1$02d:%2$02d:%3$d", min, sec, yushu));
+                                } catch (Exception e) {
+                                    mRestTime.setText("" + min + ":" + sec + ":" + yushu);
+                                    e.printStackTrace();
+                                    Log.e("MyTimer onCreate", "Format string error.");
+                                }
+                            }
+                        });
+                    }
+
+                };
+            }
+            countTimeTimer = new Timer(true);
+            countTimeTimer.schedule(countTimeTimerTask, mlTimerUnit, mlTimerUnit);
+        }
     }
 
     public void stopCountTimer() {
@@ -624,7 +674,7 @@ public class NewMkCoffee {
                 @Override
                 public void run() {
                     setProgress(100);
-                    updateTimeCountText(100, perProgressUnit);
+                    //updateTimeCountText(100, perProgressUnit);
                 }
             });
         } else {
@@ -664,12 +714,12 @@ public class NewMkCoffee {
                         setProgress(progress);
 
                         //  mRestTime.setLayoutParams(params);
-                        handler.post(new Runnable() {
+           /*             handler.post(new Runnable() {
                             @Override
                             public void run() {
                                 updateTimeCountText(progress, perProgressUnit);
                             }
-                        });
+                        });*/
 
                         super.onProgressUpdate(values);
 

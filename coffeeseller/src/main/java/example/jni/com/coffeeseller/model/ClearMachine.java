@@ -2,6 +2,8 @@ package example.jni.com.coffeeseller.model;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import cof.ac.inter.CoffMsger;
 import cof.ac.inter.ContainerConfig;
@@ -76,6 +78,7 @@ public class ClearMachine {
 
         CoffMsger coffMsger = CoffMsger.getInstance();
         Result result = null;
+
         switch (moduleId) {
             case BurstBubble:
                 //发送清洗指令
@@ -117,6 +120,77 @@ public class ClearMachine {
             MyLog.W(TAG, "clearMechineByModuleID  send clear code failed, because " + result.getErrDes());
             return false;
         }
+    }
+
+    private Timer clearMachineTimer;
+    private TimerTask clearMachineTimerTask;
+
+    public static void clearTimerTask(List<Integer> moduleIds) {
+
+        boolean isStop = false;
+        int count = 0;
+        for (int i = 0; i < moduleIds.size(); i++) {
+            isStop = false;
+            while (!isStop) {
+                boolean isSuccess = false;
+                if (!CheckCurMachineState.getInstance().isMachineBusy()) {
+                    isSuccess = clearMechineByModuleID(moduleIds.get(i), 1);
+                    count++;
+                }
+                if (isSuccess) {
+                    isStop = true;
+                }
+            }
+            if (i + 1 == moduleIds.size()) {
+                isClearOver = true;
+            }
+        }
+
+/*
+        if (clearMachineTimer == null) {
+            clearMachineTimer = new Timer();
+        }
+        if (clearMachineTimerTask == null) {
+            clearMachineTimerTask = new TimerTask() {
+                @Override
+                public void run() {
+
+
+                }
+            };
+        }
+
+        clearMachineTimer.schedule(clearMachineTimerTask, 0, 1000);*/
+    }
+
+    /*
+    * 除冲泡器外，其他管道都清洗
+    * */
+    public static long clearMachineBy123() {
+        long time = 0;
+        for (int i = 1; i < 4; i++) {
+            int moduleId = i;
+            boolean isCanSend = (moduleId == -1 ? false : true);
+            MyLog.d(TAG, "isCanSend= " + isCanSend);
+            if (isCanSend) {
+
+                boolean isSendOk = clearMechineByModuleID(moduleId, 1);
+
+                if (moduleId == BurstBubble) {
+                    time += 10 * 1000 + 1000;
+                } else {
+                    time += 5 * 1000 + 1000;
+                }
+                MyLog.W(TAG, "clear module!");
+                Waiter.doWait(5 * 1000 + 1 * 1000);//再次发送清洗指令必须在5s后
+            } else {
+                continue;
+            }
+            if (i + 1 == 4) {
+                return time;
+            }
+        }
+        return time;
     }
 
 
@@ -189,4 +263,34 @@ public class ClearMachine {
         }
         return time;
     }
+
+
+    public static boolean isClearOver = true;
+
+    public static int clearMachineAllModule2(List<ContainerConfig> containerConfigs) {
+        isClearOver = false;
+        int time = 0;
+        MyLog.W(TAG, "clearMachineAllModule called!");
+        if (containerConfigs == null) {
+            return time;
+        }
+
+        List<Integer> moduleIds = new ArrayList<>();
+        for (int i = 0; i < containerConfigs.size(); i++) {
+            ContainerConfig containerConfig = containerConfigs.get(i);
+
+            int moduleId = getModuleId(containerConfig);
+            if (moduleIds.contains(moduleId)) {
+                continue;
+            } else {
+                moduleIds.add(moduleId);
+            }
+        }
+        MyLog.d(TAG, "moduleIds .size= " + moduleIds.size());
+
+        clearTimerTask(moduleIds);
+
+        return time;
+    }
+
 }

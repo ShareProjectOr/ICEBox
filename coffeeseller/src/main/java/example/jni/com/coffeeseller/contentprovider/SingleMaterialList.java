@@ -190,6 +190,9 @@ public class SingleMaterialList {
                     Log.d(TAG, "intmaterialTime is " + intmaterialTime);
                     containerConfig.setMaterial_time(intmaterialTime);
                     containerConfig.setRotate_speed(stepObject.getInt("loadingSpeed"));
+
+                    MyLog.d(TAG, "name = " + containerID + "waterType = " + stepObject.getInt("waterType"));
+
                     containerConfig.setStir_speed(stepObject.getInt("mixingSpeed"));
                     if (stepObject.getInt("waterType") == 0) {//出冷饮的步骤
                         if (containerID.equals("0")) {  //如果是咖啡豆要出冷饮,则直接规定为出热饮
@@ -217,11 +220,11 @@ public class SingleMaterialList {
                         break;
                     }
 
-                    if (stepObject.getInt("waterType") == 0) {
+                 /*   if (stepObject.getInt("waterType") == 0) {
                         containerConfig.setWater_type(WaterType.COLD_WATER);
                     } else {
                         containerConfig.setWater_type(WaterType.HOT_WATER);
-                    }
+                    }*/
                     step.setContainerConfig(containerConfig);
                     org.json.JSONArray tasteArray = stepObject.getJSONArray("taste");
                     List<Taste> tastesList = new ArrayList<>();

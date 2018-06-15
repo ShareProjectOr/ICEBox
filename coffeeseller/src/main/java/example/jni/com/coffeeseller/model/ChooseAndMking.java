@@ -1,5 +1,7 @@
 package example.jni.com.coffeeseller.model;
 
+import android.animation.Animator;
+import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.os.CountDownTimer;
 import android.os.Handler;
@@ -22,6 +24,7 @@ import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import cof.ac.inter.CoffMsger;
 import cof.ac.inter.ContainerConfig;
 import example.jni.com.coffeeseller.MachineConfig.DealRecorder;
 import example.jni.com.coffeeseller.MachineConfig.QRMsger;
@@ -39,6 +42,7 @@ import example.jni.com.coffeeseller.httputils.OkHttpUtil;
 import example.jni.com.coffeeseller.model.listeners.ChooseCupListenner;
 import example.jni.com.coffeeseller.model.listeners.MkCoffeeListenner;
 import example.jni.com.coffeeseller.utils.MyLog;
+import example.jni.com.coffeeseller.utils.ObjectAnimatorUtil;
 import example.jni.com.coffeeseller.views.fragments.NewBuyFragment;
 
 /**
@@ -66,6 +70,9 @@ public class ChooseAndMking implements ChooseCupListenner, MkCoffeeListenner {
     private Timer countTimeTimer;
     private TimerTask countTimeTimerTask;
 
+    private Timer updateUiTimeTimer;
+    private TimerTask updateUiTimeTimerTask;
+
     private MkCoffeeListenner mkcoffeeListenner;
     private NewBuyFragment newBuyFragment;
     private NewChooseCup newChooseCup;
@@ -79,6 +86,7 @@ public class ChooseAndMking implements ChooseCupListenner, MkCoffeeListenner {
     private boolean isClearing = false;
     private long lastMkTime = 0;
     private int curTimeCount = 0;
+    private long curUpdateTime = 0;
     private int downY;
 
 
@@ -98,7 +106,8 @@ public class ChooseAndMking implements ChooseCupListenner, MkCoffeeListenner {
         } else {//如果不正常
 
             //是否需要发送关门指令
-            CheckCurMachineState.getInstance().sendCloseDoorComd();
+       //     CheckCurMachineState.getInstance().sendCloseDoorComd();
+
         }
         view.setVisibility(View.VISIBLE);
 
@@ -126,6 +135,9 @@ public class ChooseAndMking implements ChooseCupListenner, MkCoffeeListenner {
         view.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
+                if (isPayed) {
+                    return true;
+                }
                 switch (event.getAction()) {
                     case MotionEvent.ACTION_DOWN:
 
@@ -147,9 +159,13 @@ public class ChooseAndMking implements ChooseCupListenner, MkCoffeeListenner {
                                     newChooseCup.cancle();
                                     return true;
                                 }
+                          /*      else if (newChooseCup == null || !isPayed) {
+                                    viewOutAnim(0);
+                                    return true;
+                                }*/
 
                             } else if (curViewId == VIEW_ERR_TIP) {
-                                isShowing = false;
+
                                 viewOutAnim(0);
                                 return true;
                             } else if (curViewId == MK_COFFEE) {
@@ -253,7 +269,7 @@ public class ChooseAndMking implements ChooseCupListenner, MkCoffeeListenner {
                         } else if (curViewId == VIEW_ERR_TIP) { //10s倒计时结束后就消失
                             //   viewOutAnim(0);
                         }
-                      // cancle(null);
+                        // cancle(null);
                         viewOutAnim(0);
                         curTimeCount = 0;
                         stopCountTimer();
@@ -477,6 +493,7 @@ public class ChooseAndMking implements ChooseCupListenner, MkCoffeeListenner {
                 @Override
                 public void run() {
 
+                    MyLog.d(TAG, "----------------statebyte = " + CoffMsger.getInstance().getLastMachineState().getMajorState().getState_byte());
                     if (CheckCurMachineState.getInstance().isCupShelfRightPlaceClearMachineTest()
                             && CheckCurMachineState.getInstance().isDoorCloseMachineTest()) {
                         boolean isResultSuccess = ClearMachine.clearMachineByHotWater(100, 0);
@@ -495,6 +512,43 @@ public class ChooseAndMking implements ChooseCupListenner, MkCoffeeListenner {
         clearMachineTimer.schedule(clearMachineTimerTask, 0, 2000);
     }
 
+    /*
+  * 更新ui的线程
+  * */
+    public void updateUiTask() {
+
+        if (updateUiTimeTimer != null && updateUiTimeTimerTask != null) {
+            return;
+        }
+        MyLog.d(TAG, "updateUiTask");
+        if (updateUiTimeTimer == null) {
+            updateUiTimeTimer = new Timer();
+        }
+        if (updateUiTimeTimerTask == null) {
+            updateUiTimeTimerTask = new TimerTask() {
+                @Override
+                public void run() {
+
+                    MyLog.d(TAG, "curTime = " + curUpdateTime / 1000);
+
+                    if (CheckCurMachineState.getInstance().isDoorCloseMachineTest() || curUpdateTime / 1000 > 30) {
+
+                        viewOutAnim(0);
+
+                        //更新BuyFragment ui
+                        if (newBuyFragment != null) {
+                            newBuyFragment.updateUi(0);
+                        }
+
+                        stopTaskUpdateUi();
+                    }
+                    curUpdateTime += 2000;
+                }
+            };
+        }
+        updateUiTimeTimer.schedule(updateUiTimeTimerTask, 0, 2000);
+    }
+
     public void stopTaskClearMachine() {
 
         if (clearMachineTimer != null) {
@@ -505,6 +559,17 @@ public class ChooseAndMking implements ChooseCupListenner, MkCoffeeListenner {
         clearMachineTimerTask = null;
     }
 
+    public void stopTaskUpdateUi() {
+
+        curUpdateTime = 0;
+        if (updateUiTimeTimer != null) {
+
+            updateUiTimeTimer.cancel();
+        }
+        updateUiTimeTimer = null;
+        updateUiTimeTimerTask = null;
+    }
+
     /*
     * 消失动画
     * */
@@ -513,7 +578,41 @@ public class ChooseAndMking implements ChooseCupListenner, MkCoffeeListenner {
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                Animation anim = AnimationUtils.loadAnimation(context, R.anim.view_out);
+
+                ObjectAnimator objectAnimator = ObjectAnimatorUtil.translateYAnimator(view, 0, view.getHeight());
+                objectAnimator.setDuration(500);
+                objectAnimator.addListener(new Animator.AnimatorListener() {
+                    @Override
+                    public void onAnimationStart(Animator animation) {
+
+                    }
+
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+                        if (view != null) {
+                            if (newChooseCup != null) {
+                                newChooseCup.stopTaskCheckPay();
+                            }
+                            initState();
+                            view.clearAnimation();
+                            view.setVisibility(View.GONE);
+
+                        }
+                    }
+
+                    @Override
+                    public void onAnimationCancel(Animator animation) {
+
+                    }
+
+                    @Override
+                    public void onAnimationRepeat(Animator animation) {
+
+                    }
+                });
+
+                objectAnimator.start();
+            /*    final Animation anim = AnimationUtils.loadAnimation(context, R.anim.view_out);
 
                 anim.setAnimationListener(new Animation.AnimationListener() {
                     @Override
@@ -524,8 +623,8 @@ public class ChooseAndMking implements ChooseCupListenner, MkCoffeeListenner {
                     @Override
                     public void onAnimationEnd(Animation animation) {
                         if (view != null) {
-                            view.clearAnimation();
                             initState();
+                            view.clearAnimation();
                             view.setVisibility(View.GONE);
 
                         }
@@ -538,7 +637,7 @@ public class ChooseAndMking implements ChooseCupListenner, MkCoffeeListenner {
                 });
                 if (view != null) {
                     view.startAnimation(anim);
-                }
+                }*/
             }
         }, waitTime);
 
@@ -551,7 +650,36 @@ public class ChooseAndMking implements ChooseCupListenner, MkCoffeeListenner {
 
     public void viewEnterAnim() {
 
-        Animation anim = AnimationUtils.loadAnimation(context, R.anim.view_enter);
+        view.clearAnimation();
+        ObjectAnimator animator = ObjectAnimatorUtil.translateYAnimator(view, view.getHeight(), 0);
+        animator.setDuration(500);
+        animator.addListener(new Animator.AnimatorListener() {
+            @Override
+            public void onAnimationStart(Animator animation) {
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                if (view != null) {
+                    view.clearAnimation();
+                    isShowing = true;
+                }
+            }
+
+            @Override
+            public void onAnimationCancel(Animator animation) {
+
+            }
+
+            @Override
+            public void onAnimationRepeat(Animator animation) {
+
+            }
+        });
+        animator.start();
+
+   /*     Animation anim = AnimationUtils.loadAnimation(context, R.anim.view_enter);
 
         anim.setAnimationListener(new Animation.AnimationListener() {
             @Override
@@ -573,15 +701,19 @@ public class ChooseAndMking implements ChooseCupListenner, MkCoffeeListenner {
         });
         if (view != null) {
             view.startAnimation(anim);
-        }
+        }*/
     }
 
     public void initState() {
         isPaying = false;
         isMaking = false;
         isShowing = false;
+        isPayed = false;
         curTimeCount = 0;
         newBuyFragment.initLayout();
+        if (newChooseCup != null) {
+            newChooseCup.stopTaskCheckPay();
+        }
     }
 
 
@@ -644,6 +776,7 @@ public class ChooseAndMking implements ChooseCupListenner, MkCoffeeListenner {
         lastMkTime = System.currentTimeMillis();
 
         MyLog.d(TAG, "getMkResult been called!");
+        MyLog.d(TAG, "getMkResult errcode is " + dealRecorder.getErrCode());
         final DealRecorder recorder = dealRecorder;
 
         new Thread(new Runnable() {
@@ -684,12 +817,12 @@ public class ChooseAndMking implements ChooseCupListenner, MkCoffeeListenner {
             }
         }).start();
 
+        updateUiTask();
+/*        viewOutAnim(10000);
+
         //更新BuyFragment ui
         if (newBuyFragment != null) {
             newBuyFragment.updateUi(0);
-        }
-
-        viewOutAnim(10000);
-
+        }*/
     }
 }

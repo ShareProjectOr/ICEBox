@@ -624,6 +624,12 @@ public class NewBuyFragment extends BasicFragment implements CoffeeItemSelectedL
     }
 
     @Override
+    public void onPause() {
+        super.onPause();
+        mChooseAndMking.initState();
+    }
+
+    @Override
     public void onDestroy() {
         super.onDestroy();
         stopAutoScrollTimer();

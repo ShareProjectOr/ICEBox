@@ -178,9 +178,9 @@ public class CheckCurMachineState {
         mBuffer.append("提示：");
         if (machineState.getPotTemp() > 130) {
 
-           /* isCheckCanMake = false;
+            isCheckCanMake = false;
             mBuffer.append("\n");
-            mBuffer.append("降温中...");*/
+            mBuffer.append("降温中...");
             isDownTemp = true;
 
             MyLog.W(TAG, "锅炉温度大于130");
@@ -188,9 +188,9 @@ public class CheckCurMachineState {
         }
         if (machineState.getPotPressure() > 1500 * 10) {
 
-        /*    isCheckCanMake = false;
+            isCheckCanMake = false;
             mBuffer.append("\n");
-            mBuffer.append("降压中...");*/
+            mBuffer.append("降压中...");
             isDownPress = true;
             MyLog.W(TAG, "锅炉压力大于15000");
 
@@ -224,8 +224,8 @@ public class CheckCurMachineState {
 
         }
         if (!machineState.isCupShelfRightPlace()) {
-            Log.d(TAG, "杯架未在初始状态");
-      /*      isCheckCanMake = false;
+         /*   Log.d(TAG, "杯架未在初始状态");
+            isCheckCanMake = false;
             mBuffer.append("\n");
             mBuffer.append("杯架未在初始状态");*/
             isCupShelfRightPlace = machineState.isCupShelfRightPlace();
@@ -265,6 +265,18 @@ public class CheckCurMachineState {
         return mCoffMsger.getLastMachineState().getMajorState().getCurStateEnum() == StateEnum.CLEANING;
     }
 
+    public boolean isShelfRightPlace() {
+        return !mCoffMsger.getLastMachineState().isCupShelfRightPlace();
+    }
+
+    /*
+    * 判断机器是否正在忙
+    * */
+    public boolean isMachineBusy() {
+
+        return false;
+    }
+
     public boolean isHotting() {
         return isHotting;
     }
@@ -294,7 +306,7 @@ public class CheckCurMachineState {
     public boolean isDoorCloseMachineTest() {
         CoffMsger coffMsger = CoffMsger.getInstance();
         MachineState machineState = coffMsger.getLastMachineState();
-        return machineState.isLittleDoorOpen();
+        return !machineState.isLittleDoorOpen();
     }
 
     /*

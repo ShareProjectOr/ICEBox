@@ -319,6 +319,10 @@ public class NewChooseCup implements View.OnClickListener, MsgTransListener {
     private void getPayMsg(PayResult msg) {
         MyLog.d(TAG, "msg= " + msg);
 
+        if (!TextUtils.equals(mDealRecorder.getOrder(), msg.getTradeCode())) {
+            return;
+        }
+
         if (curPayState == NO_PAY) {
             if (msg.getPayResult() == PAYING) {
 
@@ -405,6 +409,8 @@ public class NewChooseCup implements View.OnClickListener, MsgTransListener {
                 * 重置倒计时
               * */
         mChooseAndMking.setCurTimeCount(0);
+
+      //  ClearMachine.clearMachineAllModule(mDealRecorder.getContainerConfigs());
 
 /*        if (System.currentTimeMillis() - mChooseAndMking.getLastMkTime() > ChooseAndMking.TIME_BEFORE_MK_TO_CLEAR) {
 
@@ -529,7 +535,7 @@ public class NewChooseCup implements View.OnClickListener, MsgTransListener {
             return true;
         } else {
 
-            if(!CheckCurMachineState.getInstance().canShowQrCode()){
+       /*     if(!CheckCurMachineState.getInstance().canShowQrCode()){
                 mRequestQRTxt.setVisibility(View.VISIBLE);
                 mLoadingBar.setProgress(View.VISIBLE);
                 mQrImg.setVisibility(View.GONE);
@@ -547,9 +553,9 @@ public class NewChooseCup implements View.OnClickListener, MsgTransListener {
                 if (tradeMsgRequest.mCurRequest == TradeMsgRequest.DEFAULT) {
                     tradeMsgRequest.requestQRCode(mMsgTransListener, mDealRecorder, mCoffee);
                 }
-            }
+            }*/
 
-           /* if (CheckCurMachineState.getInstance().isHottingCheck()) {
+            if (CheckCurMachineState.getInstance().isHottingCheck()) {
                 mRequestQRTxt.setVisibility(View.VISIBLE);
                 mLoadingBar.setProgress(View.VISIBLE);
                 mQrImg.setVisibility(View.GONE);
@@ -562,6 +568,15 @@ public class NewChooseCup implements View.OnClickListener, MsgTransListener {
 
                 setClearText((int) (millisUntilFinished % 3));
 
+            } else if (CheckCurMachineState.getInstance().isShelfRightPlace()) {
+                mRequestQRTxt.setVisibility(View.VISIBLE);
+                mLoadingBar.setProgress(View.VISIBLE);
+                mQrImg.setVisibility(View.GONE);
+
+                MyLog.d(TAG, "杯架未在初始状态");
+                String tipText = TextUtil.textPointNum("正在恢复杯架\n请稍等", (int) (millisUntilFinished % 3));
+
+                mRequestQRTxt.setText(tipText);
             } else {
 
                 mRequestQRTxt.setVisibility(View.GONE);
@@ -571,7 +586,7 @@ public class NewChooseCup implements View.OnClickListener, MsgTransListener {
                 if (tradeMsgRequest.mCurRequest == TradeMsgRequest.DEFAULT) {
                     tradeMsgRequest.requestQRCode(mMsgTransListener, mDealRecorder, mCoffee);
                 }
-            }*/
+            }
             return false;
         }
     }
